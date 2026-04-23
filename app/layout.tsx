@@ -10,7 +10,12 @@ const onest = Onest({
 
 export const metadata: Metadata = {
   title: 'Altid Hjem – Skriv dig på ventelisten',
-  description: 'Altid Hjem samler hjemmets faste udgifter i én app, med ét login og én regning – så du sparer tid og penge.',
+  description: 'Altid Hjem samler hjemmets faste udgifter i én app – ét overblik, ét login, én regning.',
+  icons: {
+    icon: '/icon.svg',
+    shortcut: '/icon.svg',
+    apple: '/icon.svg',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

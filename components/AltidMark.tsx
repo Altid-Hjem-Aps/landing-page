@@ -2,7 +2,14 @@
 export function AltidMark({ dark = false }: { dark?: boolean }) {
   if (dark) {
     return (
-      <span style={{ fontWeight: 700, color: 'var(--sage)' }}>Altid.</span>
+      <span style={{
+        fontWeight: 700,
+        color: 'var(--sage)',
+        textDecoration: 'underline',
+        textDecorationColor: 'var(--sage)',
+        textDecorationThickness: 2,
+        textUnderlineOffset: 4,
+      }}>Altid.</span>
     )
   }
   return (

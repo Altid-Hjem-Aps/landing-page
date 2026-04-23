@@ -47,7 +47,7 @@ const services = [
 
 export default function Services() {
   return (
-    <section className="py-24 px-12" style={{ background: 'var(--cream)' }}>
+    <section className="py-16 sm:py-24 px-6 sm:px-10 lg:px-12" style={{ background: 'var(--cream)' }}>
       <div className="max-w-5xl mx-auto">
         <p className="text-xs font-semibold tracking-[0.12em] uppercase mb-4" style={{ color: 'var(--text-light)' }}>
           Tjenesterne
@@ -62,7 +62,7 @@ export default function Services() {
           Nøje udvalgte tjenester til hjemmet – valgt på baggrund af kvalitet, pris og gennemsigtighed.
         </p>
 
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {services.map((s) => (
             <div
               key={s.name}

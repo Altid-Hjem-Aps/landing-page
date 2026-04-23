@@ -105,8 +105,8 @@ export default function IPhoneMockup() {
 
               {/* App header */}
               <div className="px-5 pt-2 pb-3 shrink-0">
-                <p className="text-[10px] font-medium uppercase tracking-widest mb-0.5" style={{ color: 'var(--text-light)' }}>Altid Energi</p>
-                <h2 className="text-base font-bold" style={{ color: 'var(--forest)' }}>Min strøm</h2>
+                <p className="text-[10px] font-medium uppercase tracking-widest mb-0.5" style={{ color: 'var(--text-light)' }}>Hej, velkommen hjem</p>
+                <h2 className="text-base font-bold" style={{ color: 'var(--forest)' }}>Se din strøm</h2>
               </div>
 
               {/* Spot price card — C: rolling spot price, F: badge pulse */}

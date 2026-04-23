@@ -76,7 +76,7 @@ export default function AddressAutocomplete({ value, onChange, variant = 'light'
         onChange={(e) => { setQuery(e.target.value); onChange(e.target.value) }}
         onFocus={() => { calcDropPos(); results.length > 0 && setOpen(true) }}
         placeholder="Din adresse..."
-        autoComplete="off"
+        autoComplete="street-address"
         className={`w-full text-[15px] outline-none ${isDark ? 'placeholder:text-white/40' : 'placeholder:text-[#aaa]'} ${compact ? '' : 'px-4 py-3 rounded-[10px] border-[1.5px]'}`}
         style={compact
           ? { padding: '0 16px', height: 52, background: 'transparent', color: isDark ? 'white' : 'var(--text-dark)', fontFamily: 'var(--font-onest)' }

@@ -24,29 +24,29 @@ function AltidEnergiLogo({ className }: { className?: string }) {
 
 export default function Trust() {
   return (
-    <section className="bg-white py-24 px-12">
-      <div className="max-w-5xl mx-auto grid grid-cols-2 gap-20 items-center">
+    <section className="bg-white py-28 sm:py-24 px-6 sm:px-10 lg:px-12">
+      <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
         {/* Altid Energi credibility card */}
         <div
-          className="rounded-2xl p-10 flex flex-col gap-6"
+          className="rounded-2xl p-6 sm:p-10 flex flex-col gap-6"
           style={{ background: 'var(--forest)' }}
         >
           {/* Stats — 13.000+ leads, #1 supports */}
           <div className="grid grid-cols-2 gap-4">
             <div
-              className="rounded-xl p-5"
+              className="rounded-xl p-5 flex flex-col"
               style={{ background: 'rgba(168,224,99,0.1)', border: '1px solid rgba(168,224,99,0.18)' }}
             >
-              <p className="font-extrabold mb-1 leading-none" style={{ fontSize: 38, color: 'var(--sage)' }}>13.000+</p>
-              <p className="text-xs leading-relaxed mt-2" style={{ color: 'rgba(255,255,255,0.55)' }}>tilfredse danske kunder</p>
+              <p className="font-extrabold leading-none text-[28px] sm:text-[38px]" style={{ color: 'var(--sage)' }}>13.000+</p>
+              <p className="text-xs leading-relaxed mt-auto pt-3" style={{ color: 'rgba(255,255,255,0.55)' }}>tilfredse danske kunder</p>
             </div>
             <div
-              className="rounded-xl p-5"
+              className="rounded-xl p-5 flex flex-col"
               style={{ background: 'rgba(168,224,99,0.1)', border: '1px solid rgba(168,224,99,0.18)' }}
             >
-              <p className="text-3xl font-extrabold mb-1" style={{ color: 'var(--sage)' }}>#1</p>
-              <p className="text-xs leading-relaxed mt-2" style={{ color: 'rgba(255,255,255,0.55)' }}>bedst rated elselskab, Forbrugerrådet Tænk</p>
+              <p className="font-extrabold leading-none text-[28px] sm:text-[38px]" style={{ color: 'var(--sage)' }}>#1</p>
+              <p className="text-xs leading-relaxed mt-auto pt-3" style={{ color: 'rgba(255,255,255,0.55)' }}>Forbrugerrådet Tænk</p>
             </div>
           </div>
 

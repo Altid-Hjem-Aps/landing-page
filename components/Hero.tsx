@@ -6,8 +6,8 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="min-h-screen relative overflow-hidden"
-      style={{ background: 'var(--forest)' }}
+      className="relative overflow-hidden flex flex-col"
+      style={{ minHeight: '100svh', background: 'var(--forest)' }}
     >
       {/* Ambient glows */}
       <div
@@ -25,59 +25,65 @@ export default function Hero() {
         }}
       />
 
-      <div className="max-w-6xl mx-auto px-12 pt-36 pb-20">
-        <div className="grid grid-cols-2 gap-16 items-center">
+      {/* Spacer matching fixed nav height (py-5 + h-11 logo = 84px) */}
+      <div className="h-[84px] shrink-0" />
 
-          {/* Left: copy + form */}
-          <div className="flex flex-col gap-8">
-            <div>
-              <div
-                className="inline-flex items-center gap-0 text-[11px] font-medium rounded-full mb-7 animate-fade-up-1 overflow-hidden"
-                style={{
-                  background: 'rgba(168,224,99,0.1)',
-                  border: '1px solid rgba(168,224,99,0.25)',
-                }}
-              >
-                {/* Left: Kommer snart */}
+      {/* Content centered in remaining viewport height */}
+      <div className="flex-1 flex items-center">
+        <div className="max-w-6xl mx-auto w-full px-6 sm:px-10 lg:px-12 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+
+            {/* Left: copy + form */}
+            <div className="flex flex-col gap-8">
+              <div className="text-center lg:text-left">
                 <div
-                  className="flex items-center gap-2 px-3.5 py-1.5 tracking-widest uppercase"
-                  style={{ color: 'var(--sage)' }}
+                  className="inline-flex items-center gap-0 text-[11px] font-medium rounded-full mb-7 animate-fade-up-1 overflow-hidden"
+                  style={{
+                    background: 'rgba(168,224,99,0.1)',
+                    border: '1px solid rgba(168,224,99,0.25)',
+                  }}
                 >
-                  <span
-                    className="w-1.5 h-1.5 rounded-full shrink-0"
-                    style={{ background: 'var(--sage)', animation: 'pulse-dot 2s ease-in-out infinite' }}
-                  />
-                  Kommer snart
+                  <div
+                    className="flex items-center gap-2 px-3.5 py-1.5 tracking-widest uppercase whitespace-nowrap"
+                    style={{ color: 'var(--sage)' }}
+                  >
+                    <span
+                      className="w-1.5 h-1.5 rounded-full shrink-0"
+                      style={{ background: 'var(--sage)', animation: 'pulse-dot 2s ease-in-out infinite' }}
+                    />
+                    Kommer snart
+                  </div>
+                  <div className="w-px self-stretch" style={{ background: 'rgba(168,224,99,0.3)' }} />
+                  <div className="flex items-center gap-1.5 px-3.5 py-1.5 whitespace-nowrap" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                    <span className="font-semibold" style={{ color: 'var(--sage)' }}>13.000+</span>
+                    <span className="hidden sm:inline">bruger allerede Altid Energi</span>
+                    <span className="sm:hidden">brugere</span>
+                  </div>
                 </div>
-                {/* Divider */}
-                <div className="w-px self-stretch" style={{ background: 'rgba(168,224,99,0.3)' }} />
-                {/* Right: social proof */}
-                <div className="flex items-center gap-1.5 px-3.5 py-1.5" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                  <span className="font-semibold" style={{ color: 'var(--sage)' }}>13.000+</span>
-                  bruger allerede Altid Energi
-                </div>
+                <h1
+                  className="font-extrabold leading-[1.1] tracking-tight text-white mb-6 animate-fade-up-2 text-[clamp(30px,8vw,50px)] lg:text-[40px] xl:text-[46px]"
+                >
+                  <span className="lg:block">Snart får danskerne</span>{' '}
+                  <span className="lg:block">
+                    <em className="not-italic" style={{ color: 'var(--sage)' }}>bedre råd</em>
+                  </span>{' '}
+                  <span className="lg:block">til hjemmet</span>
+                </h1>
+                <p className="text-lg leading-relaxed animate-fade-up-3 mx-auto lg:mx-0" style={{ color: 'rgba(255,255,255,0.6)', maxWidth: 440 }}>
+                  Altid Hjem samler hjemmets faste udgifter i én app – ét overblik, ét login, én regning. <AltidMark dark />
+                </p>
               </div>
-              <h1
-                className="text-5xl font-extrabold leading-[1.1] tracking-tight text-white mb-6 animate-fade-up-2"
-                style={{ fontSize: 'clamp(36px, 4vw, 56px)' }}
-              >
-                Snart får danskerne{' '}
-                <em className="not-italic" style={{ color: 'var(--sage)' }}>bedre råd</em>{' '}
-                til hjemmet
-              </h1>
-              <p className="text-lg leading-relaxed animate-fade-up-3" style={{ color: 'rgba(255,255,255,0.6)', maxWidth: 440 }}>
-                Altid Hjem samler hjemmets faste udgifter i én app, med ét login og én regning – så du sparer tid og penge. <AltidMark dark />
-              </p>
+
+              <div id="venteliste" className="animate-fade-up-4">
+                <WaitlistForm variant="light" />
+              </div>
             </div>
 
-            <div id="venteliste" className="animate-fade-up-4">
-              <WaitlistForm variant="light" />
+            {/* Right: iPhone mockup */}
+            <div className="flex items-center justify-center animate-fade-up-3">
+              <IPhoneMockup />
             </div>
-          </div>
 
-          {/* Right: iPhone mockup */}
-          <div className="flex items-center justify-center pt-8 animate-fade-up-3">
-            <IPhoneMockup />
           </div>
         </div>
       </div>

@@ -10,8 +10,8 @@ const total = mockServices.reduce((sum, s) => sum + s.price, 0)
 
 export default function WhatIs() {
   return (
-    <section className="bg-white py-24 px-12">
-      <div className="max-w-5xl mx-auto grid grid-cols-2 gap-20 items-center">
+    <section className="bg-white py-16 sm:py-24 px-6 sm:px-10 lg:px-12">
+      <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
         <div>
           <p className="text-xs font-semibold tracking-[0.12em] uppercase mb-4" style={{ color: 'var(--text-light)' }}>
             Om appen
