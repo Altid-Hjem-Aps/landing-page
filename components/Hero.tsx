@@ -36,40 +36,16 @@ export default function Hero() {
             {/* Left: copy + form */}
             <div className="flex flex-col gap-8">
               <div className="text-center lg:text-left">
-                <div className="inline-flex items-center gap-3 mb-7 animate-fade-up-1">
-                  {/* Avatar stack */}
-                  <div className="flex -space-x-2 shrink-0">
-                    {[
-                      { initials: 'MK', bg: '#4a7c59' },
-                      { initials: 'SR', bg: '#3d6b7a' },
-                      { initials: 'LH', bg: '#6b5ea8' },
-                      { initials: 'PB', bg: '#7a5a3d' },
-                    ].map(({ initials, bg }) => (
-                      <div
-                        key={initials}
-                        className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-bold text-white"
-                        style={{ background: bg, border: '1.5px solid var(--forest)' }}
-                      >
-                        {initials}
-                      </div>
-                    ))}
-                  </div>
-                  {/* Stat + kommer snart */}
-                  <p className="text-[13px] leading-tight" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                <div className="inline-flex items-center gap-2 mb-7 animate-fade-up-1 text-[13px] leading-none">
+                  <span style={{ color: 'rgba(255,255,255,0.5)' }}>
                     <span className="font-semibold" style={{ color: 'var(--sage)' }}>13.000+</span>
                     {' '}er allerede kunde hos Altid Energi
-                    <span className="mx-2" style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
-                    <span
-                      className="inline-flex items-center gap-1.5"
-                      style={{ color: 'rgba(255,255,255,0.5)' }}
-                    >
-                      <span
-                        className="w-1.5 h-1.5 rounded-full shrink-0 inline-block"
-                        style={{ background: 'var(--sage)', animation: 'pulse-dot 2s ease-in-out infinite' }}
-                      />
-                      Kommer snart
-                    </span>
-                  </p>
+                  </span>
+                  <span
+                    className="w-1.5 h-1.5 rounded-full shrink-0"
+                    style={{ background: 'var(--sage)', animation: 'pulse-dot 2s ease-in-out infinite' }}
+                  />
+                  <span style={{ color: 'rgba(255,255,255,0.5)' }}>Altid Hjem kommer snart</span>
                 </div>
                 <h1
                   className="font-extrabold leading-[1.1] tracking-tight text-white mb-6 animate-fade-up-2 text-[clamp(28px,8vw,38px)] sm:text-[clamp(38px,10vw,72px)] lg:text-[64px] xl:text-[72px]"
