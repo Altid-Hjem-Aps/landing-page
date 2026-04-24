@@ -30,8 +30,8 @@ export default function Hero() {
 
       {/* Content centered in remaining viewport height */}
       <div className="flex-1 flex items-center">
-        <div className="max-w-6xl mx-auto w-full px-6 sm:px-10 lg:px-12 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div className="max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-8 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-10 lg:gap-10 items-center">
 
             {/* Left: copy + form */}
             <div className="flex flex-col gap-8">
@@ -61,13 +61,13 @@ export default function Hero() {
                   </div>
                 </div>
                 <h1
-                  className="font-extrabold leading-[1.1] tracking-tight text-white mb-6 animate-fade-up-2 text-[clamp(30px,8vw,50px)] lg:text-[40px] xl:text-[46px]"
+                  className="font-extrabold leading-[1.1] tracking-tight text-white mb-6 animate-fade-up-2 text-[clamp(28px,8vw,38px)] sm:text-[clamp(38px,10vw,72px)] lg:text-[64px] xl:text-[72px]"
                 >
-                  <span className="lg:block">Snart får danskerne</span>{' '}
-                  <span className="lg:block">
+                  <span className="block sm:inline lg:block">Snart får danskerne</span>{' '}
+                  <span className="block sm:inline lg:block">
                     <em className="not-italic" style={{ color: 'var(--sage)' }}>bedre råd</em>
                   </span>{' '}
-                  <span className="lg:block">til hjemmet</span>
+                  <span className="block sm:inline lg:block">til hjemmet</span>
                 </h1>
                 <p className="text-lg leading-relaxed animate-fade-up-3 mx-auto lg:mx-0" style={{ color: 'rgba(255,255,255,0.6)', maxWidth: 440 }}>
                   Altid Hjem samler hjemmets faste udgifter i én app – ét overblik, ét login, én regning. <AltidMark dark />

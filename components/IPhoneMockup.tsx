@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Logo } from '@/components/Logo'
 
 // Slot-machine rolling number — stacks two values and slides between them
@@ -22,24 +22,41 @@ function Slot({ from, to, hovered, h = 20 }: { from: string; to: string; hovered
 
 export default function IPhoneMockup() {
   const [hovered, setHovered] = useState(false)
-  const [wobbling, setWobbling] = useState(false)
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   function onEnter() {
     setHovered(true)
-    setWobbling(true)
-    setTimeout(() => setWobbling(false), 1000)
   }
+
+  function onLeave() {
+    setHovered(false)
+  }
+
+  useEffect(() => {
+    if (!navigator.maxTouchPoints) return
+    const t1 = setTimeout(() => {
+      setHovered(true)
+      resetTimerRef.current = setTimeout(() => setHovered(false), 3200)
+    }, 800)
+    return () => clearTimeout(t1)
+  }, [])
+
 
   // D: progress bar values
   const barPct  = hovered ? 81  : 74
   const barDkk  = hovered ? 403 : 374
 
   return (
-    // A: float up on hover
+    // A: float up on hover / touch
     <div
       className="mx-auto select-none cursor-default"
       onMouseEnter={onEnter}
-      onMouseLeave={() => setHovered(false)}
+      onMouseLeave={onLeave}
+      onTouchStart={onEnter}
+      onTouchEnd={() => {
+        if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
+        resetTimerRef.current = setTimeout(onLeave, 2800)
+      }}
       style={{
         transform: hovered ? 'translateY(-10px)' : 'translateY(0)',
         transition: hovered
@@ -47,13 +64,11 @@ export default function IPhoneMockup() {
           : 'transform 0.5s ease',
       }}
     >
-      {/* B: wobble on entry */}
       <div
         style={{
           position: 'relative',
           width: 270,
           height: 560,
-          animation: wobbling ? 'phone-wobble 1s ease' : 'none',
         }}
       >
         {/* Drop shadow — deepens on hover */}
@@ -176,7 +191,7 @@ export default function IPhoneMockup() {
               </div>
 
               {/* E: tip card swap */}
-              <div className="mx-4 shrink-0" style={{ position: 'relative', height: 46 }}>
+              <div className="mx-4 shrink-0" style={{ position: 'relative', height: 46, overflow: 'hidden' }}>
                 {/* Tip 1 — initial */}
                 <div
                   className="absolute inset-0 px-4 py-2.5 rounded-2xl flex items-center gap-2.5"
@@ -184,7 +199,8 @@ export default function IPhoneMockup() {
                     background: 'rgba(245,240,118,0.2)',
                     border: '1px solid rgba(245,240,118,0.35)',
                     opacity: hovered ? 0 : 1,
-                    transition: 'opacity 0.5s ease',
+                    transform: hovered ? 'translateX(-15%)' : 'translateX(0)',
+                    transition: 'opacity 0.3s ease, transform 0.4s ease',
                   }}
                 >
                   <span style={{ fontSize: 13 }}>⚡</span>
@@ -192,14 +208,17 @@ export default function IPhoneMockup() {
                     <strong>Lav pris nu.</strong> Godt tidspunkt at vaske tøj.
                   </p>
                 </div>
-                {/* Tip 2 — on hover */}
+                {/* Tip 2 — drives in from right on hover */}
                 <div
                   className="absolute inset-0 px-4 py-2.5 rounded-2xl flex items-center gap-2.5"
                   style={{
                     background: 'rgba(168,224,99,0.15)',
                     border: '1px solid rgba(168,224,99,0.3)',
                     opacity: hovered ? 1 : 0,
-                    transition: 'opacity 0.5s ease 0.3s',
+                    transform: hovered ? 'translateX(0)' : 'translateX(110%)',
+                    transition: hovered
+                      ? 'opacity 0.3s ease 0.1s, transform 0.55s cubic-bezier(0.34, 1.15, 0.64, 1) 0.1s'
+                      : 'opacity 0.25s ease, transform 0.35s ease',
                   }}
                 >
                   <span style={{ fontSize: 13 }}>🚗</span>

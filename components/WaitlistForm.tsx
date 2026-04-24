@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import AddressAutocomplete from '@/components/AddressAutocomplete'
 import { AltidMark } from '@/components/AltidMark'
 
 type View = 'form' | 'questions' | 'success'
@@ -15,8 +14,9 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
   const [view, setView] = useState<View>('form')
   const [expanded, setExpanded] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [signupId, setSignupId] = useState('')
 
-  const [address, setAddress] = useState('')
   const [phone, setPhone] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -44,12 +44,19 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
   async function submitStep1() {
     if (!phone || !email || !name) return
     setLoading(true)
-    await fetch('/api/waitlist', {
+    setError('')
+    const res = await fetch('/api/waitlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ address, phone, name, email, step: 1 }),
+      body: JSON.stringify({ phone, name, email, step: 1 }),
     })
+    const data = await res.json().catch(() => ({}))
     setLoading(false)
+    if (!res.ok) {
+      setError(data.error ?? 'Noget gik galt. Prøv igen.')
+      return
+    }
+    setSignupId(data.id)
     setView('questions')
   }
 
@@ -58,7 +65,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
     await fetch('/api/waitlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, email, age, household, why, electricity, step: 2 }),
+      body: JSON.stringify({ id: signupId, age, household, why, electricity, step: 2 }),
     })
     setLoading(false)
     setView('success')
@@ -141,7 +148,6 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
             <label style={darkLabelStyle}>Navn</label>
             <input name="name" autoComplete="name" value={name} onChange={e => setName(e.target.value)} placeholder="Dit fulde navn" style={darkInputStyle} className="placeholder:text-white/40" />
           </div>
-          <AddressAutocomplete value={address} onChange={setAddress} variant="dark" />
           <div>
             <label style={darkLabelStyle}>E-mail</label>
             <input type="email" name="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="din@email.dk" style={darkInputStyle} className="placeholder:text-white/40" />
@@ -154,6 +160,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
             </div>
           </div>
         </div>
+        {error && <p className="text-sm mb-3 text-center" style={{ color: '#ff8080' }}>{error}</p>}
         <button type="submit" disabled={loading} className="w-full py-3.5 rounded-[10px] text-[15px] font-semibold disabled:opacity-60" style={{ background: 'var(--sage)', color: 'var(--forest)' }}>
           {loading ? 'Sender...' : 'Skriv mig på ventelisten →'}
         </button>
@@ -165,8 +172,6 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
   }
 
   // ─── Light variant (Hero) ─────────────────────────────────────────────────
-  // The phone input stays in-flow. Expanded fields are absolutely positioned
-  // below it so the hero layout never reflows when the form opens.
 
   if (view === 'success') return <SuccessCard />
 
@@ -262,9 +267,6 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
                 className="w-full rounded-xl placeholder:text-[#bbb]"
                 style={{ height: 52, padding: '0 16px', fontSize: 15, outline: 'none', background: 'white', color: 'var(--text-dark)', fontFamily: 'var(--font-onest)' }}
               />
-              <div className="rounded-xl" style={{ background: 'white', overflow: 'visible' }}>
-                <AddressAutocomplete value={address} onChange={setAddress} variant="light" compact />
-              </div>
               {/* Phone input */}
               <div
                 className="flex items-center rounded-xl overflow-hidden"
@@ -308,6 +310,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
               transition: 'opacity 0.4s ease 0.28s',
             }}
           >
+            {error && <p className="text-sm mb-2 text-center" style={{ color: '#ff8080' }}>{error}</p>}
             <button
               type="submit"
               disabled={loading}

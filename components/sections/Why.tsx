@@ -1,18 +1,18 @@
 const stats = [
   {
     n: '5–8',
-    label: 'Gennemsnitlige antal leverandører en dansk husstand jonglerer med om måneden',
-    labelShort: 'Leverandører pr. husstand om måneden',
+    label: 'Leverandører en gennemsnitlig dansk husstand jonglerer med til hjemmets faste udgifter',
+    labelShort: 'Leverandører pr. husstand',
+  },
+  {
+    n: '40–50',
+    label: 'Regninger en dansk husstand modtager om året — spredt på mail, e-Boks og papir',
+    labelShort: 'Regninger om året',
   },
   {
     n: '1',
-    label: 'Regning, ét login og fuldt overblik. Det er det Altid Hjem leverer.',
-    labelShort: 'Regning. Ét login. Fuldt overblik.',
-  },
-  {
-    n: '0 kr.',
-    label: 'Det koster at skrive sig på ventelisten og få tidlig adgang',
-    labelShort: 'At skrive sig på ventelisten',
+    label: 'Samlet regning, ét login og fuldt overblik. Det er det Altid Hjem leverer.',
+    labelShort: 'Regning. Ét login.',
   },
 ]
 
@@ -30,10 +30,10 @@ export default function Why() {
             className="font-extrabold leading-[1.15] tracking-tight mb-3 sm:mb-5"
             style={{ fontSize: 'clamp(24px, 3.5vw, 44px)', color: 'var(--forest)' }}
           >
-            Overblikket mangler. Ikke pengene.
+            Ét hjem. For mange regninger.
           </h2>
           <p className="text-base sm:text-lg leading-relaxed" style={{ color: 'var(--text-mid)' }}>
-            De fleste danskere betaler for meget. Ikke fordi de vil, men fordi overblikket mangler. Hjemmets faste udgifter er spredt på mange leverandører, regninger og vilkår.
+            De fleste danskere modtager 40–50 regninger om året og jonglerer med op til 8 leverandører. Ikke fordi de vil, men fordi der aldrig har været et alternativ.
           </p>
         </div>
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseServer } from '@/lib/supabase-server'
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PHONE_RE = /^\d{8}$/
 
@@ -8,56 +8,58 @@ export async function POST(req: NextRequest) {
   const body = await req.json()
 
   if (body.step === 1) {
-    const { email, name, phone, address } = body
+    const { email, name, phone } = body
 
-    if (!email || !EMAIL_RE.test(email)) {
+    if (!email || !EMAIL_RE.test(email))
       return NextResponse.json({ success: false, error: 'Ugyldig e-mail' }, { status: 400 })
-    }
-    if (!phone || !PHONE_RE.test(String(phone).replace(/\s/g, ''))) {
+    if (!phone || !PHONE_RE.test(String(phone).replace(/\s/g, '')))
       return NextResponse.json({ success: false, error: 'Ugyldigt mobilnummer' }, { status: 400 })
-    }
-    if (!name || String(name).trim().length < 2) {
+    if (!name || String(name).trim().length < 2)
       return NextResponse.json({ success: false, error: 'Navn mangler' }, { status: 400 })
-    }
 
-    const { error } = await supabaseServer.from('waitlist').upsert(
-      {
-        phone: String(phone).replace(/\s/g, ''),
-        email: String(email).toLowerCase().trim(),
+    const res = await fetch(`${API_URL}/api/waitlist`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         name: String(name).trim(),
-        address: address ? String(address).trim() : null,
-      },
-      { onConflict: 'phone' }
-    )
+        mobile: String(phone).replace(/\s/g, ''),
+        email: String(email).toLowerCase().trim(),
+      }),
+    })
 
-    if (error) {
-      console.error('Waitlist step 1 error:', error)
-      return NextResponse.json({ success: false, error: error.message }, { status: 500 })
-    }
+    const data = await res.json().catch(() => ({}))
+
+    if (res.status === 409)
+      return NextResponse.json({ success: false, error: 'Du er allerede skrevet op!' }, { status: 409 })
+    if (!res.ok)
+      return NextResponse.json({ success: false, error: data.message ?? 'Noget gik galt' }, { status: res.status })
+
+    return NextResponse.json({ success: true, id: data.id })
   }
 
   if (body.step === 2) {
-    const { phone, age, household, why, electricity } = body
+    const { id, age, household, why, electricity } = body
 
-    if (!phone) {
-      return NextResponse.json({ success: false, error: 'Mangler telefonnummer' }, { status: 400 })
+    if (!id)
+      return NextResponse.json({ success: false, error: 'Mangler id' }, { status: 400 })
+
+    const survey: Record<string, unknown> = {}
+    if (age) survey.age = Number(age)
+    if (household) {
+      const n = household === '5+' ? 5 : Number(household)
+      if (!isNaN(n)) survey.householdSize = n
     }
+    if (why) survey.motivation = String(why).slice(0, 500)
+    if (electricity) survey.electricityProvider = String(electricity).slice(0, 100)
 
-    const { error } = await supabaseServer
-      .from('waitlist')
-      .update({
-        age: age ? String(age).slice(0, 3) : null,
-        household: household ? String(household).slice(0, 10) : null,
-        why: why ? String(why).slice(0, 500) : null,
-        electricity: electricity ? String(electricity).slice(0, 100) : null,
-        completed: true,
-      })
-      .eq('phone', String(phone).replace(/\s/g, ''))
+    const res = await fetch(`${API_URL}/api/waitlist/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(survey),
+    })
 
-    if (error) {
-      console.error('Waitlist step 2 error:', error)
-      return NextResponse.json({ success: false, error: error.message }, { status: 500 })
-    }
+    if (!res.ok)
+      return NextResponse.json({ success: false, error: 'Noget gik galt' }, { status: res.status })
   }
 
   return NextResponse.json({ success: true })

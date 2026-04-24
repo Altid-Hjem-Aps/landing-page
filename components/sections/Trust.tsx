@@ -56,7 +56,7 @@ export default function Trust() {
           </p>
 
           {/* Logo at bottom */}
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 20 }}>
+          <div className="flex sm:block justify-center" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 20 }}>
             <AltidEnergiLogo className="h-10 w-auto" />
           </div>
         </div>
