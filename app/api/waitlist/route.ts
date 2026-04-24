@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { sendWaitlistConfirmation } from '@/lib/send-email'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -33,6 +34,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Du er allerede skrevet op!' }, { status: 409 })
     if (!res.ok)
       return NextResponse.json({ success: false, error: data.message ?? 'Noget gik galt' }, { status: res.status })
+
+    // fire-and-forget — don't let email failure block signup
+    sendWaitlistConfirmation(String(name).trim(), String(email).toLowerCase().trim()).catch(console.error)
 
     return NextResponse.json({ success: true, id: data.id })
   }
