@@ -1,3 +1,4 @@
+// test: vercel-github integration
 import { AltidMark } from '@/components/AltidMark'
 
 function AltidEnergiLogo({ className }: { className?: string }) {
