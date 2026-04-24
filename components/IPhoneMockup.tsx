@@ -37,7 +37,7 @@ export default function IPhoneMockup() {
     const t1 = setTimeout(() => {
       setHovered(true)
       resetTimerRef.current = setTimeout(() => setHovered(false), 3200)
-    }, 800)
+    }, 1800)
     return () => clearTimeout(t1)
   }, [])
 
