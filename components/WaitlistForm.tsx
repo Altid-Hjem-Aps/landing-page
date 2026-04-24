@@ -344,36 +344,6 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
             Skriv din e-mail for at tilmelde dig ventelisten.
           </p>
 
-          {/* Hand-drawn arrow annotation — desktop only */}
-          <div
-            className="hidden lg:flex items-start gap-3 pt-3 pointer-events-none select-none"
-            style={{ paddingLeft: '30%' }}
-            aria-hidden="true"
-          >
-            <svg width="68" height="68" viewBox="0 0 82 82" fill="none" style={{ flexShrink: 0, marginTop: 2 }}>
-              <path
-                d="M 76,76 C 58,48 28,20 12,10"
-                stroke="#a8e063"
-                strokeWidth="3.2"
-                strokeLinecap="round"
-                opacity="0.80"
-              />
-              <path
-                d="M 26,2 L 12,12 L 24,24"
-                stroke="#a8e063"
-                strokeWidth="2.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-                opacity="0.80"
-              />
-            </svg>
-            <p className="text-sm font-semibold leading-snug" style={{ color: 'var(--sage)', opacity: 0.85 }}>
-              Skriv dig på ventelisten.<br />
-              De første 1.000 får adgang<br />
-              til Altid Hjem før andre
-            </p>
-          </div>
         </div>
       </div>
     </form>

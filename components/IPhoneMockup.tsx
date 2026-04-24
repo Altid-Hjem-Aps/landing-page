@@ -143,16 +143,16 @@ export default function IPhoneMockup() {
               </div>
 
               {/* Header */}
-              <div className="px-5 pt-3 pb-3 shrink-0 flex items-center justify-between">
+              <div className="px-5 pt-2 pb-3 shrink-0 flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-medium uppercase tracking-widest mb-0.5" style={{ color: 'var(--text-light)' }}>Hej, velkommen hjem</p>
-                  <h2 className="text-base font-bold" style={{ color: 'var(--forest)' }}>Alt kører hjemme</h2>
+                  <h2 className="text-base font-bold" style={{ color: 'var(--forest)' }}>Dit overblik</h2>
                 </div>
                 <PulseRings hovered={hovered} />
               </div>
 
               {/* Savings band */}
-              <div className="mx-4 mb-3 px-4 py-3 rounded-2xl shrink-0 flex items-center justify-between" style={{ background: 'var(--forest)' }}>
+              <div className="mx-4 mb-3 px-4 py-2.5 rounded-2xl shrink-0 flex items-center justify-between" style={{ background: 'var(--forest)' }}>
                 <div>
                   <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.45)', marginBottom: 1 }}>Samlet besparelse</p>
                   <p className="font-bold text-white" style={{ fontSize: 20, lineHeight: 1 }}>
@@ -172,7 +172,7 @@ export default function IPhoneMockup() {
               </div>
 
               {/* Featured Energi card with sparkline */}
-              <div className="mx-4 mb-3 px-3.5 py-3 rounded-2xl shrink-0" style={{ background: 'white', border: '1px solid rgba(27,104,64,0.08)' }}>
+              <div className="mx-4 mb-2 px-3.5 py-3 rounded-2xl shrink-0" style={{ background: 'white', border: '1px solid rgba(27,104,64,0.08)' }}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-1.5">
                     <div className="w-5 h-5 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(168,224,99,0.22)' }}>
@@ -195,14 +195,13 @@ export default function IPhoneMockup() {
                   </div>
                 </div>
                 <EnergySparkline hovered={hovered} />
-                <p className="mt-1.5" style={{ fontSize: 8, color: 'var(--text-light)' }}>Elprisen de næste 24 timer</p>
               </div>
 
               {/* Services list card */}
               <div className="mx-4 mb-3 rounded-2xl shrink-0" style={{ background: 'white', border: '1px solid rgba(27,104,64,0.08)', overflow: 'hidden' }}>
 
                 {/* Forsikring */}
-                <div className="flex items-center gap-2.5 px-3.5 py-2.5" style={{ borderBottom: '1px solid rgba(27,104,64,0.06)' }}>
+                <div className="flex items-center gap-2.5 px-3.5 py-2" style={{ borderBottom: '1px solid rgba(27,104,64,0.06)' }}>
                   <div style={{ width: 22, height: 22, borderRadius: 7, background: 'rgba(143,204,255,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <svg width="10" height="11" viewBox="0 0 8 9" fill="none">
                       <path d="M4 0.5L0.5 2V5C0.5 6.9 2 8.6 4 9C6 8.6 7.5 6.9 7.5 5V2L4 0.5Z" fill="#2e6da8"/>
@@ -213,7 +212,7 @@ export default function IPhoneMockup() {
                 </div>
 
                 {/* Ladning */}
-                <div className="flex items-center gap-2.5 px-3.5 py-2.5" style={{ borderBottom: '1px solid rgba(27,104,64,0.06)' }}>
+                <div className="flex items-center gap-2.5 px-3.5 py-2" style={{ borderBottom: '1px solid rgba(27,104,64,0.06)' }}>
                   <div style={{ width: 22, height: 22, borderRadius: 7, background: 'rgba(245,240,118,0.28)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <svg width="9" height="10" viewBox="0 0 8 9" fill="none">
                       <path d="M4.5 0.5L1 5H4L3 8.5L7 4H4L4.5 0.5Z" fill="#7a6a00"/>
@@ -224,7 +223,7 @@ export default function IPhoneMockup() {
                 </div>
 
                 {/* Mobil — activates on hover */}
-                <div className="flex items-center gap-2.5 px-3.5 py-2.5" style={{
+                <div className="flex items-center gap-2.5 px-3.5 py-2" style={{
                   background: hovered ? 'rgba(168,224,99,0.08)' : 'transparent',
                   transition: 'background 0.45s ease',
                 }}>
@@ -243,15 +242,17 @@ export default function IPhoneMockup() {
               </div>
 
               {/* Smart Tip card — swaps on hover */}
-              <div className="mx-4 shrink-0" style={{ position: 'relative', height: 88, overflow: 'hidden' }}>
+              <div className="mx-4 shrink-0" style={{ position: 'relative', height: 80 }}>
 
                 <div
-                  className="absolute inset-0 px-3.5 py-3 rounded-2xl flex flex-col gap-1"
+                  className="absolute inset-0 px-3.5 py-2 rounded-2xl flex flex-col gap-1"
                   style={{
                     background: 'var(--forest)',
                     opacity: hovered ? 0 : 1,
                     transform: hovered ? 'translateX(-12%)' : 'translateX(0)',
-                    transition: 'opacity 0.3s ease, transform 0.4s ease',
+                    transition: hovered
+                      ? 'opacity 0.25s ease, transform 0.4s ease'
+                      : 'opacity 0.3s ease 0.1s, transform 0.55s cubic-bezier(0.34, 1.15, 0.64, 1) 0.1s',
                   }}
                 >
                   <div className="flex items-center gap-1">
@@ -270,14 +271,14 @@ export default function IPhoneMockup() {
                 </div>
 
                 <div
-                  className="absolute inset-0 px-3.5 py-3 rounded-2xl flex flex-col gap-1"
+                  className="absolute inset-0 px-3.5 py-2 rounded-2xl flex flex-col gap-1"
                   style={{
                     background: 'var(--forest)',
                     opacity: hovered ? 1 : 0,
                     transform: hovered ? 'translateX(0)' : 'translateX(110%)',
                     transition: hovered
                       ? 'opacity 0.3s ease 0.1s, transform 0.55s cubic-bezier(0.34, 1.15, 0.64, 1) 0.1s'
-                      : 'opacity 0.25s ease, transform 0.35s ease',
+                      : 'opacity 0.25s ease, transform 0.55s cubic-bezier(0.34, 1.15, 0.64, 1)',
                   }}
                 >
                   <div className="flex items-center gap-1">
