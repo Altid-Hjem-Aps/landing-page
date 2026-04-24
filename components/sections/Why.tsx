@@ -1,18 +1,18 @@
 const stats = [
   {
     n: '5–8',
-    label: 'Leverandører en gennemsnitlig dansk husstand jonglerer med til hjemmets faste udgifter',
-    labelShort: 'Leverandører pr. husstand',
+    label: 'leverandører har den gennemsnitlige husstand til hjemmets faste udgifter',
+    labelShort: 'leverandører pr. husstand',
   },
   {
     n: '40–50',
-    label: 'Regninger en dansk husstand modtager om året — spredt på mail, e-Boks og papir',
-    labelShort: 'Regninger om året',
+    label: 'regninger om året. Spredt på mail, e-Boks og papir.',
+    labelShort: 'regninger om året',
   },
   {
     n: '1',
-    label: 'Samlet regning, ét login og fuldt overblik. Det er det Altid Hjem leverer.',
-    labelShort: 'Regning. Ét login.',
+    label: 'regning. Ét login. Fuldt overblik. Det er det Altid Hjem leverer.',
+    labelShort: 'regning. Ét login.',
   },
 ]
 
@@ -33,7 +33,7 @@ export default function Why() {
             Ét hjem. For mange regninger.
           </h2>
           <p className="text-base sm:text-lg leading-relaxed" style={{ color: 'var(--text-mid)' }}>
-            De fleste danskere modtager 40–50 regninger om året og jonglerer med op til 8 leverandører. Ikke fordi de vil, men fordi der aldrig har været et alternativ.
+            Strøm hos én, mobil hos en anden, forsikring hos en tredje. Spredt på mail, e-Boks og papir — uden noget samlet overblik.
           </p>
         </div>
 
