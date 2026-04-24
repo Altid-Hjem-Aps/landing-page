@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Logo } from '@/components/Logo'
 
-// Slot-machine rolling number — stacks two values and slides between them
 function Slot({ from, to, hovered, h = 20 }: { from: string; to: string; hovered: boolean; h?: number }) {
   return (
     <span style={{ display: 'inline-block', overflow: 'hidden', height: h, verticalAlign: 'middle' }}>
@@ -24,13 +23,8 @@ export default function IPhoneMockup() {
   const [hovered, setHovered] = useState(false)
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  function onEnter() {
-    setHovered(true)
-  }
-
-  function onLeave() {
-    setHovered(false)
-  }
+  function onEnter() { setHovered(true) }
+  function onLeave() { setHovered(false) }
 
   useEffect(() => {
     if (!navigator.maxTouchPoints) return
@@ -41,13 +35,7 @@ export default function IPhoneMockup() {
     return () => clearTimeout(t1)
   }, [])
 
-
-  // D: progress bar values
-  const barPct  = hovered ? 81  : 74
-  const barDkk  = hovered ? 403 : 374
-
   return (
-    // A: float up on hover / touch
     <div
       className="mx-auto select-none cursor-default"
       onMouseEnter={onEnter}
@@ -64,25 +52,15 @@ export default function IPhoneMockup() {
           : 'transform 0.5s ease',
       }}
     >
-      <div
-        style={{
-          position: 'relative',
-          width: 270,
-          height: 560,
-        }}
-      >
-        {/* Drop shadow — deepens on hover */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: '-8%',
-            background: hovered ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0.32)',
-            filter: hovered ? 'blur(52px)' : 'blur(40px)',
-            borderRadius: 80,
-            zIndex: -1,
-            transition: 'background 0.4s ease, filter 0.4s ease',
-          }}
-        />
+      <div style={{ position: 'relative', width: 270, height: 560 }}>
+        {/* Drop shadow */}
+        <div style={{
+          position: 'absolute', inset: '-8%',
+          background: hovered ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0.32)',
+          filter: hovered ? 'blur(52px)' : 'blur(40px)',
+          borderRadius: 80, zIndex: -1,
+          transition: 'background 0.4s ease, filter 0.4s ease',
+        }}/>
 
         {/* Phone body */}
         <div style={{
@@ -97,11 +75,11 @@ export default function IPhoneMockup() {
         }}>
           <div style={{ width: '100%', height: '100%', borderRadius: 44, background: '#000', overflow: 'hidden', position: 'relative' }}>
 
-            {/* Screen content */}
+            {/* Screen */}
             <div className="flex flex-col" style={{ position: 'absolute', inset: 0, background: 'var(--cream)', borderRadius: 44, overflow: 'hidden' }}>
 
               {/* Status bar */}
-              <div className="flex items-center justify-between px-6 pt-5 pb-3 shrink-0">
+              <div className="flex items-center justify-between px-6 pt-5 pb-2 shrink-0">
                 <span className="text-[11px] font-semibold" style={{ color: 'var(--text-dark)' }}>9:41</span>
                 <div className="flex items-center gap-1">
                   <svg width="15" height="10" viewBox="0 0 15 10" fill="none">
@@ -118,102 +96,143 @@ export default function IPhoneMockup() {
                 </div>
               </div>
 
-              {/* App header */}
-              <div className="px-5 pt-2 pb-3 shrink-0">
+              {/* Header */}
+              <div className="px-5 pt-1 pb-2 shrink-0">
                 <p className="text-[10px] font-medium uppercase tracking-widest mb-0.5" style={{ color: 'var(--text-light)' }}>Hej, velkommen hjem</p>
-                <h2 className="text-base font-bold" style={{ color: 'var(--forest)' }}>Se din strøm</h2>
+                <h2 className="text-base font-bold" style={{ color: 'var(--forest)' }}>Dit overblik</h2>
               </div>
 
-              {/* Spot price card — C: rolling spot price, F: badge pulse */}
-              <div className="mx-4 mb-2.5 px-4 py-3 rounded-2xl flex items-center gap-3 shrink-0" style={{ background: 'var(--forest)' }}>
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(168,224,99,0.15)' }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path d="M13 2L4.5 13.5H12L11 22L19.5 10.5H12L13 2Z" fill="#a8e063"/>
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-medium" style={{ color: 'rgba(255,255,255,0.55)' }}>Spotpris nu</p>
-                  {/* C: rolling spot price */}
-                  <p className="text-[15px] font-bold text-white leading-none">
-                    <Slot from="1,23" to="0,87" hovered={hovered} h={20} /> kr./kWh
+              {/* Hero savings card */}
+              <div className="mx-4 mb-2 px-4 py-3 rounded-2xl shrink-0" style={{ background: 'var(--forest)' }}>
+                <p className="text-[10px] font-medium mb-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Samlet besparelse</p>
+                <p className="font-bold text-white leading-none mb-1.5" style={{ fontSize: 22 }}>
+                  <Slot from="892" to="1.034" hovered={hovered} h={28} />
+                  <span className="font-medium opacity-60" style={{ fontSize: 14 }}> kr./md.</span>
+                </p>
+                <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#a8e063' }}/>
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#a8e063' }}/>
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#a8e063' }}/>
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: hovered ? '#a8e063' : 'rgba(168,224,99,0.28)', transition: 'background 0.5s ease' }}/>
+                  </div>
+                  <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                    <Slot from="3" to="4" hovered={hovered} h={14} /> aktive produkter
                   </p>
                 </div>
-                {/* F: badge glow pulse on hover */}
-                <span
-                  className="text-[10px] font-semibold px-2 py-1 rounded-full shrink-0"
+              </div>
+
+              {/* 2x2 service grid */}
+              <div className="mx-4 grid grid-cols-2 gap-2 mb-2 shrink-0">
+
+                {/* Energi */}
+                <div className="px-3 py-2.5 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(27,104,64,0.08)' }}>
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <div className="w-5 h-5 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(168,224,99,0.22)' }}>
+                      <svg width="9" height="11" viewBox="0 0 9 11" fill="none">
+                        <path d="M5.5 1L1 6H4.5L3.5 10L8 5H4.5L5.5 1Z" fill="#1a3d22"/>
+                      </svg>
+                    </div>
+                    <span className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: 'var(--text-light)' }}>Energi</span>
+                  </div>
+                  <p className="font-bold leading-none mb-0.5" style={{ fontSize: 13, color: 'var(--text-dark)' }}>
+                    <Slot from="1,23" to="0,87" hovered={hovered} h={18} />
+                    <span className="font-medium opacity-55" style={{ fontSize: 9 }}> kr./kWh</span>
+                  </p>
+                  <span className="font-semibold" style={{ fontSize: 9, color: '#1a6e3c' }}>Lav pris ↓</span>
+                </div>
+
+                {/* Forsikring */}
+                <div className="px-3 py-2.5 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(27,104,64,0.08)' }}>
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <div className="w-5 h-5 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(143,204,255,0.22)' }}>
+                      <svg width="10" height="11" viewBox="0 0 10 11" fill="none">
+                        <path d="M5 1L1 3V6C1 8.2 2.8 10.2 5 11C7.2 10.2 9 8.2 9 6V3L5 1Z" fill="#2e6da8"/>
+                      </svg>
+                    </div>
+                    <span className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: 'var(--text-light)' }}>Forsikring</span>
+                  </div>
+                  <p className="font-bold leading-none mb-0.5" style={{ fontSize: 13, color: 'var(--text-dark)' }}>
+                    389<span className="font-medium opacity-55" style={{ fontSize: 9 }}> kr./md.</span>
+                  </p>
+                  <span className="font-semibold" style={{ fontSize: 9, color: '#2e6da8' }}>Aktiv ✓</span>
+                </div>
+
+                {/* Ladning */}
+                <div className="px-3 py-2.5 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(27,104,64,0.08)' }}>
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <div className="w-5 h-5 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(245,240,118,0.28)' }}>
+                      <svg width="10" height="11" viewBox="0 0 10 11" fill="none">
+                        <path d="M5.5 1L2 6H5L4 10L8 5H5L5.5 1Z" fill="#7a6a00"/>
+                      </svg>
+                    </div>
+                    <span className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: 'var(--text-light)' }}>Ladning</span>
+                  </div>
+                  <p className="font-bold leading-none mb-0.5" style={{ fontSize: 13, color: 'var(--text-dark)' }}>02:00</p>
+                  <span className="font-semibold" style={{ fontSize: 9, color: '#7a6a00' }}>Optimal tid</span>
+                </div>
+
+                {/* Mobil — activates on hover */}
+                <div
+                  className="px-3 py-2.5 rounded-2xl"
                   style={{
-                    background: 'rgba(168,224,99,0.15)',
-                    color: 'var(--sage)',
-                    animation: hovered ? 'badge-glow 1.4s ease 2' : 'none',
+                    background: hovered ? 'rgba(168,224,99,0.12)' : 'white',
+                    border: hovered ? '1px solid rgba(168,224,99,0.4)' : '1px dashed rgba(27,104,64,0.22)',
+                    transition: 'background 0.45s ease, border-color 0.45s ease',
                   }}
                 >
-                  Lav ↓
-                </span>
-              </div>
-
-              {/* D: Monthly estimate with animated bar */}
-              <div className="mx-4 mb-2.5 px-4 py-3 rounded-2xl shrink-0" style={{ background: 'white', border: '1px solid rgba(27,104,64,0.08)' }}>
-                <div className="flex justify-between items-baseline mb-2">
-                  <p className="text-[11px] font-medium" style={{ color: 'var(--text-light)' }}>Estimat april</p>
-                  <p className="text-[12px] font-bold" style={{ color: 'var(--forest)' }}>
-                    <Slot from="374" to="403" hovered={hovered} h={17} /> / 500 kr.
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <div className="w-5 h-5 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(189,176,249,0.28)' }}>
+                      <svg width="7" height="11" viewBox="0 0 7 11" fill="none">
+                        <rect x="0.5" y="0.5" width="6" height="10" rx="1.5" stroke="#5040b0" strokeWidth="1.2" fill="none"/>
+                        <rect x="2.5" y="8.5" width="2" height="1" rx="0.5" fill="#5040b0"/>
+                      </svg>
+                    </div>
+                    <span className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: 'var(--text-light)' }}>Mobil</span>
+                  </div>
+                  <p className="font-bold leading-none mb-0.5" style={{ fontSize: 13, color: hovered ? 'var(--forest)' : 'var(--text-dark)', transition: 'color 0.35s ease' }}>
+                    <Slot from="119" to="89" hovered={hovered} h={18} />
+                    <span className="font-medium opacity-55" style={{ fontSize: 9 }}> kr./md.</span>
                   </p>
-                </div>
-                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(27,104,64,0.1)' }}>
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: `${barPct}%`,
-                      background: 'var(--forest)',
-                      transition: 'width 1s cubic-bezier(0.34, 1.2, 0.64, 1)',
-                    }}
-                  />
-                </div>
-                <p className="text-[10px] mt-1.5" style={{ color: 'var(--text-light)' }}>
-                  <Slot from="74" to="81" hovered={hovered} h={14} />% af estimeret forbrug
-                </p>
-              </div>
-
-              {/* Usage + C: rolling savings */}
-              <div className="mx-4 grid grid-cols-2 gap-2 mb-2.5 shrink-0">
-                <div className="px-3 py-3 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(27,104,64,0.08)' }}>
-                  <p className="text-[10px] font-medium mb-1" style={{ color: 'var(--text-light)' }}>Forbrug</p>
-                  <p className="text-[14px] font-bold" style={{ color: 'var(--text-dark)' }}>287 kWh</p>
-                  <p className="text-[9px]" style={{ color: 'var(--text-light)' }}>denne måned</p>
-                </div>
-                <div className="px-3 py-3 rounded-2xl" style={{ background: 'rgba(168,224,99,0.15)', border: '1px solid rgba(168,224,99,0.25)' }}>
-                  <p className="text-[10px] font-medium mb-1" style={{ color: 'var(--forest)' }}>Du sparer</p>
-                  <p className="text-[14px] font-bold" style={{ color: 'var(--forest)' }}>
-                    <Slot from="112" to="138" hovered={hovered} h={19} /> kr.
-                  </p>
-                  <p className="text-[9px]" style={{ color: 'var(--text-mid)' }}>vs. Ørsted</p>
+                  <span className="font-semibold" style={{ fontSize: 9, color: hovered ? '#1a6e3c' : '#5040b0', transition: 'color 0.35s ease' }}>
+                    {hovered ? 'Spar 30 kr. ↓' : 'Tilføj →'}
+                  </span>
                 </div>
               </div>
 
-              {/* E: tip card swap */}
-              <div className="mx-4 shrink-0" style={{ position: 'relative', height: 46, overflow: 'hidden' }}>
-                {/* Tip 1 — initial */}
+              {/* Smart Tip card — swaps on hover */}
+              <div className="mx-4 shrink-0" style={{ position: 'relative', height: 82, overflow: 'hidden' }}>
+
+                {/* Tip A — energy (default) */}
                 <div
-                  className="absolute inset-0 px-4 py-2.5 rounded-2xl flex items-center gap-2.5"
+                  className="absolute inset-0 px-3.5 py-3 rounded-2xl flex flex-col gap-1"
                   style={{
-                    background: 'rgba(245,240,118,0.2)',
-                    border: '1px solid rgba(245,240,118,0.35)',
+                    background: 'var(--forest)',
                     opacity: hovered ? 0 : 1,
-                    transform: hovered ? 'translateX(-15%)' : 'translateX(0)',
+                    transform: hovered ? 'translateX(-12%)' : 'translateX(0)',
                     transition: 'opacity 0.3s ease, transform 0.4s ease',
                   }}
                 >
-                  <span style={{ fontSize: 13 }}>⚡</span>
-                  <p className="text-[10px] leading-tight" style={{ color: 'var(--text-dark)' }}>
-                    <strong>Lav pris nu.</strong> Godt tidspunkt at vaske tøj.
+                  <div className="flex items-center gap-1">
+                    <svg width="8" height="10" viewBox="0 0 8 10" fill="none">
+                      <path d="M4.5 1L1 5.5H4L3 9L7 4.5H4L4.5 1Z" fill="#a8e063"/>
+                    </svg>
+                    <span className="font-semibold uppercase tracking-widest" style={{ fontSize: 8, color: 'rgba(168,224,99,0.8)' }}>Smart tip</span>
+                  </div>
+                  <p className="font-bold text-white" style={{ fontSize: 11, lineHeight: 1.3 }}>
+                    Kør opvaskeren kl. 14 og spar 4 kr.
                   </p>
+                  <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', lineHeight: 1.3 }}>
+                    Lav elpris kl. 13–15 i dag
+                  </p>
+                  <span className="font-semibold" style={{ fontSize: 9, color: '#a8e063' }}>Se alle besparelser →</span>
                 </div>
-                {/* Tip 2 — drives in from right on hover */}
+
+                {/* Tip B — AI household (hover) */}
                 <div
-                  className="absolute inset-0 px-4 py-2.5 rounded-2xl flex items-center gap-2.5"
+                  className="absolute inset-0 px-3.5 py-3 rounded-2xl flex flex-col gap-1"
                   style={{
-                    background: 'rgba(168,224,99,0.15)',
-                    border: '1px solid rgba(168,224,99,0.3)',
+                    background: 'var(--forest)',
                     opacity: hovered ? 1 : 0,
                     transform: hovered ? 'translateX(0)' : 'translateX(110%)',
                     transition: hovered
@@ -221,11 +240,19 @@ export default function IPhoneMockup() {
                       : 'opacity 0.25s ease, transform 0.35s ease',
                   }}
                 >
-                  <span style={{ fontSize: 13 }}>🚗</span>
-                  <p className="text-[10px] leading-tight" style={{ color: 'var(--forest)' }}>
-                    <strong>Oplad bilen nu.</strong> Du sparer 23 kr. i dag.
+                  <div className="flex items-center gap-1">
+                    <span style={{ fontSize: 9, lineHeight: 1 }}>🤖</span>
+                    <span className="font-semibold uppercase tracking-widest" style={{ fontSize: 8, color: 'rgba(168,224,99,0.8)' }}>Smart tip</span>
+                  </div>
+                  <p className="font-bold text-white" style={{ fontSize: 11, lineHeight: 1.3 }}>
+                    Ugeplanen er klar
                   </p>
+                  <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', lineHeight: 1.3 }}>
+                    5 måltider bestilt på Nemlig
+                  </p>
+                  <span className="font-semibold" style={{ fontSize: 9, color: '#a8e063' }}>Se ugeplanen →</span>
                 </div>
+
               </div>
 
               {/* Logo */}
