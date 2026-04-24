@@ -101,7 +101,7 @@ export default function IPhoneMockup() {
             <div className="flex flex-col" style={{ position: 'absolute', inset: 0, background: 'var(--cream)', borderRadius: 44, overflow: 'hidden' }}>
 
               {/* Status bar */}
-              <div className="flex items-center justify-between px-6 pt-12 pb-1 shrink-0">
+              <div className="flex items-center justify-between px-6 pt-5 pb-3 shrink-0">
                 <span className="text-[11px] font-semibold" style={{ color: 'var(--text-dark)' }}>9:41</span>
                 <div className="flex items-center gap-1">
                   <svg width="15" height="10" viewBox="0 0 15 10" fill="none">

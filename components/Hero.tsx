@@ -36,29 +36,40 @@ export default function Hero() {
             {/* Left: copy + form */}
             <div className="flex flex-col gap-8">
               <div className="text-center lg:text-left">
-                <div
-                  className="inline-flex items-center gap-0 text-[11px] font-medium rounded-full mb-7 animate-fade-up-1 overflow-hidden"
-                  style={{
-                    background: 'rgba(168,224,99,0.1)',
-                    border: '1px solid rgba(168,224,99,0.25)',
-                  }}
-                >
-                  <div
-                    className="flex items-center gap-2 px-3.5 py-1.5 tracking-widest uppercase whitespace-nowrap"
-                    style={{ color: 'var(--sage)' }}
-                  >
-                    <span
-                      className="w-1.5 h-1.5 rounded-full shrink-0"
-                      style={{ background: 'var(--sage)', animation: 'pulse-dot 2s ease-in-out infinite' }}
-                    />
-                    Kommer snart
+                <div className="inline-flex items-center gap-3 mb-7 animate-fade-up-1">
+                  {/* Avatar stack */}
+                  <div className="flex -space-x-2 shrink-0">
+                    {[
+                      { initials: 'MK', bg: '#4a7c59' },
+                      { initials: 'SR', bg: '#3d6b7a' },
+                      { initials: 'LH', bg: '#6b5ea8' },
+                      { initials: 'PB', bg: '#7a5a3d' },
+                    ].map(({ initials, bg }) => (
+                      <div
+                        key={initials}
+                        className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-bold text-white"
+                        style={{ background: bg, border: '1.5px solid var(--forest)' }}
+                      >
+                        {initials}
+                      </div>
+                    ))}
                   </div>
-                  <div className="w-px self-stretch" style={{ background: 'rgba(168,224,99,0.3)' }} />
-                  <div className="flex items-center gap-1.5 px-3.5 py-1.5 whitespace-nowrap" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                  {/* Stat + kommer snart */}
+                  <p className="text-[13px] leading-tight" style={{ color: 'rgba(255,255,255,0.5)' }}>
                     <span className="font-semibold" style={{ color: 'var(--sage)' }}>13.000+</span>
-                    <span className="hidden sm:inline">bruger allerede Altid Energi</span>
-                    <span className="sm:hidden">brugere</span>
-                  </div>
+                    {' '}er allerede kunde hos Altid Energi
+                    <span className="mx-2" style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
+                    <span
+                      className="inline-flex items-center gap-1.5"
+                      style={{ color: 'rgba(255,255,255,0.5)' }}
+                    >
+                      <span
+                        className="w-1.5 h-1.5 rounded-full shrink-0 inline-block"
+                        style={{ background: 'var(--sage)', animation: 'pulse-dot 2s ease-in-out infinite' }}
+                      />
+                      Kommer snart
+                    </span>
+                  </p>
                 </div>
                 <h1
                   className="font-extrabold leading-[1.1] tracking-tight text-white mb-6 animate-fade-up-2 text-[clamp(28px,8vw,38px)] sm:text-[clamp(38px,10vw,72px)] lg:text-[64px] xl:text-[72px]"
