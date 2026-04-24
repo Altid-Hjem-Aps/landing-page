@@ -38,7 +38,7 @@ export default function Hero() {
               <div className="text-center lg:text-left">
                 <div className="inline-flex items-center gap-2 mb-7 animate-fade-up-1 text-[13px] leading-none">
                   <span style={{ color: 'rgba(255,255,255,0.5)' }}>
-                    <span className="font-semibold" style={{ color: 'var(--sage)' }}>13.000+</span>
+                    <span className="font-semibold" style={{ color: 'var(--sage)' }}>+14.000</span>
                     {' '}er allerede kunde hos Altid Energi
                   </span>
                   <span
