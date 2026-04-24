@@ -1,9 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <style>
-    .house { fill: #003c16; }
-    @media (prefers-color-scheme: dark) {
-      .house { fill: #ffffff; }
-    }
+    .house { fill: #a8e063; }
   </style>
   <path class="house" fill-rule="evenodd" d="M15 52 L50 13 L85 52 L85 89 L15 89 Z M36 89 L36 66 Q36 63 39 63 L61 63 Q64 63 64 66 L64 89 Z"/>
 </svg>
