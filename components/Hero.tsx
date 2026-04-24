@@ -36,16 +36,18 @@ export default function Hero() {
             {/* Left: copy + form */}
             <div className="flex flex-col gap-8">
               <div className="text-center lg:text-left">
-                <div className="inline-flex items-center gap-2 mb-7 animate-fade-up-1 text-[13px] leading-none">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-7 animate-fade-up-1 text-[13px] leading-none items-center lg:items-start">
                   <span style={{ color: 'rgba(255,255,255,0.5)' }}>
                     <span className="font-semibold" style={{ color: 'var(--sage)' }}>+14.000</span>
                     {' '}er allerede kunde hos Altid Energi
                   </span>
-                  <span
-                    className="w-1.5 h-1.5 rounded-full shrink-0"
-                    style={{ background: 'var(--sage)', animation: 'pulse-dot 2s ease-in-out infinite' }}
-                  />
-                  <span style={{ color: 'rgba(255,255,255,0.5)' }}>Altid Hjem kommer snart</span>
+                  <span className="flex items-center gap-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                    <span
+                      className="w-1.5 h-1.5 rounded-full shrink-0"
+                      style={{ background: 'var(--sage)', animation: 'pulse-dot 2s ease-in-out infinite' }}
+                    />
+                    Altid Hjem kommer snart
+                  </span>
                 </div>
                 <h1
                   className="font-extrabold leading-[1.1] tracking-tight text-white mb-6 animate-fade-up-2 text-[clamp(28px,8vw,38px)] sm:text-[clamp(38px,10vw,72px)] lg:text-[64px] xl:text-[72px]"
