@@ -5,8 +5,5 @@
       .house { fill: #ffffff; }
     }
   </style>
-  <path class="house" fill-rule="evenodd" d="
-    M50 13 L85 52 L85 89 L15 89 L15 52 L27 39 L27 5 L40 5 L40 24 Z
-    M36 89 L36 73 A14 14 0 0 0 64 73 L64 89 Z
-  "/>
+  <path class="house" fill-rule="evenodd" d="M15 52 L50 13 L85 52 L85 89 L15 89 Z M36 89 L36 66 Q36 63 39 63 L61 63 Q64 63 64 66 L64 89 Z"/>
 </svg>
