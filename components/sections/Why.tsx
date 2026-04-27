@@ -1,7 +1,14 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from 'framer-motion'
 import { ChaosCard } from './why/ChaosCard'
 import { VictoriousCard } from './why/VictoriousCard'
 import { FloatingStat } from './why/FloatingStat'
@@ -229,8 +236,162 @@ function AnimatedCanvas() {
   )
 }
 
-// === Mobile fallback (no animation, static side-by-side) ===
-// Phase D will replace this with an IntersectionObserver one-shot.
+// === Mobile one-shot animation ===
+// Plays a 1.6s sequence when the section enters viewport. Cards collapse
+// → victorious card emerges → verdict appears. No scroll scrubbing,
+// no sticky — viewport real estate is too tight on mobile.
+function MobileAnimatedCanvas() {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, amount: 0.3 })
+
+  // Drive the 0→1 progress as a motion value so we can reuse the same
+  // VictoriousCard counter wiring.
+  const progress = useMotionValue(0)
+  const [verdictVisible, setVerdictVisible] = useState(false)
+
+  // All hooks declared unconditionally, top of component.
+  const bgOpacity = useTransform(progress, (p) => ramp(p, 0.5, 0.85))
+  const stat1Opacity = useTransform(progress, (p) => pulse(p, [0.05, 0.15], [0.45, 0.6]))
+  const victoriousOpacity = useTransform(progress, (p) => ramp(p, 0.55, 0.85))
+  const victoriousScale = useTransform(progress, (p) => ramp(p, 0.55, 0.95, 0.78, 1))
+
+  useEffect(() => {
+    if (!inView) return
+    const start = performance.now()
+    const DURATION = 1600
+    let raf = 0
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / DURATION, 1)
+      progress.set(t)
+      if (t > 0.85) setVerdictVisible(true)
+      if (t < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [inView, progress])
+
+  return (
+    <div className="max-w-6xl mx-auto px-6">
+      <div className="mb-10 text-center">
+        <p className="text-xs font-semibold tracking-[0.12em] uppercase mb-3" style={{ color: 'var(--text-light)' }}>
+          Hvorfor det giver mening
+        </p>
+        <h2
+          className="font-extrabold leading-[1.1] tracking-tight mb-4"
+          style={{ fontSize: 'clamp(28px, 7vw, 40px)', color: 'var(--forest)' }}
+        >
+          Ét hjem. <span style={{ color: 'rgba(15,55,30,0.55)' }}>For mange regninger.</span>
+        </h2>
+        <p className="text-base leading-relaxed" style={{ color: 'var(--text-mid)' }}>
+          Strøm hos én, mobil hos en anden, forsikring hos en tredje — uden samlet overblik.
+        </p>
+      </div>
+
+      <div
+        ref={ref}
+        className="relative rounded-2xl overflow-hidden"
+        style={{
+          height: 480,
+          background: 'linear-gradient(160deg, #f0e8d8 0%, #e6dcc8 100%)',
+          border: '1px solid rgba(46,125,82,0.08)',
+        }}
+      >
+        {/* Background warms */}
+        <motion.div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'linear-gradient(160deg, var(--forest) 0%, #0f3a26 100%)',
+            opacity: bgOpacity,
+          }}
+        />
+
+        {/* Floating stat */}
+        <motion.div
+          style={{
+            opacity: stat1Opacity,
+            position: 'absolute',
+            top: 16,
+            left: 18,
+            zIndex: 15,
+          }}
+        >
+          <FloatingStat number="5–8" label="leverandører" />
+        </motion.div>
+
+        {/* Chaos cards */}
+        <div className="absolute inset-0 z-10">
+          {CHAOS_BILLS_MOBILE.map((bill, i) => (
+            <MobileChaosCard key={bill.type} bill={bill} index={i} progress={progress} />
+          ))}
+        </div>
+
+        {/* Victorious card */}
+        <motion.div
+          className="absolute top-1/2 left-1/2 z-20"
+          style={{
+            translateX: '-50%',
+            translateY: '-50%',
+            opacity: victoriousOpacity,
+            scale: victoriousScale,
+          }}
+        >
+          <VictoriousCard
+            onCtaClick={scrollToWaitlist}
+            countProgress={progress}
+            countRange={[0.6, 0.95]}
+          />
+        </motion.div>
+
+      </div>
+
+      {/* Verdict — sits below the canvas so it doesn't overlap the CTA */}
+      {verdictVisible && (
+        <motion.p
+          className="mt-6 text-center font-semibold tracking-tight"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          style={{ fontSize: 'clamp(16px, 4.4vw, 20px)', color: 'var(--forest)' }}
+        >
+          1 regning. Ét login. <span style={{ color: 'var(--sage-dark, #2e7d52)' }}>Fuldt overblik.</span>
+        </motion.p>
+      )}
+    </div>
+  )
+}
+
+// Mobile-scaled animated chaos card
+function MobileChaosCard({
+  bill,
+  index,
+  progress,
+}: {
+  bill: ChaosBill
+  index: number
+  progress: MotionValue<number>
+}) {
+  const start = 0.30 + index * 0.06
+  const end = start + 0.18
+  const scaleFactor = 0.78 // smaller on mobile
+
+  const x = useTransform(progress, (p) => ramp(p, start, end, bill.x * 0.55, 0))
+  const y = useTransform(progress, (p) => ramp(p, start, end, bill.y * 0.55, 0))
+  const rotate = useTransform(progress, (p) => ramp(p, start, end, bill.rotate, 0))
+  const scale = useTransform(progress, (p) => ramp(p, start, end, scaleFactor, scaleFactor * 0.5))
+  const opacity = useTransform(progress, (p) => ramp(p, end - 0.04, end, 1, 0))
+
+  return (
+    <motion.div
+      className="absolute top-1/2 left-1/2"
+      style={{ x, y, rotate, scale, opacity, translateX: '-50%', translateY: '-50%', zIndex: bill.z }}
+    >
+      <ChaosCard bill={bill} />
+    </motion.div>
+  )
+}
+
+// === Old static fallback — retained for reduced-motion (Phase E) ===
 function StaticMobile() {
   return (
     <div className="max-w-6xl mx-auto px-6">
@@ -318,9 +479,9 @@ export default function Why() {
         <AnimatedCanvas />
       </div>
 
-      {/* Mobile / tablet — static side-by-side */}
+      {/* Mobile / tablet — one-shot animation when section enters view */}
       <div className="lg:hidden py-12">
-        <StaticMobile />
+        <MobileAnimatedCanvas />
       </div>
     </section>
   )
