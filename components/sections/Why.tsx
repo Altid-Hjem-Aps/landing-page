@@ -66,6 +66,14 @@ export default function Why() {
           ))}
         </div>
 
+        {/* Closing line */}
+        <p
+          className="text-base sm:text-lg leading-relaxed mt-8 sm:mt-12 max-w-2xl text-center sm:text-left mx-auto sm:mx-0"
+          style={{ color: 'var(--text-mid)' }}
+        >
+          Det hele bør samles, så du får både overblik og den samlet laveste pris uden skjulte gebyrer. Det får du i Altid Hjem.
+        </p>
+
       </div>
     </section>
   )
