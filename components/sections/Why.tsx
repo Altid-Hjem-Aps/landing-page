@@ -94,6 +94,10 @@ function AnimatedCanvas() {
   // Background warms to forest as we resolve
   const bgOpacity = useTransform(scrollYProgress, (p) => ramp(p, 0.7, 0.95))
 
+  // Verdict line — appears as the victorious card finishes settling
+  const verdictOpacity = useTransform(scrollYProgress, (p) => ramp(p, 0.88, 0.98))
+  const verdictY = useTransform(scrollYProgress, (p) => ramp(p, 0.88, 0.98, 12, 0))
+
   // Left-column copy: three acts cross-fade
   const act1Opacity = useTransform(scrollYProgress, (p) => pulse(p, [0, 0], [0.22, 0.34]))
   const act2Opacity = useTransform(scrollYProgress, (p) => pulse(p, [0.32, 0.46], [0.6, 0.7]))
@@ -173,11 +177,11 @@ function AnimatedCanvas() {
               }}
             />
 
-            {/* Floating stats over chaos */}
-            <motion.div style={{ opacity: stat1Opacity, position: 'absolute', top: 20, left: 20, zIndex: 0 }}>
+            {/* Floating stats — visible above chaos pile so the numbers register */}
+            <motion.div style={{ opacity: stat1Opacity, position: 'absolute', top: 24, left: 28, zIndex: 15 }}>
               <FloatingStat number="5–8" label="leverandører" />
             </motion.div>
-            <motion.div style={{ opacity: stat2Opacity, position: 'absolute', bottom: 20, right: 20, zIndex: 0, textAlign: 'right' }}>
+            <motion.div style={{ opacity: stat2Opacity, position: 'absolute', bottom: 24, right: 28, zIndex: 15, textAlign: 'right' }}>
               <FloatingStat number="40–50" label="regninger om året" />
             </motion.div>
 
@@ -199,8 +203,25 @@ function AnimatedCanvas() {
                 translateY: '-50%',
               }}
             >
-              <VictoriousCard onCtaClick={scrollToWaitlist} />
+              <VictoriousCard
+                onCtaClick={scrollToWaitlist}
+                countProgress={scrollYProgress}
+                countRange={[0.78, 0.94]}
+              />
             </motion.div>
+
+            {/* Verdict line — punctuates the resolution */}
+            <motion.p
+              className="absolute left-0 right-0 bottom-6 z-30 text-center font-semibold tracking-tight px-6"
+              style={{
+                opacity: verdictOpacity,
+                y: verdictY,
+                fontSize: 'clamp(15px, 1.4vw, 18px)',
+                color: 'rgba(255,255,255,0.7)',
+              }}
+            >
+              1 regning. Ét login. <span style={{ color: 'var(--sage)' }}>Fuldt overblik.</span>
+            </motion.p>
           </div>
         </div>
       </div>

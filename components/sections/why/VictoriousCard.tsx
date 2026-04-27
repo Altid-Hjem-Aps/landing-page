@@ -1,11 +1,14 @@
 'use client'
 
+import { motion, type MotionValue, useMotionValue, useTransform } from 'framer-motion'
 import { VICTORIOUS_SERVICES, VICTORIOUS_TOTAL } from './cards'
 
 type Props = {
   onCtaClick?: () => void
-  /** When true, total counts up from 0 to VICTORIOUS_TOTAL on mount */
-  animateCounter?: boolean
+  /** When provided, total counts up driven by this scroll progress (0..1).
+   *  Counter ramps from 0 → VICTORIOUS_TOTAL between countRange[0] → countRange[1]. */
+  countProgress?: MotionValue<number>
+  countRange?: [number, number]
   style?: React.CSSProperties
 }
 
@@ -15,7 +18,21 @@ const SERVICE_ICONS: Record<string, string> = {
   'Forsikring': 'M26.02,16.98c-.14-1.62-.73-3.17-1.71-4.46-.98-1.3-2.3-2.3-3.81-2.89-1.52-.59-3.16-.74-4.76-.43-1.6.3-3.08,1.05-4.27,2.15-1.59,1.46-2.58,3.48-2.76,5.63-.01.17,0,.34.06.5.06.16.14.31.26.44.12.13.26.23.41.3.16.07.33.1.5.1h6.8v4.33c0,.66.26,1.29.72,1.75.46.46,1.09.72,1.75.72s1.29-.26,1.75-.72c.46-.46.72-1.09.72-1.75,0-.16-.07-.32-.18-.44-.12-.12-.27-.18-.44-.18s-.32.07-.44.18c-.12.12-.18.27-.18.44,0,.33-.13.64-.36.87-.23.23-.55.36-.87.36s-.64-.13-.87-.36c-.23-.23-.36-.55-.36-.87v-4.33h6.8c.17,0,.34-.03.5-.1.16-.07.3-.17.42-.3.12-.13.21-.28.26-.44.06-.16.08-.33.06-.51Z',
 }
 
-export function VictoriousCard({ onCtaClick, animateCounter = false, style }: Props) {
+export function VictoriousCard({ onCtaClick, countProgress, countRange = [0.75, 0.95], style }: Props) {
+  // Counter — driven by external scroll progress when provided, otherwise static.
+  // Hooks must run unconditionally, so use a fallback motion value at full total.
+  const fallback = useMotionValue(1)
+  const source = countProgress ?? fallback
+  const counter = useTransform(source, (p: number) => {
+    if (!countProgress) return VICTORIOUS_TOTAL
+    const [a, b] = countRange
+    if (p <= a) return 0
+    if (p >= b) return VICTORIOUS_TOTAL
+    const t = (p - a) / (b - a)
+    return Math.round(VICTORIOUS_TOTAL * t)
+  })
+  const counterText = useTransform(counter, (n: number) => `${n.toLocaleString('da-DK')} kr.`)
+
   return (
     <div
       className="relative"
@@ -92,13 +109,12 @@ export function VictoriousCard({ onCtaClick, animateCounter = false, style }: Pr
           style={{ background: 'var(--sage)' }}
         >
           <span className="text-[13px] font-semibold" style={{ color: 'var(--forest)' }}>Samlet månedligt</span>
-          <span
+          <motion.span
             className="font-bold tabular-nums"
             style={{ color: 'var(--forest)', fontSize: 28, lineHeight: 1 }}
-            data-counter={animateCounter ? VICTORIOUS_TOTAL : undefined}
           >
-            {VICTORIOUS_TOTAL.toLocaleString('da-DK')} kr.
-          </span>
+            {counterText}
+          </motion.span>
         </div>
 
         {/* Inline CTA — convert at the emotional peak */}
