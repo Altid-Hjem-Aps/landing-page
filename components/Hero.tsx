@@ -28,10 +28,10 @@ export default function Hero() {
       {/* Spacer matching fixed nav height (py-5 + h-11 logo = 84px) */}
       <div className="h-[84px] shrink-0" />
 
-      {/* Content centered in remaining viewport height */}
-      <div className="flex-1 flex items-center">
-        <div className="max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-10 lg:gap-10 items-center">
+      {/* Content anchored to top — allows form to expand downward without reflow */}
+      <div className="flex-1 flex items-start">
+        <div className="max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-8 pb-8 pt-[clamp(32px,10vh,100px)]">
+          <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-10 lg:gap-10 items-start">
 
             {/* Left: copy + form */}
             <div className="flex flex-col gap-8">
@@ -46,7 +46,7 @@ export default function Hero() {
                       className="w-1.5 h-1.5 rounded-full shrink-0"
                       style={{ background: 'var(--sage)', animation: 'pulse-dot 2s ease-in-out infinite' }}
                     />
-                    Altid Hjem kommer snart
+                    Venteliste åben — tilmeld dig og få tidlig adgang
                   </span>
                 </div>
                 <h1
@@ -69,7 +69,7 @@ export default function Hero() {
             </div>
 
             {/* Right: iPhone mockup */}
-            <div className="flex items-center justify-center animate-fade-up-3">
+            <div className="flex items-start justify-center animate-fade-up-3">
               <IPhoneMockup />
             </div>
 

@@ -21,7 +21,7 @@ export default function Nav() {
         borderBottom: '1px solid rgba(46,125,82,0.08)',
       }}
     >
-      <a href="#top">
+      <a href="/">
         <Logo className="h-11 w-auto text-forest" />
       </a>
       <button
