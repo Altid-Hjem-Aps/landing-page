@@ -5,6 +5,7 @@ import {
   motion,
   useInView,
   useMotionValue,
+  useReducedMotion,
   useScroll,
   useTransform,
   type MotionValue,
@@ -217,20 +218,22 @@ function AnimatedCanvas() {
               />
             </motion.div>
 
-            {/* Verdict line — punctuates the resolution */}
-            <motion.p
-              className="absolute left-0 right-0 bottom-6 z-30 text-center font-semibold tracking-tight px-6"
-              style={{
-                opacity: verdictOpacity,
-                y: verdictY,
-                fontSize: 'clamp(15px, 1.4vw, 18px)',
-                color: 'rgba(255,255,255,0.7)',
-              }}
-            >
-              1 regning. Ét login. <span style={{ color: 'var(--sage)' }}>Fuldt overblik.</span>
-            </motion.p>
           </div>
         </div>
+
+        {/* Verdict line — sits below the canvas in the left column area
+            so it doesn't overlap the inline CTA. Spans full width. */}
+        <motion.p
+          className="absolute left-0 right-0 bottom-12 z-30 text-center font-semibold tracking-tight px-6"
+          style={{
+            opacity: verdictOpacity,
+            y: verdictY,
+            fontSize: 'clamp(18px, 1.8vw, 24px)',
+            color: 'var(--forest)',
+          }}
+        >
+          1 regning. Ét login. <span style={{ color: 'var(--sage-dark, #2e7d52)' }}>Fuldt overblik.</span>
+        </motion.p>
       </div>
     </div>
   )
@@ -472,17 +475,29 @@ function StaticMobile() {
 }
 
 export default function Why() {
+  // Honor user's reduced-motion preference. Falls back to the static
+  // side-by-side comparison — same emotional story, no movement.
+  const prefersReducedMotion = useReducedMotion()
+
   return (
     <section className="relative" style={{ background: 'var(--cream-dark)' }}>
-      {/* Desktop — sticky scroll-driven canvas */}
-      <div className="hidden lg:block">
-        <AnimatedCanvas />
-      </div>
+      {prefersReducedMotion ? (
+        <div className="py-12 lg:py-24">
+          <StaticMobile />
+        </div>
+      ) : (
+        <>
+          {/* Desktop — sticky scroll-driven canvas */}
+          <div className="hidden lg:block">
+            <AnimatedCanvas />
+          </div>
 
-      {/* Mobile / tablet — one-shot animation when section enters view */}
-      <div className="lg:hidden py-12">
-        <MobileAnimatedCanvas />
-      </div>
+          {/* Mobile / tablet — one-shot animation when section enters view */}
+          <div className="lg:hidden py-12">
+            <MobileAnimatedCanvas />
+          </div>
+        </>
+      )}
     </section>
   )
 }
