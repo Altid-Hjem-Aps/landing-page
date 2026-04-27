@@ -28,8 +28,17 @@ export default function Home() {
         style={{ background: 'var(--forest)', borderTop: '1px solid rgba(255,255,255,0.08)' }}
       >
         <Logo className="h-8 w-auto text-white" />
-        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
-          © 2025 Altid Hjem · Skabt af teamet bag Altid Energi
+        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
+          © 2025 Altid Hjem · Skabt af teamet bag{' '}
+          <a
+            href="https://altidenergi.dk"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline-offset-2 hover:underline"
+            style={{ color: 'rgba(255,255,255,0.85)' }}
+          >
+            Altid Energi
+          </a>
         </p>
       </footer>
     </>
