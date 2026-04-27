@@ -366,16 +366,21 @@ function MobileAnimatedCanvas() {
 
       </div>
 
-      {/* Verdict — sits below the canvas so it doesn't overlap the CTA */}
+      {/* Verdict — generous gap so it reads as section-level conclusion,
+          not as a caption on the CTA button directly above it */}
       {verdictVisible && (
         <motion.p
-          className="mt-6 text-center font-semibold tracking-tight"
+          className="mt-12 text-center tracking-tight"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          style={{ fontSize: 'clamp(16px, 4.4vw, 20px)', color: 'var(--forest)' }}
+          style={{
+            fontSize: 'clamp(15px, 4vw, 18px)',
+            fontWeight: 500,
+            color: 'rgba(15,55,30,0.7)',
+          }}
         >
-          1 regning. Ét login. <span style={{ color: 'var(--sage-dark, #2e7d52)' }}>Fuldt overblik.</span>
+          1 regning. Ét login. <span style={{ color: 'var(--sage-dark, #2e7d52)', fontWeight: 700 }}>Fuldt overblik.</span>
         </motion.p>
       )}
     </div>
