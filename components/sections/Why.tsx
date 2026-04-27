@@ -157,13 +157,17 @@ function AnimatedCanvas() {
               </p>
             </motion.div>
 
-            {/* Act 3 copy */}
+            {/* Act 3 copy — landing harder than Acts 1/2: this is the
+                resolution, so the headline scales up ~12% and "alt" gets
+                a sage emphasis on its own line so it's the visual peak. */}
             <motion.div style={{ opacity: act3Opacity }} className="absolute inset-0 mt-8">
               <h2
-                className="font-extrabold leading-[1.05] tracking-tight mb-5"
-                style={{ fontSize: 'clamp(32px, 4.5vw, 56px)', color: 'var(--forest)' }}
+                className="font-extrabold leading-[1.0] tracking-tight mb-5"
+                style={{ fontSize: 'clamp(36px, 5.2vw, 64px)', color: 'var(--forest)' }}
               >
-                Indtil <span style={{ color: 'var(--sage-dark, #2e7d52)' }}>alt</span><br />
+                Indtil{' '}
+                <span style={{ color: 'var(--sage-dark, #2e7d52)' }}>alt</span>
+                <br />
                 samles ét sted.
               </h2>
               <p className="text-base sm:text-lg leading-relaxed" style={{ color: 'var(--text-mid)' }}>
