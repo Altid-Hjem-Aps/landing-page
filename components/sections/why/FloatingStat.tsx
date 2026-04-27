@@ -17,16 +17,16 @@ export function FloatingStat({ number, label, style, className }: Props) {
       <p
         className="font-extrabold leading-none tracking-tight"
         style={{
-          fontSize: 'clamp(56px, 9vw, 120px)',
-          color: 'rgba(46,125,82,0.18)',
+          fontSize: 'clamp(64px, 10vw, 140px)',
+          color: 'rgba(46,125,82,0.32)',
           letterSpacing: '-0.04em',
         }}
       >
         {number}
       </p>
       <p
-        className="text-[11px] font-semibold tracking-[0.18em] uppercase mt-2"
-        style={{ color: 'rgba(46,125,82,0.42)' }}
+        className="text-[12px] font-bold tracking-[0.22em] uppercase mt-2"
+        style={{ color: 'rgba(46,125,82,0.62)' }}
       >
         {label}
       </p>
