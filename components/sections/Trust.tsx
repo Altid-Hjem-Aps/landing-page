@@ -51,6 +51,11 @@ export default function Trust() {
             </div>
           </div>
 
+          {/* Upsell — non-Altid-Energi-customers can join via the app */}
+          <p className="text-xs leading-relaxed -mt-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            Er du ikke kunde i Altid Energi, kan du blive det via Altid Hjem, når du downloader appen.
+          </p>
+
           {/* Quote */}
           <p className="text-base italic leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
             "Vi startede med at gøre op med skjulte gebyrer i elmarkedet. Nu gør vi det samme på tværs af alle hjemmets faste udgifter."
