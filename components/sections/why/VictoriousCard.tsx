@@ -117,15 +117,18 @@ export function VictoriousCard({ onCtaClick, countProgress, countRange = [0.75, 
           </motion.span>
         </div>
 
-        {/* Inline CTA — convert at the emotional peak */}
+        {/* Inline CTA — filled sage to read as the primary action at the
+            emotional peak. Forest text on sage matches the Samlet månedligt
+            pill's contrast pattern. */}
         <button
           type="button"
           onClick={onCtaClick}
-          className="w-full mt-5 py-3.5 rounded-xl text-sm font-semibold transition-all hover:translate-y-[-1px] hover:shadow-lg"
+          className="w-full mt-5 py-3.5 rounded-xl text-sm font-bold transition-all hover:translate-y-[-1px] hover:shadow-xl"
           style={{
-            background: 'rgba(168,224,99,0.12)',
-            border: '1px solid rgba(168,224,99,0.4)',
-            color: 'var(--sage)',
+            background: 'var(--sage)',
+            border: '1px solid rgba(168,224,99,0.6)',
+            color: 'var(--forest)',
+            boxShadow: '0 4px 14px rgba(168,224,99,0.25)',
           }}
         >
           Tilmeld ventelisten →
