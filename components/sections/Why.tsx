@@ -102,6 +102,13 @@ function AnimatedCanvas() {
   // Background warms to forest as we resolve
   const bgOpacity = useTransform(scrollYProgress, (p) => ramp(p, 0.7, 0.95))
 
+  // Act 2 "pressure" cue — chaos pile subtly intensifies as the act lands.
+  // Cards scale up ~4% and the canvas warms toward a slightly darker cream,
+  // so the right column visibly responds to the user's scroll without
+  // breaking the upcoming collapse animation.
+  const pileScale = useTransform(scrollYProgress, (p) => ramp(p, 0.18, 0.42, 1, 1.04))
+  const pileTintOpacity = useTransform(scrollYProgress, (p) => ramp(p, 0.18, 0.42, 0, 0.6))
+
   // Verdict line — appears as the victorious card finishes settling
   const verdictOpacity = useTransform(scrollYProgress, (p) => ramp(p, 0.88, 0.98))
   const verdictY = useTransform(scrollYProgress, (p) => ramp(p, 0.88, 0.98, 12, 0))
@@ -193,12 +200,23 @@ function AnimatedCanvas() {
               <FloatingStat number="40–50" label="regninger om året" />
             </motion.div>
 
-            {/* Chaos cards — animated */}
-            <div className="absolute inset-0 z-10">
+            {/* Act 2 pressure tint — warms the canvas as the pile intensifies */}
+            <motion.div
+              aria-hidden
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: 'linear-gradient(160deg, #ebe1cc 0%, #ddd2bb 100%)',
+                opacity: pileTintOpacity,
+              }}
+            />
+
+            {/* Chaos cards — animated. Wrapped in a scaling parent so the
+                whole pile breathes during Act 2 (subtle right-column motion). */}
+            <motion.div className="absolute inset-0 z-10" style={{ scale: pileScale }}>
               {CHAOS_BILLS.map((bill, i) => (
                 <AnimatedChaosCard key={bill.type} bill={bill} index={i} progress={scrollYProgress} />
               ))}
-            </div>
+            </motion.div>
 
             {/* Victorious card — emerges from center */}
             <motion.div
