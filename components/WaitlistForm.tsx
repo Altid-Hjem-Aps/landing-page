@@ -39,7 +39,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
     function handleExpand() {
       setExpanded(true)
       setTimeout(() => {
-        document.getElementById('email-input-hero')?.focus()
+        document.getElementById('name-input-hero')?.focus()
       }, 60)
     }
     window.addEventListener('expand-waitlist', handleExpand)
@@ -242,6 +242,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <input
+                id="name-input-hero"
                 type="text"
                 name="name"
                 autoComplete="name"
@@ -294,7 +295,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
       {error && <p className="text-sm mb-2 text-center" style={{ color: '#ff8080' }}>{error}</p>}
       <button
         type={expanded ? 'submit' : 'button'}
-        onClick={!expanded ? () => { setExpanded(true); setTimeout(() => document.getElementById('email-input-hero')?.focus(), 60) } : undefined}
+        onClick={!expanded ? () => { setExpanded(true); setTimeout(() => document.getElementById('name-input-hero')?.focus(), 60) } : undefined}
         disabled={expanded && loading}
         className="w-full py-4 rounded-2xl text-[15px] font-semibold disabled:opacity-60"
         style={{
