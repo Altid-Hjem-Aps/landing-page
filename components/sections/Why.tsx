@@ -77,10 +77,7 @@ export default function Why() {
             className="font-extrabold leading-[1.05] tracking-tight whitespace-nowrap mb-6"
             style={{ fontSize: 'clamp(20px, 4.6vw, 56px)', color: 'var(--forest)' }}
           >
-            Ét hjem.{' '}
-            <span style={{ color: 'rgba(15,55,30,0.5)' }}>
-              For mange regninger.
-            </span>
+            Ét hjem. For mange regninger.
           </h2>
           <p
             className="leading-relaxed mx-auto"
