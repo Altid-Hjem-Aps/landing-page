@@ -16,7 +16,7 @@ function PlayerSkeleton() {
       className="w-full"
       style={{
         aspectRatio: '16 / 9',
-        background: 'rgba(255,255,255,0.04)',
+        background: 'rgba(15,55,30,0.04)',
       }}
     />
   )
@@ -24,64 +24,32 @@ function PlayerSkeleton() {
 
 export default function FounderVideo() {
   return (
-    <section
-      className="pt-20 sm:pt-28 pb-10 sm:pb-14 px-6 sm:px-10 lg:px-12 relative overflow-hidden"
-      style={{ background: 'var(--forest)' }}
-    >
-      {/* Sage ambient glow behind player */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute"
-        style={{
-          top: '50%',
-          left: '50%',
-          width: 800,
-          height: 800,
-          transform: 'translate(-50%, -50%)',
-          background: 'radial-gradient(circle, rgba(168,224,99,0.09) 0%, transparent 60%)',
-        }}
-      />
-
-      {/* Glow that bleeds into the next forest section so the seam dissolves */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute"
-        style={{
-          bottom: -260,
-          left: '50%',
-          width: 900,
-          height: 520,
-          transform: 'translateX(-50%)',
-          background: 'radial-gradient(ellipse at center top, rgba(168,224,99,0.07) 0%, transparent 65%)',
-        }}
-      />
-
-      <div className="relative max-w-4xl mx-auto">
+    <section className="bg-white py-20 sm:py-28 px-6 sm:px-10 lg:px-12">
+      <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10 sm:mb-12">
           <p
             className="text-xs font-semibold tracking-[0.12em] uppercase mb-4"
-            style={{ color: 'rgba(168,224,99,0.7)' }}
+            style={{ color: 'var(--text-light)' }}
           >
             Mød grundlæggeren
           </p>
           <h2
-            className="font-extrabold leading-[1.2] tracking-tight text-white"
-            style={{ fontSize: 'clamp(24px, 3.4vw, 40px)' }}
+            className="font-extrabold leading-[1.2] tracking-tight"
+            style={{ fontSize: 'clamp(24px, 3.4vw, 40px)', color: 'var(--forest)' }}
           >
-            <span style={{ color: 'rgba(255,255,255,0.55)' }}>“Der er gebyrer overalt. Og det er noget af det,</span>{' '}
-            <em className="not-italic" style={{ color: 'var(--sage)' }}>
+            <span style={{ color: 'var(--text-mid)', fontWeight: 600 }}>
+              “Der er gebyrer overalt. Og det er noget af det,
+            </span>{' '}
+            <em className="not-italic" style={{ color: 'var(--forest)' }}>
               vi danskere hader allermest
             </em>
-            <span style={{ color: 'rgba(255,255,255,0.55)' }}>.”</span>
+            <span style={{ color: 'var(--text-mid)', fontWeight: 600 }}>.”</span>
           </h2>
         </div>
 
         <div
           className="rounded-2xl overflow-hidden relative"
-          style={{
-            boxShadow: '0 32px 64px rgba(0,0,0,0.45)',
-            border: '1px solid rgba(168,224,99,0.18)',
-          }}
+          style={{ boxShadow: '0 32px 64px rgba(15,55,30,0.18)' }}
         >
           <MuxPlayer
             playbackId={PLAYBACK_ID}
@@ -98,22 +66,10 @@ export default function FounderVideo() {
 
         <p
           className="text-sm text-center mt-6"
-          style={{ color: 'rgba(255,255,255,0.5)' }}
+          style={{ color: 'var(--text-light)' }}
         >
           Werner Valeur · Stifter og serieiværksætter · 1 min
         </p>
-
-        {/* Sage hairline — connective tissue into the savings counter below */}
-        <div
-          aria-hidden
-          className="mx-auto mt-14 sm:mt-16"
-          style={{
-            maxWidth: 320,
-            height: 1,
-            background:
-              'linear-gradient(90deg, transparent 0%, rgba(168,224,99,0.28) 50%, transparent 100%)',
-          }}
-        />
       </div>
     </section>
   )
