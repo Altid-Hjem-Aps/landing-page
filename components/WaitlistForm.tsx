@@ -309,7 +309,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
 
       {/* Microcopy — travels with button */}
       <p className="text-xs text-center mt-2.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
-        {expanded ? <><AltidMark dark /> Gratis. Ingen spam.</> : 'Vær blandt de første — vi giver dig besked, når appen er klar.'}
+        {expanded ? <>Gratis. Ingen spam. <AltidMark dark /></> : 'Vær blandt de første — vi giver dig besked, når appen er klar.'}
       </p>
       {expanded && (
         <p className="text-xs text-center mt-1" style={{ color: 'rgba(255,255,255,0.28)' }}>
