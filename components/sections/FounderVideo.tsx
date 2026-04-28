@@ -25,7 +25,7 @@ function PlayerSkeleton() {
 export default function FounderVideo() {
   return (
     <section
-      className="py-20 sm:py-28 px-6 sm:px-10 lg:px-12 relative overflow-hidden"
+      className="pt-20 sm:pt-28 pb-10 sm:pb-14 px-6 sm:px-10 lg:px-12 relative overflow-hidden"
       style={{ background: 'var(--forest)' }}
     >
       {/* Sage ambient glow behind player */}
@@ -39,6 +39,20 @@ export default function FounderVideo() {
           height: 800,
           transform: 'translate(-50%, -50%)',
           background: 'radial-gradient(circle, rgba(168,224,99,0.09) 0%, transparent 60%)',
+        }}
+      />
+
+      {/* Glow that bleeds into the next forest section so the seam dissolves */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute"
+        style={{
+          bottom: -260,
+          left: '50%',
+          width: 900,
+          height: 520,
+          transform: 'translateX(-50%)',
+          background: 'radial-gradient(ellipse at center top, rgba(168,224,99,0.07) 0%, transparent 65%)',
         }}
       />
 
@@ -88,6 +102,18 @@ export default function FounderVideo() {
         >
           Werner Valeur · Stifter og serieiværksætter · 1 min
         </p>
+
+        {/* Sage hairline — connective tissue into the savings counter below */}
+        <div
+          aria-hidden
+          className="mx-auto mt-14 sm:mt-16"
+          style={{
+            maxWidth: 320,
+            height: 1,
+            background:
+              'linear-gradient(90deg, transparent 0%, rgba(168,224,99,0.28) 50%, transparent 100%)',
+          }}
+        />
       </div>
     </section>
   )

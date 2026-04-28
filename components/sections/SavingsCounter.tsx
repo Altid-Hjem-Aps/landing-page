@@ -206,7 +206,7 @@ export default function SavingsCounter() {
   return (
     <section
       ref={sectionRef}
-      className="py-16 sm:py-24 px-6 sm:px-10 lg:px-12"
+      className="pt-10 sm:pt-14 pb-16 sm:pb-24 px-6 sm:px-10 lg:px-12"
       style={{ background: 'var(--forest)' }}
     >
       <div className="max-w-3xl mx-auto text-center">
