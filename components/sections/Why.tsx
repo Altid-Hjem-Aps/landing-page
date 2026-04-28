@@ -15,17 +15,12 @@ function scrollToWaitlist() {
 }
 
 // === Connector arrow between chaos and resolution ===
-// Desktop: rightward arrow with sage glow.
-// Mobile: rotated 90° to point downward.
+// Desktop: rightward. Mobile: rotated 90° downward.
 function FlowArrow({ vertical = false }: { vertical?: boolean }) {
   return (
     <div
       className="flex items-center justify-center"
-      style={{
-        transform: vertical ? 'rotate(90deg)' : undefined,
-        width: vertical ? 60 : 80,
-        height: vertical ? 60 : 80,
-      }}
+      style={{ transform: vertical ? 'rotate(90deg)' : undefined }}
       aria-hidden
     >
       <div
@@ -59,8 +54,7 @@ export default function Why() {
   const inView = useInView(sectionRef, { once: true, amount: 0.25 })
 
   // One-time entrance progress — drives chaos fade-in stagger, arrow pulse,
-  // victorious card scale, and the 935 kr. counter. After this completes
-  // the section is fully static.
+  // and the victorious card scale. After completion, the section is static.
   const entranceProgress = useMotionValue(prefersReducedMotion ? 1 : 0)
   if (typeof window !== 'undefined' && inView && entranceProgress.get() === 0 && !prefersReducedMotion) {
     const start = performance.now()
@@ -97,84 +91,66 @@ export default function Why() {
           </h2>
         </div>
 
-        {/* DESKTOP: side-by-side */}
+        {/* DESKTOP: chaos pile · arrow · resolution card — no wrapper boxes,
+            elements float directly on the section's cream-dark background. */}
         <div className="hidden lg:grid grid-cols-[1fr_auto_1fr] gap-8 items-center">
-          <ChaosColumn progress={entranceProgress} />
+          <ChaosPile progress={entranceProgress} />
           <ArrowSlot progress={entranceProgress} />
-          <VictoriousColumn progress={entranceProgress} />
+          <ResolutionSlot progress={entranceProgress} />
         </div>
 
-        {/* MOBILE / TABLET: stacked */}
-        <div className="lg:hidden flex flex-col items-center gap-6">
-          <ChaosColumn progress={entranceProgress} mobile />
+        {/* MOBILE / TABLET: stacked, same no-box treatment */}
+        <div className="lg:hidden flex flex-col items-center gap-10">
+          <ChaosPile progress={entranceProgress} mobile />
           <ArrowSlot progress={entranceProgress} vertical />
-          <VictoriousColumn progress={entranceProgress} mobile />
+          <ResolutionSlot progress={entranceProgress} mobile />
         </div>
 
-        {/* Comparison block — Better Stack–style stark two-row table.
-            Count-focused (vendors, bills), not pricing. Sits as the
-            rational supporting evidence under the emotional visual above. */}
-        <ComparisonBlock progress={entranceProgress} />
-
-        {/* Closing copy — Alex-approved */}
-        <div className="text-center max-w-2xl mx-auto mt-14 sm:mt-20">
-          <p
-            className="font-extrabold leading-[1.1] tracking-tight mb-3"
-            style={{ fontSize: 'clamp(22px, 2.6vw, 32px)', color: 'var(--forest)' }}
-          >
-            Indtil <span style={{ color: 'var(--sage-dark, #2e7d52)' }}>alt</span> samles ét sted.
-          </p>
-          <p
-            className="font-semibold tracking-tight"
-            style={{ fontSize: 'clamp(16px, 1.6vw, 20px)', color: 'rgba(15,55,30,0.65)' }}
-          >
-            Én app. Én regning. <span style={{ color: 'var(--sage-dark, #2e7d52)' }}>Fuldt overblik.</span>
-          </p>
-        </div>
+        {/* Closing — one line. Visual carries the problem; copy carries the resolution. */}
+        <p
+          className="text-center font-semibold tracking-tight mt-16 sm:mt-24"
+          style={{ fontSize: 'clamp(20px, 2.4vw, 28px)', color: 'var(--forest)' }}
+        >
+          Én app. Én regning.{' '}
+          <span style={{ color: 'var(--sage-dark, #2e7d52)' }}>Fuldt overblik.</span>
+        </p>
 
       </div>
     </section>
   )
 }
 
-// === Chaos column — pile of bills under "Uden Altid Hjem" tag ===
-function ChaosColumn({ progress, mobile = false }: { progress: ReturnType<typeof useMotionValue<number>>, mobile?: boolean }) {
+// === Chaos pile — bills floating directly on the section background ===
+// No wrapper box, no border, no UDEN-tag. Positioning container is
+// transparent and only exists to anchor the absolutely-positioned cards.
+function ChaosPile({ progress, mobile = false }: { progress: ReturnType<typeof useMotionValue<number>>, mobile?: boolean }) {
   const bills = mobile ? CHAOS_BILLS_MOBILE : CHAOS_BILLS
   const scaleFactor = mobile ? 0.55 : 1
 
   return (
-    <div className={mobile ? 'w-full' : ''}>
-      <p
-        className="text-[11px] font-bold tracking-[0.18em] uppercase mb-4 text-center lg:text-left"
-        style={{ color: 'rgba(46,125,82,0.55)' }}
-      >
-        Uden Altid Hjem
-      </p>
-      <div
-        className="relative overflow-hidden rounded-2xl mx-auto"
-        style={{
-          height: mobile ? 360 : 460,
-          maxWidth: mobile ? 360 : undefined,
-          background: 'linear-gradient(160deg, #f0e8d8 0%, #e6dcc8 100%)',
-          border: '1px solid rgba(46,125,82,0.08)',
-        }}
-      >
-        {bills.map((bill, i) => {
-          const start = 0.05 + i * 0.06
-          const end = Math.min(start + 0.18, 0.85)
-          return (
-            <ChaosCardEntry
-              key={bill.type}
-              bill={bill}
-              start={start}
-              end={end}
-              progress={progress}
-              scaleFactor={scaleFactor}
-              mobileOffsetScale={mobile ? 0.55 : 1}
-            />
-          )
-        })}
-      </div>
+    <div
+      className="relative mx-auto"
+      style={{
+        height: mobile ? 320 : 460,
+        width: '100%',
+        maxWidth: mobile ? 360 : undefined,
+      }}
+    >
+      {bills.map((bill, i) => {
+        const start = 0.05 + i * 0.06
+        const end = Math.min(start + 0.18, 0.85)
+        return (
+          <ChaosCardEntry
+            key={bill.type}
+            bill={bill}
+            start={start}
+            end={end}
+            progress={progress}
+            scaleFactor={scaleFactor}
+            mobileOffsetScale={mobile ? 0.55 : 1}
+          />
+        )
+      })}
     </div>
   )
 }
@@ -194,7 +170,6 @@ function ChaosCardEntry({
   scaleFactor: number
   mobileOffsetScale: number
 }) {
-  // Cards fade in from a small offset to their resting position.
   const opacity = useTransform(progress, (p) => {
     if (p <= start) return 0
     if (p >= end) return 1
@@ -225,7 +200,7 @@ function ChaosCardEntry({
   )
 }
 
-// === Arrow slot — pulses when victorious card emerges ===
+// === Arrow ===
 function ArrowSlot({
   progress,
   vertical = false,
@@ -243,10 +218,11 @@ function ArrowSlot({
   )
 }
 
-// === Victorious column — single resolution card under "Med Altid Hjem" tag ===
-function VictoriousColumn({
+// === Resolution slot — Altid Hjem card sits directly on section bg ===
+// VictoriousCard already styles itself as a forest card. No outer wrapper,
+// no MED-tag, no extra padding box.
+function ResolutionSlot({
   progress,
-  mobile = false,
 }: {
   progress: ReturnType<typeof useMotionValue<number>>
   mobile?: boolean
@@ -257,139 +233,15 @@ function VictoriousColumn({
   )
 
   return (
-    <div className={mobile ? 'w-full' : ''}>
-      <p
-        className="text-[11px] font-bold tracking-[0.18em] uppercase mb-4 text-center lg:text-left"
-        style={{ color: 'var(--sage-dark, #2e7d52)' }}
-      >
-        Med Altid Hjem
-      </p>
-      <motion.div
-        className="relative flex items-center justify-center rounded-2xl mx-auto"
-        style={{
-          opacity,
-          scale,
-          height: mobile ? 'auto' : 460,
-          padding: mobile ? '24px 0' : 0,
-          maxWidth: mobile ? 360 : undefined,
-          background: mobile
-            ? 'linear-gradient(160deg, var(--forest) 0%, #0f3a26 100%)'
-            : 'linear-gradient(160deg, var(--forest) 0%, #0f3a26 100%)',
-          border: '1px solid rgba(168,224,99,0.18)',
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          aria-hidden
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(circle at 50% 50%, rgba(168,224,99,0.14) 0%, rgba(168,224,99,0) 60%)',
-          }}
-        />
-        <VictoriousCard
-          onCtaClick={scrollToWaitlist}
-          countProgress={progress}
-          countRange={[0.6, 0.95]}
-        />
-      </motion.div>
-    </div>
-  )
-}
-
-// === Comparison block — Better Stack–style stark two-row table ===
-// Count-focused: 8 leverandører → 1 app, 45+ regninger → 1 regning.
-// Both rows render the same metric columns so the eye reads top-to-bottom
-// and the difference lands instantly without prose.
-function ComparisonBlock({ progress }: { progress: ReturnType<typeof useMotionValue<number>> }) {
-  // Block fades in after the visual above has resolved (progress > 0.7).
-  const opacity = useTransform(progress, (p) => (p < 0.7 ? 0 : Math.min((p - 0.7) / 0.2, 1)))
-  const y = useTransform(progress, (p) => (p < 0.7 ? 16 : 16 - 16 * Math.min((p - 0.7) / 0.2, 1)))
-
-  return (
     <motion.div
-      className="max-w-4xl mx-auto mt-14 sm:mt-20"
-      style={{ opacity, y }}
+      className="flex justify-center"
+      style={{ opacity, scale }}
     >
-      <div
-        className="rounded-2xl overflow-hidden"
-        style={{ border: '1px solid rgba(46,125,82,0.12)' }}
-      >
-        {/* Row 1 — Uden Altid Hjem (problem state) */}
-        <div
-          className="grid grid-cols-1 sm:grid-cols-[180px_1fr_1fr] items-center"
-          style={{
-            background: 'linear-gradient(160deg, #f0e8d8 0%, #e6dcc8 100%)',
-            borderBottom: '1px solid rgba(46,125,82,0.12)',
-          }}
-        >
-          <div
-            className="px-6 py-5 sm:py-6 text-[11px] font-bold tracking-[0.18em] uppercase text-center sm:text-left border-b sm:border-b-0 sm:border-r"
-            style={{ color: 'rgba(46,125,82,0.55)', borderColor: 'rgba(46,125,82,0.12)' }}
-          >
-            Uden Altid Hjem
-          </div>
-          <CompareCell number="8" label="leverandører" tone="muted" border />
-          <CompareCell number="45+" label="regninger om året" tone="muted" />
-        </div>
-
-        {/* Row 2 — Med Altid Hjem (resolution state) */}
-        <div
-          className="grid grid-cols-1 sm:grid-cols-[180px_1fr_1fr] items-center"
-          style={{ background: 'var(--forest)' }}
-        >
-          <div
-            className="px-6 py-5 sm:py-6 text-[11px] font-bold tracking-[0.18em] uppercase text-center sm:text-left border-b sm:border-b-0 sm:border-r"
-            style={{ color: 'var(--sage)', borderColor: 'rgba(168,224,99,0.18)' }}
-          >
-            Med Altid Hjem
-          </div>
-          <CompareCell number="1" label="app, én regning" tone="resolved" border />
-          <CompareCell number="12" label="regninger om året" tone="resolved" />
-        </div>
-      </div>
+      <VictoriousCard
+        onCtaClick={scrollToWaitlist}
+        countProgress={progress}
+        countRange={[0.6, 0.95]}
+      />
     </motion.div>
-  )
-}
-
-function CompareCell({
-  number,
-  label,
-  tone,
-  border = false,
-}: {
-  number: string
-  label: string
-  tone: 'muted' | 'resolved'
-  border?: boolean
-}) {
-  const isMuted = tone === 'muted'
-  return (
-    <div
-      className={[
-        'px-6 py-5 sm:py-6 text-center sm:text-left',
-        border ? 'border-b sm:border-b-0 sm:border-r' : '',
-      ].join(' ')}
-      style={{
-        borderColor: isMuted ? 'rgba(46,125,82,0.12)' : 'rgba(168,224,99,0.18)',
-      }}
-    >
-      <p
-        className="font-extrabold leading-none tabular-nums tracking-tight"
-        style={{
-          fontSize: 'clamp(36px, 4.4vw, 56px)',
-          color: isMuted ? 'rgba(15,55,30,0.78)' : 'var(--sage)',
-          letterSpacing: '-0.02em',
-        }}
-      >
-        {number}
-      </p>
-      <p
-        className="text-xs sm:text-sm leading-relaxed mt-2"
-        style={{ color: isMuted ? 'rgba(15,55,30,0.55)' : 'rgba(255,255,255,0.7)' }}
-      >
-        {label}
-      </p>
-    </div>
   )
 }
