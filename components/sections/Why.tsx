@@ -79,7 +79,7 @@ export default function Why() {
       <div className="max-w-6xl mx-auto">
 
         {/* Heading + subtitle */}
-        <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-20">
+        <div className="text-center max-w-4xl mx-auto mb-14 sm:mb-20">
           <p className="text-xs font-semibold tracking-[0.12em] uppercase mb-4" style={{ color: 'var(--text-light)' }}>
             Derfor giver det mening
           </p>
@@ -94,7 +94,7 @@ export default function Why() {
             style={{
               fontSize: 'clamp(15px, 1.4vw, 18px)',
               color: 'var(--text-mid)',
-              maxWidth: 640,
+              maxWidth: 880,
             }}
           >
             Strøm hos én leverandør, mobil hos en anden, forsikring hos en tredje. Forskellige vilkår og regninger spredt på mail, papir og i e-Boks - uden noget samlet overblik. Det ændrer Altid Hjem. Én app. Én regning. Fuldt overblik. <AltidMark />

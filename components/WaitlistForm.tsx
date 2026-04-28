@@ -173,7 +173,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
           Gratis. Ingen spam. <AltidMark dark />
         </p>
         <p className="text-xs text-center mt-1" style={{ color: 'rgba(255,255,255,0.25)' }}>
-          <a href="/privatpolitik" className="underline underline-offset-2 hover:opacity-50 transition-opacity">Privatpolitik</a>
+          <a href="/privatlivspolitik" className="underline underline-offset-2 hover:opacity-50 transition-opacity">Privatlivspolitik</a>
         </p>
       </form>
     )
@@ -312,7 +312,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
       </p>
       {expanded && (
         <p className="text-xs text-center mt-1" style={{ color: 'rgba(255,255,255,0.28)' }}>
-          <a href="/privatpolitik" className="underline underline-offset-2 hover:opacity-50 transition-opacity">Privatpolitik</a>
+          <a href="/privatlivspolitik" className="underline underline-offset-2 hover:opacity-50 transition-opacity">Privatlivspolitik</a>
         </p>
       )}
 

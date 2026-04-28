@@ -7,10 +7,10 @@ type Props = {
   bill: ChaosBill
 }
 
-// One stylized bill envelope — muted off-whites, faux barcode strip,
-// tiny meta line so the chaos pile reads as physical mail at a glance.
-// On hover, the card lifts and brightens its shadow — invites the
-// visitor to mentally "pick up" the piece of paper.
+// One stylized paper invoice — off-white sheet, FAKTURA header, mock
+// line-item rows, total at bottom. The chaos pile reads as a stack of
+// physical bills at a glance, not as plastic cards. Hover lifts the
+// sheet so the visitor wants to "pick it up" off the pile.
 export function ChaosCard({ bill }: Props) {
   return (
     <motion.div
@@ -21,45 +21,48 @@ export function ChaosCard({ bill }: Props) {
         transition: { type: 'spring', stiffness: 280, damping: 22 },
       }}
       style={{
-        width: 220,
-        height: 130,
-        borderRadius: 12,
-        background: `linear-gradient(135deg, #fafaf6 0%, ${bill.tint} 220%)`,
+        width: 150,
+        height: 200,
+        borderRadius: 3,
+        background: '#fefdf8',
         border: '1px solid rgba(0,0,0,0.08)',
         boxShadow: '0 12px 32px rgba(15,55,30,0.10), 0 2px 6px rgba(15,55,30,0.06)',
-        padding: '14px 16px',
+        padding: '14px 14px 12px',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
         cursor: 'pointer',
       }}
     >
-      {/* Top row: invoice category (e.g. "Elregning") + due date */}
-      <div className="flex items-center justify-between" style={{ color: 'rgba(15,55,30,0.55)' }}>
-        <span className="text-[13px] font-semibold leading-tight" style={{ color: 'rgba(15,55,30,0.85)' }}>
-          {bill.type}
+      {/* Header: FAKTURA tag + due date */}
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[8px] font-bold tracking-[0.14em] uppercase" style={{ color: 'rgba(15,55,30,0.45)' }}>
+          Faktura
         </span>
-        <span className="text-[10px]" style={{ color: 'rgba(15,55,30,0.45)' }}>{bill.due}</span>
+        <span className="text-[8px]" style={{ color: 'rgba(15,55,30,0.45)' }}>{bill.due}</span>
       </div>
 
-      {/* Faux barcode — middle of card */}
-      <div className="flex gap-[2px] items-end" style={{ height: 12 }}>
-        {Array.from({ length: 22 }).map((_, i) => (
-          <span
-            key={i}
-            style={{
-              width: i % 5 === 0 ? 3 : i % 3 === 0 ? 2 : 1,
-              height: i % 4 === 0 ? 12 : 9,
-              background: 'rgba(15,55,30,0.5)',
-            }}
-          />
+      {/* Category name — the "issuer" line */}
+      <div className="text-[13px] font-semibold leading-tight mb-3" style={{ color: 'rgba(15,55,30,0.88)' }}>
+        {bill.type}
+      </div>
+
+      {/* Divider */}
+      <div style={{ height: 1, background: 'rgba(15,55,30,0.12)' }} />
+
+      {/* Mock line-item rows — gray bars implying invoice details */}
+      <div className="flex flex-col gap-[6px] py-[10px] flex-1">
+        {[0.78, 0.6, 0.7, 0.55, 0.66].map((w, i) => (
+          <div key={i} className="flex items-center justify-between gap-2">
+            <span style={{ height: 4, width: `${w * 100}%`, background: 'rgba(15,55,30,0.18)', borderRadius: 1 }} />
+            <span style={{ height: 4, width: 18, background: 'rgba(15,55,30,0.18)', borderRadius: 1 }} />
+          </div>
         ))}
       </div>
 
-      {/* Bottom row: amount */}
-      <div className="flex items-end justify-between">
-        <span className="text-[9px] tracking-wider uppercase" style={{ color: 'rgba(15,55,30,0.4)' }}>Beløb</span>
-        <span className="text-[15px] font-bold tabular-nums" style={{ color: 'rgba(15,55,30,0.85)' }}>
+      {/* Total row */}
+      <div className="flex items-baseline justify-between pt-[8px]" style={{ borderTop: '1px solid rgba(15,55,30,0.18)' }}>
+        <span className="text-[9px] font-semibold tracking-wider uppercase" style={{ color: 'rgba(15,55,30,0.55)' }}>I alt</span>
+        <span className="text-[14px] font-bold tabular-nums" style={{ color: 'rgba(15,55,30,0.88)' }}>
           {bill.amount} kr.
         </span>
       </div>

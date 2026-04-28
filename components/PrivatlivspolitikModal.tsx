@@ -6,7 +6,7 @@ interface Props {
   onClose: () => void
 }
 
-export default function PrivatpolitikModal({ onClose }: Props) {
+export default function PrivatlivspolitikModal({ onClose }: Props) {
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose()
@@ -31,7 +31,7 @@ export default function PrivatpolitikModal({ onClose }: Props) {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <h2 className="text-base font-bold text-white">Privatpolitik</h2>
+          <h2 className="text-base font-bold text-white">Privatlivspolitik</h2>
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-full flex items-center justify-center text-lg transition-opacity hover:opacity-70"

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: 'Læs om hvordan Altid Hjem ApS behandler dine personoplysninger.',
 }
 
-export default function Privatpolitik() {
+export default function Privatlivspolitik() {
   return (
     <>
       <Nav />
