@@ -87,17 +87,7 @@ export default function Why() {
               maxWidth: 640,
             }}
           >
-            Strøm hos én, mobil hos en anden, forsikring hos en tredje. Spredt på mail, e-Boks og papir, uden noget samlet overblik.
-          </p>
-          <p
-            className="leading-relaxed mx-auto mt-4"
-            style={{
-              fontSize: 'clamp(15px, 1.4vw, 18px)',
-              color: 'var(--text-mid)',
-              maxWidth: 640,
-            }}
-          >
-            Det ændrer Altid Hjem. Én app. Én regning. Fuldt overblik. <AltidMark />
+            Strøm hos én, mobil hos en anden, forsikring hos en tredje. Spredt på mail, e-Boks og papir, uden noget samlet overblik. Det ændrer <strong style={{ color: 'var(--forest)', fontWeight: 700 }}>Altid Hjem</strong>. Én app. Én regning. Fuldt overblik. <AltidMark />
           </p>
         </div>
 
