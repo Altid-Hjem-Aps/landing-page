@@ -47,7 +47,12 @@ function Reel({ setRef }: { setRef: (el: HTMLSpanElement | null) => void }) {
 }
 
 export default function SavingsCounter() {
-  const [visible, setVisible] = useState(false)
+  // Initialize visible=true so the section content (headline + counter +
+  // description) ALWAYS renders on first paint, even if IntersectionObserver
+  // never fires or the JS effect throws on iOS Safari. The intro fade-up
+  // animation downgrades to "no animation" in that case, which is still
+  // miles better than a fully empty dark-green slab.
+  const [visible, setVisible] = useState(true)
 
   const sectionRef = useRef<HTMLDivElement>(null)
   const startedRef = useRef(false)
@@ -78,7 +83,6 @@ export default function SavingsCounter() {
     const el = sectionRef.current
     if (!el) return
 
-    const revealFallback = setTimeout(() => setVisible(true), 1500)
     let entranceTimer: ReturnType<typeof setTimeout>
     const stopTimers: ReturnType<typeof setTimeout>[] = []
 
@@ -90,6 +94,26 @@ export default function SavingsCounter() {
 
     // Apply initial positions (shows FAST_END digits before animation starts)
     for (let i = 0; i < NUM_REELS; i++) applyReel(i)
+
+    const startReveal = () => {
+      if (startedRef.current) return
+      startedRef.current = true
+      setVisible(true)
+      entranceTimer = setTimeout(() => {
+        for (let i = 0; i < NUM_REELS; i++) rPhases.current[i] = 'spinning'
+        rafRef.current = requestAnimationFrame(loop)
+        stopTimers.push(setTimeout(() => {
+          for (let i = 0; i < NUM_REELS; i++) {
+            scheduleStop(i, i * STOP_STAGGER + i * i * 8)
+          }
+        }, FAST_DURATION))
+      }, 400)
+    }
+
+    // Fallback: if IntersectionObserver fails or never fires (rare iOS edge
+    // cases, error boundaries above), still reveal + animate after 2s so the
+    // section never sits empty over its dark-green background.
+    const revealFallback = setTimeout(startReveal, 2000)
 
     const scheduleStop = (i: number, delay: number) => {
       stopTimers.push(setTimeout(() => {
@@ -176,20 +200,7 @@ export default function SavingsCounter() {
     }
 
     const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting || startedRef.current) return
-      startedRef.current = true
-      setVisible(true)
-
-      entranceTimer = setTimeout(() => {
-        for (let i = 0; i < NUM_REELS; i++) rPhases.current[i] = 'spinning'
-        rafRef.current = requestAnimationFrame(loop)
-
-        stopTimers.push(setTimeout(() => {
-          for (let i = 0; i < NUM_REELS; i++) {
-            scheduleStop(i, i * STOP_STAGGER + i * i * 8)
-          }
-        }, FAST_DURATION))
-      }, 400)
+      if (entry.isIntersecting) startReveal()
     }, { threshold: 0 })
 
     observer.observe(el)
@@ -217,10 +228,10 @@ export default function SavingsCounter() {
           transition: `transform 0.7s ${SPRING}, opacity 0.55s ease`,
         }}>
           <p className="text-xs font-semibold tracking-[0.12em] uppercase mb-4" style={{ color: 'rgba(168,224,99,0.7)' }}>
-            Altid Energi · Dokumenteret besparelse
+            Dokumenteret besparelse
           </p>
           <h2 className="font-extrabold leading-tight tracking-tight mb-8 text-white" style={{ fontSize: 'clamp(22px, 3vw, 36px)' }}>
-            Vores Altid Energi-kunder har allerede sparet
+            Vores Altid Energi kunder har allerede sparet
           </h2>
         </div>
 
@@ -255,8 +266,8 @@ export default function SavingsCounter() {
           opacity: visible ? 1 : 0,
           transition: `transform 0.7s ${SPRING} 0.25s, opacity 0.55s ease 0.25s`,
         }}>
-          <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)', maxWidth: 440, margin: '0 auto' }}>
-            Baseret på kunder hos Altid Energi. Med Altid Hjem får du samme gennemsigtighed på strøm, mobil og forsikring — og mange sparer langt over 1.000 kr. årligt.
+          <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)', maxWidth: 620, margin: '0 auto' }}>
+            Baseret på kunder hos Altid Energi. <strong style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>Er du ikke kunde endnu, kan du blive det via Altid Hjem, når du downloader app&apos;en.</strong> Med Altid Hjem får du samme gennemsigtighed på strøm, mobil og forsikring, og mange sparer langt over 1.000 kr. årligt.
           </p>
         </div>
 

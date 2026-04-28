@@ -39,7 +39,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
     function handleExpand() {
       setExpanded(true)
       setTimeout(() => {
-        document.getElementById('email-input-hero')?.focus()
+        document.getElementById('name-input-hero')?.focus()
       }, 60)
     }
     window.addEventListener('expand-waitlist', handleExpand)
@@ -172,6 +172,9 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
         <p className="text-xs text-center mt-3 leading-relaxed" style={{ color: 'rgba(255,255,255,0.35)' }}>
           Gratis. Ingen spam. <AltidMark dark />
         </p>
+        <p className="text-xs text-center mt-1" style={{ color: 'rgba(255,255,255,0.25)' }}>
+          <a href="/privatlivspolitik" className="underline underline-offset-2 hover:opacity-50 transition-opacity">Privatlivspolitik</a>
+        </p>
       </form>
     )
   }
@@ -214,69 +217,58 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
 
   return (
     <form id={id} onSubmit={e => { e.preventDefault(); submitStep1() }}>
-      {/* ONE seamless container — email input always visible, fields unfold from within */}
+
+      {/* Beat 1: container grows (button drops). Beat 2: fields fade+slide in. */}
       <div
-        className="rounded-2xl p-2"
         style={{
-          background: 'rgba(168,224,99,0.07)',
-          border: expanded ? '1px solid rgba(168,224,99,0.3)' : '1px solid rgba(168,224,99,0.18)',
-          animation: !expanded ? 'pulse-border 2s ease-in-out infinite' : 'none',
-          transition: 'border-color 0.4s ease',
+          display: 'grid',
+          gridTemplateRows: expanded ? '1fr' : '0fr',
+          transition: 'grid-template-rows 0.35s cubic-bezier(0, 0, 0.2, 1)',
         }}
       >
-        {/* Email input — always visible anchor */}
-        <div
-          className="flex items-center rounded-xl overflow-hidden"
-          style={{ background: 'white', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}
-        >
-          <input
-            id="email-input-hero"
-            type="email"
-            name="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => { setEmail(e.target.value); if (e.target.value.length > 0) setExpanded(true) }}
-            onFocus={() => setExpanded(true)}
-            placeholder="Din e-mailadresse"
-            className="flex-1 placeholder:text-[#bbb]"
-            style={{ height: 56, padding: '0 16px', fontSize: 16, outline: 'none', background: 'transparent', color: 'var(--text-dark)', fontFamily: 'var(--font-onest)' }}
-          />
-        </div>
-
-        {/* Fields unfold inside the same container */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateRows: expanded ? '1fr' : '0fr',
-            transition: 'grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-          }}
-        >
-          <div style={{ overflow: 'hidden' }}>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 6,
-                paddingTop: expanded ? 6 : 0,
-                opacity: expanded ? 1 : 0,
-                transition: 'opacity 0.4s ease 0.18s, padding-top 0.5s ease',
-              }}
-            >
+        <div style={{ overflow: 'hidden', minHeight: 0 }}>
+          {/* Entire form card invisible during beat 1 — no clipping visible */}
+          <div
+            className="rounded-2xl p-2 mb-2"
+            style={{
+              background: 'rgba(168,224,99,0.07)',
+              border: '1px solid rgba(168,224,99,0.3)',
+              opacity: expanded ? 1 : 0,
+              transform: expanded ? 'translateY(0)' : 'translateY(-6px)',
+              transition: expanded
+                ? 'opacity 0.2s ease 0.3s, transform 0.25s ease 0.28s'
+                : 'none',
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <input
+                id="name-input-hero"
                 type="text"
                 name="name"
                 autoComplete="name"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={e => setName(e.target.value)}
                 placeholder="Dit fulde navn"
                 className="w-full rounded-xl placeholder:text-[#bbb]"
                 style={{ height: 52, padding: '0 16px', fontSize: 15, outline: 'none', background: 'white', color: 'var(--text-dark)', fontFamily: 'var(--font-onest)' }}
               />
-              {/* Phone input */}
               <div
                 className="flex items-center rounded-xl overflow-hidden"
-                style={{ background: 'white' }}
+                style={{ background: 'white', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}
               >
+                <input
+                  id="email-input-hero"
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="Din e-mailadresse"
+                  className="flex-1 placeholder:text-[#bbb]"
+                  style={{ height: 56, padding: '0 16px', fontSize: 16, outline: 'none', background: 'transparent', color: 'var(--text-dark)', fontFamily: 'var(--font-onest)' }}
+                />
+              </div>
+              <div className="flex items-center rounded-xl overflow-hidden" style={{ background: 'white' }}>
                 <span
                   className="flex items-center justify-center pl-4 pr-3 text-sm font-semibold select-none border-r shrink-0"
                   style={{ height: 52, color: 'var(--text-mid)', borderColor: 'rgba(27,104,64,0.1)', background: 'var(--cream)' }}
@@ -288,7 +280,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
                   name="tel"
                   autoComplete="tel"
                   value={phone}
-                  onChange={(e) => setPhone(formatPhone(e.target.value))}
+                  onChange={e => setPhone(formatPhone(e.target.value))}
                   placeholder="Dit mobilnummer"
                   className="flex-1 placeholder:text-[#bbb]"
                   style={{ height: 52, padding: '0 16px', fontSize: 15, outline: 'none', background: 'transparent', color: 'var(--text-dark)', fontFamily: 'var(--font-onest)' }}
@@ -299,53 +291,32 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
         </div>
       </div>
 
-      {/* Submit + microcopy — unfold below the container */}
-      <div
+      {/* Single button — always visible, drops down as fields expand above it */}
+      {error && <p className="text-sm mb-2 text-center" style={{ color: '#ff8080' }}>{error}</p>}
+      <button
+        type={expanded ? 'submit' : 'button'}
+        onClick={!expanded ? () => { setExpanded(true); setTimeout(() => document.getElementById('name-input-hero')?.focus(), 60) } : undefined}
+        disabled={expanded && loading}
+        className="w-full py-4 rounded-2xl text-[15px] font-semibold disabled:opacity-60"
         style={{
-          display: 'grid',
-          gridTemplateRows: expanded ? '1fr' : '0fr',
-          transition: 'grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.06s',
+          background: 'var(--sage)',
+          color: 'var(--forest)',
+          animation: !expanded ? 'pulse-glow 2s ease-in-out infinite' : 'none',
         }}
       >
-        <div style={{ overflow: 'hidden' }}>
-          <div
-            style={{
-              paddingTop: 8,
-              opacity: expanded ? 1 : 0,
-              transition: 'opacity 0.4s ease 0.28s',
-            }}
-          >
-            {error && <p className="text-sm mb-2 text-center" style={{ color: '#ff8080' }}>{error}</p>}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-4 rounded-2xl text-[15px] font-semibold disabled:opacity-60"
-              style={{ background: 'var(--sage)', color: 'var(--forest)' }}
-            >
-              {loading ? 'Sender...' : 'Skriv mig på ventelisten →'}
-            </button>
-            <p className="text-xs text-center mt-2.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
-              Gratis. Ingen spam. <AltidMark dark />
-            </p>
-          </div>
-        </div>
-      </div>
+        {expanded ? (loading ? 'Sender...' : 'Skriv mig på ventelisten →') : 'Skriv dig på ventelisten →'}
+      </button>
 
-      {/* Hint + annotation — collapses as form expands */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateRows: !expanded ? '1fr' : '0fr',
-          transition: 'grid-template-rows 0.4s ease',
-        }}
-      >
-        <div style={{ overflow: 'hidden' }}>
-          <p className="text-xs pt-2.5 text-center lg:text-left" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            Skriv din e-mail for at tilmelde dig ventelisten.
-          </p>
+      {/* Microcopy — travels with button */}
+      <p className="text-xs text-center mt-2.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
+        {expanded ? <><AltidMark dark /> Gratis. Ingen spam.</> : 'Vær blandt de første — vi giver dig besked, når appen er klar.'}
+      </p>
+      {expanded && (
+        <p className="text-xs text-center mt-1" style={{ color: 'rgba(255,255,255,0.28)' }}>
+          <a href="/privatlivspolitik" className="underline underline-offset-2 hover:opacity-50 transition-opacity">Privatlivspolitik</a>
+        </p>
+      )}
 
-        </div>
-      </div>
     </form>
   )
 }

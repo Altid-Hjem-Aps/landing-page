@@ -31,7 +31,7 @@ export default function Hero() {
       {/* Content centered in remaining viewport height */}
       <div className="flex-1 flex items-center">
         <div className="max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-10 lg:gap-10 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[5fr_6fr] gap-10 lg:gap-8 items-center">
 
             {/* Left: copy + form */}
             <div className="flex flex-col gap-8">
@@ -68,8 +68,12 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Right: iPhone mockup */}
-            <div className="flex items-center justify-center animate-fade-up-3">
+            {/* Right: iPhone mockup. No animate-fade-up wrapper here —
+                that class ends with `transform: translateY(0)`, which
+                creates a containing block for `filter: blur()` and clips
+                the phone's drop-shadow halo at the wrapper edges (345px
+                wide on phone) instead of letting it bleed across the hero. */}
+            <div className="flex items-center justify-center">
               <IPhoneMockup />
             </div>
 

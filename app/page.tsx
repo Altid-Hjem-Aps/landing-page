@@ -1,6 +1,7 @@
 import Nav from '@/components/Nav'
 import Hero from '@/components/Hero'
 import WhatIs from '@/components/sections/WhatIs'
+import FounderVideo from '@/components/sections/FounderVideo'
 import SavingsCounter from '@/components/sections/SavingsCounter'
 import Services from '@/components/sections/Services'
 import HowItWorks from '@/components/sections/HowItWorks'
@@ -16,6 +17,7 @@ export default function Home() {
       <main>
         <Hero />
         <WhatIs />
+        <FounderVideo />
         <SavingsCounter />
         <Services />
         <HowItWorks />
@@ -28,8 +30,17 @@ export default function Home() {
         style={{ background: 'var(--forest)', borderTop: '1px solid rgba(255,255,255,0.08)' }}
       >
         <Logo className="h-8 w-auto text-white" />
-        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
-          © 2025 Altid Hjem · Skabt af teamet bag Altid Energi
+        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
+          © 2026 Altid Hjem · Skabt af teamet bag{' '}
+          <a
+            href="https://altidenergi.dk"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline-offset-2 hover:underline"
+            style={{ color: 'rgba(255,255,255,0.85)' }}
+          >
+            Altid Energi
+          </a>
         </p>
       </footer>
     </>

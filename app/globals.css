@@ -32,6 +32,12 @@
 
 html {
   scroll-behavior: smooth;
+  /* Belt-and-suspenders horizontal lock: html overflow-x:clip + body
+     overflow-x:hidden + overscroll-behavior-x:none. iOS Safari sometimes
+     ignores overflow-x:hidden on body alone and lets the user rubber-band
+     horizontally — this combination defeats that. */
+  overflow-x: clip;
+  overscroll-behavior-x: none;
 }
 
 body {
@@ -39,6 +45,7 @@ body {
   background-color: var(--cream);
   color: var(--text-dark);
   overflow-x: hidden;
+  overscroll-behavior-x: none;
 }
 
 @keyframes pulse-dot {
@@ -55,6 +62,11 @@ body {
     box-shadow: 0 0 0 5px rgba(183,242,167,0.32), 0 8px 28px rgba(0,0,0,0.18);
     border-color: rgba(183,242,167,0.38);
   }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(168,224,99,0.5); }
+  50% { box-shadow: 0 0 0 8px rgba(168,224,99,0); }
 }
 
 @keyframes phone-wobble {
@@ -86,3 +98,8 @@ body {
 .animate-fade-up-2 { animation: fade-up 0.6s ease forwards 0.25s; opacity: 0; }
 .animate-fade-up-3 { animation: fade-up 0.6s ease forwards 0.4s; opacity: 0; }
 .animate-fade-up-4 { animation: fade-up 0.6s ease forwards 0.55s; opacity: 0; }
+
+@keyframes victorious-glow {
+  0%, 100% { opacity: 0.7; transform: scale(1.15); }
+  50%      { opacity: 1;   transform: scale(1.22); }
+}

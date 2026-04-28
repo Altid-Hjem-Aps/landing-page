@@ -1,0 +1,207 @@
+'use client'
+
+import { ReactNode, useEffect, useRef, useState } from 'react'
+
+type ChildrenFn = (hovered: boolean) => ReactNode
+
+export default function PhoneShell({
+  children,
+  variant = 'foreground',
+  hovered: externalHovered,
+}: {
+  children: ReactNode | ChildrenFn
+  variant?: 'foreground' | 'back'
+  hovered?: boolean
+}) {
+  const isBack = variant === 'back'
+  const [internalHovered, setInternalHovered] = useState(false)
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const isControlled = externalHovered !== undefined
+  const hovered = isControlled ? !!externalHovered : internalHovered
+
+  useEffect(() => {
+    if (isControlled) return
+    if (typeof navigator === 'undefined' || !navigator.maxTouchPoints) return
+    const t1 = setTimeout(() => {
+      setInternalHovered(true)
+      resetTimerRef.current = setTimeout(() => setInternalHovered(false), 3200)
+    }, 1800)
+    return () => clearTimeout(t1)
+  }, [isControlled])
+
+  function onEnter() {
+    if (!isControlled) setInternalHovered(true)
+  }
+  function onLeave() {
+    if (!isControlled) setInternalHovered(false)
+  }
+
+  const rendered = typeof children === 'function' ? (children as ChildrenFn)(hovered) : children
+
+  return (
+    <div
+      className="mx-auto select-none cursor-default"
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+      onTouchStart={onEnter}
+      onTouchEnd={() => {
+        if (isControlled) return
+        if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
+        resetTimerRef.current = setTimeout(onLeave, 2800)
+      }}
+    >
+      <div style={{ position: 'relative', width: 270, height: 560 }}>
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: 52,
+            padding: 8,
+            background: 'linear-gradient(150deg, #2e2e2e 0%, #141414 45%, #111111 100%)',
+            // Drop-shadow halo via box-shadow instead of a blurred sibling
+            // <div>. CSS `filter: blur()` is clipped by the nearest ancestor
+            // with a transform (the IPhoneMockup foreground wrapper has
+            // translateX(-50%)), which was cutting the halo at a hard
+            // vertical line ~37px from each viewport edge. box-shadow renders
+            // outside the element box and isn't subject to transform-induced
+            // containing-block clipping, so the halo bleeds smoothly.
+            boxShadow: [
+              'inset 0 1px 0 rgba(255,255,255,0.13)',
+              'inset 2px 0 0 rgba(255,255,255,0.07)',
+              'inset -1px 0 0 rgba(0,0,0,0.6)',
+              'inset 0 -1px 0 rgba(0,0,0,0.5)',
+              isBack
+                ? '0 24px 56px 4px rgba(0,0,0,0.22)'
+                : '0 32px 72px 6px rgba(0,0,0,0.32)',
+            ].join(', '),
+          }}
+        >
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: 44,
+              background: '#000',
+              overflow: 'hidden',
+              position: 'relative',
+            }}
+          >
+            <div
+              className="flex flex-col"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'var(--cream)',
+                borderRadius: 44,
+                overflow: 'hidden',
+              }}
+            >
+              <StatusBar />
+              {rendered}
+            </div>
+
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                borderRadius: 44,
+                background:
+                  'linear-gradient(130deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.03) 30%, transparent 55%)',
+                pointerEvents: 'none',
+                zIndex: 10,
+              }}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                top: 14,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: 95,
+                height: 28,
+                background: '#000',
+                borderRadius: 20,
+                zIndex: 20,
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function StatusBar() {
+  return (
+    <div className="flex items-center justify-between px-6 pt-5 pb-2 shrink-0">
+      <span className="text-[11px] font-semibold" style={{ color: 'var(--text-dark)' }}>
+        9:41
+      </span>
+      <div className="flex items-center gap-1">
+        <svg width="15" height="10" viewBox="0 0 15 10" fill="none">
+          <rect x="0" y="3" width="3" height="7" rx="1" fill="#0d2818" opacity="0.3" />
+          <rect x="4" y="2" width="3" height="8" rx="1" fill="#0d2818" opacity="0.5" />
+          <rect x="8" y="0.5" width="3" height="9.5" rx="1" fill="#0d2818" opacity="0.7" />
+          <rect x="12" y="0" width="3" height="10" rx="1" fill="#0d2818" />
+        </svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+          <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#0d2818" strokeOpacity="0.35" />
+          <rect x="2" y="2" width="17" height="8" rx="2" fill="#0d2818" />
+          <path d="M23 4.5V7.5C23.8 7.2 24.5 6.5 24.5 6C24.5 5.5 23.8 4.8 23 4.5Z" fill="#0d2818" opacity="0.4" />
+        </svg>
+      </div>
+    </div>
+  )
+}
+
+export function TabBar({ active }: { active: 'hjem' | 'forbrug' | 'sparetips' | 'profil' }) {
+  return (
+    <div
+      className="mt-auto shrink-0 flex items-center justify-around px-6 pt-2 pb-1"
+      style={{ borderTop: '1px solid rgba(27,104,64,0.07)' }}
+    >
+      <Tab label="Hjem" isActive={active === 'hjem'}>
+        <path d="M3 12L12 4L21 12V21H15V15H9V21H3V12Z" fill="currentColor" />
+      </Tab>
+      <Tab label="Forbrug" isActive={active === 'forbrug'}>
+        <rect x="3" y="12" width="4" height="9" rx="1" fill="currentColor" />
+        <rect x="10" y="7" width="4" height="14" rx="1" fill="currentColor" />
+        <rect x="17" y="3" width="4" height="18" rx="1" fill="currentColor" />
+      </Tab>
+      <Tab label="Sparetips" isActive={active === 'sparetips'}>
+        <path d="M12 2L9 9H2L7.5 13.5L5.5 21L12 16.5L18.5 21L16.5 13.5L22 9H15L12 2Z" fill="currentColor" />
+      </Tab>
+      <Tab label="Profil" isActive={active === 'profil'}>
+        <circle cx="12" cy="8" r="4" fill="currentColor" />
+        <path
+          d="M4 20C4 16.7 7.6 14 12 14C16.4 14 20 16.7 20 20"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </Tab>
+    </div>
+  )
+}
+
+function Tab({ label, isActive, children }: { label: string; isActive: boolean; children: ReactNode }) {
+  const color = isActive ? 'var(--forest)' : 'rgba(13,40,24,0.25)'
+  return (
+    <div className="flex flex-col items-center gap-0.5">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ color }}>
+        {children}
+      </svg>
+      <span style={{ fontSize: 8, fontWeight: isActive ? 600 : 400, color: isActive ? 'var(--forest)' : 'var(--text-light)' }}>
+        {label}
+      </span>
+    </div>
+  )
+}
+
+export function HomeIndicator() {
+  return (
+    <div className="flex justify-center pb-2 pt-1">
+      <div className="w-24 h-1 rounded-full" style={{ background: 'rgba(13,40,24,0.2)' }} />
+    </div>
+  )
+}

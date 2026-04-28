@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Onest } from 'next/font/google'
 import './globals.css'
+import ResetScrollOnLoad from '@/components/ResetScrollOnLoad'
 
 const onest = Onest({
   subsets: ['latin'],
@@ -21,7 +22,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="da" className={onest.variable}>
-      <body>{children}</body>
+      <body>
+        <ResetScrollOnLoad />
+        {children}
+      </body>
     </html>
   )
 }
