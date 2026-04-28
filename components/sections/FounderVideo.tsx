@@ -24,7 +24,10 @@ function PlayerSkeleton() {
 
 export default function FounderVideo() {
   return (
-    <section className="bg-white py-20 sm:py-28 px-6 sm:px-10 lg:px-12">
+    <section
+      className="py-20 sm:py-28 px-6 sm:px-10 lg:px-12"
+      style={{ background: 'var(--cream)' }}
+    >
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10 sm:mb-12">
           <p
