@@ -32,6 +32,12 @@
 
 html {
   scroll-behavior: smooth;
+  /* Belt-and-suspenders horizontal lock: html overflow-x:clip + body
+     overflow-x:hidden + overscroll-behavior-x:none. iOS Safari sometimes
+     ignores overflow-x:hidden on body alone and lets the user rubber-band
+     horizontally — this combination defeats that. */
+  overflow-x: clip;
+  overscroll-behavior-x: none;
 }
 
 body {
@@ -39,6 +45,7 @@ body {
   background-color: var(--cream);
   color: var(--text-dark);
   overflow-x: hidden;
+  overscroll-behavior-x: none;
 }
 
 @keyframes pulse-dot {

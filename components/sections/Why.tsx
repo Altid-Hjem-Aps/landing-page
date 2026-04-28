@@ -46,18 +46,28 @@ export default function Why() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const inView = useInView(sectionRef, { once: true, amount: 0.25 })
 
-  // One-time entrance progress — drives chaos fade-in stagger, arrow pulse,
-  // and the victorious card scale. After completion, the section is static.
-  const entranceProgress = useMotionValue(prefersReducedMotion ? 1 : 0)
-  if (typeof window !== 'undefined' && inView && entranceProgress.get() === 0 && !prefersReducedMotion) {
-    const start = performance.now()
-    const DURATION = 1400
-    const tick = (now: number) => {
-      const t = Math.min((now - start) / DURATION, 1)
-      entranceProgress.set(t)
-      if (t < 1) requestAnimationFrame(tick)
+  // entranceProgress starts at 1 so the chaos cards, arrow, and victorious
+  // card render fully visible on first paint. If `inView` later becomes
+  // observable AND we haven't already played, we replay 0→1 for the
+  // entrance animation. Trade-off: users who reach the section before JS
+  // finishes hydrating just see the static end-state. Better than blank.
+  const entranceProgress = useMotionValue(1)
+  if (typeof window !== 'undefined' && inView && !prefersReducedMotion) {
+    const tag = '__altidWhyAnimated' as const
+    type WindowWithTag = Window & Record<typeof tag, boolean | undefined>
+    const w = window as unknown as WindowWithTag
+    if (!w[tag]) {
+      w[tag] = true
+      entranceProgress.set(0)
+      const start = performance.now()
+      const DURATION = 1400
+      const tick = (now: number) => {
+        const t = Math.min((now - start) / DURATION, 1)
+        entranceProgress.set(t)
+        if (t < 1) requestAnimationFrame(tick)
+      }
+      requestAnimationFrame(tick)
     }
-    requestAnimationFrame(tick)
   }
 
   return (
@@ -116,13 +126,17 @@ export default function Why() {
 // transparent and only exists to anchor the absolutely-positioned cards.
 function ChaosPile({ progress, mobile = false }: { progress: ReturnType<typeof useMotionValue<number>>, mobile?: boolean }) {
   const bills = mobile ? CHAOS_BILLS_MOBILE : CHAOS_BILLS
-  const scaleFactor = mobile ? 0.55 : 1
+  // Cards were 0.55 on mobile (220x130 → 121x71) — too small to read as
+  // bills. Bump to 0.82 (180x107) so the categories and amounts are legible
+  // on a 375px iPhone. Offset scale stays tighter to keep the pile compact.
+  const scaleFactor = mobile ? 0.82 : 1
+  const mobileOffsetScale = mobile ? 0.65 : 1
 
   return (
     <div
       className="relative mx-auto"
       style={{
-        height: mobile ? 320 : 460,
+        height: mobile ? 380 : 460,
         width: '100%',
         maxWidth: mobile ? 360 : undefined,
       }}
@@ -138,7 +152,7 @@ function ChaosPile({ progress, mobile = false }: { progress: ReturnType<typeof u
             end={end}
             progress={progress}
             scaleFactor={scaleFactor}
-            mobileOffsetScale={mobile ? 0.55 : 1}
+            mobileOffsetScale={mobileOffsetScale}
           />
         )
       })}
