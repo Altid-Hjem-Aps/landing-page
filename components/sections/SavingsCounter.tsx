@@ -220,7 +220,7 @@ export default function SavingsCounter() {
             Dokumenteret besparelse
           </p>
           <h2 className="font-extrabold leading-tight tracking-tight mb-8 text-white" style={{ fontSize: 'clamp(22px, 3vw, 36px)' }}>
-            Vores Altid Energi-kunder har allerede sparet
+            Vores Altid Energi kunder har allerede sparet
           </h2>
         </div>
 
