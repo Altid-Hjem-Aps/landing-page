@@ -87,7 +87,7 @@ export default function Why() {
               maxWidth: 640,
             }}
           >
-            Strøm hos én, mobil hos en anden, forsikring hos en tredje. Spredt på mail, e-Boks og papir, uden noget samlet overblik. Det ændrer <strong style={{ color: 'var(--forest)', fontWeight: 700 }}>Altid Hjem</strong>.
+            Strøm hos én, mobil hos en anden, forsikring hos en tredje. Spredt på mail, e-Boks og papir, uden noget samlet overblik. Det ændrer Altid Hjem.
             <br />
             Én app. Én regning. Fuldt overblik. <AltidMark />
           </p>
