@@ -31,7 +31,7 @@ export default function Home() {
       >
         <Logo className="h-8 w-auto text-white" />
         <p className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
-          © 2025 Altid Hjem · Skabt af teamet bag{' '}
+          © 2026 Altid Hjem · Skabt af teamet bag{' '}
           <a
             href="https://altidenergi.dk"
             target="_blank"

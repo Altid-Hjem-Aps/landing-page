@@ -42,16 +42,19 @@ export default function Nav() {
   }, [])
 
   function handleCTA() {
-    // Expand first so the form has its final height before we scroll —
-    // otherwise iOS Safari smooth-scroll lands at the wrong offset, then
-    // the form grows under the user's eye and pushes content around.
+    // Expand first so the form has its final height before we scroll.
+    // Then wait ~380ms for the grid-template-rows 350ms transition to
+    // settle. On desktop the hero's `items-center` flex re-centers when
+    // the form grows, which shifts #venteliste's top by ~50px upward —
+    // computing the scroll target before that settles overshoots and
+    // lands the user past the form into "Hvad er Altid Hjem?".
     window.dispatchEvent(new CustomEvent('expand-waitlist'))
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       const el = document.getElementById('venteliste')
       if (!el) return
       const top = el.getBoundingClientRect().top + window.scrollY - 24
       window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
-    })
+    }, 380)
   }
 
   return (
