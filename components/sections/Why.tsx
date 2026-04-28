@@ -5,14 +5,7 @@ import { motion, useInView, useMotionValue, useReducedMotion, useTransform } fro
 import { ChaosCard } from './why/ChaosCard'
 import { VictoriousCard } from './why/VictoriousCard'
 import { CHAOS_BILLS, CHAOS_BILLS_MOBILE } from './why/cards'
-
-function scrollToWaitlist() {
-  const el = document.getElementById('venteliste')
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  setTimeout(() => {
-    window.dispatchEvent(new CustomEvent('expand-waitlist'))
-  }, 450)
-}
+import { AltidMark } from '@/components/AltidMark'
 
 // === Connector arrow between chaos and resolution ===
 // Desktop: rightward. Mobile: rotated 90° downward.
@@ -75,20 +68,30 @@ export default function Why() {
     >
       <div className="max-w-6xl mx-auto">
 
-        {/* Heading */}
+        {/* Heading + subtitle */}
         <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-20">
           <p className="text-xs font-semibold tracking-[0.12em] uppercase mb-4" style={{ color: 'var(--text-light)' }}>
             Hvorfor det giver mening
           </p>
           <h2
-            className="font-extrabold leading-[1.05] tracking-tight"
-            style={{ fontSize: 'clamp(32px, 5vw, 64px)', color: 'var(--forest)' }}
+            className="font-extrabold leading-[1.05] tracking-tight whitespace-nowrap mb-6"
+            style={{ fontSize: 'clamp(20px, 4.6vw, 56px)', color: 'var(--forest)' }}
           >
             Ét hjem.{' '}
-            <span style={{ color: 'rgba(15,55,30,0.5)' }} className="block sm:inline">
+            <span style={{ color: 'rgba(15,55,30,0.5)' }}>
               For mange regninger.
             </span>
           </h2>
+          <p
+            className="leading-relaxed mx-auto"
+            style={{
+              fontSize: 'clamp(15px, 1.4vw, 18px)',
+              color: 'var(--text-mid)',
+              maxWidth: 640,
+            }}
+          >
+            Strøm hos én, mobil hos en anden, forsikring hos en tredje. Spredt på mail, e-Boks og papir, uden noget samlet overblik. Det ændrer Altid Hjem. Én app. Én regning. Fuldt overblik. <AltidMark />
+          </p>
         </div>
 
         {/* DESKTOP: chaos pile · arrow · resolution card — no wrapper boxes,
@@ -105,15 +108,6 @@ export default function Why() {
           <ArrowSlot progress={entranceProgress} vertical />
           <ResolutionSlot progress={entranceProgress} mobile />
         </div>
-
-        {/* Closing — one line. Visual carries the problem; copy carries the resolution. */}
-        <p
-          className="text-center font-semibold tracking-tight mt-16 sm:mt-24"
-          style={{ fontSize: 'clamp(20px, 2.4vw, 28px)', color: 'var(--forest)' }}
-        >
-          Én app. Én regning.{' '}
-          <span style={{ color: 'var(--sage-dark, #2e7d52)' }}>Fuldt overblik.</span>
-        </p>
 
       </div>
     </section>
@@ -238,7 +232,6 @@ function ResolutionSlot({
       style={{ opacity, scale }}
     >
       <VictoriousCard
-        onCtaClick={scrollToWaitlist}
         countProgress={progress}
         countRange={[0.6, 0.95]}
       />

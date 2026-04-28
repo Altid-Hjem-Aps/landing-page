@@ -24,30 +24,29 @@ export function ChaosCard({ bill, style }: Props) {
         ...style,
       }}
     >
-      <div className="flex items-center justify-between text-[10px] font-semibold tracking-[0.08em] uppercase" style={{ color: 'rgba(15,55,30,0.55)' }}>
-        <span>{bill.type}</span>
-        <span style={{ color: 'rgba(15,55,30,0.4)' }}>🗓 {bill.due}</span>
+      {/* Top row: invoice category (e.g. "Elregning") + due date */}
+      <div className="flex items-center justify-between" style={{ color: 'rgba(15,55,30,0.55)' }}>
+        <span className="text-[13px] font-semibold leading-tight" style={{ color: 'rgba(15,55,30,0.85)' }}>
+          {bill.type}
+        </span>
+        <span className="text-[10px]" style={{ color: 'rgba(15,55,30,0.45)' }}>{bill.due}</span>
       </div>
 
-      <div>
-        <p className="text-[12px] font-semibold leading-tight" style={{ color: 'rgba(15,55,30,0.85)' }}>
-          {bill.brand}
-        </p>
-        {/* Faux barcode */}
-        <div className="mt-1.5 flex gap-[2px] items-end" style={{ height: 12 }}>
-          {Array.from({ length: 22 }).map((_, i) => (
-            <span
-              key={i}
-              style={{
-                width: i % 5 === 0 ? 3 : i % 3 === 0 ? 2 : 1,
-                height: i % 4 === 0 ? 12 : 9,
-                background: 'rgba(15,55,30,0.5)',
-              }}
-            />
-          ))}
-        </div>
+      {/* Faux barcode — middle of card */}
+      <div className="flex gap-[2px] items-end" style={{ height: 12 }}>
+        {Array.from({ length: 22 }).map((_, i) => (
+          <span
+            key={i}
+            style={{
+              width: i % 5 === 0 ? 3 : i % 3 === 0 ? 2 : 1,
+              height: i % 4 === 0 ? 12 : 9,
+              background: 'rgba(15,55,30,0.5)',
+            }}
+          />
+        ))}
       </div>
 
+      {/* Bottom row: amount */}
       <div className="flex items-end justify-between">
         <span className="text-[9px] tracking-wider uppercase" style={{ color: 'rgba(15,55,30,0.4)' }}>Beløb</span>
         <span className="text-[15px] font-bold tabular-nums" style={{ color: 'rgba(15,55,30,0.85)' }}>
