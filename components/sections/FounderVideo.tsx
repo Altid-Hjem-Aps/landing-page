@@ -68,7 +68,7 @@ export default function FounderVideo() {
             className="font-extrabold leading-[1.2] tracking-tight text-white"
             style={{ fontSize: 'clamp(24px, 3.4vw, 40px)' }}
           >
-            <span style={{ color: 'rgba(255,255,255,0.55)' }}>“Der er gebyrer overalt — og det er noget af det,</span>{' '}
+            <span style={{ color: 'rgba(255,255,255,0.55)' }}>“Der er gebyrer overalt. Og det er noget af det,</span>{' '}
             <em className="not-italic" style={{ color: 'var(--sage)' }}>
               vi danskere hader allermest
             </em>
