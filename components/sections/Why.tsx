@@ -63,7 +63,7 @@ export default function Why() {
   return (
     <section
       ref={sectionRef}
-      className="relative py-20 sm:py-28 px-6 sm:px-10 lg:px-12"
+      className="relative py-20 sm:py-28 px-3 sm:px-10 lg:px-12"
       style={{ background: 'var(--cream-dark)' }}
     >
       <div className="max-w-6xl mx-auto">
@@ -71,7 +71,7 @@ export default function Why() {
         {/* Heading + subtitle */}
         <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-20">
           <p className="text-xs font-semibold tracking-[0.12em] uppercase mb-4" style={{ color: 'var(--text-light)' }}>
-            Hvorfor det giver mening
+            Derfor giver det mening
           </p>
           <h2
             className="font-extrabold leading-[1.05] tracking-tight whitespace-nowrap mb-6"
@@ -87,9 +87,7 @@ export default function Why() {
               maxWidth: 640,
             }}
           >
-            Strøm hos én, mobil hos en anden, forsikring hos en tredje. Spredt på mail, e-Boks og papir, uden noget samlet overblik. Det ændrer Altid Hjem.
-            <br />
-            Én app. Én regning. Fuldt overblik. <AltidMark />
+            Strøm hos én leverandør, mobil hos en anden, forsikring hos en tredje. Forskellige vilkår og regninger spredt på mail, papir og i e-Boks - uden noget samlet overblik. Det ændrer Altid Hjem. Én app. Én regning. Fuldt overblik. <AltidMark />
           </p>
         </div>
 
@@ -168,10 +166,12 @@ function ChaosCardEntry({
     if (p >= end) return 1
     return (p - start) / (end - start)
   })
-  const yOffset = useTransform(progress, (p) => {
-    if (p <= start) return 14
-    if (p >= end) return 0
-    return 14 * (1 - (p - start) / (end - start))
+  // Combine entrance settle (14 → 0) with the bill's static y offset so the
+  // child ChaosCard is free to use its own transform for hover lift.
+  const baseY = bill.y * mobileOffsetScale
+  const y = useTransform(progress, (p) => {
+    const settle = p <= start ? 14 : p >= end ? 0 : 14 * (1 - (p - start) / (end - start))
+    return baseY + settle
   })
 
   return (
@@ -180,7 +180,7 @@ function ChaosCardEntry({
       style={{
         opacity,
         x: bill.x * mobileOffsetScale,
-        y: yOffset,
+        y,
         rotate: bill.rotate,
         scale: scaleFactor,
         translateX: '-50%',
@@ -188,7 +188,7 @@ function ChaosCardEntry({
         zIndex: bill.z,
       }}
     >
-      <ChaosCard bill={bill} style={{ transform: `translateY(${bill.y * mobileOffsetScale}px)` }} />
+      <ChaosCard bill={bill} />
     </motion.div>
   )
 }

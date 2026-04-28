@@ -1,15 +1,25 @@
+'use client'
+
+import { motion } from 'framer-motion'
 import type { ChaosBill } from './cards'
 
 type Props = {
   bill: ChaosBill
-  style?: React.CSSProperties
 }
 
 // One stylized bill envelope — muted off-whites, faux barcode strip,
 // tiny meta line so the chaos pile reads as physical mail at a glance.
-export function ChaosCard({ bill, style }: Props) {
+// On hover, the card lifts and brightens its shadow — invites the
+// visitor to mentally "pick up" the piece of paper.
+export function ChaosCard({ bill }: Props) {
   return (
-    <div
+    <motion.div
+      whileHover={{
+        y: -10,
+        scale: 1.06,
+        boxShadow: '0 22px 48px rgba(15,55,30,0.18), 0 4px 10px rgba(15,55,30,0.10)',
+        transition: { type: 'spring', stiffness: 280, damping: 22 },
+      }}
       style={{
         width: 220,
         height: 130,
@@ -21,7 +31,7 @@ export function ChaosCard({ bill, style }: Props) {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        ...style,
+        cursor: 'pointer',
       }}
     >
       {/* Top row: invoice category (e.g. "Elregning") + due date */}
@@ -53,6 +63,6 @@ export function ChaosCard({ bill, style }: Props) {
           {bill.amount} kr.
         </span>
       </div>
-    </div>
+    </motion.div>
   )
 }

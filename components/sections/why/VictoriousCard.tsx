@@ -33,11 +33,13 @@ export function VictoriousCard({ countProgress, countRange = [0.75, 0.95], style
   const counterText = useTransform(counter, (n: number) => `${n.toLocaleString('da-DK')} kr.`)
 
   return (
-    <div
+    <motion.div
       className="relative"
+      whileHover={{ y: -6, scale: 1.02, transition: { type: 'spring', stiffness: 220, damping: 22 } }}
       style={{
         width: 380,
         maxWidth: '92vw',
+        cursor: 'pointer',
         ...style,
       }}
     >
@@ -53,8 +55,12 @@ export function VictoriousCard({ countProgress, countRange = [0.75, 0.95], style
         }}
       />
 
-      <div
+      <motion.div
         className="relative rounded-2xl p-7"
+        whileHover={{
+          boxShadow: '0 44px 100px rgba(15,55,30,0.55), 0 0 0 1px rgba(168,224,99,0.28)',
+          transition: { duration: 0.25 },
+        }}
         style={{
           background: 'var(--forest)',
           border: '1px solid rgba(168,224,99,0.25)',
@@ -116,7 +122,7 @@ export function VictoriousCard({ countProgress, countRange = [0.75, 0.95], style
           </motion.span>
         </div>
 
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }
