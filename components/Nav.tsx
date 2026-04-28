@@ -5,8 +5,7 @@ import { Logo } from '@/components/Logo'
 export default function Nav() {
   function handleCTA(e: React.MouseEvent) {
     e.preventDefault()
-    const el = document.getElementById('venteliste')
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('expand-waitlist'))
     }, 450)
