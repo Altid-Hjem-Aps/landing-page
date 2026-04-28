@@ -111,6 +111,11 @@ export default function Why() {
           <VictoriousColumn progress={entranceProgress} mobile />
         </div>
 
+        {/* Comparison block — Better Stack–style stark two-row table.
+            Count-focused (vendors, bills), not pricing. Sits as the
+            rational supporting evidence under the emotional visual above. */}
+        <ComparisonBlock progress={entranceProgress} />
+
         {/* Closing copy — Alex-approved */}
         <div className="text-center max-w-2xl mx-auto mt-14 sm:mt-20">
           <p
@@ -288,6 +293,103 @@ function VictoriousColumn({
           countRange={[0.6, 0.95]}
         />
       </motion.div>
+    </div>
+  )
+}
+
+// === Comparison block — Better Stack–style stark two-row table ===
+// Count-focused: 8 leverandører → 1 app, 45+ regninger → 1 regning.
+// Both rows render the same metric columns so the eye reads top-to-bottom
+// and the difference lands instantly without prose.
+function ComparisonBlock({ progress }: { progress: ReturnType<typeof useMotionValue<number>> }) {
+  // Block fades in after the visual above has resolved (progress > 0.7).
+  const opacity = useTransform(progress, (p) => (p < 0.7 ? 0 : Math.min((p - 0.7) / 0.2, 1)))
+  const y = useTransform(progress, (p) => (p < 0.7 ? 16 : 16 - 16 * Math.min((p - 0.7) / 0.2, 1)))
+
+  return (
+    <motion.div
+      className="max-w-4xl mx-auto mt-14 sm:mt-20"
+      style={{ opacity, y }}
+    >
+      <div
+        className="rounded-2xl overflow-hidden"
+        style={{ border: '1px solid rgba(46,125,82,0.12)' }}
+      >
+        {/* Row 1 — Uden Altid Hjem (problem state) */}
+        <div
+          className="grid grid-cols-1 sm:grid-cols-[180px_1fr_1fr] items-center"
+          style={{
+            background: 'linear-gradient(160deg, #f0e8d8 0%, #e6dcc8 100%)',
+            borderBottom: '1px solid rgba(46,125,82,0.12)',
+          }}
+        >
+          <div
+            className="px-6 py-5 sm:py-6 text-[11px] font-bold tracking-[0.18em] uppercase text-center sm:text-left border-b sm:border-b-0 sm:border-r"
+            style={{ color: 'rgba(46,125,82,0.55)', borderColor: 'rgba(46,125,82,0.12)' }}
+          >
+            Uden Altid Hjem
+          </div>
+          <CompareCell number="8" label="leverandører" tone="muted" border />
+          <CompareCell number="45+" label="regninger om året" tone="muted" />
+        </div>
+
+        {/* Row 2 — Med Altid Hjem (resolution state) */}
+        <div
+          className="grid grid-cols-1 sm:grid-cols-[180px_1fr_1fr] items-center"
+          style={{ background: 'var(--forest)' }}
+        >
+          <div
+            className="px-6 py-5 sm:py-6 text-[11px] font-bold tracking-[0.18em] uppercase text-center sm:text-left border-b sm:border-b-0 sm:border-r"
+            style={{ color: 'var(--sage)', borderColor: 'rgba(168,224,99,0.18)' }}
+          >
+            Med Altid Hjem
+          </div>
+          <CompareCell number="1" label="app, én regning" tone="resolved" border />
+          <CompareCell number="12" label="regninger om året" tone="resolved" />
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+function CompareCell({
+  number,
+  label,
+  tone,
+  border = false,
+}: {
+  number: string
+  label: string
+  tone: 'muted' | 'resolved'
+  border?: boolean
+}) {
+  const isMuted = tone === 'muted'
+  return (
+    <div
+      className={[
+        'px-6 py-5 sm:py-6 text-center sm:text-left',
+        border ? 'border-b sm:border-b-0 sm:border-r' : '',
+      ].join(' ')}
+      style={{
+        borderColor: isMuted ? 'rgba(46,125,82,0.12)' : 'rgba(168,224,99,0.18)',
+      }}
+    >
+      <p
+        className="font-extrabold leading-none tabular-nums tracking-tight"
+        style={{
+          fontSize: 'clamp(36px, 4.4vw, 56px)',
+          color: isMuted ? 'rgba(15,55,30,0.78)' : 'var(--sage)',
+          letterSpacing: '-0.02em',
+        }}
+      >
+        {number}
+      </p>
+      <p
+        className="text-xs sm:text-sm leading-relaxed mt-2"
+        style={{ color: isMuted ? 'rgba(15,55,30,0.55)' : 'rgba(255,255,255,0.7)' }}
+      >
+        {label}
+      </p>
     </div>
   )
 }
