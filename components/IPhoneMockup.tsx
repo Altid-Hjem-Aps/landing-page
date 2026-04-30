@@ -20,6 +20,8 @@ export default function IPhoneMockup() {
   const autoPlayRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const touchStartX = useRef<number | null>(null)
+  const hoverCountRef = useRef(0)
+  const leaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // JS-driven md+ gate — prevents side phones leaking into mobile DOM
   useEffect(() => {
@@ -94,6 +96,22 @@ export default function IPhoneMockup() {
     }
   }, [])
 
+  // Per-phone desktop hover — only fires when cursor is over an actual phone shape
+  function onPhoneEnter() {
+    if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current)
+    hoverCountRef.current++
+    setHovered(true)
+  }
+  function onPhoneLeave() {
+    hoverCountRef.current--
+    leaveTimerRef.current = setTimeout(() => {
+      if (hoverCountRef.current <= 0) {
+        hoverCountRef.current = 0
+        setHovered(false)
+      }
+    }, 50)
+  }
+
   // Swipe handlers
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX
@@ -128,8 +146,6 @@ export default function IPhoneMockup() {
         <div
           className="relative w-[580px]"
           style={{ height: 580 }}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
           onTouchStart={() => setHovered(true)}
           onTouchEnd={() => {
             if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
@@ -151,6 +167,8 @@ export default function IPhoneMockup() {
               filter: 'saturate(0.92)',
               transition: 'transform 0.6s cubic-bezier(0.34, 1.2, 0.64, 1)',
             }}
+            onMouseEnter={onPhoneEnter}
+            onMouseLeave={onPhoneLeave}
           >
             <PhoneShell variant="back" hovered={hovered}>
               <SubbrandsScreen hovered={hovered} />
@@ -172,6 +190,8 @@ export default function IPhoneMockup() {
               filter: 'saturate(0.92)',
               transition: 'transform 0.6s cubic-bezier(0.34, 1.2, 0.64, 1)',
             }}
+            onMouseEnter={onPhoneEnter}
+            onMouseLeave={onPhoneLeave}
           >
             <PhoneShell variant="back" hovered={hovered}>
               <SmartTipsScreen hovered={hovered} />
@@ -192,6 +212,8 @@ export default function IPhoneMockup() {
                 ? 'transform 0.7s cubic-bezier(0.34, 1.2, 0.64, 1)'
                 : 'transform 0.5s ease',
             }}
+            onMouseEnter={onPhoneEnter}
+            onMouseLeave={onPhoneLeave}
           >
             <PhoneShell hovered={hovered}>
               <HomeScreen hovered={hovered} />
