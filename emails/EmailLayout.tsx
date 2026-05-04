@@ -46,8 +46,8 @@ export default function EmailLayout({ children }: Props) {
               <Column style={{ verticalAlign: 'middle' }}>
                 <Img
                   src={LOGO_DARK}
-                  width="90"
-                  height="53"
+                  width="120"
+                  height="64"
                   alt="Altid Hjem"
                 />
               </Column>
@@ -116,7 +116,7 @@ const footer: React.CSSProperties = {
 }
 
 const footerTagline: React.CSSProperties = {
-  color: '#ffffff',
+  color: '#aff193',
   fontSize: '14px',
   textAlign: 'center',
   margin: 0,

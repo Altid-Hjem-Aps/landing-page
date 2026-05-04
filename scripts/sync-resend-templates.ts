@@ -12,7 +12,7 @@ import { Resend } from 'resend'
 import WaitlistConfirmation from '../emails/WaitlistConfirmation'
 import ReleaseEmail from '../emails/ReleaseEmail'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY ?? process.env.resend_api_key)
 
 const PLACEHOLDER = '{{{first_name}}}'
 

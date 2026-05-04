@@ -4,8 +4,8 @@ const fs = require('fs')
 const base = __dirname + '/..'
 
 const files = {
-  LOGO_DARK:  [base + '/Design Assets/LOGO/PNG/Aktiv 1@3x.png', 'image/png'],
-  LOGO_WHITE: [base + '/Design Assets/LOGO/PNG/Aktiv 2@3x.png', 'image/png'],
+  LOGO_DARK:  [base + '/public/altid-hjem-logo-dark.svg',  'image/svg+xml'],
+  LOGO_WHITE: [base + '/public/altid-hjem-logo-white.svg', 'image/svg+xml'],
   ICON_1:     [base + '/public/icons/aktiv-1.svg',   'image/svg+xml'],
   ICON_2_1:   [base + '/public/icons/aktiv-2_1.svg', 'image/svg+xml'],
   ICON_3:     [base + '/public/icons/aktiv-3.svg',   'image/svg+xml'],
@@ -14,9 +14,12 @@ const files = {
   ICON_6:     [base + '/public/icons/aktiv-6.svg',   'image/svg+xml'],
 }
 
-const house = 'M15 52 L50 13 L85 52 L85 89 L15 89 Z M36 89 L36 66 Q36 63 39 63 L61 63 Q64 63 64 66 L64 89 Z'
-const appIconDark  = `<svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#003c16"/><path fill="#b7f2a7" fill-rule="evenodd" d="${house}"/></svg>`
-const appIconLight = `<svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#b7f2a7"/><path fill="#003c16" fill-rule="evenodd" d="${house}"/></svg>`
+// App icon (footer): official 1024x1024 PNG
+const appIconPng = fs.readFileSync('/Users/a/Desktop/Altid Hjem Ops/Altid Hjem Logo/LOGO_FAVI_APP/APP/PNG/1024x1024.png')
+const appIconDataUri = `data:image/png;base64,${appIconPng.toString('base64')}`
+
+// Info box icon: favicon SVG (house + "a", no dark background — sits on light green)
+const infoBoxIconSvg = fs.readFileSync('/Users/a/Desktop/Altid Hjem Ops/Altid Hjem Logo/LOGO_FAVI_APP/FAVICON/SVG/Aktiv 2.svg', 'utf8')
 
 const phonePath = base + '/Design Assets/phone-mockup.png'
 
@@ -27,8 +30,8 @@ for (const [key, [p, mime]] of Object.entries(files)) {
   out += `export const ${key} = "data:${mime};base64,${b64}";\n\n`
 }
 
-out += `export const ICON_APP_DARK  = "data:image/svg+xml;base64,${Buffer.from(appIconDark).toString('base64')}";\n\n`
-out += `export const ICON_APP_LIGHT = "data:image/svg+xml;base64,${Buffer.from(appIconLight).toString('base64')}";\n\n`
+out += `export const ICON_APP_DARK  = "data:image/svg+xml;base64,${Buffer.from(infoBoxIconSvg).toString('base64')}";\n\n`
+out += `export const ICON_APP_LIGHT = "${appIconDataUri}";\n\n`
 
 if (fs.existsSync(phonePath)) {
   const b64 = fs.readFileSync(phonePath).toString('base64')
