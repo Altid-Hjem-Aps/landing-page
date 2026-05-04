@@ -21,7 +21,7 @@ export default function WaitlistConfirmation({ firstName }: Props) {
       <Section style={infoBox}>
         <Row>
           <Column style={{ width: '56px', verticalAlign: 'middle', paddingRight: '16px' }}>
-            <Img src={ICON_APP_DARK} width="48" height="48" alt="" />
+            <Img src={ICON_APP_DARK} width="52" height="48" alt="" />
           </Column>
           <Column style={{ verticalAlign: 'middle' }}>
             <Text style={infoLabel}>LANCERING</Text>
@@ -53,7 +53,7 @@ const heading: React.CSSProperties = {
 
 const body: React.CSSProperties = {
   fontSize: '16px',
-  color: '#1a1a1a',
+  color: '#003c16',
   lineHeight: '1.6',
   margin: '0 0 16px',
 }
@@ -84,7 +84,7 @@ const infoDate: React.CSSProperties = {
 
 const closing: React.CSSProperties = {
   fontSize: '16px',
-  color: '#1a1a1a',
+  color: '#003c16',
   lineHeight: '1.7',
   margin: '24px 0 0',
 }
