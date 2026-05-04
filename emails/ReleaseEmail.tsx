@@ -1,7 +1,7 @@
 import { Column, Img, Link, Row, Section, Text } from '@react-email/components'
 import React from 'react'
 import EmailLayout from './EmailLayout'
-import { PHONE_MOCKUP } from './image-data'
+import { PHONE_MOCKUP } from './image-urls'
 
 const HAS_PHONE = PHONE_MOCKUP.length > 0
 
@@ -95,7 +95,7 @@ const heading: React.CSSProperties = {
 
 const body: React.CSSProperties = {
   fontSize: '16px',
-  color: '#1a1a1a',
+  color: '#003c16',
   lineHeight: '1.6',
   margin: '0 0 16px',
 }
@@ -153,7 +153,7 @@ const badgeMain: React.CSSProperties = {
 
 const closing: React.CSSProperties = {
   fontSize: '16px',
-  color: '#1a1a1a',
+  color: '#003c16',
   lineHeight: '1.7',
   margin: '24px 0 0',
 }

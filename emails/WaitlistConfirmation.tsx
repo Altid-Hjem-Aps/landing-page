@@ -1,7 +1,7 @@
 import { Column, Img, Row, Section, Text } from '@react-email/components'
 import React from 'react'
 import EmailLayout from './EmailLayout'
-import { ICON_APP_DARK } from './image-data'
+import { ICON_APP_DARK } from './image-urls'
 
 interface Props {
   firstName: string
