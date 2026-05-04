@@ -43,7 +43,6 @@ export default function Nav() {
 
   function handleCTA() {
     window.dispatchEvent(new CustomEvent('expand-waitlist'))
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (

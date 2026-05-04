@@ -5,6 +5,36 @@ import { AltidMark } from '@/components/AltidMark'
 
 type View = 'form' | 'questions' | 'success'
 
+const DK_ELECTRICITY_PROVIDERS = [
+  'AURA Energi',
+  'Clever',
+  'EWII',
+  'Energi Fyn',
+  'Energi Viborg',
+  'Forsyning Helsingør',
+  'Gasel',
+  'Goenergi',
+  'Jysk Energi',
+  'Modstrøm',
+  'NRGi',
+  'Natur-Energi',
+  'Nord Energi',
+  'Norlys',
+  'OK',
+  'Ravdex',
+  'SE (Stofa Energi)',
+  'SEAS-NVE',
+  'Scanenergi',
+  'Strøm Fyn',
+  'TREFOR El',
+  'Vindstød',
+  'Velkommen',
+  'Verdo',
+  'Ørsted',
+  'Aal El-Net',
+  'Andet',
+]
+
 interface Props {
   variant?: 'light' | 'dark'
   id?: string
@@ -126,7 +156,10 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
             </div>
             <div>
               <label style={darkLabelStyle}>Hvilket elselskab har du i dag?</label>
-              <input value={electricity} onChange={e => setElectricity(e.target.value)} placeholder="F.eks. Ørsted, OK, Norlys..." style={darkInputStyle} className="placeholder:text-white/40" />
+              <select value={electricity} onChange={e => setElectricity(e.target.value)} style={{ ...darkInputStyle, cursor: 'pointer' }} className="appearance-none">
+                <option value="" disabled>Vælg elselskab</option>
+                {DK_ELECTRICITY_PROVIDERS.map(o => <option key={o}>{o}</option>)}
+              </select>
             </div>
           </div>
           <div className="flex flex-col gap-2.5">
@@ -194,7 +227,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
               { label: 'Alder', el: <input type="number" value={age} onChange={e => setAge(e.target.value)} placeholder="Din alder" className="w-full px-4 rounded-xl text-[15px] outline-none placeholder:text-[#999] bg-white" style={{ height: 50, fontFamily: 'var(--font-onest)', color: 'var(--text-dark)' }} /> },
               { label: 'Antal i husstanden', el: <select value={household} onChange={e => setHousehold(e.target.value)} className="w-full px-4 rounded-xl text-[15px] outline-none appearance-none bg-white cursor-pointer" style={{ height: 50, fontFamily: 'var(--font-onest)', color: household ? 'var(--text-dark)' : '#999' }}><option value="" disabled>Vælg antal</option>{['1','2','3','4','5+'].map(o => <option key={o}>{o}</option>)}</select> },
               { label: 'Hvorfor har du skrevet dig op?', el: <input value={why} onChange={e => setWhy(e.target.value)} placeholder="Fortæl os kort..." className="w-full px-4 rounded-xl text-[15px] outline-none placeholder:text-[#999] bg-white" style={{ height: 50, fontFamily: 'var(--font-onest)', color: 'var(--text-dark)' }} /> },
-              { label: 'Hvilket elselskab har du i dag?', el: <input value={electricity} onChange={e => setElectricity(e.target.value)} placeholder="F.eks. Ørsted, OK, Norlys..." className="w-full px-4 rounded-xl text-[15px] outline-none placeholder:text-[#999] bg-white" style={{ height: 50, fontFamily: 'var(--font-onest)', color: 'var(--text-dark)' }} /> },
+              { label: 'Hvilket elselskab har du i dag?', el: <select value={electricity} onChange={e => setElectricity(e.target.value)} className="w-full px-4 rounded-xl text-[15px] outline-none appearance-none bg-white cursor-pointer" style={{ height: 50, fontFamily: 'var(--font-onest)', color: electricity ? 'var(--text-dark)' : '#999' }}><option value="" disabled>Vælg elselskab</option>{DK_ELECTRICITY_PROVIDERS.map(o => <option key={o}>{o}</option>)}</select> },
             ].map(({ label, el }) => (
               <div key={label} className="pb-0.5">
                 <label className="block text-[11px] font-semibold tracking-widest uppercase mb-1 px-1" style={{ color: 'rgba(255,255,255,0.5)' }}>{label}</label>
@@ -321,14 +354,35 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
   )
 }
 
-function SuccessCard() {
+export function SuccessCard() {
   return (
-    <div className="rounded-2xl p-6 sm:p-10 text-center" style={{ background: 'rgba(168,224,99,0.08)', border: '1px solid rgba(168,224,99,0.2)' }}>
-      <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl" style={{ background: 'var(--sage)', color: 'var(--forest)' }}>✓</div>
-      <h3 className="text-2xl font-bold mb-2 text-white">Du er på ventelisten!</h3>
-      <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
-        Vi giver dig besked, så snart Altid Hjem åbner dørene. Glæd dig.
+    <div className="rounded-2xl p-8 sm:p-10" style={{ background: 'rgba(168,224,99,0.08)', border: '1px solid rgba(168,224,99,0.2)' }}>
+      <h3 className="text-3xl font-bold mb-3 text-white tracking-tight">Tak. Du er med.</h3>
+      <p className="text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
+        Vi giver dig besked, så snart Altid Hjem åbner dørene.
       </p>
+
+      <div className="mt-8 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+        <a
+          href="https://altidenergi.dk/galleri/?_gl=1*g0q8vi*_up*MQ..*_ga*NTIwMDkxNzQ4LjE3Nzc0Njc5MzQ.*_ga_ZESHL2Q0DX*czE3Nzc0Njc5MzMkbzEkZzAkdDE3Nzc0Njc5MzMkajYwJGwwJGgxNTQwNDUyNTc1"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group block"
+        >
+          <p className="text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
+            Altid Energi hjælper danske familier med at forstå deres elregning. Tjek din egen, mens du venter.
+          </p>
+          <span
+            className="inline-block mt-3 text-sm font-medium group-hover:opacity-70 transition-opacity"
+            style={{ color: '#73d0e7', borderBottom: '1px solid rgba(115,208,231,0.4)', paddingBottom: 1 }}
+          >
+            altidenergi.dk
+          </span>
+          <div className="mt-5">
+            <img src="/altidenergi-logo-stamp.svg" alt="Altid Energi" style={{ height: 26, width: 'auto', opacity: 0.95 }} />
+          </div>
+        </a>
+      </div>
     </div>
   )
 }

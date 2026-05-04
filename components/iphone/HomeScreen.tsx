@@ -103,7 +103,7 @@ export default function HomeScreen({ hovered }: Props) {
             className="text-[10px] font-medium uppercase tracking-widest mb-0.5"
             style={{ color: 'var(--text-light)' }}
           >
-            Hej, velkommen hjem
+            Altid Hjem
           </p>
           <h2 className="text-base font-bold" style={{ color: 'var(--forest)' }}>
             Dit overblik

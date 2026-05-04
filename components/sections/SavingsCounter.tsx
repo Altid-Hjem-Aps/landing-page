@@ -228,7 +228,7 @@ export default function SavingsCounter() {
           transition: `transform 0.7s ${SPRING}, opacity 0.55s ease`,
         }}>
           <p className="text-xs font-semibold tracking-[0.12em] uppercase mb-4" style={{ color: 'rgba(168,224,99,0.7)' }}>
-            Dokumenteret besparelse
+            Indtil videre
           </p>
           <h2 className="font-extrabold leading-tight tracking-tight mb-8 text-white" style={{ fontSize: 'clamp(22px, 3vw, 36px)' }}>
             Vores Altid Energi kunder har allerede sparet
