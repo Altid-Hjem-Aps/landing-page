@@ -1,4 +1,4 @@
-const BASE = 'https://altidhjem.dk'
+const BASE = 'https://www.altidhjem.dk'
 
 export const LOGO_DARK  = `${BASE}/altid-hjem-logo-dark.svg`
 export const LOGO_WHITE = `${BASE}/altid-hjem-logo-white.svg`
