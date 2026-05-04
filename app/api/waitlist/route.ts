@@ -1,14 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sendWaitlistConfirmation } from '@/lib/send-email'
+import { sendWaitlistConfirmation, scheduleReleaseEmail } from '@/lib/send-email'
+import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PHONE_RE = /^\d{8}$/
 
+const WINDOW_MS = 60 * 60 * 1000 // 1 hour
+const MAX_ATTEMPTS = 3
+const ipAttempts = new Map<string, { count: number; resetAt: number }>()
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const entry = ipAttempts.get(ip)
+  if (!entry || now > entry.resetAt) {
+    ipAttempts.set(ip, { count: 1, resetAt: now + WINDOW_MS })
+    return false
+  }
+  if (entry.count >= MAX_ATTEMPTS) return true
+  entry.count++
+  return false
+}
+
 export async function POST(req: NextRequest) {
   const body = await req.json()
 
   if (body.step === 1) {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+    if (isRateLimited(ip))
+      return NextResponse.json({ success: false, error: 'For mange forsøg. Prøv igen om en time.' }, { status: 429 })
+
     const { email, name, phone } = body
 
     if (!email || !EMAIL_RE.test(email))
@@ -35,8 +56,13 @@ export async function POST(req: NextRequest) {
     if (!res.ok)
       return NextResponse.json({ success: false, error: data.message ?? 'Noget gik galt' }, { status: res.status })
 
-    // fire-and-forget — don't let email failure block signup
-    sendWaitlistConfirmation(String(name).trim(), String(email).toLowerCase().trim()).catch(console.error)
+    // fire-and-forget — don't let these failures block signup
+    const cleanName = String(name).trim()
+    const cleanEmail = String(email).toLowerCase().trim()
+    const cleanPhone = String(phone).replace(/\s/g, '')
+    sendWaitlistConfirmation(cleanName, cleanEmail).catch(console.error)
+    scheduleReleaseEmail(cleanName, cleanEmail).catch(console.error)
+    sendWaitlistConfirmationSms(cleanName, cleanPhone).catch(console.error)
 
     return NextResponse.json({ success: true, id: data.id })
   }

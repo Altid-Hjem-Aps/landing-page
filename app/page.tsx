@@ -29,7 +29,7 @@ export default function Home() {
         className="flex flex-wrap items-center justify-between gap-y-3 px-6 sm:px-10 lg:px-12 py-6 sm:py-8"
         style={{ background: 'var(--forest)', borderTop: '1px solid rgba(255,255,255,0.08)' }}
       >
-        <Logo className="h-8 w-auto text-white" />
+        <Logo className="h-8 w-auto" variant="white" />
         <p className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
           © 2026 Altid Hjem · Skabt af teamet bag{' '}
           <a

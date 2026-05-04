@@ -124,7 +124,7 @@ export default function IPhoneMockup() {
     touchStartX.current = null
     if (Math.abs(delta) < SWIPE_THRESHOLD) return
     setCarouselIndex(i =>
-      delta < 0 ? Math.min(i + 1, SCREEN_COUNT - 1) : Math.max(i - 1, 0),
+      delta < 0 ? (i + 1) % SCREEN_COUNT : (i - 1 + SCREEN_COUNT) % SCREEN_COUNT,
     )
   }
 
