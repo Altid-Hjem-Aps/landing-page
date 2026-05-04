@@ -18,7 +18,7 @@ import {
   ICON_4,
   ICON_5,
   ICON_6,
-} from './image-data'
+} from './image-urls'
 
 const ICONS = [
   { src: ICON_5,   alt: 'Hjem' },
