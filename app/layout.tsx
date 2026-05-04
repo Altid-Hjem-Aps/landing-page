@@ -13,9 +13,11 @@ export const metadata: Metadata = {
   title: 'Altid Hjem – Skriv dig på ventelisten',
   description: 'Altid Hjem samler hjemmets faste udgifter i én app – ét overblik, ét login, én regning.',
   icons: {
-    icon: '/icon.svg',
-    shortcut: '/icon.svg',
-    apple: '/icon.svg',
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: { url: '/icon.svg', type: 'image/svg+xml' },
   },
 }
 

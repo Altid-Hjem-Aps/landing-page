@@ -59,7 +59,7 @@ export default function Nav() {
       }}
     >
       <a href="/">
-        <Logo className="h-11 w-auto text-forest" />
+        <Logo className="h-11 w-auto" variant="dark" />
       </a>
       <button
         type="button"
