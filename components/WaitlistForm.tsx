@@ -6,32 +6,34 @@ import { AltidMark } from '@/components/AltidMark'
 type View = 'form' | 'questions' | 'success'
 
 const DK_ELECTRICITY_PROVIDERS = [
+  'Aal El-Net',
+  'Andel Energi',
+  '★ Altid Energi',
   'AURA Energi',
   'Clever',
-  'EWII',
   'Energi Fyn',
   'Energi Viborg',
+  'EWII',
   'Forsyning Helsingør',
   'Gasel',
   'Goenergi',
   'Jysk Energi',
   'Modstrøm',
-  'NRGi',
   'Natur-Energi',
   'Nord Energi',
   'Norlys',
+  'NRGi',
   'OK',
   'Ravdex',
-  'SE (Stofa Energi)',
-  'SEAS-NVE',
   'Scanenergi',
+  'SEAS-NVE',
+  'SE (Stofa Energi)',
   'Strøm Fyn',
   'TREFOR El',
-  'Vindstød',
   'Velkommen',
   'Verdo',
+  'Vindstød',
   'Ørsted',
-  'Aal El-Net',
   'Andet',
 ]
 
@@ -136,7 +138,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
     if (view === 'questions') {
       return (
         <form id={id} onSubmit={e => { e.preventDefault(); submitStep2() }} className="rounded-[20px] p-6 sm:p-10" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
-          <h2 className="text-xl font-bold mb-1 text-white">Hjælp os med at gøre Altid Hjem endnu bedre.</h2>
+          <h2 className="text-xl font-bold mb-1 text-white">Fortæl os lidt om dig.</h2>
           <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.5)' }}>Svar på 4 korte spørgsmål.</p>
           <div className="flex flex-col gap-3 mb-5">
             <div>
@@ -144,7 +146,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
               <input type="number" value={age} onChange={e => setAge(e.target.value)} placeholder="Din alder" style={darkInputStyle} className="placeholder:text-white/40" />
             </div>
             <div>
-              <label style={darkLabelStyle}>Antal i husstanden</label>
+              <label style={darkLabelStyle}>Antal personer i husstanden</label>
               <select value={household} onChange={e => setHousehold(e.target.value)} style={{ ...darkInputStyle, cursor: 'pointer' }} className="appearance-none">
                 <option value="" disabled>Vælg antal</option>
                 {['1','2','3','4','5+'].map(o => <option key={o}>{o}</option>)}
@@ -220,12 +222,12 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
     return (
       <form id={id} onSubmit={e => { e.preventDefault(); submitStep2() }}>
         <div className="rounded-2xl p-2 mb-3" style={{ background: 'rgba(168,224,99,0.08)', border: '1px solid rgba(168,224,99,0.2)' }}>
-          <h3 className="text-white font-bold text-lg px-3 pt-3 mb-1">Hjælp os med at gøre det bedre.</h3>
+          <h3 className="text-white font-bold text-lg px-3 pt-3 mb-1">Fortæl os lidt om dig.</h3>
           <p className="text-sm px-3 pb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>4 korte spørgsmål.</p>
           <div className="flex flex-col gap-1.5 px-1 pb-1">
             {[
               { label: 'Alder', el: <input type="number" value={age} onChange={e => setAge(e.target.value)} placeholder="Din alder" className="w-full px-4 rounded-xl text-[15px] outline-none placeholder:text-[#999] bg-white" style={{ height: 50, fontFamily: 'var(--font-onest)', color: 'var(--text-dark)' }} /> },
-              { label: 'Antal i husstanden', el: <select value={household} onChange={e => setHousehold(e.target.value)} className="w-full px-4 rounded-xl text-[15px] outline-none appearance-none bg-white cursor-pointer" style={{ height: 50, fontFamily: 'var(--font-onest)', color: household ? 'var(--text-dark)' : '#999' }}><option value="" disabled>Vælg antal</option>{['1','2','3','4','5+'].map(o => <option key={o}>{o}</option>)}</select> },
+              { label: 'Antal personer i husstanden', el: <select value={household} onChange={e => setHousehold(e.target.value)} className="w-full px-4 rounded-xl text-[15px] outline-none appearance-none bg-white cursor-pointer" style={{ height: 50, fontFamily: 'var(--font-onest)', color: household ? 'var(--text-dark)' : '#999' }}><option value="" disabled>Vælg antal</option>{['1','2','3','4','5+'].map(o => <option key={o}>{o}</option>)}</select> },
               { label: 'Hvorfor har du skrevet dig op?', el: <input value={why} onChange={e => setWhy(e.target.value)} placeholder="Fortæl os kort..." className="w-full px-4 rounded-xl text-[15px] outline-none placeholder:text-[#999] bg-white" style={{ height: 50, fontFamily: 'var(--font-onest)', color: 'var(--text-dark)' }} /> },
               { label: 'Hvilket elselskab har du i dag?', el: <select value={electricity} onChange={e => setElectricity(e.target.value)} className="w-full px-4 rounded-xl text-[15px] outline-none appearance-none bg-white cursor-pointer" style={{ height: 50, fontFamily: 'var(--font-onest)', color: electricity ? 'var(--text-dark)' : '#999' }}><option value="" disabled>Vælg elselskab</option>{DK_ELECTRICITY_PROVIDERS.map(o => <option key={o}>{o}</option>)}</select> },
             ].map(({ label, el }) => (
