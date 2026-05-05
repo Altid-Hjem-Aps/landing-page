@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Waitlist CTA Clicked",
+    "description": "Fires when the hero or nav CTA button is clicked to open the waitlist form."
+  },
+  {
+    "name": "Waitlist Step 1 Submitted",
+    "description": "Fires when a user successfully submits their name, email, and phone in step 1."
+  },
+  {
+    "name": "Waitlist Step 1 Failed",
+    "description": "Fires when step 1 submission fails due to validation or API error."
+  },
+  {
+    "name": "Waitlist Step 2 Submitted",
+    "description": "Fires when a user submits the optional survey questions in step 2."
+  },
+  {
+    "name": "Waitlist Step 2 Skipped",
+    "description": "Fires when a user skips the step 2 survey by clicking Ikke nu."
+  },
+  {
+    "name": "Founder Video Played",
+    "description": "Fires when the user clicks play on the founder video."
+  },
+  {
+    "name": "Waitlist Signup Confirmed",
+    "description": "Fires server-side when the API confirms a successful waitlist signup."
+  }
+]
