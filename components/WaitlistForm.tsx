@@ -41,10 +41,11 @@ const DK_ELECTRICITY_PROVIDERS = [
 interface Props {
   variant?: 'light' | 'dark'
   id?: string
+  defaultView?: View
 }
 
-export default function WaitlistForm({ variant = 'light', id }: Props) {
-  const [view, setView] = useState<View>('form')
+export default function WaitlistForm({ variant = 'light', id, defaultView = 'form' }: Props) {
+  const [view, setView] = useState<View>(defaultView)
   const [expanded, setExpanded] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
