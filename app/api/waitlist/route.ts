@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendWaitlistConfirmation, scheduleReleaseEmail } from '@/lib/send-email'
 import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
+import { trackServer, identifyServer } from '@/lib/amplitude.server'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -63,6 +64,10 @@ export async function POST(req: NextRequest) {
     sendWaitlistConfirmation(cleanName, cleanEmail).catch(console.error)
     scheduleReleaseEmail(cleanName, cleanEmail).catch(console.error)
     sendWaitlistConfirmationSms(cleanName, cleanPhone).catch(console.error)
+
+    const userId = data.id as string
+    identifyServer(userId, { waitlist_signup: true })
+    trackServer('Waitlist Signup Confirmed', { signup_id: userId }, userId)
 
     return NextResponse.json({ success: true, id: data.id })
   }

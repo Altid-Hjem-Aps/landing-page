@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import * as amplitude from '@amplitude/unified'
 import { Logo } from '@/components/Logo'
 
 const HIDE_THRESHOLD = 80
@@ -42,6 +43,7 @@ export default function Nav() {
   }, [])
 
   function handleCTA() {
+    amplitude.track('Waitlist CTA Clicked', { source: 'nav' })
     window.dispatchEvent(new CustomEvent('expand-waitlist'))
   }
 

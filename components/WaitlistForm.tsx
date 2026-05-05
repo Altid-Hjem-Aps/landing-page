@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import * as amplitude from '@amplitude/unified'
 import { AltidMark } from '@/components/AltidMark'
 
 type View = 'form' | 'questions' | 'success'
@@ -91,8 +92,10 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
     setLoading(false)
     if (!res.ok) {
       setError(data.error ?? 'Noget gik galt. Prøv igen.')
+      amplitude.track('Waitlist Step 1 Failed', { error: data.error ?? 'unknown', status: res.status })
       return
     }
+    amplitude.track('Waitlist Step 1 Submitted')
     setSignupId(data.id)
     setView('questions')
   }
@@ -105,6 +108,12 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
       body: JSON.stringify({ id: signupId, age, household, why, electricity, step: 2 }),
     })
     setLoading(false)
+    amplitude.track('Waitlist Step 2 Submitted', {
+      has_age: !!age,
+      has_household: !!household,
+      has_why: !!why,
+      electricity_provider: electricity || null,
+    })
     setView('success')
   }
 
@@ -168,7 +177,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
             <button type="submit" disabled={loading} className="w-full py-3.5 rounded-[10px] text-[15px] font-semibold disabled:opacity-60" style={{ background: 'var(--sage)', color: 'var(--forest)' }}>
               {loading ? 'Sender...' : 'Indsend'}
             </button>
-            <button type="button" onClick={() => setView('success')} className="w-full py-3 rounded-[10px] text-sm font-medium border" style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.5)' }}>
+            <button type="button" onClick={() => { amplitude.track('Waitlist Step 2 Skipped'); setView('success') }} className="w-full py-3 rounded-[10px] text-sm font-medium border" style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.5)' }}>
               Ikke nu
             </button>
           </div>
@@ -242,7 +251,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
           <button type="submit" disabled={loading} className="w-full py-4 rounded-2xl text-[15px] font-semibold disabled:opacity-60" style={{ background: 'var(--sage)', color: 'var(--forest)' }}>
             {loading ? 'Sender...' : 'Indsend'}
           </button>
-          <button type="button" onClick={() => setView('success')} className="w-full py-3 rounded-2xl text-sm font-medium" style={{ color: 'rgba(255,255,255,0.45)', border: '1px solid rgba(255,255,255,0.15)' }}>
+          <button type="button" onClick={() => { amplitude.track('Waitlist Step 2 Skipped'); setView('success') }} className="w-full py-3 rounded-2xl text-sm font-medium" style={{ color: 'rgba(255,255,255,0.45)', border: '1px solid rgba(255,255,255,0.15)' }}>
             Ikke nu
           </button>
         </div>
@@ -330,7 +339,7 @@ export default function WaitlistForm({ variant = 'light', id }: Props) {
       {error && <p className="text-sm mb-2 text-center" style={{ color: '#ff8080' }}>{error}</p>}
       <button
         type={expanded ? 'submit' : 'button'}
-        onClick={!expanded ? () => { setExpanded(true); setTimeout(() => document.getElementById('name-input-hero')?.focus(), 60) } : undefined}
+        onClick={!expanded ? () => { amplitude.track('Waitlist CTA Clicked', { source: 'hero' }); setExpanded(true); setTimeout(() => document.getElementById('name-input-hero')?.focus(), 60) } : undefined}
         disabled={expanded && loading}
         className="w-full py-4 rounded-2xl text-[15px] font-semibold disabled:opacity-60"
         style={{

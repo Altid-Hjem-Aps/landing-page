@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import * as amplitude from '@amplitude/unified'
 import dynamic from 'next/dynamic'
 
 const PLAYBACK_ID = 'DyDNFoKamidSWoQJTmOPUc02utl7gORPYm7HycdeFZVU'
@@ -123,6 +124,7 @@ export default function FounderVideo() {
     const player = wrapper.querySelector('mux-player') as
       | (HTMLElement & { play?: () => Promise<void> })
       | null
+    amplitude.track('Founder Video Played')
     setPaused(false)
     void player?.play?.()?.catch(() => {
       // Swallow autoplay rejection — user can tap again.
