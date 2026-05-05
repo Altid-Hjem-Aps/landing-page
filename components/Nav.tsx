@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import * as amplitude from '@amplitude/unified'
+import * as amplitude from '@amplitude/analytics-browser'
 import { Logo } from '@/components/Logo'
 
 const HIDE_THRESHOLD = 80

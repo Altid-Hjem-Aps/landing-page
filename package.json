@@ -10,8 +10,9 @@
     "sync-templates": "tsx --env-file=.env.local scripts/sync-resend-templates.ts"
   },
   "dependencies": {
+    "@amplitude/analytics-browser": "^2.42.0",
     "@amplitude/analytics-node": "^1.5.57",
-    "@amplitude/unified": "^1.1.0",
+    "@amplitude/plugin-session-replay-browser": "^1.28.1",
     "@mux/mux-player-react": "^3.12.0",
     "@react-email/components": "^1.0.12",
     "@supabase/supabase-js": "^2.105.1",

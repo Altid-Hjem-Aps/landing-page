@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import * as amplitude from '@amplitude/unified'
+import * as amplitude from '@amplitude/analytics-browser'
 import dynamic from 'next/dynamic'
 
 const PLAYBACK_ID = 'DyDNFoKamidSWoQJTmOPUc02utl7gORPYm7HycdeFZVU'

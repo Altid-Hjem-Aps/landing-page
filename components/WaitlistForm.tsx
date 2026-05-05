@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import * as amplitude from '@amplitude/unified'
+import * as amplitude from '@amplitude/analytics-browser'
 import { AltidMark } from '@/components/AltidMark'
 
 type View = 'form' | 'questions' | 'success'
