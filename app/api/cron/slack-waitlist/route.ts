@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getResend } from '@/lib/resend'
 
 const CHANNEL = process.env.SLACK_CHANNEL_ID!
-const MSG_PREFIX = '🏠 *Venteliste'
+const MSG_PREFIX = '*Venteliste'
 
 async function slack(method: string, body: Record<string, unknown>) {
   const res = await fetch(`https://slack.com/api/${method}`, {
@@ -37,11 +37,12 @@ function copenhagenTodayStartUnix(): number {
   return Math.floor(midnightUtc / 1000)
 }
 
-async function countTodayDeliveredEmails(): Promise<number> {
+async function getEmailCounts(): Promise<{ today: number; total: number }> {
   const resend = getResend()
   const todayStartMs = copenhagenTodayStartUnix() * 1000
   const todayEndMs = todayStartMs + 86_400_000
-  let count = 0
+  let today = 0
+  let total = 0
   let after: string | undefined
 
   while (true) {
@@ -51,21 +52,22 @@ async function countTodayDeliveredEmails(): Promise<number> {
     const emails = res.data.data
     if (emails.length === 0) break
 
-    let done = false
     for (const email of emails) {
-      const t = new Date(email.created_at).getTime()
-      if (t < todayStartMs) { done = true; break }
-      if (t < todayEndMs && email.last_event === 'delivered' && !email.scheduled_at) count++
+      if (email.last_event === 'delivered' && !email.scheduled_at) {
+        total++
+        const t = new Date(email.created_at).getTime()
+        if (t >= todayStartMs && t < todayEndMs) today++
+      }
     }
 
-    if (done || !res.data.has_more) break
+    if (!res.data.has_more) break
     after = emails[emails.length - 1].id
   }
 
-  return count
+  return { today, total }
 }
 
-function buildText(count: number): string {
+function buildText(today: number, total: number): string {
   const now = new Date()
   const date = new Intl.DateTimeFormat('da-DK', {
     timeZone: 'Europe/Copenhagen',
@@ -78,8 +80,7 @@ function buildText(count: number): string {
     hour: '2-digit',
     minute: '2-digit',
   }).format(now)
-  const noun = count === 1 ? 'tilmelding' : 'tilmeldinger'
-  return `${MSG_PREFIX} — ${date}*\n*${count}* ${noun} i dag — sidst opdateret kl. ${time}`
+  return `${MSG_PREFIX} — ${date}*\nI dag: *${today}* — I alt: *${total}* — Sidst opdateret kl. ${time}`
 }
 
 export async function GET(req: NextRequest) {
@@ -89,8 +90,8 @@ export async function GET(req: NextRequest) {
 
   const todayStart = copenhagenTodayStartUnix()
 
-  const [count, history] = await Promise.all([
-    countTodayDeliveredEmails(),
+  const [{ today, total }, history] = await Promise.all([
+    getEmailCounts(),
     slack('conversations.history', {
       channel: CHANNEL,
       oldest: String(todayStart),
@@ -100,7 +101,7 @@ export async function GET(req: NextRequest) {
 
   const messages = (history.messages ?? []) as Array<{ ts: string; text?: string }>
   const todayMsg = messages.find(m => m.text?.startsWith(MSG_PREFIX))
-  const text = buildText(count)
+  const text = buildText(today, total)
 
   if (todayMsg) {
     await slack('chat.update', { channel: CHANNEL, ts: todayMsg.ts, text })
@@ -108,5 +109,5 @@ export async function GET(req: NextRequest) {
     await slack('chat.postMessage', { channel: CHANNEL, text })
   }
 
-  return NextResponse.json({ ok: true, count })
+  return NextResponse.json({ ok: true, today, total })
 }
