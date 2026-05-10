@@ -111,20 +111,19 @@ export async function GET(req: NextRequest) {
   const mainText = buildMainText(today, total)
   const threadText = buildThreadText(perDay)
 
-  // Find the persistent pinned message
-  const pinsRes = await slack('pins.list', { channel: CHANNEL })
-  const pins = (pinsRes.items ?? []) as Array<{ message?: { ts: string; text?: string } }>
-  const pinned = pins.find(p => p.message?.text?.startsWith(MAIN_PREFIX))
+  // Find the existing waitlist message in channel history
+  const histRes = await slack('conversations.history', { channel: CHANNEL, limit: 50 })
+  const messages = (histRes.messages ?? []) as Array<{ ts: string; text?: string }>
+  const existing = messages.find(m => m.text?.startsWith(MAIN_PREFIX))
 
   let mainTs: string
 
-  if (pinned?.message) {
-    mainTs = pinned.message.ts
+  if (existing) {
+    mainTs = existing.ts
     await slack('chat.update', { channel: CHANNEL, ts: mainTs, text: mainText })
   } else {
     const postRes = await slack('chat.postMessage', { channel: CHANNEL, text: mainText })
     mainTs = postRes.ts as string
-    await slack('pins.add', { channel: CHANNEL, timestamp: mainTs })
   }
 
   // Find and update (or create) the thread reply with daily breakdown
