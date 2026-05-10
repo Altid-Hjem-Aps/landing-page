@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getResend } from '@/lib/resend'
 
 const CHANNEL = process.env.SLACK_CHANNEL_ID!
-const MSG_PREFIX = '*Venteliste'
+const MAIN_PREFIX = '*Venteliste'
+const THREAD_PREFIX = '*Tilmeldinger per dag'
 
 async function slack(method: string, body: Record<string, unknown>) {
   const res = await fetch(`https://slack.com/api/${method}`, {
@@ -14,6 +15,15 @@ async function slack(method: string, body: Record<string, unknown>) {
     body: JSON.stringify(body),
   })
   return res.json() as Promise<Record<string, unknown>>
+}
+
+function copenhagenDateKey(date: Date): string {
+  return new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Europe/Copenhagen',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date)
 }
 
 function copenhagenTodayStartUnix(): number {
@@ -29,20 +39,19 @@ function copenhagenTodayStartUnix(): number {
     hour12: false,
   }).formatToParts(now)
   const get = (type: string) => Number(parts.find(p => p.type === type)!.value)
-  // Compute the Copenhagen UTC offset at this moment
   const cphAsUtc = Date.UTC(get('year'), get('month') - 1, get('day'), get('hour'), get('minute'), get('second'))
   const offsetMs = cphAsUtc - now.getTime()
-  // Midnight Copenhagen in UTC = UTC midnight of that date minus the offset
   const midnightUtc = Date.UTC(get('year'), get('month') - 1, get('day')) - offsetMs
   return Math.floor(midnightUtc / 1000)
 }
 
-async function getEmailCounts(): Promise<{ today: number; total: number }> {
+async function getEmailCounts(): Promise<{ today: number; total: number; perDay: Record<string, number> }> {
   const resend = getResend()
   const todayStartMs = copenhagenTodayStartUnix() * 1000
   const todayEndMs = todayStartMs + 86_400_000
   let today = 0
   let total = 0
+  const perDay: Record<string, number> = {}
   let after: string | undefined
 
   while (true) {
@@ -57,6 +66,8 @@ async function getEmailCounts(): Promise<{ today: number; total: number }> {
         total++
         const t = new Date(email.created_at).getTime()
         if (t >= todayStartMs && t < todayEndMs) today++
+        const key = copenhagenDateKey(new Date(email.created_at))
+        perDay[key] = (perDay[key] ?? 0) + 1
       }
     }
 
@@ -64,23 +75,31 @@ async function getEmailCounts(): Promise<{ today: number; total: number }> {
     after = emails[emails.length - 1].id
   }
 
-  return { today, total }
+  return { today, total, perDay }
 }
 
-function buildText(today: number, total: number): string {
+function buildMainText(today: number, total: number): string {
   const now = new Date()
-  const date = new Intl.DateTimeFormat('da-DK', {
-    timeZone: 'Europe/Copenhagen',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(now)
   const time = new Intl.DateTimeFormat('da-DK', {
     timeZone: 'Europe/Copenhagen',
     hour: '2-digit',
     minute: '2-digit',
   }).format(now)
-  return `${MSG_PREFIX} — ${date}*\nI dag: *${today}* — I alt: *${total}* — Sidst opdateret kl. ${time}`
+  return `${MAIN_PREFIX} — Altid Hjem*\nI dag: *${today}* — I alt: *${total}* — Sidst opdateret kl. ${time}`
+}
+
+function buildThreadText(perDay: Record<string, number>): string {
+  const sorted = Object.entries(perDay).sort((a, b) => b[0].localeCompare(a[0]))
+  const lines = sorted.map(([key, count]) => {
+    const date = new Date(key + 'T12:00:00Z')
+    const formatted = new Intl.DateTimeFormat('da-DK', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(date)
+    return `${formatted}: *${count}*`
+  })
+  return `${THREAD_PREFIX}*\n${lines.join('\n')}`
 }
 
 export async function GET(req: NextRequest) {
@@ -88,25 +107,35 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const todayStart = copenhagenTodayStartUnix()
+  const { today, total, perDay } = await getEmailCounts()
+  const mainText = buildMainText(today, total)
+  const threadText = buildThreadText(perDay)
 
-  const [{ today, total }, history] = await Promise.all([
-    getEmailCounts(),
-    slack('conversations.history', {
-      channel: CHANNEL,
-      oldest: String(todayStart),
-      limit: 100,
-    }),
-  ])
+  // Find the persistent pinned message
+  const pinsRes = await slack('pins.list', { channel: CHANNEL })
+  const pins = (pinsRes.items ?? []) as Array<{ message?: { ts: string; text?: string } }>
+  const pinned = pins.find(p => p.message?.text?.startsWith(MAIN_PREFIX))
 
-  const messages = (history.messages ?? []) as Array<{ ts: string; text?: string }>
-  const todayMsg = messages.find(m => m.text?.startsWith(MSG_PREFIX))
-  const text = buildText(today, total)
+  let mainTs: string
 
-  if (todayMsg) {
-    await slack('chat.update', { channel: CHANNEL, ts: todayMsg.ts, text })
+  if (pinned?.message) {
+    mainTs = pinned.message.ts
+    await slack('chat.update', { channel: CHANNEL, ts: mainTs, text: mainText })
   } else {
-    await slack('chat.postMessage', { channel: CHANNEL, text })
+    const postRes = await slack('chat.postMessage', { channel: CHANNEL, text: mainText })
+    mainTs = postRes.ts as string
+    await slack('pins.add', { channel: CHANNEL, timestamp: mainTs })
+  }
+
+  // Find and update (or create) the thread reply with daily breakdown
+  const repliesRes = await slack('conversations.replies', { channel: CHANNEL, ts: mainTs, limit: 20 })
+  const replies = (repliesRes.messages ?? []) as Array<{ ts: string; text?: string }>
+  const threadReply = replies.slice(1).find(m => m.text?.startsWith(THREAD_PREFIX))
+
+  if (threadReply) {
+    await slack('chat.update', { channel: CHANNEL, ts: threadReply.ts, text: threadText })
+  } else {
+    await slack('chat.postMessage', { channel: CHANNEL, thread_ts: mainTs, text: threadText })
   }
 
   return NextResponse.json({ ok: true, today, total })
