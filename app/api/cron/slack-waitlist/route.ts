@@ -128,6 +128,7 @@ export async function GET(req: NextRequest) {
 
   // Find and update (or create) the thread reply with daily breakdown
   const repliesRes = await slack('conversations.replies', { channel: CHANNEL, ts: mainTs, limit: 20 })
+  console.log('conversations.replies response:', JSON.stringify(repliesRes))
   const replies = (repliesRes.messages ?? []) as Array<{ ts: string; text?: string }>
   const threadReply = replies.slice(1)[0]
 
@@ -137,5 +138,5 @@ export async function GET(req: NextRequest) {
     await slack('chat.postMessage', { channel: CHANNEL, thread_ts: mainTs, text: threadText })
   }
 
-  return NextResponse.json({ ok: true, today, total })
+  return NextResponse.json({ ok: true, today, total, debug: { mainTs, repliesCount: replies.length, threadReplyTs: threadReply?.ts } })
 }
