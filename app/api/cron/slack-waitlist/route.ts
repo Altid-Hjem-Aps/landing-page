@@ -5,14 +5,19 @@ const CHANNEL = process.env.SLACK_CHANNEL_ID!
 const MAIN_PREFIX = '*Venteliste'
 const THREAD_PREFIX = '*Tilmeldinger per dag'
 
-async function slack(method: string, body: Record<string, unknown>) {
+async function slack(method: string, params: Record<string, unknown>, useGet = false) {
+  const token = process.env.SLACK_BOT_TOKEN
+  if (useGet) {
+    const qs = new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)])).toString()
+    const res = await fetch(`https://slack.com/api/${method}?${qs}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res.json() as Promise<Record<string, unknown>>
+  }
   const res = await fetch(`https://slack.com/api/${method}`, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(params),
   })
   return res.json() as Promise<Record<string, unknown>>
 }
@@ -112,7 +117,7 @@ export async function GET(req: NextRequest) {
   const threadText = buildThreadText(perDay)
 
   // Find the existing waitlist message in channel history
-  const histRes = await slack('conversations.history', { channel: CHANNEL, limit: 50 })
+  const histRes = await slack('conversations.history', { channel: CHANNEL, limit: 50 }, true)
   const messages = (histRes.messages ?? []) as Array<{ ts: string; text?: string }>
   const existing = messages.find(m => m.text?.startsWith(MAIN_PREFIX))
 
@@ -127,7 +132,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Find and update (or create) the thread reply with daily breakdown
-  const repliesRes = await slack('conversations.replies', { channel: CHANNEL, ts: mainTs, limit: 20 })
+  const repliesRes = await slack('conversations.replies', { channel: CHANNEL, ts: mainTs, limit: 20 }, true)
   console.log('conversations.replies response:', JSON.stringify(repliesRes))
   const replies = (repliesRes.messages ?? []) as Array<{ ts: string; text?: string }>
   const threadReply = replies.slice(1)[0]
