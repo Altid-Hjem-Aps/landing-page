@@ -138,5 +138,5 @@ export async function GET(req: NextRequest) {
     await slack('chat.postMessage', { channel: CHANNEL, thread_ts: mainTs, text: threadText })
   }
 
-  return NextResponse.json({ ok: true, today, total, debug: { mainTs, repliesCount: replies.length, threadReplyTs: threadReply?.ts } })
+  return NextResponse.json({ ok: true, today, total, debug: { mainTs, repliesOk: repliesRes.ok, repliesError: repliesRes.error, repliesCount: replies.length, threadReplyTs: threadReply?.ts } })
 }
