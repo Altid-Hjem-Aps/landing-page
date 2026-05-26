@@ -9,7 +9,7 @@ interface Props {
 export default function BatchRolloutEmail({ firstName }: Props) {
   return (
     <EmailLayout>
-      <Text style={heading}>Større interesse end vi turde håbe.</Text>
+      <Text style={heading}>Større interesse end vi turde håbe</Text>
 
       <Text style={body}>Hej {firstName},</Text>
 
