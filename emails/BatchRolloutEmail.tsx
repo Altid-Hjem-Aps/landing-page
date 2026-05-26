@@ -9,17 +9,17 @@ interface Props {
 export default function BatchRolloutEmail({ firstName }: Props) {
   return (
     <EmailLayout>
-      <Text style={heading}>Større interesse end vi turde håbe</Text>
+      <Text style={heading}>Større interesse end vi turde håbe på</Text>
 
       <Text style={body}>Hej {firstName},</Text>
 
       <Text style={body}>Tak fordi du skrev dig op til Altid Hjem.</Text>
 
       <Text style={body}>
-        Tilmeldingerne til ventelisten har været langt over, hvad vi havde
+        Der har været langt flere tilmeldinger til ventelisten, end vi havde
         regnet med. Derfor har vi besluttet at åbne adgangen til app&rsquo;en i
         mindre grupper &ndash; så vi kan være sikre på, at oplevelsen bliver god
-        for hver enkelt af jer fra første øjeblik.
+        for dig fra første øjeblik.
       </Text>
 
       <Text style={body}>
