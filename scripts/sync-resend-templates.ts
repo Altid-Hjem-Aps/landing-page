@@ -11,6 +11,7 @@ import { render } from '@react-email/render'
 import { Resend } from 'resend'
 import WaitlistConfirmation from '../emails/WaitlistConfirmation'
 import ReleaseEmail from '../emails/ReleaseEmail'
+import BatchRolloutEmail from '../emails/BatchRolloutEmail'
 
 const resend = new Resend(process.env.RESEND_API_KEY ?? process.env.resend_api_key)
 
@@ -32,6 +33,13 @@ const TEMPLATES = [
     subject: 'Den er her.',
     from: 'Altid Hjem <hej@altidhjem.dk>',
     react: React.createElement(ReleaseEmail, { firstName: PLACEHOLDER }),
+  },
+  {
+    alias: 'waitlist-batch-rollout',
+    name: 'Batch rollout — Større interesse',
+    subject: 'En lille opdatering om Altid Hjem',
+    from: 'Altid Hjem <hej@altidhjem.dk>',
+    react: React.createElement(BatchRolloutEmail, { firstName: PLACEHOLDER }),
   },
 ]
 

@@ -47,7 +47,7 @@ export async function scheduleReleaseEmail(name: string, email: string) {
     to: email,
     scheduledAt: RELEASE_SEND_TIME.toISOString(),
     template: {
-      id: 'waitlist-release',
+      id: 'waitlist-batch-rollout',
       variables: { first_name: firstName(name) },
     },
   })
