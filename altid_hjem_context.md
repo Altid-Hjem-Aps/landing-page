@@ -87,12 +87,12 @@ This product requires real integrations: bank/PSD2 access, calendar APIs, insura
 Alex works in a modern full-stack setup. Default to these unless he specifies otherwise:
 
 - **Frontend:** Next.js (App Router), TypeScript, Tailwind CSS
-- **Backend:** Supabase (Postgres + Auth + Realtime + Storage)
+- **Backend:** Custom API (e.g. `api.altidhjem.dk`) — confirm the actual database / auth layer with Alex before assuming a specific provider
 - **Hosting/Deploy:** Vercel
 - **Payments:** Stripe
 - **AI/LLM:** Anthropic Claude API (claude-sonnet-4-20250514 as default model)
 - **Email:** Resend
-- **Automation/Jobs:** GitHub Actions or Supabase Edge Functions
+- **Automation/Jobs:** GitHub Actions
 - **Project management:** Linear
 
 Do not suggest Make, n8n, or similar no-code automation tools. Alex already knows these and has moved past them.
@@ -135,6 +135,6 @@ If Alex asks you to build something without full context, ask:
 1. Is this a feature inside the AltidHjem app, or a standalone tool?
 2. Does it require a live third-party integration, or can we mock the data source for now?
 3. Is this for internal use (Alex/team) or customer-facing?
-4. Does this need to plug into Supabase auth / existing user sessions?
+4. Does this need to plug into the backend auth / existing user sessions?
 
 Do not assume answers to these. They affect architecture significantly.

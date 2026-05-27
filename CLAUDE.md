@@ -13,7 +13,7 @@ Build the **Altid Hjem landing page**.
 ## Tech Stack
 
 - **Frontend:** Next.js (App Router), TypeScript, Tailwind CSS
-- **Backend/DB:** Supabase (Postgres + Auth + Storage)
+- **Backend:** External API at `api.altidhjem.dk` (waitlist + signup endpoints). This landing page does not own its own database.
 - **Deploy:** Vercel
 - **Email:** Resend
 - **Payments:** Stripe (not needed for landing page)
@@ -37,5 +37,5 @@ Simple, fair, no hidden fees. Clean Scandinavian minimalism — not SaaS, not en
 - No `src/` directory
 - Tailwind for all styling — no CSS modules unless unavoidable
 - TypeScript strict mode
-- Supabase client initialized once in `lib/supabase.ts`
+- Backend calls go through `lib/api.ts` (proxy to `api.altidhjem.dk`)
 - Environment variables in `.env.local`, never committed
