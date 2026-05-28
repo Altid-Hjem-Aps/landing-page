@@ -12,11 +12,17 @@ export default function WaitlistConfirmation({ firstName }: Props) {
       <Text style={heading}>Godt at have dig med</Text>
 
       <Text style={body}>Hej {firstName},</Text>
+
       <Text style={body}>
-        Vi åbner appen i små grupper og giver dig besked, så snart det er din tur.
+        Altid Hjem samler dine boligudgifter ét sted &ndash; strøm, forsikring,
+        internet og alt det andet &ndash; så du får overblikket, vi alle har
+        manglet.
       </Text>
 
-      <Text style={body}>Indtil da holder vi dig opdateret.</Text>
+      <Text style={body}>
+        For at sikre den bedste oplevelse fra start åbner vi appen i mindre
+        grupper. Du hører fra os, så snart det er din tur.
+      </Text>
 
       <Text style={closing}>
         Mange hilsner
