@@ -7,18 +7,22 @@ export const metadata: Metadata = {
   description: 'Har du brug for hjælp til Altid Hjem-appen? Skriv til os på hej@altidhjem.dk, så vender vi tilbage hurtigst muligt.',
 }
 
+const energiLink = (
+  <a href="https://altidenergi.dk" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:opacity-80">altidenergi.dk</a>
+)
+
 const faq = [
   {
     q: 'Jeg kan ikke logge ind',
-    a: 'Har du problemer med at logge ind, så skriv til os på hej@altidhjem.dk – så hjælper vi dig videre.',
+    a: <>Har du problemer med at logge ind, så skriv til os på <a href="mailto:hej@altidhjem.dk" className="underline underline-offset-2 hover:opacity-80">hej@altidhjem.dk</a> – så hjælper vi dig videre.</>,
   },
   {
     q: 'Spørgsmål til elforbrug og priser',
-    a: 'Ser noget forkert ud i dit elforbrug eller dine priser, eller mangler der data, så kontakt os på hej@altidhjem.dk – så kigger vi på det.',
+    a: <>Dit elforbrug og dine elpriser hører under Altid Energi. Du finder hjælp og kontakt på {energiLink}.</>,
   },
   {
     q: 'Spørgsmål til opladning',
-    a: 'Har du spørgsmål til opladning, er du altid velkommen til at skrive til os på hej@altidhjem.dk.',
+    a: <>Spørgsmål til opladning hører under Altid Energi. Du finder hjælp og kontakt på {energiLink}.</>,
   },
 ]
 
