@@ -41,6 +41,14 @@ export default function Home() {
           >
             Altid Energi
           </a>
+          {' · '}
+          <a
+            href="/kontakt"
+            className="underline-offset-2 hover:underline"
+            style={{ color: 'rgba(255,255,255,0.85)' }}
+          >
+            Support
+          </a>
         </p>
       </footer>
     </>
