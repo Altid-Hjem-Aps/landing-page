@@ -10,15 +10,15 @@ export const metadata: Metadata = {
 const faq = [
   {
     q: 'Jeg kan ikke logge ind',
-    a: 'Tjek at du bruger den samme e-mailadresse, som du oprettede dig med. Virker det stadig ikke, så skriv til os på hej@altidhjem.dk, så hjælper vi dig videre.',
+    a: 'Har du problemer med at logge ind, så skriv til os på hej@altidhjem.dk – så hjælper vi dig videre.',
   },
   {
-    q: 'Hvor ser jeg mit elforbrug og mine priser?',
-    a: 'Dit elforbrug og dine priser samles i appens overblik, så snart din konto er koblet til Altid Energi. Mangler der data, eller ser noget forkert ud, så kontakt os – så kigger vi på det.',
+    q: 'Spørgsmål til elforbrug og priser',
+    a: 'Ser noget forkert ud i dit elforbrug eller dine priser, eller mangler der data, så kontakt os på hej@altidhjem.dk – så kigger vi på det.',
   },
   {
-    q: 'Hvordan fungerer opladning?',
-    a: 'Opladning styres fra appen, hvor du kan følge og planlægge din ladning. Har du spørgsmål til opsætning eller en konkret ladning, er du altid velkommen til at skrive til os.',
+    q: 'Spørgsmål til opladning',
+    a: 'Har du spørgsmål til opladning, er du altid velkommen til at skrive til os på hej@altidhjem.dk.',
   },
 ]
 
