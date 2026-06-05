@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { sendWaitlistConfirmation, scheduleReleaseEmail } from '@/lib/send-email'
 import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
 import { trackServer, identifyServer } from '@/lib/amplitude.server'
+import { recordReferral } from '@/lib/db'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
     if (isRateLimited(ip))
       return NextResponse.json({ success: false, error: 'For mange forsøg. Prøv igen om en time.' }, { status: 429 })
 
-    const { email, name, phone } = body
+    const { email, name, phone, referredBy } = body
 
     if (!email || !EMAIL_RE.test(email))
       return NextResponse.json({ success: false, error: 'Ugyldig e-mail' }, { status: 400 })
@@ -64,6 +65,15 @@ export async function POST(req: NextRequest) {
     sendWaitlistConfirmation(cleanName, cleanEmail).catch(console.error)
     scheduleReleaseEmail(cleanName, cleanEmail).catch(console.error)
     sendWaitlistConfirmationSms(cleanName, cleanPhone).catch(console.error)
+
+    // If they arrived via someone's referral link (?ref=CODE), record it.
+    if (referredBy) {
+      recordReferral({
+        referrerCode: String(referredBy),
+        referredEmail: cleanEmail,
+        referredId: data.id as string,
+      }).catch(console.error)
+    }
 
     const userId = data.id as string
     identifyServer(userId, { waitlist_signup: true })

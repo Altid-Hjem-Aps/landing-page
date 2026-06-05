@@ -50,6 +50,13 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [signupId, setSignupId] = useState('')
+  const [referredBy, setReferredBy] = useState('')
+
+  // Capture referral code from the URL (?ref=CODE) once on mount
+  useEffect(() => {
+    const ref = new URLSearchParams(window.location.search).get('ref')
+    if (ref) setReferredBy(ref.trim())
+  }, [])
 
   const [phone, setPhone] = useState('')
 
@@ -87,7 +94,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     const res = await fetch('/api/waitlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, name, email, step: 1 }),
+      body: JSON.stringify({ phone, name, email, referredBy, step: 1 }),
     })
     const data = await res.json().catch(() => ({}))
     setLoading(false)
