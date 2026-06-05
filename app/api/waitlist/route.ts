@@ -67,12 +67,18 @@ export async function POST(req: NextRequest) {
     sendWaitlistConfirmationSms(cleanName, cleanPhone).catch(console.error)
 
     // If they arrived via someone's referral link (?ref=CODE), record it.
+    // Awaited (not fire-and-forget) so it completes before the serverless
+    // function freezes — but wrapped so a DB hiccup never blocks the signup.
     if (referredBy) {
-      recordReferral({
-        referrerCode: String(referredBy),
-        referredEmail: cleanEmail,
-        referredId: data.id as string,
-      }).catch(console.error)
+      try {
+        await recordReferral({
+          referrerCode: String(referredBy),
+          referredEmail: cleanEmail,
+          referredId: data.id as string,
+        })
+      } catch (e) {
+        console.error('recordReferral failed', e)
+      }
     }
 
     const userId = data.id as string
