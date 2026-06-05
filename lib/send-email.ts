@@ -42,7 +42,7 @@ export async function sendWaitlistConfirmation(name: string, email: string) {
 export async function sendReferralProgress(
   name: string,
   email: string,
-  vars: { referralCount: number; position: number; progressPct: number; inviteUrl: string },
+  vars: { referralCount: number; position: number; progressPct: number; inviteUrl: string; unsubscribeUrl: string },
 ) {
   return getResend().emails.send({
     from: FROM_EMAIL,
@@ -56,6 +56,7 @@ export async function sendReferralProgress(
         progress_pct: vars.progressPct,
         invite_url: vars.inviteUrl,
         invite_url_encoded: encodeURIComponent(vars.inviteUrl),
+        unsubscribe_url: vars.unsubscribeUrl,
       },
     },
   })

@@ -90,6 +90,7 @@ export async function POST(req: NextRequest) {
             position: prog.position ?? 0,
             progressPct: prog.progressPct,
             inviteUrl: `https://altidhjem.dk/?ref=${referredBy}`,
+            unsubscribeUrl: `https://altidhjem.dk/api/unsubscribe?id=${referredBy}`,
           })
         }
       } catch (e) {
