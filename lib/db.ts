@@ -100,16 +100,22 @@ export async function getReferrerProgress(referrerCode: string): Promise<{
   return { email, firstName: (data as { first_name?: string })?.first_name ?? '', count, position, progressPct }
 }
 
-/** Mark a person (by public_id) as unsubscribed / re-subscribed. Returns true if a row matched. */
-export async function setUnsubscribed(publicId: string, value: boolean): Promise<boolean> {
+/**
+ * Mark a person (by public_id) as unsubscribed / re-subscribed.
+ * Returns the matched email (so callers can mirror to Resend), or null if no row matched.
+ */
+export async function setUnsubscribed(publicId: string, value: boolean): Promise<string | null> {
   const id = String(publicId || '').trim()
-  if (!id) return false
-  const { error, count } = await getClient()
+  if (!id) return null
+  const { data, error } = await getClient()
     .from('signup')
-    .update({ unsubscribed: value }, { count: 'exact' })
+    .update({ unsubscribed: value })
     .eq('public_id', id)
+    .select('email')
   if (error) throw new Error(error.message)
-  return (count ?? 0) > 0
+  const rows = (data as { email?: string }[] | null) ?? []
+  if (!rows.length) return null
+  return rows[0].email ?? id // truthy even if email is somehow missing
 }
 
 /** Whether a person (by public_id) has unsubscribed from marketing emails. */

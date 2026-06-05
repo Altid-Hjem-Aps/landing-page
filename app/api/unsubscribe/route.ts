@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { setUnsubscribed } from '@/lib/db'
+import { setResendSubscription } from '@/lib/resend'
 
 function confirmationPage(title: string, body: string, status = 200) {
   const html = `<!doctype html>
@@ -32,8 +33,9 @@ export async function GET(req: NextRequest) {
   const resubscribe = req.nextUrl.searchParams.get('resubscribe') === '1'
   if (!id) return confirmationPage('Ugyldigt link', 'Linket mangler oplysninger. Prøv at klikke på linket i mailen igen.', 400)
   try {
-    const matched = await setUnsubscribed(id, !resubscribe)
-    if (!matched) return confirmationPage('Vi kunne ikke finde dig', 'Linket er måske udløbet. Kontakt os på hej@altidhjem.dk hvis du har brug for hjælp.', 404)
+    const email = await setUnsubscribed(id, !resubscribe)
+    if (!email) return confirmationPage('Vi kunne ikke finde dig', 'Linket er måske udløbet. Kontakt os på hej@altidhjem.dk hvis du har brug for hjælp.', 404)
+    await setResendSubscription(email, !resubscribe) // keep Resend Audience in sync
     return resubscribe
       ? confirmationPage('Du er tilmeldt igen 🎉', 'Du modtager nu igen opdateringer om din plads i køen.')
       : confirmationPage('Du er afmeldt', 'Du modtager ikke flere markedsføringsmails fra Altid Hjem. Du kan til enhver tid tilmelde dig igen.')
@@ -48,7 +50,8 @@ export async function POST(req: NextRequest) {
   const id = req.nextUrl.searchParams.get('id') ?? ''
   if (id) {
     try {
-      await setUnsubscribed(id, true)
+      const email = await setUnsubscribed(id, true)
+      if (email) await setResendSubscription(email, true) // keep Resend Audience in sync
     } catch (e) {
       console.error('one-click unsubscribe failed', e)
     }
