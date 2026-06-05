@@ -39,6 +39,28 @@ export async function sendWaitlistConfirmation(name: string, email: string) {
   })
 }
 
+export async function sendReferralProgress(
+  name: string,
+  email: string,
+  vars: { referralCount: number; position: number; progressPct: number; inviteUrl: string },
+) {
+  return getResend().emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    template: {
+      id: 'referral-progress',
+      variables: {
+        first_name: firstName(name),
+        referral_count: vars.referralCount,
+        position: vars.position,
+        progress_pct: vars.progressPct,
+        invite_url: vars.inviteUrl,
+        invite_url_encoded: encodeURIComponent(vars.inviteUrl),
+      },
+    },
+  })
+}
+
 export async function scheduleReleaseEmail(name: string, email: string) {
   if (new Date() >= RELEASE_SEND_TIME) return null
 

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sendWaitlistConfirmation, scheduleReleaseEmail } from '@/lib/send-email'
+import { sendWaitlistConfirmation, scheduleReleaseEmail, sendReferralProgress } from '@/lib/send-email'
 import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
 import { trackServer, identifyServer } from '@/lib/amplitude.server'
-import { recordReferral, mirrorSignup } from '@/lib/db'
+import { recordReferral, mirrorSignup, getReferrerProgress } from '@/lib/db'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -68,14 +68,14 @@ export async function POST(req: NextRequest) {
 
     // Mirror the signup into Supabase so leaderboard position is computable.
     try {
-      await mirrorSignup(data.id as string)
+      await mirrorSignup(data.id as string, { email: cleanEmail, firstName: cleanName.split(' ')[0] })
     } catch (e) {
       console.error('mirrorSignup failed', e)
     }
 
-    // If they arrived via someone's referral link (?ref=CODE), record it.
-    // Awaited (not fire-and-forget) so it completes before the serverless
-    // function freezes — but wrapped so a DB hiccup never blocks the signup.
+    // If they arrived via someone's referral link (?ref=CODE): record it, then
+    // email the referrer their updated progress (new count + queue position).
+    // Awaited so it completes in serverless; wrapped so a hiccup never blocks signup.
     if (referredBy) {
       try {
         await recordReferral({
@@ -83,8 +83,17 @@ export async function POST(req: NextRequest) {
           referredEmail: cleanEmail,
           referredId: data.id as string,
         })
+        const prog = await getReferrerProgress(String(referredBy))
+        if (prog?.email) {
+          await sendReferralProgress(prog.firstName, prog.email, {
+            referralCount: prog.count,
+            position: prog.position ?? 0,
+            progressPct: prog.progressPct,
+            inviteUrl: `https://altidhjem.dk/?ref=${referredBy}`,
+          })
+        }
       } catch (e) {
-        console.error('recordReferral failed', e)
+        console.error('referral progress failed', e)
       }
     }
 

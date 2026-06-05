@@ -55,16 +55,74 @@ export async function getReferralCount(referrerCode: string): Promise<number> {
  * Mirror a signup into Supabase (public_id + created_at) so the leaderboard
  * position can be computed where Vercel can reach. Idempotent.
  */
-export async function mirrorSignup(publicId: string, createdAt?: string): Promise<void> {
+export async function mirrorSignup(
+  publicId: string,
+  opts?: { email?: string; firstName?: string; createdAt?: string },
+): Promise<void> {
   const id = String(publicId || '').trim()
   if (!id) return
+  const row: Record<string, unknown> = {
+    public_id: id,
+    created_at: opts?.createdAt ?? new Date().toISOString(),
+  }
+  if (opts?.email) row.email = String(opts.email).toLowerCase()
+  if (opts?.firstName) row.first_name = opts.firstName
   const { error } = await getClient()
     .from('signup')
-    .upsert(
-      { public_id: id, created_at: createdAt ?? new Date().toISOString() },
-      { onConflict: 'public_id', ignoreDuplicates: true },
-    )
+    .upsert(row, { onConflict: 'public_id', ignoreDuplicates: false })
   if (error) throw new Error(error.message)
+}
+
+/**
+ * Look up everything needed to send a referrer their progress email:
+ * their email + first name, their current referral count, and queue position.
+ */
+export async function getReferrerProgress(referrerCode: string): Promise<{
+  email: string
+  firstName: string
+  count: number
+  position: number | null
+  progressPct: number
+} | null> {
+  const code = String(referrerCode || '').trim()
+  if (!code) return null
+  const { data, error } = await getClient()
+    .from('signup')
+    .select('email, first_name')
+    .eq('public_id', code)
+    .maybeSingle()
+  if (error) throw new Error(error.message)
+  const email = (data as { email?: string } | null)?.email
+  if (!email) return null
+  const count = await getReferralCount(code)
+  const position = await getQueuePosition(code)
+  const progressPct = Math.min(100, Math.round((Math.min(count, 10) / 10) * 100))
+  return { email, firstName: (data as { first_name?: string })?.first_name ?? '', count, position, progressPct }
+}
+
+/** Mark a person (by public_id) as unsubscribed / re-subscribed. Returns true if a row matched. */
+export async function setUnsubscribed(publicId: string, value: boolean): Promise<boolean> {
+  const id = String(publicId || '').trim()
+  if (!id) return false
+  const { error, count } = await getClient()
+    .from('signup')
+    .update({ unsubscribed: value }, { count: 'exact' })
+    .eq('public_id', id)
+  if (error) throw new Error(error.message)
+  return (count ?? 0) > 0
+}
+
+/** Whether a person (by public_id) has unsubscribed from marketing emails. */
+export async function isUnsubscribed(publicId: string): Promise<boolean> {
+  const id = String(publicId || '').trim()
+  if (!id) return false
+  const { data, error } = await getClient()
+    .from('signup')
+    .select('unsubscribed')
+    .eq('public_id', id)
+    .maybeSingle()
+  if (error) throw new Error(error.message)
+  return Boolean((data as { unsubscribed?: boolean } | null)?.unsubscribed)
 }
 
 /**
