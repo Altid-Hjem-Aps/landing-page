@@ -1,29 +1,24 @@
-import mysql from 'mysql2/promise'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
-// Connection pool to the Altid Hjem database.
-// Credentials come from environment variables (.env.local locally, Vercel in prod).
-let pool: mysql.Pool | null = null
+// Supabase client (service role — server-side only). Reachable from Vercel,
+// unlike the self-hosted MySQL which is firewalled.
+let client: SupabaseClient | null = null
 
-function getPool(): mysql.Pool {
-  if (!pool) {
-    pool = mysql.createPool({
-      host: process.env.MYSQL_HOST,
-      port: Number(process.env.MYSQL_PORT ?? 3306),
-      user: process.env.MYSQL_USER,
-      password: process.env.MYSQL_PASSWORD,
-      database: process.env.MYSQL_DATABASE,
-      waitForConnections: true,
-      connectionLimit: 3,
-      enableKeepAlive: true,
-    })
+function getClient(): SupabaseClient {
+  if (!client) {
+    const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+    if (!url || !key) {
+      throw new Error('Supabase env not configured (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY)')
+    }
+    client = createClient(url, key, { auth: { persistSession: false } })
   }
-  return pool
+  return client
 }
 
 /**
- * Record that `referredEmail` joined via `referrerCode` (the inviter's public_id).
- * Lives in our own `referral` table — does not touch the backend's tables.
- * Safe to call fire-and-forget; duplicates (same email) are ignored.
+ * Record that `referredEmail` joined via `referrerCode` (the inviter's code).
+ * Lives in the `referral` table. Duplicates (same email) are ignored.
  */
 export async function recordReferral(opts: {
   referrerCode: string
@@ -35,21 +30,23 @@ export async function recordReferral(opts: {
   if (!referrerCode || !referredEmail) return
   if (referrerCode.toLowerCase() === referredEmail) return // guard against obvious self-refer
 
-  await getPool().execute(
-    `INSERT IGNORE INTO referral (referrer_code, referred_email, referred_id, created_at)
-     VALUES (?, ?, ?, NOW())`,
-    [referrerCode, referredEmail, opts.referredId ?? null],
-  )
+  const { error } = await getClient()
+    .from('referral')
+    .upsert(
+      { referrer_code: referrerCode, referred_email: referredEmail, referred_id: opts.referredId ?? null },
+      { onConflict: 'referred_email', ignoreDuplicates: true },
+    )
+  if (error) throw new Error(error.message)
 }
 
 /** How many people a given referral code has successfully brought in. */
 export async function getReferralCount(referrerCode: string): Promise<number> {
   const code = String(referrerCode || '').trim().slice(0, 64)
   if (!code) return 0
-  const [rows] = await getPool().execute(
-    'SELECT COUNT(*) AS n FROM referral WHERE referrer_code = ?',
-    [code],
-  )
-  const result = rows as Array<{ n: number }>
-  return result[0]?.n ?? 0
+  const { count, error } = await getClient()
+    .from('referral')
+    .select('*', { count: 'exact', head: true })
+    .eq('referrer_code', code)
+  if (error) throw new Error(error.message)
+  return count ?? 0
 }
