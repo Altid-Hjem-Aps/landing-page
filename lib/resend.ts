@@ -32,3 +32,29 @@ export async function setResendSubscription(
     console.error('Resend subscription sync failed', e)
   }
 }
+
+/**
+ * Update a contact's custom Resend Audience properties (referral_count,
+ * progress_pct, queue_position, …) so the dashboard reflects live progress.
+ * Best-effort — never blocks the signup/referral flow.
+ */
+export async function syncContactTags(
+  email: string,
+  props: Record<string, string | number | null>,
+): Promise<void> {
+  const clean = String(email || '').trim().toLowerCase()
+  const key = process.env.RESEND_API_KEY
+  if (!clean || !key) return
+  try {
+    await fetch(
+      `https://api.resend.com/audiences/${AUDIENCE_ID}/contacts/${encodeURIComponent(clean)}`,
+      {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ properties: props }),
+      },
+    )
+  } catch (e) {
+    console.error('Resend tag sync failed', e)
+  }
+}

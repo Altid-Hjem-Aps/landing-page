@@ -3,6 +3,7 @@ import { sendWaitlistConfirmation, scheduleReleaseEmail, sendReferralProgress } 
 import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
 import { trackServer, identifyServer } from '@/lib/amplitude.server'
 import { recordReferral, mirrorSignup, getReferrerProgress } from '@/lib/db'
+import { syncContactTags } from '@/lib/resend'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -85,6 +86,12 @@ export async function POST(req: NextRequest) {
         })
         const prog = await getReferrerProgress(String(referredBy))
         if (prog?.email) {
+          // Keep the referrer's Resend Audience tags in sync with their progress.
+          await syncContactTags(prog.email, {
+            referral_count: prog.count,
+            progress_pct: prog.progressPct,
+            queue_position: prog.position ?? 0,
+          })
           await sendReferralProgress(prog.firstName, prog.email, {
             referralCount: prog.count,
             position: prog.position ?? 0,
