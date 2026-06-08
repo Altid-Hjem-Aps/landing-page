@@ -86,7 +86,12 @@ export async function POST(req: NextRequest) {
       // Add the new signup to the Resend Audience (keeps the list in sync),
       // including a snapshot of their queue position. Position lookup is made
       // fail-safe so a DB hiccup here can't abort the referral capture below.
-      const myPosition = await getQueuePosition(userId).catch(() => null)
+      const myPosition = await getQueuePosition(userId).catch((e) => {
+        // queue_position is the headline tag this flow writes — log on failure
+        // so a broken RPC shows up in logs instead of silently zeroing it.
+        console.error('queue_position lookup failed', userId, e)
+        return null
+      })
       await addAudienceContact({ email: cleanEmail, firstName, publicId: userId, queuePosition: myPosition })
 
       // If they arrived via someone's referral link (?ref=CODE): record it, tag
