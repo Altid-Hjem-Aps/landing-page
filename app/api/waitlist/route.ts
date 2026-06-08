@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse, after } from 'next/server'
-import { sendWaitlistConfirmation, scheduleReleaseEmail, sendReferralProgress } from '@/lib/send-email'
+import { sendWaitlistConfirmation, sendReferralWelcome, scheduleReleaseEmail, sendReferralProgress } from '@/lib/send-email'
 import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
 import { trackServer, identifyServer } from '@/lib/amplitude.server'
-import { recordReferral, mirrorSignup, getReferrerProgress, getUnsubToken, isUnsubscribed, checkRateLimit } from '@/lib/db'
+import { recordReferral, mirrorSignup, getReferrerProgress, getUnsubToken, isUnsubscribed, checkRateLimit, getQueuePosition } from '@/lib/db'
 import { syncContactTags, addAudienceContact } from '@/lib/resend'
 import { signSurveyToken, verifySurveyToken } from '@/lib/survey-token'
 
@@ -72,36 +72,41 @@ export async function POST(req: NextRequest) {
       }
 
       const unsubscribeUrl = token ? `https://altidhjem.dk/api/unsubscribe?token=${token}` : ''
+      const inviteUrl = `https://altidhjem.dk/?ref=${encodeURIComponent(userId)}`
 
-      // PHASE 1: keep sending the ORIGINAL confirmation email (no link in the body).
-      // The invite link is shown on the success screen for now. The token (when we
-      // have one) adds a working one-click-unsubscribe header.
-      // PHASE 2: swap this line to
-      //   sendReferralWelcome(cleanName, cleanEmail, { inviteUrl: `https://altidhjem.dk/?ref=${encodeURIComponent(userId)}`, unsubscribeUrl })
-      await sendWaitlistConfirmation(
-        cleanName,
-        cleanEmail,
-        unsubscribeUrl ? { unsubscribeUrl } : undefined,
-      ).catch(console.error)
+      // Welcome email WITH the personal invite link. It needs a working
+      // unsubscribe link, so if we couldn't get a token (Supabase hiccup), fall
+      // back to the plain confirmation rather than send a broken Afmeld.
+      if (unsubscribeUrl) {
+        await sendReferralWelcome(cleanName, cleanEmail, { inviteUrl, unsubscribeUrl }).catch(console.error)
+      } else {
+        await sendWaitlistConfirmation(cleanName, cleanEmail).catch(console.error)
+      }
 
-      // Add the new signup to the Resend Audience (keeps the list in sync).
-      await addAudienceContact({ email: cleanEmail, firstName, publicId: userId })
+      // Add the new signup to the Resend Audience (keeps the list in sync),
+      // including a snapshot of their queue position. Position lookup is made
+      // fail-safe so a DB hiccup here can't abort the referral capture below.
+      const myPosition = await getQueuePosition(userId).catch(() => null)
+      await addAudienceContact({ email: cleanEmail, firstName, publicId: userId, queuePosition: myPosition })
 
-      // If they arrived via someone's referral link (?ref=CODE): record it, then
-      // email the referrer their updated progress — unless the referrer opted out.
+      // If they arrived via someone's referral link (?ref=CODE): record it, tag
+      // the new signup with who referred them, then email the referrer their
+      // updated progress — unless the referrer opted out.
       if (refBy) {
         try {
           await recordReferral({ referrerCode: refBy, referredEmail: cleanEmail, referredId: userId })
-          const referrerOptedOut = await isUnsubscribed(refBy)
-          if (!referrerOptedOut) {
-            const prog = await getReferrerProgress(refBy)
+          const prog = await getReferrerProgress(refBy)
+          // Show who referred this person in their Resend contact (readable email).
+          await syncContactTags(cleanEmail, { referred_by: prog?.email || refBy })
+          // Email the referrer + refresh their tags, unless they opted out.
+          if (prog?.email && !(await isUnsubscribed(refBy))) {
             const refToken = await getUnsubToken(refBy)
-            if (prog?.email && refToken) {
-              await syncContactTags(prog.email, {
-                referral_count: prog.count,
-                progress_pct: prog.progressPct,
-                queue_position: prog.position ?? 0,
-              })
+            await syncContactTags(prog.email, {
+              referral_count: prog.count,
+              progress_pct: prog.progressPct,
+              queue_position: prog.position ?? 0,
+            })
+            if (refToken) {
               await sendReferralProgress(prog.firstName, prog.email, {
                 referralCount: prog.count,
                 position: prog.position ?? 0,

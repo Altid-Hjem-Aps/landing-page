@@ -42,6 +42,7 @@ export async function addAudienceContact(opts: {
   email: string
   firstName?: string
   publicId?: string
+  queuePosition?: number | null
 }): Promise<void> {
   const email = String(opts.email || '').trim().toLowerCase()
   const key = process.env.RESEND_API_KEY
@@ -57,6 +58,8 @@ export async function addAudienceContact(opts: {
     // Store the FULL code — invite links use the whole public_id, not a slice.
     properties.referral_code = opts.publicId
   }
+  // Snapshot of their queue position at signup (Supabase stays the live truth).
+  if (typeof opts.queuePosition === 'number') properties.queue_position = opts.queuePosition
   const body = JSON.stringify({
     email,
     first_name: opts.firstName,
