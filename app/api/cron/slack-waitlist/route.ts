@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getResend } from '@/lib/resend'
+import { getSignupCounts } from '@/lib/db'
 
 const CHANNEL = process.env.SLACK_CHANNEL_ID!
 const MAIN_PREFIX = '*Venteliste'
 const THREAD_PREFIX = '*Tilmeldinger per dag'
+
+// How many recent days to list in the thread breakdown (the total is all-time).
+const THREAD_DAYS = 30
 
 async function slack(method: string, params: Record<string, unknown>, useGet = false) {
   const token = process.env.SLACK_BOT_TOKEN
@@ -22,67 +25,6 @@ async function slack(method: string, params: Record<string, unknown>, useGet = f
   return res.json() as Promise<Record<string, unknown>>
 }
 
-function copenhagenDateKey(date: Date): string {
-  return new Intl.DateTimeFormat('sv-SE', {
-    timeZone: 'Europe/Copenhagen',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(date)
-}
-
-function copenhagenTodayStartUnix(): number {
-  const now = new Date()
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Europe/Copenhagen',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  }).formatToParts(now)
-  const get = (type: string) => Number(parts.find(p => p.type === type)!.value)
-  const cphAsUtc = Date.UTC(get('year'), get('month') - 1, get('day'), get('hour'), get('minute'), get('second'))
-  const offsetMs = cphAsUtc - now.getTime()
-  const midnightUtc = Date.UTC(get('year'), get('month') - 1, get('day')) - offsetMs
-  return Math.floor(midnightUtc / 1000)
-}
-
-async function getEmailCounts(): Promise<{ today: number; total: number; perDay: Record<string, number> }> {
-  const resend = getResend()
-  const todayStartMs = copenhagenTodayStartUnix() * 1000
-  const todayEndMs = todayStartMs + 86_400_000
-  let today = 0
-  let total = 0
-  const perDay: Record<string, number> = {}
-  let after: string | undefined
-
-  while (true) {
-    const res = await resend.emails.list({ limit: 100, ...(after ? { after } : {}) })
-    if (res.error || !res.data) break
-
-    const emails = res.data.data
-    if (emails.length === 0) break
-
-    for (const email of emails) {
-      if (email.last_event === 'delivered' && !email.scheduled_at) {
-        total++
-        const t = new Date(email.created_at).getTime()
-        if (t >= todayStartMs && t < todayEndMs) today++
-        const key = copenhagenDateKey(new Date(email.created_at))
-        perDay[key] = (perDay[key] ?? 0) + 1
-      }
-    }
-
-    if (!res.data.has_more) break
-    after = emails[emails.length - 1].id
-  }
-
-  return { today, total, perDay }
-}
-
 function buildMainText(today: number, total: number): string {
   const now = new Date()
   const time = new Intl.DateTimeFormat('da-DK', {
@@ -94,7 +36,9 @@ function buildMainText(today: number, total: number): string {
 }
 
 function buildThreadText(perDay: Record<string, number>): string {
-  const sorted = Object.entries(perDay).sort((a, b) => b[0].localeCompare(a[0]))
+  const sorted = Object.entries(perDay)
+    .sort((a, b) => b[0].localeCompare(a[0]))
+    .slice(0, THREAD_DAYS)
   const lines = sorted.map(([key, count]) => {
     const date = new Date(key + 'T12:00:00Z')
     const formatted = new Intl.DateTimeFormat('da-DK', {
@@ -112,7 +56,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { today, total, perDay } = await getEmailCounts()
+  const { today, total, perDay } = await getSignupCounts()
   const mainText = buildMainText(today, total)
   const threadText = buildThreadText(perDay)
 
