@@ -70,6 +70,56 @@ export async function recordReferral(opts: {
   if (error) throw new Error(error.message)
 }
 
+/** A date's key in the Europe/Copenhagen calendar, formatted 'YYYY-MM-DD'. */
+function copenhagenDateKey(date: Date): string {
+  return new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Europe/Copenhagen',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date)
+}
+
+/**
+ * Real waitlist signup counts, straight from the `signup` table (the source of
+ * truth the Slack tracker should use — NOT delivered Resend emails, whose
+ * `last_event` drifts off "delivered" as recipients open them and which also
+ * count non-signup blasts). Returns the all-time total, today's count, and a
+ * per-day breakdown keyed by Copenhagen calendar day ('YYYY-MM-DD').
+ *
+ * Pages through the table so the count stays exact past PostgREST's default
+ * 1000-row cap (see getQueuePosition for the same concern).
+ */
+export async function getSignupCounts(): Promise<{
+  today: number
+  total: number
+  perDay: Record<string, number>
+}> {
+  const supabase = getClient()
+  const perDay: Record<string, number> = {}
+  let total = 0
+  const PAGE = 1000
+
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await supabase
+      .from('signup')
+      .select('created_at')
+      .order('created_at', { ascending: false })
+      .range(from, from + PAGE - 1)
+    if (error) throw new Error(error.message)
+    if (!data || data.length === 0) break
+    for (const row of data) {
+      const key = copenhagenDateKey(new Date((row as { created_at: string }).created_at))
+      perDay[key] = (perDay[key] ?? 0) + 1
+      total++
+    }
+    if (data.length < PAGE) break
+  }
+
+  const today = perDay[copenhagenDateKey(new Date())] ?? 0
+  return { today, total, perDay }
+}
+
 /** How many people a given referral code has successfully brought in. */
 export async function getReferralCount(referrerCode: string): Promise<number> {
   const code = String(referrerCode || '').trim().slice(0, 64)
