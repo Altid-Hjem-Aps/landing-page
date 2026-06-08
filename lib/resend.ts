@@ -34,6 +34,54 @@ export async function setResendSubscription(
 }
 
 /**
+ * Add a new signup to the Resend Audience so the dashboard/list stays in sync
+ * with reality. Idempotent: if the contact already exists, we update it instead
+ * of failing. Best-effort — never blocks the signup flow.
+ */
+export async function addAudienceContact(opts: {
+  email: string
+  firstName?: string
+  publicId?: string
+}): Promise<void> {
+  const email = String(opts.email || '').trim().toLowerCase()
+  const key = process.env.RESEND_API_KEY
+  if (!email || !key) return
+  const properties: Record<string, string | number> = {
+    status: 'waitlisted',
+    referral_count: 0,
+    progress_pct: 0,
+    signup_date: new Date().toISOString().slice(0, 10),
+  }
+  if (opts.publicId) {
+    properties.public_id = opts.publicId
+    properties.referral_code = opts.publicId.slice(0, 8)
+  }
+  const body = JSON.stringify({
+    email,
+    first_name: opts.firstName,
+    unsubscribed: false,
+    properties,
+  })
+  const headers = { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }
+  try {
+    const res = await fetch(`https://api.resend.com/audiences/${AUDIENCE_ID}/contacts`, {
+      method: 'POST',
+      headers,
+      body,
+    })
+    // If the contact already exists, POST errors — fall back to an update.
+    if (!res.ok) {
+      await fetch(
+        `https://api.resend.com/audiences/${AUDIENCE_ID}/contacts/${encodeURIComponent(email)}`,
+        { method: 'PATCH', headers, body },
+      )
+    }
+  } catch (e) {
+    console.error('add audience contact failed', e)
+  }
+}
+
+/**
  * Update a contact's custom Resend Audience properties (referral_count,
  * progress_pct, queue_position, …) so the dashboard reflects live progress.
  * Best-effort — never blocks the signup/referral flow.

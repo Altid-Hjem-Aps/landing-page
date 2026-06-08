@@ -3,7 +3,7 @@ import { sendWaitlistConfirmation, scheduleReleaseEmail, sendReferralProgress } 
 import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
 import { trackServer, identifyServer } from '@/lib/amplitude.server'
 import { recordReferral, mirrorSignup, getReferrerProgress } from '@/lib/db'
-import { syncContactTags } from '@/lib/resend'
+import { syncContactTags, addAudienceContact } from '@/lib/resend'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -73,6 +73,13 @@ export async function POST(req: NextRequest) {
     } catch (e) {
       console.error('mirrorSignup failed', e)
     }
+
+    // Add the new signup to the Resend Audience (keeps the list in sync).
+    await addAudienceContact({
+      email: cleanEmail,
+      firstName: cleanName.split(' ')[0],
+      publicId: data.id as string,
+    })
 
     // If they arrived via someone's referral link (?ref=CODE): record it, then
     // email the referrer their updated progress (new count + queue position).
