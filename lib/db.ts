@@ -17,6 +17,36 @@ function getClient(): SupabaseClient {
 }
 
 /**
+ * Persistent, race-safe rate limit (one atomic Postgres upsert per call).
+ * Replaces the in-memory Map, which reset on every serverless cold start.
+ * Returns true if the caller is OVER the limit. Fails OPEN (returns false) on
+ * any error so an infra hiccup never blocks real signups.
+ */
+export async function checkRateLimit(
+  key: string,
+  max: number,
+  windowSeconds: number,
+): Promise<boolean> {
+  const k = String(key || '').trim()
+  if (!k) return false
+  try {
+    const { data, error } = await getClient().rpc('check_rate_limit', {
+      p_key: k,
+      p_max: max,
+      p_window_seconds: windowSeconds,
+    })
+    if (error) {
+      console.error('rate limit check failed', error.message)
+      return false
+    }
+    return data === true
+  } catch (e) {
+    console.error('rate limit check threw', e)
+    return false
+  }
+}
+
+/**
  * Record that `referredEmail` joined via `referrerCode` (the inviter's code).
  * Lives in the `referral` table. Duplicates (same email) are ignored.
  */

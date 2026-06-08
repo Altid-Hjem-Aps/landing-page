@@ -50,6 +50,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [signupId, setSignupId] = useState('')
+  const [surveyToken, setSurveyToken] = useState('')
   const [referredBy, setReferredBy] = useState('')
 
   // Capture referral code from the URL (?ref=CODE) once on mount
@@ -105,6 +106,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     }
     amplitude.track('Waitlist Step 1 Submitted')
     setSignupId(data.id)
+    setSurveyToken(data.surveyToken ?? '')
     setView('questions')
   }
 
@@ -113,7 +115,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     await fetch('/api/waitlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: signupId, age, household, why, electricity, step: 2 }),
+      body: JSON.stringify({ id: signupId, surveyToken, age, household, why, electricity, step: 2 }),
     })
     setLoading(false)
     amplitude.track('Waitlist Step 2 Submitted', {

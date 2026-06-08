@@ -1,36 +1,24 @@
 import { NextRequest, NextResponse, after } from 'next/server'
-import { sendReferralWelcome, scheduleReleaseEmail, sendReferralProgress } from '@/lib/send-email'
+import { sendWaitlistConfirmation, scheduleReleaseEmail, sendReferralProgress } from '@/lib/send-email'
 import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
 import { trackServer, identifyServer } from '@/lib/amplitude.server'
-import { recordReferral, mirrorSignup, getReferrerProgress, getUnsubToken, isUnsubscribed } from '@/lib/db'
+import { recordReferral, mirrorSignup, getReferrerProgress, getUnsubToken, isUnsubscribed, checkRateLimit } from '@/lib/db'
 import { syncContactTags, addAudienceContact } from '@/lib/resend'
+import { signSurveyToken, verifySurveyToken } from '@/lib/survey-token'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PHONE_RE = /^\d{8}$/
 
-const WINDOW_MS = 60 * 60 * 1000 // 1 hour
+const WINDOW_SECONDS = 60 * 60 // 1 hour
 const MAX_ATTEMPTS = 3
-const ipAttempts = new Map<string, { count: number; resetAt: number }>()
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now()
-  const entry = ipAttempts.get(ip)
-  if (!entry || now > entry.resetAt) {
-    ipAttempts.set(ip, { count: 1, resetAt: now + WINDOW_MS })
-    return false
-  }
-  if (entry.count >= MAX_ATTEMPTS) return true
-  entry.count++
-  return false
-}
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
 
   if (body.step === 1) {
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
-    if (isRateLimited(ip))
+    if (await checkRateLimit(`signup:${ip}`, MAX_ATTEMPTS, WINDOW_SECONDS))
       return NextResponse.json({ success: false, error: 'For mange forsøg. Prøv igen om en time.' }, { status: 429 })
 
     const { email, name, phone, referredBy } = body
@@ -83,15 +71,18 @@ export async function POST(req: NextRequest) {
         console.error('mirrorSignup failed', e)
       }
 
-      const inviteUrl = `https://altidhjem.dk/?ref=${encodeURIComponent(userId)}`
       const unsubscribeUrl = token ? `https://altidhjem.dk/api/unsubscribe?token=${token}` : ''
 
-      // Welcome email WITH their personal invite link (needs a working unsubscribe link).
-      if (unsubscribeUrl) {
-        await sendReferralWelcome(cleanName, cleanEmail, { inviteUrl, unsubscribeUrl }).catch(console.error)
-      } else {
-        console.error('no unsubscribe token — skipped welcome email for', userId)
-      }
+      // PHASE 1: keep sending the ORIGINAL confirmation email (no link in the body).
+      // The invite link is shown on the success screen for now. The token (when we
+      // have one) adds a working one-click-unsubscribe header.
+      // PHASE 2: swap this line to
+      //   sendReferralWelcome(cleanName, cleanEmail, { inviteUrl: `https://altidhjem.dk/?ref=${encodeURIComponent(userId)}`, unsubscribeUrl })
+      await sendWaitlistConfirmation(
+        cleanName,
+        cleanEmail,
+        unsubscribeUrl ? { unsubscribeUrl } : undefined,
+      ).catch(console.error)
 
       // Add the new signup to the Resend Audience (keeps the list in sync).
       await addAudienceContact({ email: cleanEmail, firstName, publicId: userId })
@@ -129,14 +120,18 @@ export async function POST(req: NextRequest) {
       trackServer('Waitlist Signup Confirmed', { signup_id: userId }, userId)
     })
 
-    return NextResponse.json({ success: true, id: data.id })
+    // surveyToken proves ownership in step 2 (the public_id itself is not secret —
+    // it doubles as the public referral code).
+    return NextResponse.json({ success: true, id: data.id, surveyToken: signSurveyToken(userId) })
   }
 
   if (body.step === 2) {
-    const { id, age, household, why, electricity } = body
+    const { id, surveyToken, age, household, why, electricity } = body
 
     if (!id)
       return NextResponse.json({ success: false, error: 'Mangler id' }, { status: 400 })
+    if (!verifySurveyToken(String(id), String(surveyToken ?? '')))
+      return NextResponse.json({ success: false, error: 'Ugyldig session' }, { status: 403 })
 
     const survey: Record<string, unknown> = {}
     if (age) survey.age = Number(age)

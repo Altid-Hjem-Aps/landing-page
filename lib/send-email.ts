@@ -38,8 +38,32 @@ function listUnsubHeaders(unsubscribeUrl: string) {
 }
 
 /**
- * Welcome email for a brand-new signup — includes their personal invite link
- * so the referral loop can actually start (Alex review #1).
+ * CURRENT signup email — the original confirmation (no referral link in it).
+ * The invite link is shown on the success screen for now. Pass `unsubscribeUrl`
+ * to attach a working one-click-unsubscribe header.
+ *
+ * PHASE 2: to start emailing people their invite link, swap the call in
+ * app/api/waitlist/route.ts from sendWaitlistConfirmation → sendReferralWelcome.
+ */
+export async function sendWaitlistConfirmation(
+  name: string,
+  email: string,
+  opts?: { unsubscribeUrl?: string },
+) {
+  return getResend().emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    ...(opts?.unsubscribeUrl ? { headers: listUnsubHeaders(opts.unsubscribeUrl) } : {}),
+    template: {
+      id: 'waitlist-confirmation',
+      variables: { first_name: firstName(name) },
+    },
+  })
+}
+
+/**
+ * PHASE 2 welcome email — includes their personal invite link so the referral
+ * loop starts from the email too. Not wired up yet (kept ready for the flip).
  */
 export async function sendReferralWelcome(
   name: string,
