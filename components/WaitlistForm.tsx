@@ -50,6 +50,14 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [signupId, setSignupId] = useState('')
+  const [surveyToken, setSurveyToken] = useState('')
+  const [referredBy, setReferredBy] = useState('')
+
+  // Capture referral code from the URL (?ref=CODE) once on mount
+  useEffect(() => {
+    const ref = new URLSearchParams(window.location.search).get('ref')
+    if (ref) setReferredBy(ref.trim())
+  }, [])
 
   const [phone, setPhone] = useState('')
 
@@ -87,7 +95,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     const res = await fetch('/api/waitlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, name, email, step: 1 }),
+      body: JSON.stringify({ phone, name, email, referredBy, step: 1 }),
     })
     const data = await res.json().catch(() => ({}))
     setLoading(false)
@@ -98,6 +106,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     }
     amplitude.track('Waitlist Step 1 Submitted')
     setSignupId(data.id)
+    setSurveyToken(data.surveyToken ?? '')
     setView('questions')
   }
 
@@ -106,7 +115,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     await fetch('/api/waitlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: signupId, age, household, why, electricity, step: 2 }),
+      body: JSON.stringify({ id: signupId, surveyToken, age, household, why, electricity, step: 2 }),
     })
     setLoading(false)
     amplitude.track('Waitlist Step 2 Submitted', {
@@ -143,7 +152,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   }
 
   if (isDark) {
-    if (view === 'success') return <SuccessCard />
+    if (view === 'success') return <SuccessCard inviteUrl={signupId ? `https://altidhjem.dk/?ref=${signupId}` : undefined} />
 
     if (view === 'questions') {
       return (
@@ -226,7 +235,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
 
   // ─── Light variant (Hero) ─────────────────────────────────────────────────
 
-  if (view === 'success') return <SuccessCard />
+  if (view === 'success') return <SuccessCard inviteUrl={signupId ? `https://altidhjem.dk/?ref=${signupId}` : undefined} />
 
   if (view === 'questions') {
     return (
@@ -366,13 +375,45 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   )
 }
 
-export function SuccessCard() {
+export function SuccessCard({ inviteUrl }: { inviteUrl?: string }) {
+  const [copied, setCopied] = useState(false)
   return (
     <div className="rounded-2xl p-8 sm:p-10" style={{ background: 'rgba(168,224,99,0.08)', border: '1px solid rgba(168,224,99,0.2)' }}>
       <h3 className="text-3xl font-bold mb-3 text-white tracking-tight">Tak. Du er med.</h3>
       <p className="text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
         Vi giver dig besked, så snart Altid Hjem åbner dørene.
       </p>
+
+      {inviteUrl && (
+        <div className="mt-7 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <p className="text-[15px] font-semibold text-white mb-1">Vil du rykke frem i køen? 🚀</p>
+          <p className="text-sm mb-3" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            Del dit personlige link. Jo flere venner der tilmelder sig, jo hurtigere får du adgang.
+          </p>
+          <div className="flex items-center gap-2 rounded-xl p-1" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)' }}>
+            <input
+              readOnly
+              value={inviteUrl}
+              onFocus={e => e.currentTarget.select()}
+              className="flex-1 bg-transparent text-sm px-3 py-2 outline-none truncate"
+              style={{ color: 'rgba(255,255,255,0.85)', fontFamily: 'var(--font-onest)' }}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard?.writeText(inviteUrl).catch(() => {})
+                amplitude.track('Referral Link Copied')
+                setCopied(true)
+                setTimeout(() => setCopied(false), 2000)
+              }}
+              className="px-4 py-2 rounded-lg text-sm font-semibold shrink-0"
+              style={{ background: 'var(--sage)', color: 'var(--forest)' }}
+            >
+              {copied ? 'Kopieret ✓' : 'Kopiér'}
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="mt-8 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
         <a

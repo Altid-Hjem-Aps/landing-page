@@ -1,37 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { sendWaitlistConfirmation, scheduleReleaseEmail } from '@/lib/send-email'
+import { NextRequest, NextResponse, after } from 'next/server'
+import { sendWaitlistConfirmation, scheduleReleaseEmail, sendReferralProgress } from '@/lib/send-email'
 import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
 import { trackServer, identifyServer } from '@/lib/amplitude.server'
+import { recordReferral, mirrorSignup, getReferrerProgress, getUnsubToken, isUnsubscribed, checkRateLimit } from '@/lib/db'
+import { syncContactTags, addAudienceContact } from '@/lib/resend'
+import { signSurveyToken, verifySurveyToken } from '@/lib/survey-token'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PHONE_RE = /^\d{8}$/
 
-const WINDOW_MS = 60 * 60 * 1000 // 1 hour
+const WINDOW_SECONDS = 60 * 60 // 1 hour
 const MAX_ATTEMPTS = 3
-const ipAttempts = new Map<string, { count: number; resetAt: number }>()
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now()
-  const entry = ipAttempts.get(ip)
-  if (!entry || now > entry.resetAt) {
-    ipAttempts.set(ip, { count: 1, resetAt: now + WINDOW_MS })
-    return false
-  }
-  if (entry.count >= MAX_ATTEMPTS) return true
-  entry.count++
-  return false
-}
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
 
   if (body.step === 1) {
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
-    if (isRateLimited(ip))
+    if (await checkRateLimit(`signup:${ip}`, MAX_ATTEMPTS, WINDOW_SECONDS))
       return NextResponse.json({ success: false, error: 'For mange forsøg. Prøv igen om en time.' }, { status: 429 })
 
-    const { email, name, phone } = body
+    const { email, name, phone, referredBy } = body
 
     if (!email || !EMAIL_RE.test(email))
       return NextResponse.json({ success: false, error: 'Ugyldig e-mail' }, { status: 400 })
@@ -57,26 +47,91 @@ export async function POST(req: NextRequest) {
     if (!res.ok)
       return NextResponse.json({ success: false, error: data.message ?? 'Noget gik galt' }, { status: res.status })
 
-    // fire-and-forget — don't let these failures block signup
     const cleanName = String(name).trim()
     const cleanEmail = String(email).toLowerCase().trim()
     const cleanPhone = String(phone).replace(/\s/g, '')
-    sendWaitlistConfirmation(cleanName, cleanEmail).catch(console.error)
-    scheduleReleaseEmail(cleanName, cleanEmail).catch(console.error)
-    sendWaitlistConfirmationSms(cleanName, cleanPhone).catch(console.error)
-
+    const firstName = cleanName.split(' ')[0]
     const userId = data.id as string
-    identifyServer(userId, { waitlist_signup: true })
-    trackServer('Waitlist Signup Confirmed', { signup_id: userId }, userId)
+    const refBy = referredBy ? String(referredBy).trim() : ''
 
-    return NextResponse.json({ success: true, id: data.id })
+    // Respond immediately; run all emails / DB sync AFTER the response so the
+    // user isn't waiting on Resend + Supabase round-trips before "you're in".
+    after(async () => {
+      // Awaited (not fire-and-forget): inside after() an un-awaited promise can be
+      // killed when the serverless instance freezes. .catch() keeps one failure
+      // from aborting the rest.
+      await sendWaitlistConfirmationSms(cleanName, cleanPhone).catch(console.error)
+      await scheduleReleaseEmail(cleanName, cleanEmail).catch(console.error)
+
+      // Mirror the signup into Supabase and get this person's unsubscribe token.
+      let token: string | null = null
+      try {
+        token = await mirrorSignup(userId, { email: cleanEmail, firstName })
+      } catch (e) {
+        console.error('mirrorSignup failed', e)
+      }
+
+      const unsubscribeUrl = token ? `https://altidhjem.dk/api/unsubscribe?token=${token}` : ''
+
+      // PHASE 1: keep sending the ORIGINAL confirmation email (no link in the body).
+      // The invite link is shown on the success screen for now. The token (when we
+      // have one) adds a working one-click-unsubscribe header.
+      // PHASE 2: swap this line to
+      //   sendReferralWelcome(cleanName, cleanEmail, { inviteUrl: `https://altidhjem.dk/?ref=${encodeURIComponent(userId)}`, unsubscribeUrl })
+      await sendWaitlistConfirmation(
+        cleanName,
+        cleanEmail,
+        unsubscribeUrl ? { unsubscribeUrl } : undefined,
+      ).catch(console.error)
+
+      // Add the new signup to the Resend Audience (keeps the list in sync).
+      await addAudienceContact({ email: cleanEmail, firstName, publicId: userId })
+
+      // If they arrived via someone's referral link (?ref=CODE): record it, then
+      // email the referrer their updated progress — unless the referrer opted out.
+      if (refBy) {
+        try {
+          await recordReferral({ referrerCode: refBy, referredEmail: cleanEmail, referredId: userId })
+          const referrerOptedOut = await isUnsubscribed(refBy)
+          if (!referrerOptedOut) {
+            const prog = await getReferrerProgress(refBy)
+            const refToken = await getUnsubToken(refBy)
+            if (prog?.email && refToken) {
+              await syncContactTags(prog.email, {
+                referral_count: prog.count,
+                progress_pct: prog.progressPct,
+                queue_position: prog.position ?? 0,
+              })
+              await sendReferralProgress(prog.firstName, prog.email, {
+                referralCount: prog.count,
+                position: prog.position ?? 0,
+                progressPct: prog.progressPct,
+                inviteUrl: `https://altidhjem.dk/?ref=${encodeURIComponent(refBy)}`,
+                unsubscribeUrl: `https://altidhjem.dk/api/unsubscribe?token=${refToken}`,
+              })
+            }
+          }
+        } catch (e) {
+          console.error('referral progress failed', e)
+        }
+      }
+
+      identifyServer(userId, { waitlist_signup: true })
+      trackServer('Waitlist Signup Confirmed', { signup_id: userId }, userId)
+    })
+
+    // surveyToken proves ownership in step 2 (the public_id itself is not secret —
+    // it doubles as the public referral code).
+    return NextResponse.json({ success: true, id: data.id, surveyToken: signSurveyToken(userId) })
   }
 
   if (body.step === 2) {
-    const { id, age, household, why, electricity } = body
+    const { id, surveyToken, age, household, why, electricity } = body
 
     if (!id)
       return NextResponse.json({ success: false, error: 'Mangler id' }, { status: 400 })
+    if (!verifySurveyToken(String(id), String(surveyToken ?? '')))
+      return NextResponse.json({ success: false, error: 'Ugyldig session' }, { status: 403 })
 
     const survey: Record<string, unknown> = {}
     if (age) survey.age = Number(age)

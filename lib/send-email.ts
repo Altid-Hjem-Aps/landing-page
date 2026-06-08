@@ -28,13 +28,84 @@ function getNurtureScheduledAt(signupDate: Date): string | null {
   return nurtureDate.toISOString()
 }
 
-export async function sendWaitlistConfirmation(name: string, email: string) {
+// One-click-unsubscribe headers (RFC 8058) so mail apps show a native
+// "Unsubscribe" button that POSTs to our endpoint.
+function listUnsubHeaders(unsubscribeUrl: string) {
+  return {
+    'List-Unsubscribe': `<${unsubscribeUrl}>`,
+    'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+  }
+}
+
+/**
+ * CURRENT signup email — the original confirmation (no referral link in it).
+ * The invite link is shown on the success screen for now. Pass `unsubscribeUrl`
+ * to attach a working one-click-unsubscribe header.
+ *
+ * PHASE 2: to start emailing people their invite link, swap the call in
+ * app/api/waitlist/route.ts from sendWaitlistConfirmation → sendReferralWelcome.
+ */
+export async function sendWaitlistConfirmation(
+  name: string,
+  email: string,
+  opts?: { unsubscribeUrl?: string },
+) {
   return getResend().emails.send({
     from: FROM_EMAIL,
     to: email,
+    ...(opts?.unsubscribeUrl ? { headers: listUnsubHeaders(opts.unsubscribeUrl) } : {}),
     template: {
       id: 'waitlist-confirmation',
       variables: { first_name: firstName(name) },
+    },
+  })
+}
+
+/**
+ * PHASE 2 welcome email — includes their personal invite link so the referral
+ * loop starts from the email too. Not wired up yet (kept ready for the flip).
+ */
+export async function sendReferralWelcome(
+  name: string,
+  email: string,
+  vars: { inviteUrl: string; unsubscribeUrl: string },
+) {
+  return getResend().emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    headers: listUnsubHeaders(vars.unsubscribeUrl),
+    template: {
+      id: 'referral-queue-jump',
+      variables: {
+        first_name: firstName(name),
+        invite_url: vars.inviteUrl,
+        invite_url_encoded: encodeURIComponent(vars.inviteUrl),
+        unsubscribe_url: vars.unsubscribeUrl,
+      },
+    },
+  })
+}
+
+export async function sendReferralProgress(
+  name: string,
+  email: string,
+  vars: { referralCount: number; position: number; progressPct: number; inviteUrl: string; unsubscribeUrl: string },
+) {
+  return getResend().emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    headers: listUnsubHeaders(vars.unsubscribeUrl),
+    template: {
+      id: 'referral-progress',
+      variables: {
+        first_name: firstName(name),
+        referral_count: vars.referralCount,
+        position: vars.position,
+        progress_pct: vars.progressPct,
+        invite_url: vars.inviteUrl,
+        invite_url_encoded: encodeURIComponent(vars.inviteUrl),
+        unsubscribe_url: vars.unsubscribeUrl,
+      },
     },
   })
 }
