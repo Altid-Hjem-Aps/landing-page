@@ -28,13 +28,36 @@ function getNurtureScheduledAt(signupDate: Date): string | null {
   return nurtureDate.toISOString()
 }
 
-export async function sendWaitlistConfirmation(name: string, email: string) {
+// One-click-unsubscribe headers (RFC 8058) so mail apps show a native
+// "Unsubscribe" button that POSTs to our endpoint.
+function listUnsubHeaders(unsubscribeUrl: string) {
+  return {
+    'List-Unsubscribe': `<${unsubscribeUrl}>`,
+    'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+  }
+}
+
+/**
+ * Welcome email for a brand-new signup — includes their personal invite link
+ * so the referral loop can actually start (Alex review #1).
+ */
+export async function sendReferralWelcome(
+  name: string,
+  email: string,
+  vars: { inviteUrl: string; unsubscribeUrl: string },
+) {
   return getResend().emails.send({
     from: FROM_EMAIL,
     to: email,
+    headers: listUnsubHeaders(vars.unsubscribeUrl),
     template: {
-      id: 'waitlist-confirmation',
-      variables: { first_name: firstName(name) },
+      id: 'referral-queue-jump',
+      variables: {
+        first_name: firstName(name),
+        invite_url: vars.inviteUrl,
+        invite_url_encoded: encodeURIComponent(vars.inviteUrl),
+        unsubscribe_url: vars.unsubscribeUrl,
+      },
     },
   })
 }
@@ -47,6 +70,7 @@ export async function sendReferralProgress(
   return getResend().emails.send({
     from: FROM_EMAIL,
     to: email,
+    headers: listUnsubHeaders(vars.unsubscribeUrl),
     template: {
       id: 'referral-progress',
       variables: {

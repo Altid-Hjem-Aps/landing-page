@@ -54,7 +54,8 @@ export async function addAudienceContact(opts: {
   }
   if (opts.publicId) {
     properties.public_id = opts.publicId
-    properties.referral_code = opts.publicId.slice(0, 8)
+    // Store the FULL code — invite links use the whole public_id, not a slice.
+    properties.referral_code = opts.publicId
   }
   const body = JSON.stringify({
     email,

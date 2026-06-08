@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { sendWaitlistConfirmation, scheduleReleaseEmail, sendReferralProgress } from '@/lib/send-email'
+import { NextRequest, NextResponse, after } from 'next/server'
+import { sendReferralWelcome, scheduleReleaseEmail, sendReferralProgress } from '@/lib/send-email'
 import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
 import { trackServer, identifyServer } from '@/lib/amplitude.server'
-import { recordReferral, mirrorSignup, getReferrerProgress } from '@/lib/db'
+import { recordReferral, mirrorSignup, getReferrerProgress, getUnsubToken, isUnsubscribed } from '@/lib/db'
 import { syncContactTags, addAudienceContact } from '@/lib/resend'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
@@ -59,62 +59,75 @@ export async function POST(req: NextRequest) {
     if (!res.ok)
       return NextResponse.json({ success: false, error: data.message ?? 'Noget gik galt' }, { status: res.status })
 
-    // fire-and-forget — don't let these failures block signup
     const cleanName = String(name).trim()
     const cleanEmail = String(email).toLowerCase().trim()
     const cleanPhone = String(phone).replace(/\s/g, '')
-    sendWaitlistConfirmation(cleanName, cleanEmail).catch(console.error)
-    scheduleReleaseEmail(cleanName, cleanEmail).catch(console.error)
-    sendWaitlistConfirmationSms(cleanName, cleanPhone).catch(console.error)
-
-    // Mirror the signup into Supabase so leaderboard position is computable.
-    try {
-      await mirrorSignup(data.id as string, { email: cleanEmail, firstName: cleanName.split(' ')[0] })
-    } catch (e) {
-      console.error('mirrorSignup failed', e)
-    }
-
-    // Add the new signup to the Resend Audience (keeps the list in sync).
-    await addAudienceContact({
-      email: cleanEmail,
-      firstName: cleanName.split(' ')[0],
-      publicId: data.id as string,
-    })
-
-    // If they arrived via someone's referral link (?ref=CODE): record it, then
-    // email the referrer their updated progress (new count + queue position).
-    // Awaited so it completes in serverless; wrapped so a hiccup never blocks signup.
-    if (referredBy) {
-      try {
-        await recordReferral({
-          referrerCode: String(referredBy),
-          referredEmail: cleanEmail,
-          referredId: data.id as string,
-        })
-        const prog = await getReferrerProgress(String(referredBy))
-        if (prog?.email) {
-          // Keep the referrer's Resend Audience tags in sync with their progress.
-          await syncContactTags(prog.email, {
-            referral_count: prog.count,
-            progress_pct: prog.progressPct,
-            queue_position: prog.position ?? 0,
-          })
-          await sendReferralProgress(prog.firstName, prog.email, {
-            referralCount: prog.count,
-            position: prog.position ?? 0,
-            progressPct: prog.progressPct,
-            inviteUrl: `https://altidhjem.dk/?ref=${referredBy}`,
-            unsubscribeUrl: `https://altidhjem.dk/api/unsubscribe?id=${referredBy}`,
-          })
-        }
-      } catch (e) {
-        console.error('referral progress failed', e)
-      }
-    }
-
+    const firstName = cleanName.split(' ')[0]
     const userId = data.id as string
-    identifyServer(userId, { waitlist_signup: true })
-    trackServer('Waitlist Signup Confirmed', { signup_id: userId }, userId)
+    const refBy = referredBy ? String(referredBy).trim() : ''
+
+    // Respond immediately; run all emails / DB sync AFTER the response so the
+    // user isn't waiting on Resend + Supabase round-trips before "you're in".
+    after(async () => {
+      // Awaited (not fire-and-forget): inside after() an un-awaited promise can be
+      // killed when the serverless instance freezes. .catch() keeps one failure
+      // from aborting the rest.
+      await sendWaitlistConfirmationSms(cleanName, cleanPhone).catch(console.error)
+      await scheduleReleaseEmail(cleanName, cleanEmail).catch(console.error)
+
+      // Mirror the signup into Supabase and get this person's unsubscribe token.
+      let token: string | null = null
+      try {
+        token = await mirrorSignup(userId, { email: cleanEmail, firstName })
+      } catch (e) {
+        console.error('mirrorSignup failed', e)
+      }
+
+      const inviteUrl = `https://altidhjem.dk/?ref=${encodeURIComponent(userId)}`
+      const unsubscribeUrl = token ? `https://altidhjem.dk/api/unsubscribe?token=${token}` : ''
+
+      // Welcome email WITH their personal invite link (needs a working unsubscribe link).
+      if (unsubscribeUrl) {
+        await sendReferralWelcome(cleanName, cleanEmail, { inviteUrl, unsubscribeUrl }).catch(console.error)
+      } else {
+        console.error('no unsubscribe token — skipped welcome email for', userId)
+      }
+
+      // Add the new signup to the Resend Audience (keeps the list in sync).
+      await addAudienceContact({ email: cleanEmail, firstName, publicId: userId })
+
+      // If they arrived via someone's referral link (?ref=CODE): record it, then
+      // email the referrer their updated progress — unless the referrer opted out.
+      if (refBy) {
+        try {
+          await recordReferral({ referrerCode: refBy, referredEmail: cleanEmail, referredId: userId })
+          const referrerOptedOut = await isUnsubscribed(refBy)
+          if (!referrerOptedOut) {
+            const prog = await getReferrerProgress(refBy)
+            const refToken = await getUnsubToken(refBy)
+            if (prog?.email && refToken) {
+              await syncContactTags(prog.email, {
+                referral_count: prog.count,
+                progress_pct: prog.progressPct,
+                queue_position: prog.position ?? 0,
+              })
+              await sendReferralProgress(prog.firstName, prog.email, {
+                referralCount: prog.count,
+                position: prog.position ?? 0,
+                progressPct: prog.progressPct,
+                inviteUrl: `https://altidhjem.dk/?ref=${encodeURIComponent(refBy)}`,
+                unsubscribeUrl: `https://altidhjem.dk/api/unsubscribe?token=${refToken}`,
+              })
+            }
+          }
+        } catch (e) {
+          console.error('referral progress failed', e)
+        }
+      }
+
+      identifyServer(userId, { waitlist_signup: true })
+      trackServer('Waitlist Signup Confirmed', { signup_id: userId }, userId)
+    })
 
     return NextResponse.json({ success: true, id: data.id })
   }

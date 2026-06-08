@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { setUnsubscribed } from '@/lib/db'
+import { setUnsubscribedByToken } from '@/lib/db'
 import { setResendSubscription } from '@/lib/resend'
 
-function confirmationPage(title: string, body: string, status = 200) {
+function page(title: string, body: string, action = '', status = 200) {
   const html = `<!doctype html>
 <html lang="da"><head>
 <meta charset="utf-8"/>
@@ -18,7 +18,8 @@ function confirmationPage(title: string, body: string, status = 200) {
         </td></tr>
         <tr><td style="padding:36px 32px 40px;">
           <p style="font-size:24px;line-height:1.2;font-weight:800;color:#003c16;margin:0 0 12px;">${title}</p>
-          <p style="font-size:16px;line-height:1.6;color:#003c16;margin:0;">${body}</p>
+          <p style="font-size:16px;line-height:1.6;color:#003c16;margin:0 0 24px;">${body}</p>
+          ${action}
         </td></tr>
       </table>
     </td></tr>
@@ -27,34 +28,54 @@ function confirmationPage(title: string, body: string, status = 200) {
   return new NextResponse(html, { status, headers: { 'Content-Type': 'text/html; charset=utf-8' } })
 }
 
-// In-body "Afmeld" link (and ?resubscribe=1 to opt back in)
-export async function GET(req: NextRequest) {
-  const id = req.nextUrl.searchParams.get('id') ?? ''
-  const resubscribe = req.nextUrl.searchParams.get('resubscribe') === '1'
-  if (!id) return confirmationPage('Ugyldigt link', 'Linket mangler oplysninger. Prøv at klikke på linket i mailen igen.', 400)
-  try {
-    const email = await setUnsubscribed(id, !resubscribe)
-    if (!email) return confirmationPage('Vi kunne ikke finde dig', 'Linket er måske udløbet. Kontakt os på hej@altidhjem.dk hvis du har brug for hjælp.', 404)
-    await setResendSubscription(email, !resubscribe) // keep Resend Audience in sync
-    return resubscribe
-      ? confirmationPage('Du er tilmeldt igen 🎉', 'Du modtager nu igen opdateringer om din plads i køen.')
-      : confirmationPage('Du er afmeldt', 'Du modtager ikke flere markedsføringsmails fra Altid Hjem. Du kan til enhver tid tilmelde dig igen.')
-  } catch (e) {
-    console.error('unsubscribe failed', e)
-    return confirmationPage('Noget gik galt', 'Prøv igen om lidt, eller skriv til hej@altidhjem.dk.', 500)
-  }
+// A POST form button (so state only changes on an explicit click, never on load).
+function button(token: string, act: 'unsubscribe' | 'resubscribe', label: string) {
+  const url = `/api/unsubscribe?token=${encodeURIComponent(token)}`
+  const bg = act === 'unsubscribe' ? '#003c16' : '#aff193'
+  const fg = act === 'unsubscribe' ? '#ffffff' : '#003c16'
+  return `<form method="POST" action="${url}" style="margin:0;">
+    <input type="hidden" name="action" value="${act}"/>
+    <button type="submit" style="background:${bg};color:${fg};border:0;border-radius:999px;font-size:16px;font-weight:700;padding:14px 28px;cursor:pointer;font-family:inherit;">${label}</button>
+  </form>`
 }
 
-// One-click unsubscribe (RFC 8058) — mail apps POST here automatically.
+// Opening the link only SHOWS a confirmation — it never unsubscribes (so link
+// scanners / antivirus that auto-open URLs can't unsubscribe anyone).
+export async function GET(req: NextRequest) {
+  const token = req.nextUrl.searchParams.get('token') ?? ''
+  if (!token) return page('Ugyldigt link', 'Linket mangler oplysninger. Prøv at klikke på linket i mailen igen.', '', 400)
+  return page(
+    'Vil du afmelde dig?',
+    'Klik på knappen for at stoppe markedsføringsmails fra Altid Hjem. Du kan altid tilmelde dig igen.',
+    button(token, 'unsubscribe', 'Afmeld mig'),
+  )
+}
+
+// The actual change happens here — on a click (our form) or a one-click POST
+// (RFC 8058 List-Unsubscribe-Post from the mail app).
 export async function POST(req: NextRequest) {
-  const id = req.nextUrl.searchParams.get('id') ?? ''
-  if (id) {
-    try {
-      const email = await setUnsubscribed(id, true)
-      if (email) await setResendSubscription(email, true) // keep Resend Audience in sync
-    } catch (e) {
-      console.error('one-click unsubscribe failed', e)
-    }
+  const token = req.nextUrl.searchParams.get('token') ?? ''
+  if (!token) return new NextResponse(null, { status: 400 })
+
+  let action = 'unsubscribe'
+  try {
+    const form = await req.formData()
+    const a = form.get('action')
+    if (a === 'resubscribe') action = 'resubscribe'
+  } catch {
+    // one-click POSTs may not carry a parseable body — default to unsubscribe
   }
-  return new NextResponse(null, { status: 200 })
+
+  try {
+    const resubscribe = action === 'resubscribe'
+    const matched = await setUnsubscribedByToken(token, !resubscribe)
+    if (!matched) return page('Vi kunne ikke finde dig', 'Linket er måske udløbet. Skriv til hej@altidhjem.dk hvis du har brug for hjælp.', '', 404)
+    if (matched.email) await setResendSubscription(matched.email, !resubscribe) // keep Resend Audience in sync
+    return resubscribe
+      ? page('Du er tilmeldt igen 🎉', 'Du modtager nu igen opdateringer om din plads i køen.')
+      : page('Du er afmeldt', 'Du modtager ikke flere markedsføringsmails fra Altid Hjem.', button(token, 'resubscribe', 'Fortryd – tilmeld mig igen'))
+  } catch (e) {
+    console.error('unsubscribe failed', e)
+    return page('Noget gik galt', 'Prøv igen om lidt, eller skriv til hej@altidhjem.dk.', '', 500)
+  }
 }
