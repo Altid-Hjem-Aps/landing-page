@@ -14,12 +14,12 @@ export default function SletKonto() {
       <main className="min-h-screen pt-28 pb-24" style={{ background: 'var(--forest)', fontFamily: 'var(--font-onest)' }}>
         <div className="max-w-2xl mx-auto px-6">
 
-          <Link href="/" className="inline-flex items-center gap-2 text-sm mb-10 transition-opacity hover:opacity-70" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          <Link href="/" className="inline-flex items-center gap-2 text-sm mb-10 transition-opacity hover:opacity-70" style={{ color: 'rgba(255,255,255,0.55)' }}>
             <span>←</span> Tilbage
           </Link>
 
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-1">Slet din Altid Hjem-konto</h1>
-          <p className="text-sm mb-12 font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>Altid Hjem ApS · CVR 45637476 · hej@altidhjem.dk</p>
+          <p className="text-sm mb-12 font-medium" style={{ color: 'rgba(255,255,255,0.55)' }}>Altid Hjem ApS · CVR 45637476 · hej@altidhjem.dk</p>
 
           <div className="space-y-10 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
 
