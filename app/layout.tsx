@@ -10,6 +10,8 @@ const onest = Onest({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://altidhjem.dk'),
+  alternates: { canonical: './' },
   title: 'Altid Hjem – Skriv dig på ventelisten',
   description: 'Altid Hjem samler hjemmets faste udgifter i én app – ét overblik, ét login, én regning.',
   icons: {
