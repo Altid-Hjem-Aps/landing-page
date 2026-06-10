@@ -15,7 +15,7 @@ export default function Privatlivspolitik() {
         <div className="max-w-2xl mx-auto px-6">
 
           <Link href="/" className="inline-flex items-center gap-2 text-sm mb-10 transition-opacity hover:opacity-70" style={{ color: 'rgba(255,255,255,0.55)' }}>
-            <span>←</span> Tilbage
+            <span aria-hidden="true">←</span> Tilbage
           </Link>
 
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-1">Privatlivspolitik</h1>
