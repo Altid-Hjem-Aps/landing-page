@@ -16,6 +16,10 @@ npx vitest             # watch mode
 npm run test:coverage  # coverage report (@vitest/coverage-v8)
 ```
 
+CI runs the full suite on every PR and on pushes to `main`
+(`.github/workflows/test.yml`: `npm ci` → `npm test` → `npm run build`).
+A PR can't merge green with failing tests or a broken build.
+
 ## Test layers
 
 - **Unit tests** — pure functions in `lib/` (e.g. `test/survey-token.test.ts`). Write one whenever you add a function with logic.
