@@ -27,7 +27,9 @@ describe('/slet-konto', () => {
     expect(screen.getByText('Helsinkigade 29, 2150 Nordhavn')).toBeInTheDocument()
   })
 
-  it('has indexable metadata (title + description, no robots block)', () => {
+  // NOTE: actual production indexability also depends on robots.txt and deploy
+  // headers (e.g. Vercel preview noindex) — this only checks the page's own metadata.
+  it('page metadata does not opt out of indexing', () => {
     expect(metadata.title).toBe('Slet din konto – Altid Hjem')
     expect(metadata.description).toBeTruthy()
     expect(metadata.robots).toBeUndefined()
