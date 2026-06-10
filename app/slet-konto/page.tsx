@@ -19,7 +19,8 @@ export default function SletKonto() {
           </Link>
 
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-1">Slet din Altid Hjem-konto</h1>
-          <p className="text-sm mb-12 font-medium" style={{ color: 'rgba(255,255,255,0.55)' }}>Altid Hjem ApS · CVR 45637476 · hej@altidhjem.dk</p>
+          <p className="text-sm mb-2 font-medium" style={{ color: 'rgba(255,255,255,0.55)' }}>Altid Hjem ApS · CVR 45637476 · hej@altidhjem.dk</p>
+          <p className="text-xs mb-12" style={{ color: 'rgba(255,255,255,0.55)' }}>Senest opdateret: juni 2026</p>
 
           <div className="space-y-10 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
 
