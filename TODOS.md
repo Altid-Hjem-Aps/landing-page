@@ -23,6 +23,26 @@
 - **Fix:** Add a visible `focus-visible` style (e.g. green ring on forest) wherever
   the default outline is suppressed.
 
+## P2 — Lawyer-check retention wording on /slet-konto + /privatlivspolitik
+- **What:** Both pages say bookkeeping records are kept "op til 5 år efter
+  kundeforholdets/aftalens ophør". Bogføringsloven counts 5 years from the END
+  OF THE FISCAL YEAR of the transaction — in practice up to ~6 years.
+- **Why:** If records are ever held longer than the published promise, the
+  stated policy is breached. Flagged by cross-model review 2026-06-10; left
+  as-is deliberately (pages are mutually consistent; legal copy needs counsel).
+- **Fix:** Have a lawyer confirm or reword to "5 år efter udgangen af det
+  regnskabsår, materialet vedrører".
+- **Also (operational):** /slet-konto now promises confirm-before-delete
+  ("sletningen gennemføres først, når du har bekræftet"). The support runbook
+  for hej@altidhjem.dk must actually enforce that confirmation round-trip —
+  deleting on the first inbound email would make the published policy false
+  AND enable spoofed-email deletions.
+
+## P3 — Pre-existing lint errors block adding lint to CI (2026-06-10 /review)
+- `npm run lint` fails with 6 errors (setState-in-effect in two components,
+  `<a href="/">` in Nav.tsx:62 should be `<Link>`, a require() import in a
+  script). Fix these, then add `npm run lint` to .github/workflows/test.yml.
+
 ## P3 — Design-review deferred findings (2026-06-10, /slet-konto audit)
 - Tokenize white-alpha text tiers (~12 ad-hoc `rgba(255,255,255,X)` values across
   dark pages) so contrast fixes stop regenerating per page.
