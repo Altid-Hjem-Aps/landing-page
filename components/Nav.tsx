@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import * as amplitude from '@amplitude/analytics-browser'
 import { Logo } from '@/components/Logo'
 
@@ -11,6 +12,7 @@ const SCROLL_DELTA_DESKTOP = 6
 const SCROLL_DELTA_TOUCH = 30
 
 export default function Nav() {
+  const router = useRouter()
   const [hidden, setHidden] = useState(false)
   const lastY = useRef(0)
 
@@ -44,6 +46,14 @@ export default function Nav() {
 
   function handleCTA() {
     amplitude.track('Waitlist CTA Clicked', { source: 'nav' })
+    // The waitlist form only exists on the front page (in the hero). Off '/',
+    // the 'expand-waitlist' event has no listener — navigate home instead.
+    // Client-side nav keeps the JS context alive (the analytics event survives);
+    // the #venteliste hash tells the hero form to auto-expand on arrival.
+    if (window.location.pathname !== '/') {
+      router.push('/#venteliste')
+      return
+    }
     window.dispatchEvent(new CustomEvent('expand-waitlist'))
   }
 

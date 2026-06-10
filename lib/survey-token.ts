@@ -5,7 +5,17 @@ import crypto from 'crypto'
 // public referral code, so it is NOT secret). Stateless HMAC — no DB, no extra
 // env: signed with the server-only service-role key.
 function secret(): string {
-  return process.env.SURVEY_TOKEN_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  const key = process.env.SURVEY_TOKEN_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY
+  // Fail loudly: signing with an empty key would make tokens forgeable by
+  // anyone who reads the source.
+  if (!key) throw new Error('survey-token: SURVEY_TOKEN_SECRET or SUPABASE_SERVICE_ROLE_KEY must be set')
+  return key
+}
+
+// Lets callers fail fast BEFORE irreversible side effects (e.g. registering a
+// user upstream) instead of throwing from signSurveyToken afterwards.
+export function assertSurveyTokenConfigured(): void {
+  secret()
 }
 
 export function signSurveyToken(id: string): string {

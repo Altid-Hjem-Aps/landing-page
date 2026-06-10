@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import Nav from '@/components/Nav'
 import Hero from '@/components/Hero'
 import WhatIs from '@/components/sections/WhatIs'
@@ -9,6 +10,12 @@ import Why from '@/components/sections/Why'
 import Trust from '@/components/sections/Trust'
 import BottomCta from '@/components/sections/BottomCta'
 import { Logo } from '@/components/Logo'
+
+const footerLinks = [
+  { href: '/kontakt', label: 'Support' },
+  { href: '/privatlivspolitik', label: 'Privatlivspolitik' },
+  { href: '/slet-konto', label: 'Slet konto' },
+]
 
 export default function Home() {
   return (
@@ -41,14 +48,18 @@ export default function Home() {
           >
             Altid Energi
           </a>
-          {' · '}
-          <a
-            href="/kontakt"
-            className="underline-offset-2 hover:underline"
-            style={{ color: 'rgba(255,255,255,0.85)' }}
-          >
-            Support
-          </a>
+          {footerLinks.map(({ href, label }) => (
+            <span key={href}>
+              {' · '}
+              <Link
+                href={href}
+                className="underline-offset-2 hover:underline"
+                style={{ color: 'rgba(255,255,255,0.85)' }}
+              >
+                {label}
+              </Link>
+            </span>
+          ))}
         </p>
       </footer>
     </>
