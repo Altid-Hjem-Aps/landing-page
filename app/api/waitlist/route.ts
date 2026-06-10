@@ -4,7 +4,7 @@ import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
 import { trackServer, identifyServer } from '@/lib/amplitude.server'
 import { recordReferral, mirrorSignup, getReferrerProgress, getUnsubToken, isUnsubscribed, checkRateLimit, getQueuePosition } from '@/lib/db'
 import { syncContactTags, addAudienceContact } from '@/lib/resend'
-import { signSurveyToken, verifySurveyToken } from '@/lib/survey-token'
+import { assertSurveyTokenConfigured, signSurveyToken, verifySurveyToken } from '@/lib/survey-token'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -29,6 +29,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Ugyldigt mobilnummer' }, { status: 400 })
     if (!name || String(name).trim().length < 2)
       return NextResponse.json({ success: false, error: 'Navn mangler' }, { status: 400 })
+
+    // Fail fast on missing survey-token secret BEFORE registering the user
+    // upstream — otherwise signSurveyToken throws after side effects and the
+    // user is enrolled but sees a 500, then 409 on retry.
+    assertSurveyTokenConfigured()
 
     const res = await fetch(`${API_URL}/api/waitlist`, {
       method: 'POST',
