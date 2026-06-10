@@ -14,7 +14,7 @@ export default function Privatlivspolitik() {
       <main className="min-h-screen pt-28 pb-24" style={{ background: 'var(--forest)', fontFamily: 'var(--font-onest)' }}>
         <div className="max-w-2xl mx-auto px-6">
 
-          <Link href="/" className="inline-flex items-center gap-2 text-sm mb-10 transition-opacity hover:opacity-70" style={{ color: 'rgba(255,255,255,0.55)' }}>
+          <Link href="/" className="inline-flex items-center gap-2 text-sm mb-10 text-white/55 transition-colors hover:text-white/85">
             <span aria-hidden="true">←</span> Tilbage
           </Link>
 
@@ -27,12 +27,12 @@ export default function Privatlivspolitik() {
             <section>
               <h2 className="text-white font-semibold text-base mb-3">1. Vi er den dataansvarlige</h2>
               <p className="mb-3">Altid Hjem ApS, CVR 45637476, er dataansvarlig for behandlingen af de personoplysninger, som vi indsamler om dig i forbindelse med din brug af Altid Hjem-appen og vores tilknyttede tjenester (Altid Forsikring, Altid Mobil m.fl.).</p>
-              <p className="mb-3">Når du via appen opretter dig som kunde hos eller tilgår din selvbetjening hos Altid Energi, er det Altid Energi ApS (CVR 44373580), der er selvstændig dataansvarlig for behandlingen af dine personoplysninger som elkunde. Du kan læse om Altid Energis behandling af personoplysninger på <a href="https://altidenergi.dk/datapolitik/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:opacity-80">altidenergi.dk/datapolitik</a>.</p>
+              <p className="mb-3">Når du via appen opretter dig som kunde hos eller tilgår din selvbetjening hos Altid Energi, er det Altid Energi ApS (CVR 44373580), der er selvstændig dataansvarlig for behandlingen af dine personoplysninger som elkunde. Du kan læse om Altid Energis behandling af personoplysninger på <a href="https://altidenergi.dk/datapolitik/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 transition-colors hover:text-white">altidenergi.dk/datapolitik</a>.</p>
               <p>Har du spørgsmål til vores behandling af dine personoplysninger, er du velkommen til at kontakte os:</p>
               <div className="mt-3 pl-4" style={{ borderLeft: '2px solid rgba(255,255,255,0.1)' }}>
                 <p className="font-medium text-white">Altid Hjem ApS</p>
                 <p>Helsinkigade 29, 2150 Nordhavn</p>
-                <p><a href="mailto:hej@altidhjem.dk" className="underline underline-offset-2 hover:opacity-80">hej@altidhjem.dk</a></p>
+                <p><a href="mailto:hej@altidhjem.dk" className="underline underline-offset-2 transition-colors hover:text-white">hej@altidhjem.dk</a></p>
               </div>
             </section>
 
@@ -51,7 +51,7 @@ export default function Privatlivspolitik() {
                 </div>
                 <div>
                   <p className="font-semibold text-white">Formål og retsgrundlag</p>
-                  <p>Vi behandler oplysningerne for at kunne give dig besked, når Altid Hjem lanceres, og for at forstå, hvem vores tidlige brugere er. Retsgrundlaget er dit samtykke (GDPR artikel 6, stk. 1, litra a), som du til enhver tid kan trække tilbage ved at skrive til <a href="mailto:hej@altidhjem.dk" className="underline underline-offset-2 hover:opacity-80">hej@altidhjem.dk</a>.</p>
+                  <p>Vi behandler oplysningerne for at kunne give dig besked, når Altid Hjem lanceres, og for at forstå, hvem vores tidlige brugere er. Retsgrundlaget er dit samtykke (GDPR artikel 6, stk. 1, litra a), som du til enhver tid kan trække tilbage ved at skrive til <a href="mailto:hej@altidhjem.dk" className="underline underline-offset-2 transition-colors hover:text-white">hej@altidhjem.dk</a>.</p>
                 </div>
                 <div>
                   <p className="font-semibold text-white">Opbevaring</p>
@@ -114,7 +114,7 @@ export default function Privatlivspolitik() {
                     <li><span className="font-medium text-white/80">Modtagelse af data fra Altid Energi:</span> Hvis du er elkunde hos Altid Energi og samtykker til at oprette en konto hos Altid Hjem, modtager vi følgende oplysninger fra Altid Energi: navn, e-mailadresse, telefonnummer og adresse.</li>
                     <li><span className="font-medium text-white/80">Videregivelse af data til Altid Energi:</span> Hvis du som Altid Hjem-kunde samtykker til at oprette dig som elkunde hos Altid Energi, videregiver vi de til enhver tid gældende oplysninger, der er nødvendige for oprettelse af et elkundeforhold.</li>
                   </ul>
-                  <p className="mt-2">Samtykket er engangs – det udløser én konkret overførsel og er forbrugt i samme handling. Dine efterfølgende rettigheder (sletning, indsigt, berigtigelse) reguleres af de almindelige GDPR-regler hos den modtagende dataansvarlige. Altid Energis datapolitik kan læses på <a href="https://altidenergi.dk/datapolitik/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:opacity-80">altidenergi.dk/datapolitik</a>.</p>
+                  <p className="mt-2">Samtykket er engangs – det udløser én konkret overførsel og er forbrugt i samme handling. Dine efterfølgende rettigheder (sletning, indsigt, berigtigelse) reguleres af de almindelige GDPR-regler hos den modtagende dataansvarlige. Altid Energis datapolitik kan læses på <a href="https://altidenergi.dk/datapolitik/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 transition-colors hover:text-white">altidenergi.dk/datapolitik</a>.</p>
                 </div>
                 <div>
                   <p className="font-semibold text-white">Databehandlere</p>
@@ -162,7 +162,7 @@ export default function Privatlivspolitik() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-3">Du udøver dine rettigheder ved at kontakte os på <a href="mailto:hej@altidhjem.dk" className="underline underline-offset-2 hover:opacity-80">hej@altidhjem.dk</a>. Vi besvarer din henvendelse inden for 30 dage.</p>
+              <p className="mt-3">Du udøver dine rettigheder ved at kontakte os på <a href="mailto:hej@altidhjem.dk" className="underline underline-offset-2 transition-colors hover:text-white">hej@altidhjem.dk</a>. Vi besvarer din henvendelse inden for 30 dage.</p>
             </section>
 
             <section>
@@ -171,8 +171,8 @@ export default function Privatlivspolitik() {
               <div className="pl-4" style={{ borderLeft: '2px solid rgba(255,255,255,0.1)' }}>
                 <p className="font-medium text-white">Datatilsynet</p>
                 <p>Carl Jacobsens Vej 35, 2500 Valby</p>
-                <p><a href="mailto:dt@datatilsynet.dk" className="underline underline-offset-2 hover:opacity-80">dt@datatilsynet.dk</a></p>
-                <p><a href="https://www.datatilsynet.dk" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:opacity-80">datatilsynet.dk</a></p>
+                <p><a href="mailto:dt@datatilsynet.dk" className="underline underline-offset-2 transition-colors hover:text-white">dt@datatilsynet.dk</a></p>
+                <p><a href="https://www.datatilsynet.dk" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 transition-colors hover:text-white">datatilsynet.dk</a></p>
               </div>
             </section>
 

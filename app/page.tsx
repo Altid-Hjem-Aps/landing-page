@@ -11,6 +11,12 @@ import Trust from '@/components/sections/Trust'
 import BottomCta from '@/components/sections/BottomCta'
 import { Logo } from '@/components/Logo'
 
+const footerLinks = [
+  { href: '/kontakt', label: 'Support' },
+  { href: '/privatlivspolitik', label: 'Privatlivspolitik' },
+  { href: '/slet-konto', label: 'Slet konto' },
+]
+
 export default function Home() {
   return (
     <>
@@ -42,30 +48,18 @@ export default function Home() {
           >
             Altid Energi
           </a>
-          {' · '}
-          <Link
-            href="/kontakt"
-            className="underline-offset-2 hover:underline"
-            style={{ color: 'rgba(255,255,255,0.85)' }}
-          >
-            Support
-          </Link>
-          {' · '}
-          <Link
-            href="/privatlivspolitik"
-            className="underline-offset-2 hover:underline"
-            style={{ color: 'rgba(255,255,255,0.85)' }}
-          >
-            Privatlivspolitik
-          </Link>
-          {' · '}
-          <Link
-            href="/slet-konto"
-            className="underline-offset-2 hover:underline"
-            style={{ color: 'rgba(255,255,255,0.85)' }}
-          >
-            Slet konto
-          </Link>
+          {footerLinks.map(({ href, label }) => (
+            <span key={href}>
+              {' · '}
+              <Link
+                href={href}
+                className="underline-offset-2 hover:underline"
+                style={{ color: 'rgba(255,255,255,0.85)' }}
+              >
+                {label}
+              </Link>
+            </span>
+          ))}
         </p>
       </footer>
     </>

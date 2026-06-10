@@ -1,0 +1,26 @@
+import { describe, expect, it, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import Home from '@/app/page'
+
+// Home's sections are client components with browser-only side effects —
+// the footer is what's under test here.
+vi.mock('@/components/Nav', () => ({ default: () => null }))
+vi.mock('@/components/Hero', () => ({ default: () => null }))
+vi.mock('@/components/sections/WhatIs', () => ({ default: () => null }))
+vi.mock('@/components/sections/FounderVideo', () => ({ default: () => null }))
+vi.mock('@/components/sections/SavingsCounter', () => ({ default: () => null }))
+vi.mock('@/components/sections/Services', () => ({ default: () => null }))
+vi.mock('@/components/sections/HowItWorks', () => ({ default: () => null }))
+vi.mock('@/components/sections/Why', () => ({ default: () => null }))
+vi.mock('@/components/sections/Trust', () => ({ default: () => null }))
+vi.mock('@/components/sections/BottomCta', () => ({ default: () => null }))
+vi.mock('@/components/Logo', () => ({ Logo: () => null }))
+
+describe('home footer', () => {
+  it('links to support and the legal pages Google Play requires to be reachable', () => {
+    render(<Home />)
+    expect(screen.getByRole('link', { name: 'Support' })).toHaveAttribute('href', '/kontakt')
+    expect(screen.getByRole('link', { name: 'Privatlivspolitik' })).toHaveAttribute('href', '/privatlivspolitik')
+    expect(screen.getByRole('link', { name: 'Slet konto' })).toHaveAttribute('href', '/slet-konto')
+  })
+})
