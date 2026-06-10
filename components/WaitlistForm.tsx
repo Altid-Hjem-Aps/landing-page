@@ -88,6 +88,17 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     return () => window.removeEventListener('expand-waitlist', handleExpand)
   }, [isDark])
 
+  // Nav CTA on subpages navigates to /#venteliste — auto-expand on arrival.
+  useEffect(() => {
+    if (isDark) return
+    if (window.location.hash === '#venteliste') {
+      setExpanded(true)
+      setTimeout(() => {
+        document.getElementById('name-input-hero')?.focus()
+      }, 60)
+    }
+  }, [isDark])
+
   async function submitStep1() {
     if (!phone || !email || !name) return
     setLoading(true)
