@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import Nav from '@/components/Nav'
 import Hero from '@/components/Hero'
 import WhatIs from '@/components/sections/WhatIs'
@@ -42,29 +43,29 @@ export default function Home() {
             Altid Energi
           </a>
           {' · '}
-          <a
+          <Link
             href="/kontakt"
             className="underline-offset-2 hover:underline"
             style={{ color: 'rgba(255,255,255,0.85)' }}
           >
             Support
-          </a>
+          </Link>
           {' · '}
-          <a
+          <Link
             href="/privatlivspolitik"
             className="underline-offset-2 hover:underline"
             style={{ color: 'rgba(255,255,255,0.85)' }}
           >
             Privatlivspolitik
-          </a>
+          </Link>
           {' · '}
-          <a
+          <Link
             href="/slet-konto"
             className="underline-offset-2 hover:underline"
             style={{ color: 'rgba(255,255,255,0.85)' }}
           >
             Slet konto
-          </a>
+          </Link>
         </p>
       </footer>
     </>
