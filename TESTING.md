@@ -11,8 +11,9 @@
 ## Running tests
 
 ```bash
-npm test          # full suite (vitest run)
-npx vitest        # watch mode
+npm test               # full suite (vitest run)
+npx vitest             # watch mode
+npm run test:coverage  # coverage report (@vitest/coverage-v8)
 ```
 
 ## Test layers
@@ -24,7 +25,8 @@ npx vitest        # watch mode
 ## Conventions
 
 - Files live in `test/`, named `<subject>.test.ts(x)`.
+- Import `describe`/`it`/`expect` explicitly from `vitest` (the convention here). `globals: true` in vitest.config.ts exists only so @testing-library/react auto-cleanup works — don't rely on globals in test code.
 - Query by role/accessible name first (`getByRole('heading', { name: ... })`), text second.
 - Test what code DOES — no `expect(x).toBeDefined()` filler.
-- Server-only env vars get stubbed in `beforeAll` (see survey-token test).
+- Server-only env vars: use `vi.stubEnv(...)` in `beforeAll` and `vi.unstubAllEnvs()` in `afterAll` (see survey-token test). Never assign to `process.env` directly — it leaks between test files if isolation is ever disabled.
 - Never import real secrets in tests.
