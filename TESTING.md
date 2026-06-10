@@ -1,0 +1,30 @@
+# Testing
+
+100% test coverage is the key to great vibe coding. Tests let you move fast, trust your instincts, and ship with confidence — without them, vibe coding is just yolo coding. With tests, it's a superpower.
+
+## Framework
+
+- **vitest** (jsdom environment) + **@testing-library/react**
+- Config: `vitest.config.ts` (globals on, `@/` alias matches tsconfig)
+- Setup: `test/setup.ts` loads `@testing-library/jest-dom/vitest` matchers
+
+## Running tests
+
+```bash
+npm test          # full suite (vitest run)
+npx vitest        # watch mode
+```
+
+## Test layers
+
+- **Unit tests** — pure functions in `lib/` (e.g. `test/survey-token.test.ts`). Write one whenever you add a function with logic.
+- **Component/page tests** — render App Router pages and components with Testing Library (e.g. `test/slet-konto.test.tsx`). Mock client components with browser-only side effects (Nav, Amplitude).
+- **Smoke/E2E** — not set up yet; the dev-server + Playwright screenshot flow is run manually via /verify or /design-review.
+
+## Conventions
+
+- Files live in `test/`, named `<subject>.test.ts(x)`.
+- Query by role/accessible name first (`getByRole('heading', { name: ... })`), text second.
+- Test what code DOES — no `expect(x).toBeDefined()` filler.
+- Server-only env vars get stubbed in `beforeAll` (see survey-token test).
+- Never import real secrets in tests.

@@ -40,6 +40,16 @@ Simple, fair, no hidden fees. Clean Scandinavian minimalism — not SaaS, not en
 - Backend calls go through `lib/api.ts` (proxy to `api.altidhjem.dk`)
 - Environment variables in `.env.local`, never committed
 
+## Testing
+
+- Run: `npm test` (vitest, tests in `test/`). See `TESTING.md` for conventions.
+- 100% test coverage is the goal — tests make vibe coding safe.
+- When writing new functions, write a corresponding test.
+- When fixing a bug, write a regression test.
+- When adding error handling, write a test that triggers the error.
+- When adding a conditional (if/else, switch), write tests for BOTH paths.
+- Never commit code that makes existing tests fail.
+
 ## Skill routing
 
 When the user's request matches an available skill, invoke it via the Skill tool. When in doubt, invoke the skill.
