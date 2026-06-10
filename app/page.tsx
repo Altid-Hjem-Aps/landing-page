@@ -49,6 +49,22 @@ export default function Home() {
           >
             Support
           </a>
+          {' · '}
+          <a
+            href="/privatlivspolitik"
+            className="underline-offset-2 hover:underline"
+            style={{ color: 'rgba(255,255,255,0.85)' }}
+          >
+            Privatlivspolitik
+          </a>
+          {' · '}
+          <a
+            href="/slet-konto"
+            className="underline-offset-2 hover:underline"
+            style={{ color: 'rgba(255,255,255,0.85)' }}
+          >
+            Slet konto
+          </a>
         </p>
       </footer>
     </>
