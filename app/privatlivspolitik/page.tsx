@@ -56,7 +56,7 @@ export default function Privatlivspolitik() {
                 </div>
                 <div>
                   <p className="font-semibold text-white">E-mailstatistik</p>
-                  <p>Vores e-mails indeholder en lille sporingspixel og sporbare links, der fortæller os, om en e-mail bliver åbnet, og hvilke links der klikkes på. Vi bruger oplysningerne til at måle og forbedre vores kommunikation. Behandlingen sker på grundlag af dit samtykke til at modtage e-mails fra os og ophører, hvis du afmelder dig via linket i enhver e-mail. Du kan desuden undgå åbningsregistrering ved at slå automatisk billedvisning fra i dit e-mailprogram. Vores e-mails udsendes via vores databehandler Resend (data opbevares i EU).</p>
+                  <p>Vores e-mails kan indeholde en lille sporingspixel og sporbare links, der fortæller os, om en e-mail bliver åbnet, og hvilke links der klikkes på. Vi bruger oplysningerne til at måle og forbedre vores kommunikation. Behandlingen sker på grundlag af dit samtykke og ophører fremadrettet, hvis du afmelder dig via afmeldingslinket i vores e-mails — allerede indsamlede oplysninger slettes efter opbevaringsreglerne nedenfor. I de fleste e-mailprogrammer kan du desuden undgå åbningsregistrering ved at slå automatisk billedvisning fra. Vores e-mails udsendes via vores databehandler Resend; eventuelle overførsler til lande uden for EU/EØS sker som beskrevet i afsnit 6.</p>
                 </div>
                 <div>
                   <p className="font-semibold text-white">Opbevaring</p>
