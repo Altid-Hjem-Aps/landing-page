@@ -20,7 +20,7 @@ export default function Privatlivspolitik() {
 
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-1">Privatlivspolitik</h1>
           <p className="text-sm mb-2 font-medium" style={{ color: 'rgba(255,255,255,0.55)' }}>Altid Hjem ApS · CVR 45637476 · hej@altidhjem.dk</p>
-          <p className="text-xs mb-12" style={{ color: 'rgba(255,255,255,0.55)' }}>Senest opdateret: maj 2026</p>
+          <p className="text-xs mb-12" style={{ color: 'rgba(255,255,255,0.55)' }}>Senest opdateret: juni 2026</p>
 
           <div className="space-y-10 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
 
@@ -47,11 +47,16 @@ export default function Privatlivspolitik() {
                     <li>E-mailadresse</li>
                     <li>Mobilnummer</li>
                     <li>Valgfrie svar på spørgsmål om din husstand og energiforbrug</li>
+                    <li>Oplysninger om din interaktion med vores e-mails (om en e-mail åbnes, og hvilke links der klikkes på)</li>
                   </ul>
                 </div>
                 <div>
                   <p className="font-semibold text-white">Formål og retsgrundlag</p>
                   <p>Vi behandler oplysningerne for at kunne give dig besked, når Altid Hjem lanceres, og for at forstå, hvem vores tidlige brugere er. Retsgrundlaget er dit samtykke (GDPR artikel 6, stk. 1, litra a), som du til enhver tid kan trække tilbage ved at skrive til <a href="mailto:hej@altidhjem.dk" className="underline underline-offset-2 transition-colors hover:text-white">hej@altidhjem.dk</a>.</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-white">E-mailstatistik</p>
+                  <p>Vores e-mails indeholder en lille sporingspixel og sporbare links, der fortæller os, om en e-mail bliver åbnet, og hvilke links der klikkes på. Vi bruger oplysningerne til at måle og forbedre vores kommunikation. Behandlingen sker på grundlag af dit samtykke til at modtage e-mails fra os og ophører, hvis du afmelder dig via linket i enhver e-mail. Du kan desuden undgå åbningsregistrering ved at slå automatisk billedvisning fra i dit e-mailprogram. Vores e-mails udsendes via vores databehandler Resend (data opbevares i EU).</p>
                 </div>
                 <div>
                   <p className="font-semibold text-white">Opbevaring</p>
@@ -118,7 +123,7 @@ export default function Privatlivspolitik() {
                 </div>
                 <div>
                   <p className="font-semibold text-white">Databehandlere</p>
-                  <p>Som behandler oplysninger på vores vegne, herunder udbydere af hosting, betalingsinfrastruktur, kundesupport og analyseværktøjer. Alle databehandlere er underlagt en databehandleraftale og må kun behandle dine oplysninger efter vores instruks.</p>
+                  <p>Som behandler oplysninger på vores vegne, herunder udbydere af hosting, betalingsinfrastruktur, kundesupport, analyseværktøjer og e-mailudsendelse. Alle databehandlere er underlagt en databehandleraftale og må kun behandle dine oplysninger efter vores instruks.</p>
                 </div>
                 <div>
                   <p className="font-semibold text-white">Offentlige myndigheder</p>
