@@ -211,7 +211,7 @@ export async function setUnsubscribedByToken(
   if (!t) return null
   const { data, error } = await getClient()
     .from('signup')
-    .update({ unsubscribed: value })
+    .update({ unsubscribed: value, unsubscribed_at: value ? new Date().toISOString() : null })
     .eq('unsub_token', t)
     .select('email, public_id')
   if (error) throw new Error(error.message)
