@@ -43,6 +43,8 @@ export async function addAudienceContact(opts: {
   firstName?: string
   publicId?: string
   queuePosition?: number | null
+  /** Hvor tilmeldingen kom fra ('forside' | 'spiir-alternativ'). */
+  signupSource?: string
 }): Promise<void> {
   const email = String(opts.email || '').trim().toLowerCase()
   const key = process.env.RESEND_API_KEY
@@ -60,6 +62,7 @@ export async function addAudienceContact(opts: {
   }
   // Snapshot of their queue position at signup (Supabase stays the live truth).
   if (typeof opts.queuePosition === 'number') properties.queue_position = opts.queuePosition
+  if (opts.signupSource) properties.signup_source = opts.signupSource
   const body = JSON.stringify({
     email,
     first_name: opts.firstName,

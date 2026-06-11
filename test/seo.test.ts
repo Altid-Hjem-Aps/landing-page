@@ -22,6 +22,7 @@ describe('sitemap.xml', () => {
     const urls = sitemap().map((entry) => entry.url)
     expect(urls).toEqual([
       'https://altidhjem.dk/',
+      'https://altidhjem.dk/spiir-alternativ',
       'https://altidhjem.dk/kontakt',
       'https://altidhjem.dk/privatlivspolitik',
       'https://altidhjem.dk/slet-konto',

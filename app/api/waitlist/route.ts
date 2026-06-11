@@ -4,6 +4,7 @@ import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
 import { trackServer, identifyServer } from '@/lib/amplitude.server'
 import { recordReferral, mirrorSignup, getReferrerProgress, getUnsubToken, isUnsubscribed, checkRateLimit, getQueuePosition } from '@/lib/db'
 import { syncContactTags, addAudienceContact } from '@/lib/resend'
+import { normalizeSignupSource } from '@/lib/signup-source'
 import { assertSurveyTokenConfigured, signSurveyToken, verifySurveyToken } from '@/lib/survey-token'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
@@ -22,6 +23,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'For mange forsøg. Prøv igen om en time.' }, { status: 429 })
 
     const { email, name, phone, referredBy } = body
+    const signupSource = normalizeSignupSource(body.source)
 
     if (!email || !EMAIL_RE.test(email))
       return NextResponse.json({ success: false, error: 'Ugyldig e-mail' }, { status: 400 })
@@ -71,7 +73,7 @@ export async function POST(req: NextRequest) {
       // Mirror the signup into Supabase and get this person's unsubscribe token.
       let token: string | null = null
       try {
-        token = await mirrorSignup(userId, { email: cleanEmail, firstName })
+        token = await mirrorSignup(userId, { email: cleanEmail, firstName, source: signupSource })
       } catch (e) {
         console.error('mirrorSignup failed', e)
       }
@@ -97,7 +99,7 @@ export async function POST(req: NextRequest) {
         console.error('queue_position lookup failed', userId, e)
         return null
       })
-      await addAudienceContact({ email: cleanEmail, firstName, publicId: userId, queuePosition: myPosition })
+      await addAudienceContact({ email: cleanEmail, firstName, publicId: userId, queuePosition: myPosition, signupSource })
 
       // If they arrived via someone's referral link (?ref=CODE): record it, tag
       // the new signup with who referred them, then email the referrer their
@@ -131,8 +133,8 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      identifyServer(userId, { waitlist_signup: true })
-      trackServer('Waitlist Signup Confirmed', { signup_id: userId }, userId)
+      identifyServer(userId, { waitlist_signup: true, signup_source: signupSource })
+      trackServer('Waitlist Signup Confirmed', { signup_id: userId, signup_source: signupSource }, userId)
     })
 
     // surveyToken proves ownership in step 2 (the public_id itself is not secret —
