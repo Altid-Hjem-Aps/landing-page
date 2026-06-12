@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import robots from '@/app/robots'
 import sitemap from '@/app/sitemap'
+import nextConfig from '@/next.config'
 
 describe('robots.txt', () => {
   it('allows crawling of the site but blocks api and preview paths', () => {
@@ -23,6 +24,7 @@ describe('sitemap.xml', () => {
     expect(urls).toEqual([
       'https://altidhjem.dk/',
       'https://altidhjem.dk/spiir-alternativ',
+      'https://altidhjem.dk/hvornar-er-strommen-billigst',
       'https://altidhjem.dk/kontakt',
       'https://altidhjem.dk/privatlivspolitik',
       'https://altidhjem.dk/slet-konto',
@@ -40,5 +42,16 @@ describe('sitemap.xml', () => {
   it('gives the front page top priority', () => {
     const home = sitemap().find((entry) => entry.url === 'https://altidhjem.dk/')
     expect(home?.priority).toBe(1)
+  })
+})
+
+describe('redirects', () => {
+  it('permanently redirects the old /elpriser slug to the new SEO slug', async () => {
+    const redirects = await nextConfig.redirects!()
+    expect(redirects).toContainEqual({
+      source: '/elpriser',
+      destination: '/hvornar-er-strommen-billigst',
+      permanent: true,
+    })
   })
 })

@@ -5,6 +5,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: `${base}/`, changeFrequency: 'weekly', priority: 1 },
     { url: `${base}/spiir-alternativ`, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${base}/hvornar-er-strommen-billigst`, changeFrequency: 'daily', priority: 0.8 },
     { url: `${base}/kontakt`, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/privatlivspolitik`, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/slet-konto`, changeFrequency: 'monthly', priority: 0.5 },
