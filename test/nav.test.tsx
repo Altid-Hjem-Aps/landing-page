@@ -71,3 +71,45 @@ describe('Nav CTA', () => {
     window.removeEventListener('expand-waitlist', expandListener)
   })
 })
+
+describe('Spiir banner', () => {
+  it('is ABSENT by default — the front page must render without campaign content', () => {
+    stubLocation('/')
+    render(<Nav />)
+    expect(screen.queryByText(/Spiir/)).toBeNull()
+    expect(screen.getAllByRole('button')).toHaveLength(1)
+  })
+
+  it('renders above the nav when spiirBanner is set', () => {
+    stubLocation('/spiir-alternativ')
+    render(<Nav spiirBanner />)
+    expect(screen.getByText(/Brugte du Spiir\?/)).toBeInTheDocument()
+  })
+
+  it('scrolls to the on-page form when one exists, so the signup keeps its source tag', () => {
+    stubLocation('/spiir-alternativ')
+    // /spiir-alternativ has BottomCta's form on the page (id venteliste2).
+    const onPageForm = document.createElement('div')
+    onPageForm.id = 'venteliste2'
+    onPageForm.scrollIntoView = vi.fn()
+    document.body.appendChild(onPageForm)
+
+    render(<Nav spiirBanner />)
+    fireEvent.click(screen.getByText(/Brugte du Spiir\?/).closest('button') as HTMLElement)
+
+    expect(amplitude.track).toHaveBeenCalledWith('Waitlist CTA Clicked', { source: 'spiir-banner' })
+    expect(onPageForm.scrollIntoView).toHaveBeenCalled()
+    // Crucially: NO navigation to the front page, whose form tags 'forside'.
+    expect(push).not.toHaveBeenCalled()
+
+    onPageForm.remove()
+  })
+
+  it('falls back to navigating home if the page has no form of its own', () => {
+    stubLocation('/spiir-alternativ')
+    render(<Nav spiirBanner />)
+    fireEvent.click(screen.getByText(/Brugte du Spiir\?/).closest('button') as HTMLElement)
+
+    expect(push).toHaveBeenCalledWith('/#venteliste')
+  })
+})

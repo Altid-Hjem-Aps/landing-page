@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import * as amplitude from '@amplitude/analytics-browser'
 import { AltidMark } from '@/components/AltidMark'
+import { DEFAULT_SIGNUP_SOURCE } from '@/lib/signup-source'
 
 type View = 'form' | 'questions' | 'success'
 
@@ -42,9 +43,11 @@ interface Props {
   variant?: 'light' | 'dark'
   id?: string
   defaultView?: View
+  /** Hvor tilmeldingen kom fra (fx 'spiir-alternativ') — gemmes på signup'et. */
+  source?: string
 }
 
-export default function WaitlistForm({ variant = 'light', id, defaultView = 'form' }: Props) {
+export default function WaitlistForm({ variant = 'light', id, defaultView = 'form', source = DEFAULT_SIGNUP_SOURCE }: Props) {
   const [view, setView] = useState<View>(defaultView)
   const [expanded, setExpanded] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -106,7 +109,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     const res = await fetch('/api/waitlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, name, email, referredBy, step: 1 }),
+      body: JSON.stringify({ phone, name, email, referredBy, source, step: 1 }),
     })
     const data = await res.json().catch(() => ({}))
     setLoading(false)
@@ -115,7 +118,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
       amplitude.track('Waitlist Step 1 Failed', { error: data.error ?? 'unknown', status: res.status })
       return
     }
-    amplitude.track('Waitlist Step 1 Submitted')
+    amplitude.track('Waitlist Step 1 Submitted', { signup_source: source })
     setSignupId(data.id)
     setSurveyToken(data.surveyToken ?? '')
     setView('questions')
