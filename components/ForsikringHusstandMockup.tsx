@@ -4,50 +4,78 @@ import { CSSProperties, ReactNode, useEffect, useRef, useState } from 'react'
 
 /**
  * Animeret app-UI-kort (uden telefon-ramme) til forsikring-siden.
- * Topbaren er "Altid Assistent". Afspilles én gang, når kortet rulles ind:
- *   1. detect  — Dig og Marie (og Lukas) markeres med lyserød baggrund, og de
- *      OVERLAPPENDE forsikringer får et fejl-ikon (!), så man ser, at de samme
- *      dækninger findes to steder.
- *   2-4. rm-*  — Maries dobbelte dækninger fjernes én ad gangen (de forsvinder),
- *      og Digs tilsvarende (!) bliver til et flueben (✓) = den gyldige, ene
- *      police. Personlig ulykkesforsikring beholdes på begge voksne.
- *   5. done → 6. total — kvittering (✕ foran de opsagte) + årlig besparelse.
+ * Fokus på første del — husstanden gennemgås roligt:
+ *   1. scan-*  — viser de aktuelle problemer ÉT AD GANGEN i rødt: dobbelt
+ *      indbo, så dobbelt rejse, så barnets dobbelte børneulykke (på begge
+ *      forældres police).
+ *   2. fix-*   — fjerner Maries dobbelte dækninger én ad gangen; assistenten
+ *      fortæller, at Marie nu er dækket af husstanden (indbo, så rejse), og
+ *      Digs tilsvarende (!) bliver til ✓ = den gyldige police. Ulykke (personlig)
+ *      beholdes.
+ *   3. done → 4. total — kvittering + årlig besparelse.
  */
 
-type Phase = 'detect' | 'rm-indbo' | 'rm-rejse' | 'rm-barn' | 'done' | 'total'
+type Phase =
+  | 'scan-indbo'
+  | 'scan-rejse'
+  | 'scan-barn'
+  | 'fix-indbo'
+  | 'fix-rejse'
+  | 'fix-barn'
+  | 'done'
+  | 'total'
 
 const SEQ: { p: Phase; ms: number }[] = [
-  { p: 'detect', ms: 3000 },
-  { p: 'rm-indbo', ms: 2000 },
-  { p: 'rm-rejse', ms: 2000 },
-  { p: 'rm-barn', ms: 2000 },
-  { p: 'done', ms: 2400 },
+  { p: 'scan-indbo', ms: 1500 },
+  { p: 'scan-rejse', ms: 1500 },
+  { p: 'scan-barn', ms: 1500 },
+  { p: 'fix-indbo', ms: 2100 },
+  { p: 'fix-rejse', ms: 2100 },
+  { p: 'fix-barn', ms: 2100 },
+  { p: 'done', ms: 2200 },
   { p: 'total', ms: 7000 },
 ]
 
 const AMOUNT: Record<string, number> = { Indbo: 150, Rejse: 50, Børneulykke: 40 }
 
+// Hvilke dækninger der er afsløret som problemer (vises rødt) i hver fase.
+const HIGHLIGHT: Record<Phase, string[]> = {
+  'scan-indbo': ['Indbo'],
+  'scan-rejse': ['Indbo', 'Rejse'],
+  'scan-barn': ['Indbo', 'Rejse', 'Børneulykke'],
+  'fix-indbo': ['Indbo', 'Rejse', 'Børneulykke'],
+  'fix-rejse': ['Indbo', 'Rejse', 'Børneulykke'],
+  'fix-barn': ['Indbo', 'Rejse', 'Børneulykke'],
+  done: ['Indbo', 'Rejse', 'Børneulykke'],
+  total: ['Indbo', 'Rejse', 'Børneulykke'],
+}
 const REMOVED: Record<Phase, string[]> = {
-  detect: [],
-  'rm-indbo': ['Indbo'],
-  'rm-rejse': ['Indbo', 'Rejse'],
-  'rm-barn': ['Indbo', 'Rejse', 'Børneulykke'],
+  'scan-indbo': [],
+  'scan-rejse': [],
+  'scan-barn': [],
+  'fix-indbo': ['Indbo'],
+  'fix-rejse': ['Indbo', 'Rejse'],
+  'fix-barn': ['Indbo', 'Rejse', 'Børneulykke'],
   done: ['Indbo', 'Rejse', 'Børneulykke'],
   total: ['Indbo', 'Rejse', 'Børneulykke'],
 }
 const JUST_ADDED: Record<Phase, number | null> = {
-  detect: null,
-  'rm-indbo': AMOUNT.Indbo,
-  'rm-rejse': AMOUNT.Rejse,
-  'rm-barn': AMOUNT.Børneulykke,
+  'scan-indbo': null,
+  'scan-rejse': null,
+  'scan-barn': null,
+  'fix-indbo': AMOUNT.Indbo,
+  'fix-rejse': AMOUNT.Rejse,
+  'fix-barn': AMOUNT.Børneulykke,
   done: null,
   total: null,
 }
 const STATUS: Record<Phase, string> = {
-  detect: 'Fandt 3 mulige dobbeltdækninger',
-  'rm-indbo': 'Fjerner dobbelt indboforsikring',
-  'rm-rejse': 'Fjerner dobbelt rejseforsikring',
-  'rm-barn': 'Fjerner dobbelt børneulykke',
+  'scan-indbo': 'Fandt dobbelt indboforsikring',
+  'scan-rejse': 'Fandt dobbelt rejseforsikring',
+  'scan-barn': 'Fandt dobbelt børneulykke',
+  'fix-indbo': 'Marie dækkes nu af husstandens indbo',
+  'fix-rejse': 'Marie dækkes nu af husstandens rejse',
+  'fix-barn': 'Lukas dækkes af forældrenes police',
   done: 'Færdig – husstanden er optimeret',
   total: 'Færdig – husstanden er optimeret',
 }
@@ -276,16 +304,18 @@ export default function ForsikringHusstandMockup() {
   }, [phase, reduced])
 
   const removedSet = REMOVED[phase]
+  const highlightSet = HIGHLIGHT[phase]
   const saved = removedSet.reduce((s, c) => s + (AMOUNT[c] || 0), 0)
   const justAdded = JUST_ADDED[phase]
 
-  // En dækning er fjernet, hvis det er et duplikat, og dets navn er i removedSet.
   const isRemoved = (cv: Cover) => cv.kind === 'duplicate' && removedSet.includes(cv.label)
-  // Ikon: keeper viser ! indtil duplikatet er fjernet (så ✓); duplikat viser ! indtil fjernet.
   const iconFor = (cv: Cover): 'error' | 'ok' | 'none' => {
     if (cv.kind === 'personal') return 'none'
-    if (cv.kind === 'keeper') return removedSet.includes(cv.label) ? 'ok' : 'error'
-    return 'error' // duplikat (vises kun mens det stadig er der)
+    if (cv.kind === 'keeper') {
+      if (removedSet.includes(cv.label)) return 'ok'
+      return highlightSet.includes(cv.label) ? 'error' : 'none'
+    }
+    return highlightSet.includes(cv.label) ? 'error' : 'none' // duplikat (kun mens det stadig vises)
   }
 
   const count = MEMBERS.reduce((n, m) => n + m.covers.filter((cv) => !isRemoved(cv)).length, 0)
@@ -308,7 +338,7 @@ export default function ForsikringHusstandMockup() {
           {MEMBERS.map((m) => {
             const hasError = m.covers.some((cv) => iconFor(cv) === 'error' && !isRemoved(cv))
             const duplicates = m.covers.filter((cv) => cv.kind === 'duplicate')
-            const fullyCleaned = duplicates.length > 0 && duplicates.every((cv) => removedSet.includes(cv.label))
+            const anyRemoved = duplicates.some((cv) => removedSet.includes(cv.label))
             return (
               <div
                 key={m.name}
@@ -340,7 +370,7 @@ export default function ForsikringHusstandMockup() {
                         </span>
                       )
                     })}
-                    {fullyCleaned && (
+                    {anyRemoved && (
                       <span style={{ fontSize: 9, fontWeight: 600, color: 'var(--forest)' }}>✓ {m.coveredNote}</span>
                     )}
                   </div>
