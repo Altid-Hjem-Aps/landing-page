@@ -31,9 +31,9 @@ const SEQ: { p: Phase; ms: number }[] = [
   { p: 'scan-indbo', ms: 2300 },
   { p: 'scan-rejse', ms: 2300 },
   { p: 'scan-barn', ms: 2300 },
-  { p: 'fix-indbo', ms: 2300 },
-  { p: 'fix-rejse', ms: 2300 },
-  { p: 'fix-barn', ms: 2300 },
+  { p: 'fix-indbo', ms: 2900 },
+  { p: 'fix-rejse', ms: 2900 },
+  { p: 'fix-barn', ms: 2900 },
   { p: 'done', ms: 2400 },
   // total = kvittering bygges + tæller op (~5s) og holdes så ~5s, før loopet
   // starter forfra (jf. modulo i fase-effekten).
@@ -250,6 +250,7 @@ export default function ForsikringHusstandMockup() {
   const [reveal, setReveal] = useState(0)
   const [started, setStarted] = useState(false)
   const [shownSaved, setShownSaved] = useState(0)
+  const [fade, setFade] = useState(1)
   const shownRef = useRef(0)
   const cardRef = useRef<HTMLDivElement>(null)
 
@@ -289,6 +290,17 @@ export default function ForsikringHusstandMockup() {
 
   const phase = reduced ? 'total' : SEQ[idx].p
 
+  // Blødt loop: fade indholdet ud i slutningen af 'total' og ind igen ved ny
+  // cyklus — undgår et hårdt reset, når den starter forfra.
+  useEffect(() => {
+    if (reduced || !started) return
+    if (phase === 'total') {
+      const t = setTimeout(() => setFade(0), SEQ[SEQ.length - 1].ms - 650)
+      return () => clearTimeout(t)
+    }
+    setFade(1)
+  }, [phase, reduced, started])
+
   // Afslør kvitteringens linjer trinvist i slut-fasen.
   useEffect(() => {
     if (phase !== 'total') {
@@ -323,7 +335,7 @@ export default function ForsikringHusstandMockup() {
       setShownSaved(to)
       return
     }
-    const steps = 20
+    const steps = 34
     let i = 0
     const id = setInterval(() => {
       i += 1
@@ -331,7 +343,7 @@ export default function ForsikringHusstandMockup() {
       shownRef.current = v
       setShownSaved(v)
       if (i >= steps) clearInterval(id)
-    }, 30)
+    }, 50)
     return () => clearInterval(id)
   }, [saved, reduced])
 
@@ -354,6 +366,7 @@ export default function ForsikringHusstandMockup() {
       className="rounded-3xl w-full"
       style={{ maxWidth: 300, background: '#fff', border: '1px solid rgba(26,61,34,0.1)', boxShadow: '0 18px 40px -12px rgba(26,61,34,0.22)', padding: 16, color: 'var(--forest)' }}
     >
+      <div style={{ opacity: fade, transition: 'opacity 0.55s ease' }}>
       <p style={{ fontSize: 16, fontWeight: 700 }}>Min husstand</p>
       <p style={{ fontSize: 10, color: 'rgba(26,61,34,0.5)', marginBottom: 12 }}>3 medlemmer · {count} forsikringer</p>
 
@@ -382,7 +395,7 @@ export default function ForsikringHusstandMockup() {
               >
                 <span
                   className="shrink-0 flex items-center justify-center rounded-full"
-                  style={{ width: m.role === 'adult' ? 30 : 24, height: m.role === 'adult' ? 30 : 24, background: avatarBg, transition: 'background 0.45s ease' }}
+                  style={{ width: 30, height: 30, background: avatarBg, transition: 'background 0.45s ease' }}
                 >
                   <PersonIcon child={m.role === 'child'} />
                 </span>
@@ -416,6 +429,7 @@ export default function ForsikringHusstandMockup() {
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }
