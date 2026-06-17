@@ -4,15 +4,14 @@ import { CSSProperties, ReactNode, useEffect, useRef, useState } from 'react'
 
 /**
  * Animeret app-UI-kort (uden telefon-ramme) til forsikring-siden.
- * Topbaren er "Altid Assistent", der arbejder. Afspilles én gang, når kortet
- * er rullet ind i billedet:
- *   1. detect  — finder 3 MULIGE dobbeltdækninger (markeret RØDT = fejl):
- *      Maries indbo + rejse (dækket af husstanden) og Lukas' børneulykke
- *      (står på begge forældres police).
- *   2-4. rm-*  — fjerner dem én ad gangen; den røde dækning kollapser til et
- *      grønt flueben, og medlemmet vises "nu dækket af X". Personlig
- *      ulykkesforsikring på de voksne beholdes (faktuelt korrekt).
- *   5. done → 6. total — kvittering + årlig besparelse (tæller op).
+ * Topbaren er "Altid Assistent". Afspilles én gang, når kortet rulles ind:
+ *   1. detect  — Dig og Marie (og Lukas) markeres med lyserød baggrund, og de
+ *      OVERLAPPENDE forsikringer får et fejl-ikon (!), så man ser, at de samme
+ *      dækninger findes to steder.
+ *   2-4. rm-*  — Maries dobbelte dækninger fjernes én ad gangen (de forsvinder),
+ *      og Digs tilsvarende (!) bliver til et flueben (✓) = den gyldige, ene
+ *      police. Personlig ulykkesforsikring beholdes på begge voksne.
+ *   5. done → 6. total — kvittering (✕ foran de opsagte) + årlig besparelse.
  */
 
 type Phase = 'detect' | 'rm-indbo' | 'rm-rejse' | 'rm-barn' | 'done' | 'total'
@@ -64,19 +63,22 @@ const REVEAL_MAX = BILL_ITEMS.length + 2
 
 const RED = '#c0392b'
 
-type Member = {
-  name: string
-  role: 'adult' | 'child'
-  covers: string[]
-  /** De af medlemmets dækninger, der er dobbelte og ryddes op. */
-  removable: string[]
-  /** Vises grønt, når medlemmets dobbelte dækninger er fjernet. */
-  coveredNote: string
-}
+type Cover = { label: string; kind: 'keeper' | 'duplicate' | 'personal' }
+type Member = { name: string; role: 'adult' | 'child'; covers: Cover[]; coveredNote: string }
+
 const MEMBERS: Member[] = [
-  { name: 'Dig', role: 'adult', covers: ['Indbo', 'Rejse', 'Ulykke'], removable: [], coveredNote: '' },
-  { name: 'Marie', role: 'adult', covers: ['Indbo', 'Rejse', 'Ulykke'], removable: ['Indbo', 'Rejse'], coveredNote: 'Dækket af husstanden' },
-  { name: 'Lukas', role: 'child', covers: ['Børneulykke'], removable: ['Børneulykke'], coveredNote: 'Dækket af forældrenes police' },
+  {
+    name: 'Dig', role: 'adult', coveredNote: '',
+    covers: [{ label: 'Indbo', kind: 'keeper' }, { label: 'Rejse', kind: 'keeper' }, { label: 'Ulykke', kind: 'personal' }],
+  },
+  {
+    name: 'Marie', role: 'adult', coveredNote: 'Dækket af husstanden',
+    covers: [{ label: 'Indbo', kind: 'duplicate' }, { label: 'Rejse', kind: 'duplicate' }, { label: 'Ulykke', kind: 'personal' }],
+  },
+  {
+    name: 'Lukas', role: 'child', coveredNote: 'Dækket af forældrenes police',
+    covers: [{ label: 'Børneulykke', kind: 'duplicate' }],
+  },
 ]
 
 function PersonIcon({ child = false }: { child?: boolean }) {
@@ -89,25 +91,38 @@ function PersonIcon({ child = false }: { child?: boolean }) {
   )
 }
 
-function Tag({ label, state }: { label: string; state: 'normal' | 'error' | 'done' }) {
-  const isErr = state === 'error'
-  const isDone = state === 'done'
+function StatusBadge({ kind }: { kind: 'error' | 'ok' }) {
+  const err = kind === 'error'
+  return (
+    <span
+      aria-hidden="true"
+      className="inline-flex items-center justify-center shrink-0"
+      style={{ width: 12, height: 12, borderRadius: '50%', background: err ? RED : 'var(--forest)', color: '#fff', fontSize: 8, fontWeight: 700, lineHeight: 1 }}
+    >
+      {err ? '!' : '✓'}
+    </span>
+  )
+}
+
+function Tag({ label, icon }: { label: string; icon: 'error' | 'ok' | 'none' }) {
+  const err = icon === 'error'
+  const ok = icon === 'ok'
   return (
     <span
       className="inline-flex items-center gap-1 rounded-full"
       style={{
         fontSize: 9,
+        fontWeight: 400,
         padding: '2px 7px',
-        background: isDone ? 'var(--sage)' : isErr ? 'rgba(192,57,43,0.12)' : 'rgba(26,61,34,0.06)',
-        color: isDone ? 'var(--forest)' : isErr ? RED : 'rgba(26,61,34,0.6)',
-        fontWeight: isErr || isDone ? 700 : 400,
-        border: isErr ? `1px solid ${RED}55` : isDone ? '1px solid rgba(26,61,34,0.2)' : '1px solid transparent',
+        background: err ? 'rgba(192,57,43,0.10)' : ok ? 'rgba(168,224,99,0.28)' : 'rgba(26,61,34,0.06)',
+        color: err ? RED : ok ? 'var(--forest)' : 'rgba(26,61,34,0.6)',
+        border: err ? `1px solid ${RED}40` : '1px solid transparent',
         transition: 'background 0.4s ease, color 0.4s ease, border-color 0.4s ease',
         whiteSpace: 'nowrap',
       }}
     >
-      {isErr && <span style={{ width: 5, height: 5, borderRadius: '50%', background: RED }} />}
-      {isDone ? '✓' : label}
+      {icon !== 'none' && <StatusBadge kind={err ? 'error' : 'ok'} />}
+      {label}
     </span>
   )
 }
@@ -173,7 +188,7 @@ function Bill({ reveal, instant }: { reveal: number; instant: boolean }) {
         {BILL_ITEMS.map((it, i) => (
           <Row key={it.label} show={reveal > i}>
             <span style={{ fontSize: 10.5, color: 'rgba(26,61,34,0.7)' }}>
-              <span style={{ color: 'var(--forest)', fontWeight: 700, marginRight: 4 }}>✓</span>
+              <span style={{ color: RED, fontWeight: 700, marginRight: 4 }}>✕</span>
               {it.label}
             </span>
             <span style={{ fontSize: 10.5, textDecoration: 'line-through', color: 'rgba(26,61,34,0.4)' }}>{it.amt} kr./md.</span>
@@ -240,29 +255,20 @@ export default function ForsikringHusstandMockup() {
   }, [idx, started, reduced])
 
   const phase = reduced ? 'total' : SEQ[idx].p
-
-  useEffect(() => {
-    if (phase !== 'total') {
-      setReveal(0)
-      return
-    }
-    if (reduced) {
-      setReveal(REVEAL_MAX)
-      return
-    }
-    let n = 0
-    const id = setInterval(() => {
-      n += 1
-      setReveal(n)
-      if (n >= REVEAL_MAX) clearInterval(id)
-    }, 700)
-    return () => clearInterval(id)
-  }, [phase, reduced])
-
   const removedSet = REMOVED[phase]
   const saved = removedSet.reduce((s, c) => s + (AMOUNT[c] || 0), 0)
   const justAdded = JUST_ADDED[phase]
-  const count = MEMBERS.reduce((n, m) => n + m.covers.filter((c) => !(m.removable.includes(c) && removedSet.includes(c))).length, 0)
+
+  // En dækning er fjernet, hvis det er et duplikat, og dets navn er i removedSet.
+  const isRemoved = (cv: Cover) => cv.kind === 'duplicate' && removedSet.includes(cv.label)
+  // Ikon: keeper viser ! indtil duplikatet er fjernet (så ✓); duplikat viser ! indtil fjernet.
+  const iconFor = (cv: Cover): 'error' | 'ok' | 'none' => {
+    if (cv.kind === 'personal') return 'none'
+    if (cv.kind === 'keeper') return removedSet.includes(cv.label) ? 'ok' : 'error'
+    return 'error' // duplikat (vises kun mens det stadig er der)
+  }
+
+  const count = MEMBERS.reduce((n, m) => n + m.covers.filter((cv) => !isRemoved(cv)).length, 0)
 
   return (
     <div
@@ -280,9 +286,20 @@ export default function ForsikringHusstandMockup() {
       ) : (
         <div className="flex flex-col gap-2">
           {MEMBERS.map((m) => {
-            const fullyCleaned = m.removable.length > 0 && m.removable.every((c) => removedSet.includes(c))
+            const hasError = m.covers.some((cv) => iconFor(cv) === 'error' && !isRemoved(cv))
+            const duplicates = m.covers.filter((cv) => cv.kind === 'duplicate')
+            const fullyCleaned = duplicates.length > 0 && duplicates.every((cv) => removedSet.includes(cv.label))
             return (
-              <div key={m.name} className="rounded-2xl flex items-center gap-2.5" style={{ background: 'var(--cream)', border: '1px solid rgba(26,61,34,0.08)', padding: '9px 11px' }}>
+              <div
+                key={m.name}
+                className="rounded-2xl flex items-center gap-2.5"
+                style={{
+                  background: hasError ? 'rgba(192,57,43,0.07)' : 'var(--cream)',
+                  border: hasError ? '1px solid rgba(192,57,43,0.25)' : '1px solid rgba(26,61,34,0.08)',
+                  padding: '9px 11px',
+                  transition: 'background 0.45s ease, border-color 0.45s ease',
+                }}
+              >
                 <span
                   className="shrink-0 flex items-center justify-center rounded-full"
                   style={{ width: m.role === 'adult' ? 30 : 24, height: m.role === 'adult' ? 30 : 24, background: m.role === 'adult' ? 'rgba(26,61,34,0.08)' : 'rgba(168,224,99,0.25)' }}
@@ -295,13 +312,11 @@ export default function ForsikringHusstandMockup() {
                     <span style={{ fontSize: 9, fontWeight: 400, color: 'rgba(26,61,34,0.4)' }}>{m.role === 'adult' ? ' · voksen' : ' · barn'}</span>
                   </p>
                   <div className="flex flex-wrap items-center gap-1" style={{ marginTop: 3 }}>
-                    {m.covers.map((c) => {
-                      const removable = m.removable.includes(c)
-                      const removed = removable && removedSet.includes(c)
-                      const state = removed ? 'done' : removable ? 'error' : 'normal'
+                    {m.covers.map((cv) => {
+                      const removed = isRemoved(cv)
                       return (
-                        <span key={c} style={{ display: 'inline-flex', overflow: 'hidden', maxWidth: removed ? 26 : 80, transition: 'max-width 0.55s ease' }}>
-                          <Tag label={c} state={state} />
+                        <span key={cv.label} style={{ display: 'inline-flex', overflow: 'hidden', maxWidth: removed ? 0 : 90, opacity: removed ? 0 : 1, transition: 'max-width 0.5s ease, opacity 0.4s ease' }}>
+                          <Tag label={cv.label} icon={iconFor(cv)} />
                         </span>
                       )
                     })}
