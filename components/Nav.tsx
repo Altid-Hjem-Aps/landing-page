@@ -6,6 +6,9 @@ import * as amplitude from '@amplitude/analytics-browser'
 import { Logo } from '@/components/Logo'
 
 const HIDE_THRESHOLD = 80
+// Kampagnebanneret er skjult i toppen og glider først ind, når brugeren
+// begynder at scrolle (≈ et lille stykke ned, så det ikke flimrer).
+const BANNER_REVEAL = 8
 // Larger delta on touch UAs absorbs the iOS Safari URL-bar collapse jump,
 // which can fire ~30px of phantom scrollY without a real user gesture.
 const SCROLL_DELTA_DESKTOP = 6
@@ -18,6 +21,8 @@ interface BannerConfig {
   shortPrefix: string
   /** Amplitude-source for klik på banneret, fx 'spiir-banner'. */
   source: string
+  /** CTA-tekst i banneret — falder tilbage til 'Skriv dig på ventelisten'. */
+  cta?: string
 }
 
 interface NavProps {
@@ -36,10 +41,12 @@ const SPIIR_BANNER: BannerConfig = {
 export default function Nav({ spiirBanner = false, banner }: NavProps) {
   const router = useRouter()
   const [hidden, setHidden] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const lastY = useRef(0)
 
   useEffect(() => {
     lastY.current = window.scrollY
+    setScrolled(window.scrollY > BANNER_REVEAL)
     const isTouch =
       typeof window !== 'undefined' &&
       window.matchMedia('(hover: none) and (pointer: coarse)').matches
@@ -48,6 +55,10 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
     function onScroll() {
       const y = window.scrollY
       const dy = y - lastY.current
+
+      // Banner-reveal må ikke vente på delta-gaten — det skal reagere på det
+      // allerførste scroll-pixel.
+      setScrolled(y > BANNER_REVEAL)
 
       if (Math.abs(dy) < delta) return
 
@@ -135,48 +146,60 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
     )
   }
 
-  // Med banner: banner + nav glider op/ned som én enhed.
+  // Med banner: nav'en "forvandler" sig til den slanke beige banner-stribe, så
+  // snart man forlader toppen — full-nav glider op bag banneret, og banneret
+  // glider ind. Nav'en kommer kun tilbage, når man er helt i toppen igen.
   return (
-    <div
-      className="fixed top-0 left-0 right-0 z-50"
-      style={{
-        transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
-        transition: 'transform 300ms ease',
-        willChange: 'transform',
-      }}
-    >
+    <div className="fixed top-0 left-0 right-0 z-50">
       {/* Kampagnebanner (~36px — ændres højden, skal sidernes pt-32 følge med).
+          Skjult i toppen (maxHeight 0), glider ind ved scroll og forbliver pinnet.
+          Højere z end nav'en, så nav'en kan gemme sig bag den.
           Den lange tekst først fra md (768px) — på smallere skærme ville den
           ombrydes til to linjer og skubbe indholdet under sidens pt-32. */}
-      <button
-        type="button"
-        onClick={() => handleCTA(bannerConfig.source)}
-        className="block w-full text-center px-4 py-2 text-[12.5px] sm:text-[13px] font-medium"
+      <div
+        className="relative z-10"
         style={{
-          background: 'var(--forest)',
-          color: 'rgba(255,255,255,0.85)',
-          transform: 'translateZ(0)',
-          touchAction: 'manipulation',
-          WebkitTapHighlightColor: 'transparent',
-          cursor: 'pointer',
+          overflow: 'hidden',
+          maxHeight: scrolled ? '60px' : '0',
+          opacity: scrolled ? 1 : 0,
+          transition: 'max-height 300ms ease, opacity 300ms ease',
         }}
       >
-        <span
-          className="inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle"
-          style={{ background: 'var(--sage)' }}
-        />
-        <span className="hidden md:inline">{bannerConfig.longPrefix}</span>
-        <span className="md:hidden">{bannerConfig.shortPrefix}</span>
-        <span className="font-semibold" style={{ color: 'var(--sage)' }}>
-          Skriv dig på ventelisten →
-        </span>
-      </button>
+        <button
+          type="button"
+          onClick={() => handleCTA(bannerConfig.source)}
+          tabIndex={scrolled ? 0 : -1}
+          aria-hidden={!scrolled}
+          className="block w-full text-center px-4 py-2 text-[12.5px] sm:text-[13px] font-medium"
+          style={{
+            background: 'var(--cream)',
+            color: 'var(--forest)',
+            borderBottom: '1px solid rgba(26,61,34,0.10)',
+            transform: 'translateZ(0)',
+            touchAction: 'manipulation',
+            WebkitTapHighlightColor: 'transparent',
+            cursor: 'pointer',
+          }}
+        >
+          <span className="hidden md:inline align-middle">{bannerConfig.longPrefix}</span>
+          <span className="md:hidden align-middle">{bannerConfig.shortPrefix}</span>
+          <span
+            className="inline-block align-middle ml-2 px-3 py-1 rounded-full font-semibold"
+            style={{ background: 'var(--sage)', color: 'var(--forest)' }}
+          >
+            {(bannerConfig.cta ?? 'Skriv dig på ventelisten').replace(/\s*→\s*$/, '')}
+          </span>
+        </button>
+      </div>
       <nav
-        className="flex items-center justify-between px-5 sm:px-8 lg:px-12 py-5"
+        className="relative z-0 flex items-center justify-between px-5 sm:px-8 lg:px-12 py-5"
         style={{
           background: 'rgba(245,240,232,0.92)',
           backdropFilter: 'blur(12px)',
           borderBottom: '1px solid rgba(46,125,82,0.08)',
+          transform: scrolled ? 'translateY(-100%)' : 'translateY(0)',
+          transition: 'transform 300ms ease',
+          willChange: 'transform',
         }}
       >
         {navInner}
