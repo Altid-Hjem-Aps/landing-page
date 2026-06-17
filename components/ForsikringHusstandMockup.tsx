@@ -93,22 +93,15 @@ const REVEAL_MAX = BILL_ITEMS.length + 2
 
 const RED = '#c0392b'
 
-type Cover = { label: string; kind: 'keeper' | 'duplicate' | 'personal' }
-type Member = { name: string; role: 'adult' | 'child'; covers: Cover[]; coveredNote: string }
+// 'overlap' = en dækning der findes flere steder i husstanden (markeres ! → ✓).
+// 'personal' = personlig dækning (fx ulykke) der altid beholdes uden markering.
+type Cover = { label: string; kind: 'overlap' | 'personal' }
+type Member = { name: string; role: 'adult' | 'child'; covers: Cover[] }
 
 const MEMBERS: Member[] = [
-  {
-    name: 'Dig', role: 'adult', coveredNote: '',
-    covers: [{ label: 'Indbo', kind: 'keeper' }, { label: 'Rejse', kind: 'keeper' }, { label: 'Ulykke', kind: 'personal' }],
-  },
-  {
-    name: 'Marie', role: 'adult', coveredNote: 'Dækket af husstanden',
-    covers: [{ label: 'Indbo', kind: 'duplicate' }, { label: 'Rejse', kind: 'duplicate' }, { label: 'Ulykke', kind: 'personal' }],
-  },
-  {
-    name: 'Lukas', role: 'child', coveredNote: 'Dækket af forældrenes police',
-    covers: [{ label: 'Børneulykke', kind: 'duplicate' }],
-  },
+  { name: 'Dig', role: 'adult', covers: [{ label: 'Indbo', kind: 'overlap' }, { label: 'Rejse', kind: 'overlap' }, { label: 'Ulykke', kind: 'personal' }] },
+  { name: 'Marie', role: 'adult', covers: [{ label: 'Indbo', kind: 'overlap' }, { label: 'Rejse', kind: 'overlap' }, { label: 'Ulykke', kind: 'personal' }] },
+  { name: 'Lukas', role: 'child', covers: [{ label: 'Børneulykke', kind: 'overlap' }] },
 ]
 
 function PersonIcon({ child = false }: { child?: boolean }) {
@@ -312,17 +305,15 @@ export default function ForsikringHusstandMockup() {
   const saved = removedSet.reduce((s, c) => s + (AMOUNT[c] || 0), 0)
   const justAdded = JUST_ADDED[phase]
 
-  const isRemoved = (cv: Cover) => cv.kind === 'duplicate' && removedSet.includes(cv.label)
+  // Overlap: ! mens det er fundet/uafklaret → ✓ når det er markeret som løst.
+  // Dækningerne fjernes IKKE (stabilt layout) — kun ikonet skifter.
   const iconFor = (cv: Cover): 'error' | 'ok' | 'none' => {
     if (cv.kind === 'personal') return 'none'
-    if (cv.kind === 'keeper') {
-      if (removedSet.includes(cv.label)) return 'ok'
-      return highlightSet.includes(cv.label) ? 'error' : 'none'
-    }
-    return highlightSet.includes(cv.label) ? 'error' : 'none' // duplikat (kun mens det stadig vises)
+    if (removedSet.includes(cv.label)) return 'ok'
+    return highlightSet.includes(cv.label) ? 'error' : 'none'
   }
 
-  const count = MEMBERS.reduce((n, m) => n + m.covers.filter((cv) => !isRemoved(cv)).length, 0)
+  const count = MEMBERS.reduce((n, m) => n + m.covers.length, 0)
 
   return (
     <div
@@ -340,9 +331,7 @@ export default function ForsikringHusstandMockup() {
       ) : (
         <div className="flex flex-col gap-2">
           {MEMBERS.map((m) => {
-            const hasError = m.covers.some((cv) => iconFor(cv) === 'error' && !isRemoved(cv))
-            const duplicates = m.covers.filter((cv) => cv.kind === 'duplicate')
-            const anyRemoved = duplicates.some((cv) => removedSet.includes(cv.label))
+            const hasError = m.covers.some((cv) => iconFor(cv) === 'error')
             return (
               <div
                 key={m.name}
@@ -366,17 +355,9 @@ export default function ForsikringHusstandMockup() {
                     <span style={{ fontSize: 9, fontWeight: 400, color: 'rgba(26,61,34,0.4)' }}>{m.role === 'adult' ? ' · voksen' : ' · barn'}</span>
                   </p>
                   <div className="flex flex-wrap items-center gap-1" style={{ marginTop: 3 }}>
-                    {m.covers.map((cv) => {
-                      const removed = isRemoved(cv)
-                      return (
-                        <span key={cv.label} style={{ display: 'inline-flex', overflow: 'hidden', maxWidth: removed ? 0 : 90, opacity: removed ? 0 : 1, transition: 'max-width 0.5s ease, opacity 0.4s ease' }}>
-                          <Tag label={cv.label} icon={iconFor(cv)} />
-                        </span>
-                      )
-                    })}
-                    {anyRemoved && (
-                      <span style={{ fontSize: 9, fontWeight: 600, color: 'var(--forest)' }}>✓ {m.coveredNote}</span>
-                    )}
+                    {m.covers.map((cv) => (
+                      <Tag key={cv.label} label={cv.label} icon={iconFor(cv)} />
+                    ))}
                   </div>
                 </div>
               </div>
