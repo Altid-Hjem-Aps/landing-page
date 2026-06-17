@@ -107,7 +107,7 @@ export default function HvadKosterForsikring() {
       <Nav
         banner={{
           longPrefix: 'Mange husstande betaler dobbelt for forsikring uden at vide det. ',
-          shortPrefix: 'Betaler I dobbelt for forsikring? ',
+          shortPrefix: 'Er du dobbeltforsikret uden at vide det? ',
           source: 'forsikring-banner',
           cta: 'Se om du betaler for meget →',
         }}
@@ -275,18 +275,19 @@ export default function HvadKosterForsikring() {
                   Sådan får du en fair forsikringspris med Altid Hjem
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem samler hjemmets faste udgifter — el, mobil, forsikring, internet og mere på vej —
-                  i{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>én app med ét login og én samlet regning</span>.
+                  Altid Hjem samler hjemmets faste udgifter i én app. El, mobil, forsikring, internet og
+                  flere services er på vej. Du får{' '}
+                  <span className="font-medium" style={{ color: 'var(--forest)' }}>ét login, én samlet regning</span>{' '}
+                  og et klart overblik over, hvad hjemmet koster hver måned.
                 </p>
                 <p className="mb-3">
-                  I stedet for at logge ind hos flere selskaber og holde styr på forskellige regninger får du
-                  ét samlet overblik over, hvad hjemmet koster hver måned. Det gør det lettere at se, hvor
-                  pengene går — og at opdage, hvis du betaler for meget.
+                  I stedet for at logge ind hos flere selskaber og holde styr på forskellige regninger, får
+                  du alt samlet ét sted. Det gør det lettere at se, hvad du betaler for hver måned, og opdage,
+                  hvis du betaler for meget.
                 </p>
                 <p>
                   Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 14.000 danskere allerede får
-                  gennemsigtig strøm til en fair pris. Samme princip tager vi nu videre til resten af hjemmet:
+                  gennemsigtig strøm til en fair pris. Nu tager vi samme princip videre til resten af hjemmet:
                   færre skjulte udgifter, færre spredte regninger og mere kontrol.
                 </p>
               </section>
