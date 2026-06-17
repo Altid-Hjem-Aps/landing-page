@@ -197,34 +197,39 @@ function Bill({ reveal, year }: { reveal: number; year: number }) {
   )
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-      <p style={{ fontSize: 11, fontWeight: 700, marginBottom: 8 }}>Det ryddede vi op</p>
-      <div className="flex flex-col gap-2">
-        {BILL_ITEMS.map((it, i) => (
-          <Row key={it.label} show={reveal > i}>
-            <span style={{ fontSize: 10.5, color: 'rgba(26,61,34,0.7)' }}>
-              <span style={{ color: RED, fontWeight: 700, marginRight: 4 }}>✕</span>
-              {it.label}
-            </span>
-            <span style={{ fontSize: 10.5, textDecoration: 'line-through', color: 'rgba(26,61,34,0.4)' }}>{it.amt} kr./md.</span>
-          </Row>
-        ))}
-      </div>
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <p style={{ fontSize: 11, fontWeight: 700 }}>Det ryddede vi op</p>
 
-      <div style={{ borderTop: '1px dashed rgba(26,61,34,0.25)', margin: '10px 0', opacity: reveal > BILL_ITEMS.length ? 1 : 0, transition: 'opacity 0.4s ease' }} />
+      {/* Resten skubbes til bunden — slacken bliver luft efter overskriften, og
+          det grønne kort sidder i bunden af UI-kortet. */}
+      <div style={{ marginTop: 'auto', paddingTop: 16 }}>
+        <div className="flex flex-col gap-2">
+          {BILL_ITEMS.map((it, i) => (
+            <Row key={it.label} show={reveal > i}>
+              <span style={{ fontSize: 10.5, color: 'rgba(26,61,34,0.7)' }}>
+                <span style={{ color: RED, fontWeight: 700, marginRight: 4 }}>✕</span>
+                {it.label}
+              </span>
+              <span style={{ fontSize: 10.5, textDecoration: 'line-through', color: 'rgba(26,61,34,0.4)' }}>{it.amt} kr./md.</span>
+            </Row>
+          ))}
+        </div>
 
-      <Row show={reveal > BILL_ITEMS.length}>
-        <span style={{ fontSize: 11, fontWeight: 700 }}>I sparer månedligt</span>
-        <span style={{ fontSize: 13, fontWeight: 800 }}>{TOTAL_MONTH} kr./md.</span>
-      </Row>
+        <div style={{ borderTop: '1px dashed rgba(26,61,34,0.25)', margin: '10px 0', opacity: reveal > BILL_ITEMS.length ? 1 : 0, transition: 'opacity 0.4s ease' }} />
 
-      <div
-        className="rounded-2xl text-center"
-        style={{ marginTop: 14, padding: '14px 10px', background: 'var(--sage)', opacity: yearlyShown ? 1 : 0, transform: yearlyShown ? 'scale(1)' : 'scale(0.96)', transition: 'opacity 0.45s ease, transform 0.45s ease' }}
-      >
-        <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(26,61,34,0.7)' }}>I sparer nu</p>
-        <p style={{ fontSize: 24, fontWeight: 800, lineHeight: 1.1, color: 'var(--forest)' }}>{year.toLocaleString('da-DK')} kr.</p>
-        <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(26,61,34,0.7)' }}>om året</p>
+        <Row show={reveal > BILL_ITEMS.length}>
+          <span style={{ fontSize: 11, fontWeight: 700 }}>I sparer månedligt</span>
+          <span style={{ fontSize: 13, fontWeight: 800 }}>{TOTAL_MONTH} kr./md.</span>
+        </Row>
+
+        <div
+          className="rounded-2xl text-center"
+          style={{ marginTop: 12, padding: '14px 10px', background: 'var(--sage)', opacity: yearlyShown ? 1 : 0, transform: yearlyShown ? 'scale(1)' : 'scale(0.96)', transition: 'opacity 0.45s ease, transform 0.45s ease' }}
+        >
+          <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(26,61,34,0.7)' }}>I sparer nu</p>
+          <p style={{ fontSize: 24, fontWeight: 800, lineHeight: 1.1, color: 'var(--forest)' }}>{year.toLocaleString('da-DK')} kr.</p>
+          <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(26,61,34,0.7)' }}>om året</p>
+        </div>
       </div>
     </div>
   )
@@ -405,10 +410,12 @@ export default function ForsikringHusstandMockup() {
 
   // Altid Assistent-status: under collapse + mens kvitteringen bygges/tæller op
   // er den "samler jeres besparelse" (spinner); når 2.880 er talt op → ✓ optimeret.
+  // 'husstanden er optimeret' (✓) vises KUN på kvitterings-siden, når 2.880 er
+  // talt op. Done/collapse/bygge-fasen viser 'samler jeres besparelse' (spinner).
   const yearDone = phase === 'total' && shownYear >= TOTAL_YEAR_NUM
   let barTitle: string
   let barWorking: boolean
-  if (phase === 'collapse' || (phase === 'total' && !yearDone)) {
+  if (phase === 'done' || phase === 'collapse' || (phase === 'total' && !yearDone)) {
     barTitle = 'Færdig – samler jeres besparelse'
     barWorking = true
   } else if (phase === 'total') {
@@ -416,7 +423,7 @@ export default function ForsikringHusstandMockup() {
     barWorking = false
   } else {
     barTitle = STATUS[phase]
-    barWorking = phase !== 'done'
+    barWorking = true
   }
 
   return (
