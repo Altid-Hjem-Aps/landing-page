@@ -24,6 +24,7 @@ type Phase =
   | 'fix-rejse'
   | 'fix-barn'
   | 'done'
+  | 'collapse'
   | 'total'
 
 const SEQ: { p: Phase; ms: number }[] = [
@@ -34,7 +35,8 @@ const SEQ: { p: Phase; ms: number }[] = [
   { p: 'fix-indbo', ms: 2900 },
   { p: 'fix-rejse', ms: 2900 },
   { p: 'fix-barn', ms: 2900 },
-  { p: 'done', ms: 2400 },
+  { p: 'done', ms: 1600 },
+  { p: 'collapse', ms: 1900 }, // husstanden fjernes nedefra og op, før kvitteringen
   // total = kvittering bygges + tæller op (~5s) og holdes så ~5s, før loopet
   // starter forfra (jf. modulo i fase-effekten).
   { p: 'total', ms: 10000 },
@@ -52,6 +54,7 @@ const HIGHLIGHT: Record<Phase, string[]> = {
   'fix-rejse': ['Indbo', 'Rejse', 'Børneulykke'],
   'fix-barn': ['Indbo', 'Rejse', 'Børneulykke'],
   done: ['Indbo', 'Rejse', 'Børneulykke'],
+  collapse: ['Indbo', 'Rejse', 'Børneulykke'],
   total: ['Indbo', 'Rejse', 'Børneulykke'],
 }
 const REMOVED: Record<Phase, string[]> = {
@@ -63,6 +66,7 @@ const REMOVED: Record<Phase, string[]> = {
   'fix-rejse': ['Indbo', 'Rejse'],
   'fix-barn': ['Indbo', 'Rejse', 'Børneulykke'],
   done: ['Indbo', 'Rejse', 'Børneulykke'],
+  collapse: ['Indbo', 'Rejse', 'Børneulykke'],
   total: ['Indbo', 'Rejse', 'Børneulykke'],
 }
 const JUST_ADDED: Record<Phase, number | null> = {
@@ -74,6 +78,7 @@ const JUST_ADDED: Record<Phase, number | null> = {
   'fix-rejse': AMOUNT.Rejse,
   'fix-barn': AMOUNT.Børneulykke,
   done: null,
+  collapse: null,
   total: null,
 }
 const STATUS: Record<Phase, string> = {
@@ -85,6 +90,7 @@ const STATUS: Record<Phase, string> = {
   'fix-rejse': 'Marie dækkes nu af husstandens rejse',
   'fix-barn': 'Lukas dækkes af forældrenes police',
   done: 'Færdig – husstanden er optimeret',
+  collapse: 'Samler din besparelse',
   total: 'Færdig – husstanden er optimeret',
 }
 
@@ -211,7 +217,7 @@ function Bill({ reveal, instant }: { reveal: number; instant: boolean }) {
   )
 
   return (
-    <div>
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
       <p style={{ fontSize: 11, fontWeight: 700, marginBottom: 8 }}>Det ryddede vi op</p>
       <div className="flex flex-col gap-2">
         {BILL_ITEMS.map((it, i) => (
@@ -234,7 +240,7 @@ function Bill({ reveal, instant }: { reveal: number; instant: boolean }) {
 
       <div
         className="rounded-2xl text-center"
-        style={{ marginTop: 12, padding: '12px 10px', background: 'var(--sage)', opacity: yearlyShown ? 1 : 0, transform: yearlyShown ? 'scale(1)' : 'scale(0.96)', transition: 'opacity 0.45s ease, transform 0.45s ease' }}
+        style={{ marginTop: 'auto', padding: '14px 10px', background: 'var(--sage)', opacity: yearlyShown ? 1 : 0, transform: yearlyShown ? 'scale(1)' : 'scale(0.96)', transition: 'opacity 0.45s ease, transform 0.45s ease' }}
       >
         <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(26,61,34,0.7)' }}>I sparer nu</p>
         <p style={{ fontSize: 24, fontWeight: 800, lineHeight: 1.1, color: 'var(--forest)' }}>{year.toLocaleString('da-DK')} kr.</p>
@@ -251,6 +257,8 @@ export default function ForsikringHusstandMockup() {
   const [started, setStarted] = useState(false)
   const [shownSaved, setShownSaved] = useState(0)
   const [fade, setFade] = useState(1)
+  const [collapseStep, setCollapseStep] = useState(0)
+  const [chipShown, setChipShown] = useState(false)
   const shownRef = useRef(0)
   const cardRef = useRef<HTMLDivElement>(null)
 
@@ -320,6 +328,25 @@ export default function ForsikringHusstandMockup() {
     return () => clearInterval(id)
   }, [phase, reduced])
 
+  // Husstanden fjernes nedefra og op (Sparet → Lukas → Marie → Dig) i 'collapse'.
+  useEffect(() => {
+    if (phase !== 'collapse') {
+      setCollapseStep(0)
+      return
+    }
+    if (reduced) {
+      setCollapseStep(4)
+      return
+    }
+    let n = 0
+    const id = setInterval(() => {
+      n += 1
+      setCollapseStep(n)
+      if (n >= 4) clearInterval(id)
+    }, 380)
+    return () => clearInterval(id)
+  }, [phase, reduced])
+
   const removedSet = REMOVED[phase]
   const highlightSet = HIGHLIGHT[phase]
   const saved = removedSet.reduce((s, c) => s + (AMOUNT[c] || 0), 0)
@@ -347,6 +374,22 @@ export default function ForsikringHusstandMockup() {
     return () => clearInterval(id)
   }, [saved, reduced])
 
+  // Chip: vises når et beløb lægges til, bliver under hele optællingen, og
+  // forsvinder først et kort øjeblik EFTER tælleren er færdig.
+  useEffect(() => {
+    if (justAdded == null) {
+      setChipShown(false)
+      return
+    }
+    setChipShown(true)
+  }, [justAdded])
+  useEffect(() => {
+    if (justAdded != null && shownSaved >= saved) {
+      const t = setTimeout(() => setChipShown(false), 700)
+      return () => clearTimeout(t)
+    }
+  }, [justAdded, shownSaved, saved])
+
   // Overlap: ! mens det er fundet/uafklaret → ✓ når det er markeret som løst.
   // Dækningerne fjernes IKKE (stabilt layout) — kun ikonet skifter.
   const iconFor = (cv: Cover): 'error' | 'ok' | 'none' => {
@@ -357,8 +400,6 @@ export default function ForsikringHusstandMockup() {
 
   // Antallet falder, efterhånden som dobbeltdækninger ryddes op (7 → 4).
   const count = MEMBERS.reduce((n, m) => n + m.covers.length, 0) - removedSet.length
-  // '+X kr.'-chippen vises mens totalen tæller op, og forsvinder, når den lander.
-  const counting = justAdded != null && shownSaved < saved
 
   return (
     <div
@@ -372,63 +413,81 @@ export default function ForsikringHusstandMockup() {
 
       <AssistantBar phase={phase} />
 
+      {/* Fast min-højde, så kortet har samme størrelse på husstands- og kvitterings-siden. */}
+      <div style={{ minHeight: 253, display: 'flex', flexDirection: 'column' }}>
       {phase === 'total' ? (
-        <Bill reveal={reveal} instant={reduced} />
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <Bill reveal={reveal} instant={reduced} />
+        </div>
       ) : (
-        <div className="flex flex-col gap-2">
-          {MEMBERS.map((m) => {
+        <div className="flex flex-col">
+          {MEMBERS.map((m, mi) => {
             const hasError = m.covers.some((cv) => iconFor(cv) === 'error')
             const overlaps = m.covers.filter((cv) => cv.kind === 'overlap')
             const allResolved = overlaps.length > 0 && overlaps.every((cv) => removedSet.includes(cv.label))
             // Profil-cirkel: grå → rød (fejl fundet) → grøn (fejl rettet).
             const avatarBg = hasError ? 'rgba(192,57,43,0.16)' : allResolved ? 'rgba(168,224,99,0.5)' : 'rgba(26,61,34,0.08)'
+            // Collapse-fase: skjul nedefra og op (Dig=0, Marie=1, Lukas=2, Sparet=3).
+            const hidden = phase === 'collapse' && mi >= 4 - collapseStep
             return (
               <div
                 key={m.name}
-                className="rounded-2xl flex items-center gap-2.5"
-                style={{
-                  background: hasError ? 'rgba(192,57,43,0.07)' : 'var(--cream)',
-                  border: hasError ? '1px solid rgba(192,57,43,0.25)' : '1px solid rgba(26,61,34,0.08)',
-                  padding: '9px 11px',
-                  transition: 'background 0.45s ease, border-color 0.45s ease',
-                }}
+                style={{ maxHeight: hidden ? 0 : 72, opacity: hidden ? 0 : 1, marginTop: mi === 0 ? 0 : hidden ? 0 : 8, overflow: 'hidden', transition: 'max-height 0.4s ease, opacity 0.3s ease, margin-top 0.4s ease' }}
               >
-                <span
-                  className="shrink-0 flex items-center justify-center rounded-full"
-                  style={{ width: 30, height: 30, background: avatarBg, transition: 'background 0.45s ease' }}
+                <div
+                  className="rounded-2xl flex items-center gap-2.5"
+                  style={{
+                    background: hasError ? 'rgba(192,57,43,0.07)' : 'var(--cream)',
+                    border: hasError ? '1px solid rgba(192,57,43,0.25)' : '1px solid rgba(26,61,34,0.08)',
+                    padding: '9px 11px',
+                    transition: 'background 0.45s ease, border-color 0.45s ease',
+                  }}
                 >
-                  <PersonIcon child={m.role === 'child'} />
-                </span>
-                <div style={{ minWidth: 0 }}>
-                  <p style={{ fontSize: 11, fontWeight: 600 }}>
-                    {m.name}
-                    <span style={{ fontSize: 9, fontWeight: 400, color: 'rgba(26,61,34,0.4)' }}>{m.role === 'adult' ? ' · voksen' : ' · barn'}</span>
-                  </p>
-                  <div className="flex flex-wrap items-center gap-1" style={{ marginTop: 3 }}>
-                    {m.covers.map((cv) => (
-                      <Tag key={cv.label} label={cv.label} icon={iconFor(cv)} />
-                    ))}
+                  <span
+                    className="shrink-0 flex items-center justify-center rounded-full"
+                    style={{ width: 30, height: 30, background: avatarBg, transition: 'background 0.45s ease' }}
+                  >
+                    <PersonIcon child={m.role === 'child'} />
+                  </span>
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontSize: 11, fontWeight: 600 }}>
+                      {m.name}
+                      <span style={{ fontSize: 9, fontWeight: 400, color: 'rgba(26,61,34,0.4)' }}>{m.role === 'adult' ? ' · voksen' : ' · barn'}</span>
+                    </p>
+                    <div className="flex flex-wrap items-center gap-1" style={{ marginTop: 3 }}>
+                      {m.covers.map((cv) => (
+                        <Tag key={cv.label} label={cv.label} icon={iconFor(cv)} />
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
             )
           })}
 
-          {/* Besparelse tæller op under Lukas, et fast beløb pr. fjernet forsikring. */}
-          <div className="flex items-center justify-between" style={{ marginTop: 4, paddingTop: 12, borderTop: '1px solid rgba(26,61,34,0.1)' }}>
-            <p style={{ fontSize: 10, color: 'rgba(26,61,34,0.55)' }}>Sparet i alt</p>
-            <div className="flex items-center gap-2">
-              <span
-                className="rounded-full"
-                style={{ fontSize: 9, fontWeight: 700, padding: '2px 7px', background: 'var(--sage)', color: 'var(--forest)', opacity: counting ? 1 : 0, transform: counting ? 'translateY(0)' : 'translateY(4px)', transition: 'opacity 0.3s ease, transform 0.3s ease' }}
-              >
-                +{justAdded ?? 0} kr.
-              </span>
-              <span style={{ fontSize: 17, fontWeight: 800, color: 'var(--forest)', display: 'inline-block', width: 112, flexShrink: 0, textAlign: 'right', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>{shownSaved} kr./md.</span>
-            </div>
-          </div>
+          {/* Sparet i alt = collapse-element index 3 (fjernes først). */}
+          {(() => {
+            const hidden = phase === 'collapse' && 3 >= 4 - collapseStep
+            return (
+              <div style={{ maxHeight: hidden ? 0 : 56, opacity: hidden ? 0 : 1, marginTop: hidden ? 0 : 8, overflow: 'hidden', transition: 'max-height 0.4s ease, opacity 0.3s ease, margin-top 0.4s ease' }}>
+                <div className="flex items-center justify-between" style={{ paddingTop: 12, borderTop: '1px solid rgba(26,61,34,0.1)' }}>
+                  <p style={{ fontSize: 10, color: 'rgba(26,61,34,0.55)' }}>Sparet i alt</p>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="rounded-full"
+                      style={{ fontSize: 9, fontWeight: 700, padding: '2px 7px', background: 'var(--sage)', color: 'var(--forest)', opacity: chipShown ? 1 : 0, transform: chipShown ? 'translateY(0)' : 'translateY(4px)', transition: 'opacity 0.3s ease, transform 0.3s ease' }}
+                    >
+                      +{justAdded ?? 0} kr.
+                    </span>
+                    <span style={{ fontSize: 17, fontWeight: 800, color: 'var(--forest)', display: 'inline-block', width: 112, flexShrink: 0, textAlign: 'right', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>{shownSaved} kr./md.</span>
+                  </div>
+                </div>
+              </div>
+            )
+          })()}
         </div>
       )}
+      </div>
       </div>
     </div>
   )
