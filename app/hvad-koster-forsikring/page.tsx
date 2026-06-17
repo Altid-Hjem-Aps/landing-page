@@ -6,14 +6,14 @@ import Footer from '@/components/Footer'
 import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
 
 export const metadata: Metadata = {
-  title: 'Hvad koster forsikring? Se priser i 2026 – Altid Hjem',
+  title: 'Hvad koster forsikring i 2026? Se priser – Altid Hjem',
   description:
-    'Hvad koster forsikring i Danmark? Se vejledende priser på indbo-, hus-, bil-, ulykkes- og rejseforsikring, hvorfor forsikringspriserne svinger så meget — og hvordan du tjekker, om du betaler for meget. Skriv dig gratis på ventelisten til Altid Hjem.',
+    'Hvad koster forsikring i Danmark? Se vejledende priser på indbo, hus, bil, ulykke og rejse — og find ud af, om du betaler for meget. Skriv dig gratis på ventelisten til Altid Hjem.',
   alternates: { canonical: 'https://altidhjem.dk/hvad-koster-forsikring' },
   openGraph: {
-    title: 'Hvad koster forsikring? Se priser i 2026',
+    title: 'Hvad koster forsikring i Danmark?',
     description:
-      'Vejledende priser på de mest almindelige forsikringer i Danmark — og sådan tjekker du, om du betaler for meget.',
+      'Se vejledende priser på de mest almindelige forsikringer, og find ud af, om du betaler for meget.',
     url: 'https://altidhjem.dk/hvad-koster-forsikring',
     type: 'article',
   },
@@ -21,16 +21,14 @@ export const metadata: Metadata = {
 
 const FOREST_TEXT = 'rgba(26,61,34,0.75)'
 
-// Vejledende månedspriser (DK, 2026). Bevidst som INTERVALLER, ikke præcise
-// gennemsnit: forsikringspris afhænger stærkt af bopæl, alder, dækning og
-// selskab. Pointen på siden er netop spredningen — derfor kan det betale sig
-// at tjekke. Ingen påstand om "billigste" eller kildeførte gennemsnit.
+// Vejledende månedspriser (DK, 2026) som INTERVALLER — forsikringspris afhænger
+// stærkt af profil, dækning og selskab. Pointen er spredningen, ikke et præcist tal.
 const PRISER: { type: string; interval: string; note: string }[] = [
-  { type: 'Indboforsikring', interval: '100–250 kr./md.', note: 'Afhænger af husstandens størrelse, bopæl og dækningssum' },
-  { type: 'Husforsikring', interval: '250–600 kr./md.', note: 'Afhænger af husets størrelse, alder, tag og værdi' },
-  { type: 'Bilforsikring', interval: '400–900 kr./md.', note: 'Afhænger af bilen, din alder, postnummer og selvrisiko' },
-  { type: 'Ulykkesforsikring', interval: '80–200 kr./md.', note: 'Afhænger af dækningssum og om erhverv er inkluderet' },
-  { type: 'Årsrejseforsikring', interval: '30–60 kr./md.', note: 'Typisk 300–700 kr./år for en familie' },
+  { type: 'Indboforsikring', interval: '140–250 kr./md.', note: 'Afhænger af adresse, husstand, indbosum, selvrisiko og tilvalg.' },
+  { type: 'Husforsikring', interval: '250–600 kr./md.', note: 'Afhænger af husets størrelse, alder, tagtype, stand og beliggenhed.' },
+  { type: 'Bilforsikring', interval: '400–900 kr./md.', note: 'Afhænger af bilen, førerens alder, postnummer, skadehistorik, kasko og selvrisiko.' },
+  { type: 'Ulykkesforsikring', interval: '50–200 kr./md.', note: 'Afhænger af forsikringssum, alder, erhverv og om dækningen gælder fritid eller hele døgnet.' },
+  { type: 'Årsrejseforsikring', interval: '30–100 kr./md.', note: 'Afhænger af antal personer, destination, dækning og tilvalg.' },
 ]
 
 // FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).
@@ -38,50 +36,57 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Hvad koster en indboforsikring?',
     a: [
-      'En indboforsikring koster typisk 100–250 kr. om måneden i Danmark.',
-      'Prisen afhænger blandt andet af, hvor du bor, hvor stor din husstand er, og hvor høj en dækningssum du vælger.',
+      'En indboforsikring koster typisk 140–250 kr. om måneden for en almindelig husstand.',
+      'Prisen afhænger blandt andet af adresse, indbosum, husstandens størrelse, selvrisiko og tilvalg.',
     ],
   },
   {
     q: 'Hvad koster en bilforsikring?',
     a: [
-      'En bilforsikring koster typisk 400–900 kr. om måneden.',
-      'Prisen afhænger af bilen, din alder, dit postnummer, din selvrisiko og din kørselshistorik. Forskellen mellem det dyreste og billigste selskab kan være flere tusinde kroner om året.',
+      'En bilforsikring koster typisk 400–900 kr. om måneden, hvis du har kasko.',
+      'Ansvarsforsikring alene kan være billigere, mens unge bilister, dyre biler og lav selvrisiko trækker prisen op.',
+    ],
+  },
+  {
+    q: 'Hvad koster en husforsikring?',
+    a: [
+      'En husforsikring koster ofte 250–600 kr. om måneden.',
+      'Prisen afhænger især af husets størrelse, alder, byggematerialer, tagtype, stand og beliggenhed.',
     ],
   },
   {
     q: 'Hvorfor er forsikring så dyrt?',
     a: [
-      'Forsikringspriserne er steget de seneste år på grund af inflation, dyrere reparationer og flere skader.',
-      'Samtidig betaler mange for meget, fordi de bliver hos det samme selskab af gammel vane uden at tjekke prisen. Spredningen mellem selskaberne er stor.',
+      'Forsikring er blevet dyrere, fordi reparationer, materialer og skader generelt koster mere.',
+      'Samtidig bliver mange hos samme selskab i mange år uden at tjekke, om prisen stadig er fair.',
     ],
   },
   {
     q: 'Kan jeg spare ved at samle mine forsikringer?',
     a: [
-      'Ofte ja. Mange selskaber giver en samlerabat, når du har flere forsikringer samme sted.',
-      'Men en samlerabat er ikke automatisk den bedste pris. Det vigtigste er at se den samlede pris for alle dine forsikringer — ikke kun rabatten på den enkelte.',
+      'Nogle selskaber giver samlerabat, når du har flere forsikringer samme sted.',
+      'Men samlerabat betyder ikke nødvendigvis den laveste samlede pris. Det vigtigste er at se hele husstandens pris samlet.',
     ],
   },
   {
     q: 'Hvordan ved jeg, om jeg er dobbeltforsikret?',
     a: [
-      'Dobbeltdækning sker typisk, når to i samme husstand har samme forsikring hver for sig — fx to ulykkesforsikringer, eller et barn der står på begge forældres police.',
-      'Det er svært at opdage selv, fordi policerne ligger hos forskellige selskaber. Altid Hjem viser hele husstandens forsikringer samlet ét sted og markerer, hvor I er dækket dobbelt.',
+      'Du kan være dobbeltforsikret, hvis flere i husstanden betaler for den samme dækning hver for sig.',
+      'Det kan fx være indbo, rejse eller en dækning, der allerede indgår i en anden police. Altid Hjem samler overblikket og markerer mulige overlap.',
     ],
   },
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem samler hjemmets faste udgifter — el, mobil, forsikring og mere — i én app med ét login og én samlet regning.',
-      'Målet er, at du nemt kan se, om du betaler for meget, og få en fair pris uden at skulle holde styr på flere selskaber.',
+      'Altid Hjem samler hjemmets faste udgifter i én app med ét overblik.',
+      'Målet er at gøre det nemmere at se, hvad du betaler, finde unødvendige udgifter og få mere kontrol over økonomien i hjemmet.',
     ],
   },
   {
     q: 'Koster det noget at skrive sig på ventelisten?',
     a: [
       'Nej. Det er gratis at skrive sig på ventelisten.',
-      'Du får besked, når Altid Hjem åbner. De første på listen får adgang først.',
+      'Du får besked, når Altid Hjem åbner, og de første på listen får adgang først.',
     ],
   },
 ]
@@ -101,7 +106,7 @@ export default function HvadKosterForsikring() {
     <>
       <Nav
         banner={{
-          longPrefix: 'Mange familier betaler dobbelt for forsikring uden at vide det. ',
+          longPrefix: 'Mange husstande betaler dobbelt for forsikring uden at vide det. ',
           shortPrefix: 'Betaler I dobbelt for forsikring? ',
           source: 'forsikring-banner',
         }}
@@ -135,14 +140,14 @@ export default function HvadKosterForsikring() {
               {/* Kort svar — målrettet Googles "fremhævede uddrag". */}
               <section>
                 <p className="mb-3">
-                  Det korte svar: De fleste forsikringer i Danmark koster mellem{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>100 og 900 kr. om måneden</span>{' '}
-                  afhængigt af typen. En indboforsikring ligger typisk lavest, en bilforsikring højest.
+                  Det korte svar: De fleste private forsikringer i Danmark koster mellem{' '}
+                  <span className="font-medium" style={{ color: 'var(--forest)' }}>30 og 900 kr. om måneden</span>{' '}
+                  afhængigt af typen. En indboforsikring ligger typisk i den lave ende, en bilforsikring i den høje.
                 </p>
                 <p>
-                  Men <span className="font-medium" style={{ color: 'var(--forest)' }}>forsikringsprisen svinger meget</span>{' '}
-                  fra person til person og fra selskab til selskab. Derfor er det vigtigste tal ikke
-                  gennemsnittet — men om <em>du</em> betaler for meget for præcis din dækning.
+                  Men gennemsnittet er sjældent det vigtigste. Det afgørende er, om{' '}
+                  <span className="font-medium" style={{ color: 'var(--forest)' }}>du betaler for meget</span>{' '}
+                  for den dækning, du faktisk har brug for.
                 </p>
               </section>
 
@@ -169,8 +174,8 @@ export default function HvadKosterForsikring() {
                   ))}
                 </div>
                 <p className="text-xs mt-3" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Vejledende priser (2026). Din pris afhænger af bopæl, alder, valgt dækning og selskab —
-                  og kan ligge både under og over intervallerne.
+                  Vejledende priser for 2026. Din konkrete pris kan ligge både under og over intervallerne,
+                  afhængigt af din profil, dækning og dit forsikringsselskab.
                 </p>
               </section>
 
@@ -179,21 +184,26 @@ export default function HvadKosterForsikring() {
                   Derfor svinger forsikringspriserne så meget
                 </h2>
                 <p className="mb-3">
-                  To naboer med samme bil kan betale vidt forskellige priser. Det skyldes, at selskaberne
-                  vægter risiko forskelligt og prissætter efter blandt andet:
+                  To naboer kan have samme bil, samme boligtype og samme forsikring og stadig betale vidt
+                  forskellige priser. Det skyldes, at selskaberne vurderer risiko forskelligt og prissætter
+                  blandt andet efter:
                 </p>
                 <ul className="space-y-2 mb-3">
-                  {['Din bopæl og dit postnummer', 'Din alder og historik', 'Den dækning og selvrisiko, du vælger', 'Om du har flere forsikringer samme sted (samlerabat)'].map((x) => (
+                  {['Hvor du bor og dit postnummer', 'Din alder og skadehistorik', 'Din selvrisiko', 'Din valgte dækning og tilvalg', 'Om dine forsikringer er samlet samme sted (samlerabat)'].map((x) => (
                     <li key={x} className="flex gap-2.5">
                       <span aria-hidden="true" style={{ color: 'var(--forest)' }}>•</span>
                       <span>{x}</span>
                     </li>
                   ))}
                 </ul>
-                <p>
-                  Forskellen mellem det dyreste og billigste selskab kan nemt være{' '}
+                <p className="mb-3">
+                  Derfor kan forskellen mellem det billigste og dyreste tilbud nemt være{' '}
                   <span className="font-medium" style={{ color: 'var(--forest)' }}>flere tusinde kroner om året</span>{' '}
                   for den samme dækning.
+                </p>
+                <p>
+                  Samlerabat kan hjælpe — men er ikke automatisk lig med den bedste pris. Det afgørende er
+                  den samlede pris for hele husstanden.
                 </p>
               </section>
 
@@ -203,11 +213,11 @@ export default function HvadKosterForsikring() {
                 </h2>
                 <div className="space-y-3">
                   {[
-                    'Du har ikke tjekket din forsikringspris i mere end to år.',
-                    'Du er hos samme selskab af gammel vane — uden at have et samlet tilbud.',
-                    'Dine forsikringer overlapper, så du er dobbeltdækket på det samme.',
-                    'Du betaler for dækning eller tilvalg, du aldrig bruger.',
-                    'Du har aldrig set den samlede pris for alle dine forsikringer ét sted.',
+                    'Du har ikke tjekket dine forsikringer i mere end to år.',
+                    'Du er blevet hos samme selskab af gammel vane.',
+                    'Du har flere forsikringer spredt på forskellige logins og regninger.',
+                    'Du betaler for dækninger eller tilvalg, du ikke bruger.',
+                    'Du ved ikke, hvad husstanden betaler samlet hver måned.',
                   ].map((x, i) => (
                     <div key={x} className="flex gap-3 items-start">
                       <span
@@ -227,25 +237,26 @@ export default function HvadKosterForsikring() {
                   Er du dobbeltforsikret uden at vide det?
                 </h2>
                 <p className="mb-3">
-                  En af de dyreste — og mest oversete — fælder er{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>dobbeltdækning</span>:
-                  at to personer i samme husstand betaler for den samme dækning hver for sig. To
-                  ulykkesforsikringer, en indboforsikring der allerede dækker hele husstanden, et
-                  barn der står på både mors og fars police.
+                  En af de dyreste fejl er også en af de nemmeste at overse:{' '}
+                  <span className="font-medium" style={{ color: 'var(--forest)' }}>dobbeltdækning</span>.
                 </p>
                 <p className="mb-3">
-                  Problemet er, at ingen opdager det — fordi policerne ligger spredt hos forskellige
-                  selskaber, med hver sin login og regning. Du kan ikke se hele husstanden ét sted.
+                  Det sker, når to personer i samme husstand betaler for den samme dækning hver for sig. Det
+                  kan være to indboforsikringer, to rejseforsikringer, et barn der står på begge forældres
+                  police — eller en dækning, der allerede ligger som del af en anden forsikring.
+                </p>
+                <p className="mb-3">
+                  Problemet er sjældent, at folk ikke vil rydde op. Problemet er, at de ikke kan se det:
+                  policerne ligger hos forskellige selskaber, med hver sin login og regning.
                 </p>
                 <p className="mb-6">
-                  Det er præcis dét, Altid Hjem gør smart: Du ser{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>hele husstandens forsikringer samlet</span>{' '}
-                  og får besked, hvis I er dækket dobbelt — så I kan opsige den, I ikke har brug for,
-                  og beholde pengene.
+                  Altid Hjem samler{' '}
+                  <span className="font-medium" style={{ color: 'var(--forest)' }}>hele husstandens forsikringer ét sted</span>{' '}
+                  og markerer, hvor I kan være dækket dobbelt — så I kan beholde den rigtige dækning og opsige
+                  det, I ikke har brug for.
                 </p>
 
-                {/* Animeret app-mockup: scanner husstanden, finder dobbelt-
-                    dækninger og rydder automatisk op. */}
+                {/* Animeret app-mockup: scanner husstanden, finder mulige dobbeltdækninger og rydder op. */}
                 <div
                   className="rounded-3xl flex justify-center py-10 px-4"
                   style={{ background: 'linear-gradient(160deg, rgba(168,224,99,0.12) 0%, rgba(26,61,34,0.05) 100%)' }}
@@ -253,7 +264,8 @@ export default function HvadKosterForsikring() {
                   <ForsikringHusstandMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Altid Hjem scanner husstanden, fanger dobbeltdækninger på tværs af jer — og rydder op.
+                  Altid Hjem scanner husstandens forsikringer, finder mulige dobbeltdækninger og viser, hvad
+                  I kan rydde op i. Den personlige ulykkesforsikring beholdes.
                 </p>
               </section>
 
@@ -262,20 +274,19 @@ export default function HvadKosterForsikring() {
                   Sådan får du en fair forsikringspris med Altid Hjem
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem samler hjemmets faste udgifter — el, mobil, forsikring og mere — i{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>
-                    én app med ét login og én samlet regning
-                  </span>
-                  .
+                  Altid Hjem samler hjemmets faste udgifter — el, mobil, forsikring, internet og mere på vej —
+                  i{' '}
+                  <span className="font-medium" style={{ color: 'var(--forest)' }}>én app med ét login og én samlet regning</span>.
                 </p>
                 <p className="mb-3">
-                  I stedet for at jonglere flere selskaber og fakturaer kan du se den samlede pris ét sted —
-                  og nemt opdage, hvis du betaler for meget for din forsikring.
+                  I stedet for at logge ind hos flere selskaber og holde styr på forskellige regninger får du
+                  ét samlet overblik over, hvad hjemmet koster hver måned. Det gør det lettere at se, hvor
+                  pengene går — og at opdage, hvis du betaler for meget.
                 </p>
                 <p>
-                  Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 14.000 danskere allerede
-                  får gennemsigtig strøm til en fair pris. Samme princip tager vi nu videre til resten af
-                  hjemmet: fair priser, gennemsigtighed og færre ting at holde styr på.
+                  Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 14.000 danskere allerede får
+                  gennemsigtig strøm til en fair pris. Samme princip tager vi nu videre til resten af hjemmet:
+                  færre skjulte udgifter, færre spredte regninger og mere kontrol.
                 </p>
               </section>
 
@@ -319,7 +330,7 @@ export default function HvadKosterForsikring() {
 
         <BottomCta
           eyebrow="Betaler du for meget for din forsikring?"
-          subtitle="Tilmeld dig gratis ventelisten i dag og få tidlig adgang, når Altid Hjem lanceres"
+          subtitle="Skriv dig gratis på ventelisten og få tidlig adgang, når Altid Hjem lanceres"
           source="forsikring"
         />
       </main>
