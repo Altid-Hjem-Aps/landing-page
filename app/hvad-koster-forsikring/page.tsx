@@ -99,7 +99,13 @@ export default function HvadKosterForsikring() {
 
   return (
     <>
-      <Nav />
+      <Nav
+        banner={{
+          longPrefix: 'Mange familier betaler dobbelt for forsikring uden at vide det. ',
+          shortPrefix: 'Betaler I dobbelt for forsikring? ',
+          source: 'forsikring-banner',
+        }}
+      />
       <script
         type="application/ld+json"
         // '<' escapes som <: JSON.stringify escaper ikke '<', så en
@@ -107,7 +113,8 @@ export default function HvadKosterForsikring() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
       />
       <main className="min-h-screen" style={{ fontFamily: 'var(--font-onest)' }}>
-        <div className="pt-28 pb-20" style={{ background: 'var(--cream)' }}>
+        {/* pt-32 (128px) = kampagnebanner (~36px) + nav (84px) + luft. */}
+        <div className="pt-32 pb-20" style={{ background: 'var(--cream)' }}>
           <div className="max-w-2xl mx-auto px-6">
 
             <Link
