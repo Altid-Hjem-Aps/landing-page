@@ -86,7 +86,7 @@ const FAQ: { q: string; a: string[] }[] = [
     q: 'Koster det noget at skrive sig på ventelisten?',
     a: [
       'Nej. Det er gratis at skrive sig på ventelisten.',
-      'Du får besked, når Altid Hjem åbner, og de første på listen får adgang først.',
+      'Du får besked, når Altid Hjem åbner, så du kan få et samlet overblik over hjemmets forsikringer ét sted.',
     ],
   },
 ]
