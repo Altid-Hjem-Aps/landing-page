@@ -4,50 +4,51 @@ import { CSSProperties, ReactNode, useEffect, useRef, useState } from 'react'
 
 /**
  * Animeret app-UI-kort (uden telefon-ramme) til forsikring-siden.
- * Topbaren er "Altid Assistent", der arbejder. Loop (afspilles én gang, når
- * kortet er rullet ind i billedet):
- *   1. detect  — finder 2 MULIGE dobbeltdækninger (highlighter Indbo + Rejse,
- *      som begge dækker hele husstanden)
- *   2-3. rm-*  — fjerner Maries dobbelte HUSSTANDS-dækninger én ad gangen.
- *      Ulykkesforsikring er PERSONLIG og beholdes på begge voksne — det er
- *      faktuelt korrekt og viser, at assistenten kender forskellen.
- *   4. done    — "Færdig – husstanden er optimeret"
- *   5. total   — kvittering + årlig besparelse (tæller op)
- * Tidsstyret via setTimeout (ikke rAF), så den også kører i headless preview.
+ * Topbaren er "Altid Assistent", der arbejder. Afspilles én gang, når kortet
+ * er rullet ind i billedet:
+ *   1. detect  — finder 3 MULIGE dobbeltdækninger (markeret RØDT = fejl):
+ *      Maries indbo + rejse (dækket af husstanden) og Lukas' børneulykke
+ *      (står på begge forældres police).
+ *   2-4. rm-*  — fjerner dem én ad gangen; den røde dækning kollapser til et
+ *      grønt flueben, og medlemmet vises "nu dækket af X". Personlig
+ *      ulykkesforsikring på de voksne beholdes (faktuelt korrekt).
+ *   5. done → 6. total — kvittering + årlig besparelse (tæller op).
  */
 
-type Phase = 'detect' | 'rm-indbo' | 'rm-rejse' | 'done' | 'total'
+type Phase = 'detect' | 'rm-indbo' | 'rm-rejse' | 'rm-barn' | 'done' | 'total'
 
 const SEQ: { p: Phase; ms: number }[] = [
   { p: 'detect', ms: 3000 },
-  { p: 'rm-indbo', ms: 2100 },
-  { p: 'rm-rejse', ms: 2100 },
+  { p: 'rm-indbo', ms: 2000 },
+  { p: 'rm-rejse', ms: 2000 },
+  { p: 'rm-barn', ms: 2000 },
   { p: 'done', ms: 2400 },
   { p: 'total', ms: 7000 },
 ]
 
-// Kun husstands-dækninger kan være dobbelte. Ulykke er personlig → aldrig highlightet.
-const OVERLAP = ['Indbo', 'Rejse']
-const AMOUNT: Record<string, number> = { Indbo: 150, Rejse: 50 }
+const AMOUNT: Record<string, number> = { Indbo: 150, Rejse: 50, Børneulykke: 40 }
 
 const REMOVED: Record<Phase, string[]> = {
   detect: [],
   'rm-indbo': ['Indbo'],
   'rm-rejse': ['Indbo', 'Rejse'],
-  done: ['Indbo', 'Rejse'],
-  total: ['Indbo', 'Rejse'],
+  'rm-barn': ['Indbo', 'Rejse', 'Børneulykke'],
+  done: ['Indbo', 'Rejse', 'Børneulykke'],
+  total: ['Indbo', 'Rejse', 'Børneulykke'],
 }
 const JUST_ADDED: Record<Phase, number | null> = {
   detect: null,
   'rm-indbo': AMOUNT.Indbo,
   'rm-rejse': AMOUNT.Rejse,
+  'rm-barn': AMOUNT.Børneulykke,
   done: null,
   total: null,
 }
 const STATUS: Record<Phase, string> = {
-  detect: 'Fandt 2 mulige dobbeltdækninger',
+  detect: 'Fandt 3 mulige dobbeltdækninger',
   'rm-indbo': 'Fjerner dobbelt indboforsikring',
   'rm-rejse': 'Fjerner dobbelt rejseforsikring',
+  'rm-barn': 'Fjerner dobbelt børneulykke',
   done: 'Færdig – husstanden er optimeret',
   total: 'Færdig – husstanden er optimeret',
 }
@@ -55,20 +56,28 @@ const STATUS: Record<Phase, string> = {
 const BILL_ITEMS = [
   { label: 'Dobbelt indboforsikring', amt: AMOUNT.Indbo },
   { label: 'Dobbelt rejseforsikring', amt: AMOUNT.Rejse },
+  { label: 'Dobbelt børneulykke', amt: AMOUNT.Børneulykke },
 ]
 const TOTAL_MONTH = BILL_ITEMS.reduce((s, i) => s + i.amt, 0)
 const TOTAL_YEAR_NUM = TOTAL_MONTH * 12
-// Trin i kvitteringens afsløring: hver linje + total-rækken + årskortet.
 const REVEAL_MAX = BILL_ITEMS.length + 2
 
-type Member = { name: string; role: 'adult' | 'child'; covers: string[]; childNote?: string }
+const RED = '#c0392b'
+
+type Member = {
+  name: string
+  role: 'adult' | 'child'
+  covers: string[]
+  /** De af medlemmets dækninger, der er dobbelte og ryddes op. */
+  removable: string[]
+  /** Vises grønt, når medlemmets dobbelte dækninger er fjernet. */
+  coveredNote: string
+}
 const MEMBERS: Member[] = [
-  { name: 'Dig', role: 'adult', covers: ['Indbo', 'Rejse', 'Ulykke'] },
-  { name: 'Marie', role: 'adult', covers: ['Indbo', 'Rejse', 'Ulykke'] },
-  { name: 'Lukas', role: 'child', covers: [], childNote: 'Dækket af husstandens indbo' },
+  { name: 'Dig', role: 'adult', covers: ['Indbo', 'Rejse', 'Ulykke'], removable: [], coveredNote: '' },
+  { name: 'Marie', role: 'adult', covers: ['Indbo', 'Rejse', 'Ulykke'], removable: ['Indbo', 'Rejse'], coveredNote: 'Dækket af husstanden' },
+  { name: 'Lukas', role: 'child', covers: ['Børneulykke'], removable: ['Børneulykke'], coveredNote: 'Dækket af forældrenes police' },
 ]
-// Maries dobbelte husstands-dækninger ryddes op; hendes personlige ulykke beholdes.
-const MARIE_REMOVABLE = ['Indbo', 'Rejse']
 
 function PersonIcon({ child = false }: { child?: boolean }) {
   const s = child ? 15 : 19
@@ -80,24 +89,25 @@ function PersonIcon({ child = false }: { child?: boolean }) {
   )
 }
 
-function Tag({ label, hot }: { label: string; hot?: boolean }) {
+function Tag({ label, state }: { label: string; state: 'normal' | 'error' | 'done' }) {
+  const isErr = state === 'error'
+  const isDone = state === 'done'
   return (
     <span
       className="inline-flex items-center gap-1 rounded-full"
       style={{
         fontSize: 9,
         padding: '2px 7px',
-        background: hot ? 'var(--sage)' : 'rgba(26,61,34,0.06)',
-        color: hot ? 'var(--forest)' : 'rgba(26,61,34,0.6)',
-        fontWeight: hot ? 700 : 400,
-        border: hot ? '1px solid rgba(26,61,34,0.25)' : '1px solid transparent',
-        boxShadow: hot ? '0 0 0 3px rgba(168,224,99,0.25)' : 'none',
-        transition: 'background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease',
+        background: isDone ? 'var(--sage)' : isErr ? 'rgba(192,57,43,0.12)' : 'rgba(26,61,34,0.06)',
+        color: isDone ? 'var(--forest)' : isErr ? RED : 'rgba(26,61,34,0.6)',
+        fontWeight: isErr || isDone ? 700 : 400,
+        border: isErr ? `1px solid ${RED}55` : isDone ? '1px solid rgba(26,61,34,0.2)' : '1px solid transparent',
+        transition: 'background 0.4s ease, color 0.4s ease, border-color 0.4s ease',
         whiteSpace: 'nowrap',
       }}
     >
-      {hot && <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--forest)' }} />}
-      {label}
+      {isErr && <span style={{ width: 5, height: 5, borderRadius: '50%', background: RED }} />}
+      {isDone ? '✓' : label}
     </span>
   )
 }
@@ -163,7 +173,7 @@ function Bill({ reveal, instant }: { reveal: number; instant: boolean }) {
         {BILL_ITEMS.map((it, i) => (
           <Row key={it.label} show={reveal > i}>
             <span style={{ fontSize: 10.5, color: 'rgba(26,61,34,0.7)' }}>
-              <span style={{ color: 'var(--forest)', fontWeight: 700, marginRight: 4 }}>✕</span>
+              <span style={{ color: 'var(--forest)', fontWeight: 700, marginRight: 4 }}>✓</span>
               {it.label}
             </span>
             <span style={{ fontSize: 10.5, textDecoration: 'line-through', color: 'rgba(26,61,34,0.4)' }}>{it.amt} kr./md.</span>
@@ -180,18 +190,11 @@ function Bill({ reveal, instant }: { reveal: number; instant: boolean }) {
 
       <div
         className="rounded-2xl text-center"
-        style={{
-          marginTop: 12,
-          padding: '12px 10px',
-          background: 'var(--sage)',
-          opacity: yearlyShown ? 1 : 0,
-          transform: yearlyShown ? 'scale(1)' : 'scale(0.96)',
-          transition: 'opacity 0.45s ease, transform 0.45s ease',
-        }}
+        style={{ marginTop: 12, padding: '12px 10px', background: 'var(--sage)', opacity: yearlyShown ? 1 : 0, transform: yearlyShown ? 'scale(1)' : 'scale(0.96)', transition: 'opacity 0.45s ease, transform 0.45s ease' }}
       >
         <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(26,61,34,0.7)' }}>I sparer nu</p>
         <p style={{ fontSize: 24, fontWeight: 800, lineHeight: 1.1, color: 'var(--forest)' }}>{year.toLocaleString('da-DK')} kr.</p>
-        <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(26,61,34,0.7)' }}>om året (estimeret)</p>
+        <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(26,61,34,0.7)' }}>om året</p>
       </div>
     </div>
   )
@@ -211,7 +214,6 @@ export default function ForsikringHusstandMockup() {
     }
   }, [])
 
-  // Start først, når kortet er rullet ind i billedet — og kun én gang.
   useEffect(() => {
     const el = cardRef.current
     if (!el || typeof IntersectionObserver === 'undefined') {
@@ -231,7 +233,6 @@ export default function ForsikringHusstandMockup() {
     return () => obs.disconnect()
   }, [])
 
-  // Afspil sekvensen én gang; stop på den sidste fase (kvitteringen).
   useEffect(() => {
     if (reduced || !started || idx >= SEQ.length - 1) return
     const t = setTimeout(() => setIdx((v) => v + 1), SEQ[idx].ms)
@@ -258,19 +259,10 @@ export default function ForsikringHusstandMockup() {
     return () => clearInterval(id)
   }, [phase, reduced])
 
-  const removed = REMOVED[phase]
-  const saved = removed.reduce((s, c) => s + (AMOUNT[c] || 0), 0)
+  const removedSet = REMOVED[phase]
+  const saved = removedSet.reduce((s, c) => s + (AMOUNT[c] || 0), 0)
   const justAdded = JUST_ADDED[phase]
-  const count = MEMBERS.reduce(
-    (n, m) => n + (m.name === 'Marie' ? m.covers.filter((c) => !removed.includes(c)).length : m.covers.length),
-    0,
-  )
-
-  function isHot(member: Member, tag: string) {
-    if (phase === 'total' || phase === 'done' || !OVERLAP.includes(tag)) return false
-    if (phase === 'detect') return true
-    return member.name === 'Marie' && !removed.includes(tag)
-  }
+  const count = MEMBERS.reduce((n, m) => n + m.covers.filter((c) => !(m.removable.includes(c) && removedSet.includes(c))).length, 0)
 
   return (
     <div
@@ -288,8 +280,7 @@ export default function ForsikringHusstandMockup() {
       ) : (
         <div className="flex flex-col gap-2">
           {MEMBERS.map((m) => {
-            const mineRemoved = m.name === 'Marie' ? removed.filter((c) => MARIE_REMOVABLE.includes(c)) : []
-            const showNote = m.role === 'child'
+            const fullyCleaned = m.removable.length > 0 && m.removable.every((c) => removedSet.includes(c))
             return (
               <div key={m.name} className="rounded-2xl flex items-center gap-2.5" style={{ background: 'var(--cream)', border: '1px solid rgba(26,61,34,0.08)', padding: '9px 11px' }}>
                 <span
@@ -304,15 +295,19 @@ export default function ForsikringHusstandMockup() {
                     <span style={{ fontSize: 9, fontWeight: 400, color: 'rgba(26,61,34,0.4)' }}>{m.role === 'adult' ? ' · voksen' : ' · barn'}</span>
                   </p>
                   <div className="flex flex-wrap items-center gap-1" style={{ marginTop: 3 }}>
-                    {showNote && <span style={{ fontSize: 9, color: 'rgba(26,61,34,0.5)' }}>{m.childNote}</span>}
                     {m.covers.map((c) => {
-                      const collapsing = mineRemoved.includes(c)
+                      const removable = m.removable.includes(c)
+                      const removed = removable && removedSet.includes(c)
+                      const state = removed ? 'done' : removable ? 'error' : 'normal'
                       return (
-                        <span key={c} style={{ display: 'inline-flex', overflow: 'hidden', maxWidth: collapsing ? 0 : 70, opacity: collapsing ? 0 : 1, transition: 'max-width 0.55s ease, opacity 0.45s ease' }}>
-                          <Tag label={c} hot={isHot(m, c)} />
+                        <span key={c} style={{ display: 'inline-flex', overflow: 'hidden', maxWidth: removed ? 26 : 80, transition: 'max-width 0.55s ease' }}>
+                          <Tag label={c} state={state} />
                         </span>
                       )
                     })}
+                    {fullyCleaned && (
+                      <span style={{ fontSize: 9, fontWeight: 600, color: 'var(--forest)' }}>✓ {m.coveredNote}</span>
+                    )}
                   </div>
                 </div>
               </div>
