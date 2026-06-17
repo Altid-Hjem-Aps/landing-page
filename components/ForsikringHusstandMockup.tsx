@@ -16,6 +16,7 @@ import { CSSProperties, ReactNode, useEffect, useRef, useState } from 'react'
  */
 
 type Phase =
+  | 'scan-start'
   | 'scan-indbo'
   | 'scan-rejse'
   | 'scan-barn'
@@ -26,13 +27,14 @@ type Phase =
   | 'total'
 
 const SEQ: { p: Phase; ms: number }[] = [
-  { p: 'scan-indbo', ms: 2600 },
-  { p: 'scan-rejse', ms: 2600 },
-  { p: 'scan-barn', ms: 2600 },
-  { p: 'fix-indbo', ms: 2400 },
-  { p: 'fix-rejse', ms: 2400 },
-  { p: 'fix-barn', ms: 2400 },
-  { p: 'done', ms: 2600 },
+  { p: 'scan-start', ms: 1500 }, // alle profiler grå mens husstanden gennemgås
+  { p: 'scan-indbo', ms: 2300 },
+  { p: 'scan-rejse', ms: 2300 },
+  { p: 'scan-barn', ms: 2300 },
+  { p: 'fix-indbo', ms: 2300 },
+  { p: 'fix-rejse', ms: 2300 },
+  { p: 'fix-barn', ms: 2300 },
+  { p: 'done', ms: 2400 },
   // total = kvittering bygges + tæller op (~5s) og holdes så ~5s, før loopet
   // starter forfra (jf. modulo i fase-effekten).
   { p: 'total', ms: 10000 },
@@ -42,6 +44,7 @@ const AMOUNT: Record<string, number> = { Indbo: 150, Rejse: 50, Børneulykke: 40
 
 // Hvilke dækninger der er afsløret som problemer (vises rødt) i hver fase.
 const HIGHLIGHT: Record<Phase, string[]> = {
+  'scan-start': [],
   'scan-indbo': ['Indbo'],
   'scan-rejse': ['Indbo', 'Rejse'],
   'scan-barn': ['Indbo', 'Rejse', 'Børneulykke'],
@@ -52,6 +55,7 @@ const HIGHLIGHT: Record<Phase, string[]> = {
   total: ['Indbo', 'Rejse', 'Børneulykke'],
 }
 const REMOVED: Record<Phase, string[]> = {
+  'scan-start': [],
   'scan-indbo': [],
   'scan-rejse': [],
   'scan-barn': [],
@@ -62,6 +66,7 @@ const REMOVED: Record<Phase, string[]> = {
   total: ['Indbo', 'Rejse', 'Børneulykke'],
 }
 const JUST_ADDED: Record<Phase, number | null> = {
+  'scan-start': null,
   'scan-indbo': null,
   'scan-rejse': null,
   'scan-barn': null,
@@ -72,6 +77,7 @@ const JUST_ADDED: Record<Phase, number | null> = {
   total: null,
 }
 const STATUS: Record<Phase, string> = {
+  'scan-start': 'Gennemgår husstanden',
   'scan-indbo': 'Fandt dobbelt indboforsikring',
   'scan-rejse': 'Fandt dobbelt rejseforsikring',
   'scan-barn': 'Fandt dobbelt børneulykke',
@@ -337,7 +343,10 @@ export default function ForsikringHusstandMockup() {
     return highlightSet.includes(cv.label) ? 'error' : 'none'
   }
 
-  const count = MEMBERS.reduce((n, m) => n + m.covers.length, 0)
+  // Antallet falder, efterhånden som dobbeltdækninger ryddes op (7 → 4).
+  const count = MEMBERS.reduce((n, m) => n + m.covers.length, 0) - removedSet.length
+  // '+X kr.'-chippen vises mens totalen tæller op, og forsvinder, når den lander.
+  const counting = justAdded != null && shownSaved < saved
 
   return (
     <div
@@ -356,6 +365,10 @@ export default function ForsikringHusstandMockup() {
         <div className="flex flex-col gap-2">
           {MEMBERS.map((m) => {
             const hasError = m.covers.some((cv) => iconFor(cv) === 'error')
+            const overlaps = m.covers.filter((cv) => cv.kind === 'overlap')
+            const allResolved = overlaps.length > 0 && overlaps.every((cv) => removedSet.includes(cv.label))
+            // Profil-cirkel: grå → rød (fejl fundet) → grøn (fejl rettet).
+            const avatarBg = hasError ? 'rgba(192,57,43,0.16)' : allResolved ? 'rgba(168,224,99,0.5)' : 'rgba(26,61,34,0.08)'
             return (
               <div
                 key={m.name}
@@ -369,7 +382,7 @@ export default function ForsikringHusstandMockup() {
               >
                 <span
                   className="shrink-0 flex items-center justify-center rounded-full"
-                  style={{ width: m.role === 'adult' ? 30 : 24, height: m.role === 'adult' ? 30 : 24, background: m.role === 'adult' ? 'rgba(26,61,34,0.08)' : 'rgba(168,224,99,0.25)' }}
+                  style={{ width: m.role === 'adult' ? 30 : 24, height: m.role === 'adult' ? 30 : 24, background: avatarBg, transition: 'background 0.45s ease' }}
                 >
                   <PersonIcon child={m.role === 'child'} />
                 </span>
@@ -394,7 +407,7 @@ export default function ForsikringHusstandMockup() {
             <div className="flex items-center gap-2">
               <span
                 className="rounded-full"
-                style={{ fontSize: 9, fontWeight: 700, padding: '2px 7px', background: 'var(--sage)', color: 'var(--forest)', opacity: justAdded != null ? 1 : 0, transform: justAdded != null ? 'translateY(0)' : 'translateY(4px)', transition: 'opacity 0.35s ease, transform 0.35s ease' }}
+                style={{ fontSize: 9, fontWeight: 700, padding: '2px 7px', background: 'var(--sage)', color: 'var(--forest)', opacity: counting ? 1 : 0, transform: counting ? 'translateY(0)' : 'translateY(4px)', transition: 'opacity 0.3s ease, transform 0.3s ease' }}
               >
                 +{justAdded ?? 0} kr.
               </span>
