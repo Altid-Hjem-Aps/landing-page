@@ -26,13 +26,13 @@ type Phase =
   | 'total'
 
 const SEQ: { p: Phase; ms: number }[] = [
-  { p: 'scan-indbo', ms: 1500 },
-  { p: 'scan-rejse', ms: 1500 },
-  { p: 'scan-barn', ms: 1500 },
-  { p: 'fix-indbo', ms: 2100 },
-  { p: 'fix-rejse', ms: 2100 },
-  { p: 'fix-barn', ms: 2100 },
-  { p: 'done', ms: 2200 },
+  { p: 'scan-indbo', ms: 2600 },
+  { p: 'scan-rejse', ms: 2600 },
+  { p: 'scan-barn', ms: 2600 },
+  { p: 'fix-indbo', ms: 2400 },
+  { p: 'fix-rejse', ms: 2400 },
+  { p: 'fix-barn', ms: 2400 },
+  { p: 'done', ms: 2600 },
   { p: 'total', ms: 7000 },
 ]
 
@@ -227,7 +227,7 @@ function Bill({ reveal, instant }: { reveal: number; instant: boolean }) {
       <div style={{ borderTop: '1px dashed rgba(26,61,34,0.25)', margin: '10px 0', opacity: reveal > BILL_ITEMS.length ? 1 : 0, transition: 'opacity 0.4s ease' }} />
 
       <Row show={reveal > BILL_ITEMS.length}>
-        <span style={{ fontSize: 11, fontWeight: 700 }}>I sparer</span>
+        <span style={{ fontSize: 11, fontWeight: 700 }}>I sparer månedligt</span>
         <span style={{ fontSize: 13, fontWeight: 800 }}>{TOTAL_MONTH} kr./md.</span>
       </Row>
 
