@@ -255,6 +255,26 @@ export default function ForsikringHusstandMockup() {
   }, [idx, started, reduced])
 
   const phase = reduced ? 'total' : SEQ[idx].p
+
+  // Afslør kvitteringens linjer trinvist i slut-fasen.
+  useEffect(() => {
+    if (phase !== 'total') {
+      setReveal(0)
+      return
+    }
+    if (reduced) {
+      setReveal(REVEAL_MAX)
+      return
+    }
+    let n = 0
+    const id = setInterval(() => {
+      n += 1
+      setReveal(n)
+      if (n >= REVEAL_MAX) clearInterval(id)
+    }, 700)
+    return () => clearInterval(id)
+  }, [phase, reduced])
+
   const removedSet = REMOVED[phase]
   const saved = removedSet.reduce((s, c) => s + (AMOUNT[c] || 0), 0)
   const justAdded = JUST_ADDED[phase]
