@@ -33,7 +33,9 @@ const SEQ: { p: Phase; ms: number }[] = [
   { p: 'fix-rejse', ms: 2400 },
   { p: 'fix-barn', ms: 2400 },
   { p: 'done', ms: 2600 },
-  { p: 'total', ms: 7000 },
+  // total = kvittering bygges + tæller op (~5s) og holdes så ~5s, før loopet
+  // starter forfra (jf. modulo i fase-effekten).
+  { p: 'total', ms: 10000 },
 ]
 
 const AMOUNT: Record<string, number> = { Indbo: 150, Rejse: 50, Børneulykke: 40 }
@@ -276,9 +278,11 @@ export default function ForsikringHusstandMockup() {
     return () => obs.disconnect()
   }, [])
 
+  // Kør sekvensen og loop (modulo) — sidste fase holder bill'en + 5s pause,
+  // før den starter forfra. Reduced motion looper ikke (bliver på 'total').
   useEffect(() => {
-    if (reduced || !started || idx >= SEQ.length - 1) return
-    const t = setTimeout(() => setIdx((v) => v + 1), SEQ[idx].ms)
+    if (reduced || !started) return
+    const t = setTimeout(() => setIdx((v) => (v + 1) % SEQ.length), SEQ[idx].ms)
     return () => clearTimeout(t)
   }, [idx, started, reduced])
 
