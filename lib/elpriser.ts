@@ -114,7 +114,7 @@ interface ApiPrice {
   }
 }
 
-function copenhagenDateKey(date: Date): string {
+export function copenhagenDateKey(date: Date): string {
   return new Intl.DateTimeFormat('sv-SE', {
     timeZone: 'Europe/Copenhagen',
     year: 'numeric',
@@ -128,7 +128,7 @@ function copenhagenDateKey(date: Date): string {
  * uret": på oktober-skiftedagen (25 timer) ville nu+24h stadig være samme
  * lokale dato, og "i morgen" ville vise dagens priser igen.
  */
-function nextDateKey(key: string): string {
+export function nextDateKey(key: string): string {
   const d = new Date(`${key}T12:00:00Z`)
   d.setUTCDate(d.getUTCDate() + 1)
   return d.toISOString().slice(0, 10)
