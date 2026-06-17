@@ -18,6 +18,8 @@ interface BannerConfig {
   shortPrefix: string
   /** Amplitude-source for klik på banneret, fx 'spiir-banner'. */
   source: string
+  /** CTA-tekst i banneret — falder tilbage til 'Skriv dig på ventelisten →'. */
+  cta?: string
 }
 
 interface NavProps {
@@ -168,7 +170,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
         <span className="hidden md:inline">{bannerConfig.longPrefix}</span>
         <span className="md:hidden">{bannerConfig.shortPrefix}</span>
         <span className="font-semibold" style={{ color: 'var(--sage)' }}>
-          Skriv dig på ventelisten →
+          {bannerConfig.cta ?? 'Skriv dig på ventelisten →'}
         </span>
       </button>
       <nav

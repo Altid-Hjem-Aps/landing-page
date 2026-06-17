@@ -109,6 +109,7 @@ export default function HvadKosterForsikring() {
           longPrefix: 'Mange husstande betaler dobbelt for forsikring uden at vide det. ',
           shortPrefix: 'Betaler I dobbelt for forsikring? ',
           source: 'forsikring-banner',
+          cta: 'Se om du betaler for meget →',
         }}
       />
       <script

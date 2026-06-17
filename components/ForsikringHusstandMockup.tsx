@@ -97,7 +97,7 @@ const STATUS: Record<Phase, string> = {
 const BILL_ITEMS = [
   { label: 'Dobbelt indboforsikring', amt: AMOUNT.Indbo },
   { label: 'Dobbelt rejseforsikring', amt: AMOUNT.Rejse },
-  { label: 'Dobbelt børneulykke', amt: AMOUNT.Børneulykke },
+  { label: 'Dobbelt børneulykkeforsikring', amt: AMOUNT.Børneulykke },
 ]
 const TOTAL_MONTH = BILL_ITEMS.reduce((s, i) => s + i.amt, 0)
 const TOTAL_YEAR_NUM = TOTAL_MONTH * 12
@@ -200,21 +200,21 @@ function Bill({ reveal, year }: { reveal: number; year: number }) {
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
       <p style={{ fontSize: 11, fontWeight: 700 }}>Det ryddede vi op</p>
 
-      {/* Resten skubbes til bunden — slacken bliver luft efter overskriften, og
-          det grønne kort sidder i bunden af UI-kortet. */}
-      <div style={{ marginTop: 'auto', paddingTop: 16 }}>
-        <div className="flex flex-col gap-2">
-          {BILL_ITEMS.map((it, i) => (
-            <Row key={it.label} show={reveal > i}>
-              <span style={{ fontSize: 10.5, color: 'rgba(26,61,34,0.7)' }}>
-                <span style={{ color: RED, fontWeight: 700, marginRight: 4 }}>✕</span>
-                {it.label}
-              </span>
-              <span style={{ fontSize: 10.5, textDecoration: 'line-through', color: 'rgba(26,61,34,0.4)' }}>{it.amt} kr./md.</span>
-            </Row>
-          ))}
-        </div>
+      {/* Overskrift + linjer i top; slacken lægges EFTER sidste linje, så summen
+          og det grønne kort skubbes ned i bunden af UI-kortet. */}
+      <div className="flex flex-col gap-2" style={{ marginTop: 10 }}>
+        {BILL_ITEMS.map((it, i) => (
+          <Row key={it.label} show={reveal > i}>
+            <span style={{ fontSize: 10.5, color: 'rgba(26,61,34,0.7)' }}>
+              <span style={{ color: RED, fontWeight: 700, marginRight: 4 }}>✕</span>
+              {it.label}
+            </span>
+            <span style={{ fontSize: 10.5, textDecoration: 'line-through', color: 'rgba(26,61,34,0.4)' }}>{it.amt} kr./md.</span>
+          </Row>
+        ))}
+      </div>
 
+      <div style={{ marginTop: 'auto' }}>
         <div style={{ borderTop: '1px dashed rgba(26,61,34,0.25)', margin: '10px 0', opacity: reveal > BILL_ITEMS.length ? 1 : 0, transition: 'opacity 0.4s ease' }} />
 
         <Row show={reveal > BILL_ITEMS.length}>
@@ -416,7 +416,7 @@ export default function ForsikringHusstandMockup() {
   let barTitle: string
   let barWorking: boolean
   if (phase === 'done' || phase === 'collapse' || (phase === 'total' && !yearDone)) {
-    barTitle = 'Færdig – samler jeres besparelse'
+    barTitle = 'Færdig – samler årlig besparelse'
     barWorking = true
   } else if (phase === 'total') {
     barTitle = 'Færdig – husstanden er optimeret'
