@@ -243,6 +243,8 @@ export default function ForsikringHusstandMockup() {
   const [reduced, setReduced] = useState(false)
   const [reveal, setReveal] = useState(0)
   const [started, setStarted] = useState(false)
+  const [shownSaved, setShownSaved] = useState(0)
+  const shownRef = useRef(0)
   const cardRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -304,6 +306,28 @@ export default function ForsikringHusstandMockup() {
   const highlightSet = HIGHLIGHT[phase]
   const saved = removedSet.reduce((s, c) => s + (AMOUNT[c] || 0), 0)
   const justAdded = JUST_ADDED[phase]
+
+  // Tæl totalen op til den nye værdi, hver gang en pris lægges til (+150, +50, +40).
+  useEffect(() => {
+    const to = saved
+    const from = shownRef.current
+    if (to === from) return
+    if (reduced || to < from) {
+      shownRef.current = to
+      setShownSaved(to)
+      return
+    }
+    const steps = 20
+    let i = 0
+    const id = setInterval(() => {
+      i += 1
+      const v = i >= steps ? to : Math.round(from + (to - from) * (i / steps))
+      shownRef.current = v
+      setShownSaved(v)
+      if (i >= steps) clearInterval(id)
+    }, 30)
+    return () => clearInterval(id)
+  }, [saved, reduced])
 
   // Overlap: ! mens det er fundet/uafklaret → ✓ når det er markeret som løst.
   // Dækningerne fjernes IKKE (stabilt layout) — kun ikonet skifter.
@@ -374,7 +398,7 @@ export default function ForsikringHusstandMockup() {
               >
                 +{justAdded ?? 0} kr.
               </span>
-              <span style={{ fontSize: 17, fontWeight: 800, color: 'var(--forest)' }}>{saved} kr./md.</span>
+              <span style={{ fontSize: 17, fontWeight: 800, color: 'var(--forest)' }}>{shownSaved} kr./md.</span>
             </div>
           </div>
         </div>
