@@ -37,9 +37,9 @@ const SEQ: { p: Phase; ms: number }[] = [
   { p: 'fix-barn', ms: 2900 },
   { p: 'done', ms: 1600 },
   { p: 'collapse', ms: 1900 }, // husstanden fjernes nedefra og op, før kvitteringen
-  // total = kvittering bygges + tæller op (~5s) og holdes så ~5s, før loopet
-  // starter forfra (jf. modulo i fase-effekten).
-  { p: 'total', ms: 10000 },
+  // total = kvittering bygges + tæller op (~4,7s) og holdes så 7s efter den er
+  // færdig, før loopet starter forfra (jf. modulo i fase-effekten).
+  { p: 'total', ms: 11700 },
 ]
 
 const AMOUNT: Record<string, number> = { Indbo: 150, Rejse: 50, Børneulykke: 40 }
@@ -162,8 +162,7 @@ function Tag({ label, icon }: { label: string; icon: 'error' | 'ok' | 'none' }) 
   )
 }
 
-function AssistantBar({ phase }: { phase: Phase }) {
-  const working = phase !== 'total' && phase !== 'done'
+function AssistantBar({ title, working }: { title: string; working: boolean }) {
   return (
     <div className="flex items-center gap-2.5 rounded-2xl mb-3" style={{ background: 'var(--forest)', padding: '10px 12px' }}>
       <span className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 26, height: 26, background: 'var(--sage)' }}>
@@ -175,7 +174,7 @@ function AssistantBar({ phase }: { phase: Phase }) {
       <div style={{ minWidth: 0, flex: 1 }}>
         <p style={{ fontSize: 11, fontWeight: 700, color: '#fff' }}>Altid Assistent</p>
         <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.72)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          {STATUS[phase]}
+          {title}
           {working ? ' …' : ''}
         </p>
       </div>
@@ -188,27 +187,8 @@ function AssistantBar({ phase }: { phase: Phase }) {
   )
 }
 
-function Bill({ reveal, instant }: { reveal: number; instant: boolean }) {
-  const [year, setYear] = useState(0)
+function Bill({ reveal, year }: { reveal: number; year: number }) {
   const yearlyShown = reveal > BILL_ITEMS.length + 1
-  useEffect(() => {
-    if (!yearlyShown) {
-      setYear(0)
-      return
-    }
-    if (instant) {
-      setYear(TOTAL_YEAR_NUM)
-      return
-    }
-    const steps = 34
-    let i = 0
-    const id = setInterval(() => {
-      i += 1
-      setYear(i >= steps ? TOTAL_YEAR_NUM : Math.round((TOTAL_YEAR_NUM * i) / steps))
-      if (i >= steps) clearInterval(id)
-    }, 35)
-    return () => clearInterval(id)
-  }, [yearlyShown, instant])
 
   const Row = ({ show, children, style }: { show: boolean; children: ReactNode; style?: CSSProperties }) => (
     <div className="flex items-center justify-between" style={{ opacity: show ? 1 : 0, transform: show ? 'translateY(0)' : 'translateY(6px)', transition: 'opacity 0.4s ease, transform 0.4s ease', ...style }}>
@@ -217,7 +197,7 @@ function Bill({ reveal, instant }: { reveal: number; instant: boolean }) {
   )
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
       <p style={{ fontSize: 11, fontWeight: 700, marginBottom: 8 }}>Det ryddede vi op</p>
       <div className="flex flex-col gap-2">
         {BILL_ITEMS.map((it, i) => (
@@ -240,7 +220,7 @@ function Bill({ reveal, instant }: { reveal: number; instant: boolean }) {
 
       <div
         className="rounded-2xl text-center"
-        style={{ marginTop: 'auto', padding: '14px 10px', background: 'var(--sage)', opacity: yearlyShown ? 1 : 0, transform: yearlyShown ? 'scale(1)' : 'scale(0.96)', transition: 'opacity 0.45s ease, transform 0.45s ease' }}
+        style={{ marginTop: 14, padding: '14px 10px', background: 'var(--sage)', opacity: yearlyShown ? 1 : 0, transform: yearlyShown ? 'scale(1)' : 'scale(0.96)', transition: 'opacity 0.45s ease, transform 0.45s ease' }}
       >
         <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(26,61,34,0.7)' }}>I sparer nu</p>
         <p style={{ fontSize: 24, fontWeight: 800, lineHeight: 1.1, color: 'var(--forest)' }}>{year.toLocaleString('da-DK')} kr.</p>
@@ -259,6 +239,7 @@ export default function ForsikringHusstandMockup() {
   const [fade, setFade] = useState(1)
   const [collapseStep, setCollapseStep] = useState(0)
   const [chipShown, setChipShown] = useState(false)
+  const [shownYear, setShownYear] = useState(0)
   const shownRef = useRef(0)
   const cardRef = useRef<HTMLDivElement>(null)
 
@@ -327,6 +308,27 @@ export default function ForsikringHusstandMockup() {
     }, 700)
     return () => clearInterval(id)
   }, [phase, reduced])
+
+  // Tæl årsbesparelsen op, når sage-kortet vises i kvitteringen.
+  const yearlyShown = phase === 'total' && reveal > BILL_ITEMS.length + 1
+  useEffect(() => {
+    if (!yearlyShown) {
+      setShownYear(0)
+      return
+    }
+    if (reduced) {
+      setShownYear(TOTAL_YEAR_NUM)
+      return
+    }
+    const steps = 34
+    let i = 0
+    const id = setInterval(() => {
+      i += 1
+      setShownYear(i >= steps ? TOTAL_YEAR_NUM : Math.round((TOTAL_YEAR_NUM * i) / steps))
+      if (i >= steps) clearInterval(id)
+    }, 35)
+    return () => clearInterval(id)
+  }, [yearlyShown, reduced])
 
   // Husstanden fjernes nedefra og op (Sparet → Lukas → Marie → Dig) i 'collapse'.
   useEffect(() => {
@@ -401,6 +403,22 @@ export default function ForsikringHusstandMockup() {
   // Antallet falder, efterhånden som dobbeltdækninger ryddes op (7 → 4).
   const count = MEMBERS.reduce((n, m) => n + m.covers.length, 0) - removedSet.length
 
+  // Altid Assistent-status: under collapse + mens kvitteringen bygges/tæller op
+  // er den "samler jeres besparelse" (spinner); når 2.880 er talt op → ✓ optimeret.
+  const yearDone = phase === 'total' && shownYear >= TOTAL_YEAR_NUM
+  let barTitle: string
+  let barWorking: boolean
+  if (phase === 'collapse' || (phase === 'total' && !yearDone)) {
+    barTitle = 'Færdig – samler jeres besparelse'
+    barWorking = true
+  } else if (phase === 'total') {
+    barTitle = 'Færdig – husstanden er optimeret'
+    barWorking = false
+  } else {
+    barTitle = STATUS[phase]
+    barWorking = phase !== 'done'
+  }
+
   return (
     <div
       ref={cardRef}
@@ -411,13 +429,13 @@ export default function ForsikringHusstandMockup() {
       <p style={{ fontSize: 16, fontWeight: 700 }}>Min husstand</p>
       <p style={{ fontSize: 10, color: 'rgba(26,61,34,0.5)', marginBottom: 12 }}>3 medlemmer · {count} forsikringer</p>
 
-      <AssistantBar phase={phase} />
+      <AssistantBar title={barTitle} working={barWorking} />
 
       {/* Fast min-højde, så kortet har samme størrelse på husstands- og kvitterings-siden. */}
       <div style={{ minHeight: 253, display: 'flex', flexDirection: 'column' }}>
       {phase === 'total' ? (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <Bill reveal={reveal} instant={reduced} />
+          <Bill reveal={reveal} year={shownYear} />
         </div>
       ) : (
         <div className="flex flex-col">
