@@ -23,6 +23,7 @@ describe('sitemap.xml', () => {
     expect(urls).toEqual([
       'https://altidhjem.dk/',
       'https://altidhjem.dk/spiir-alternativ',
+      'https://altidhjem.dk/hvad-koster-forsikring',
       'https://altidhjem.dk/kontakt',
       'https://altidhjem.dk/privatlivspolitik',
       'https://altidhjem.dk/slet-konto',
