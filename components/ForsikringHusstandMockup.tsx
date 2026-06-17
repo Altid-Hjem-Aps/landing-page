@@ -424,7 +424,7 @@ export default function ForsikringHusstandMockup() {
               >
                 +{justAdded ?? 0} kr.
               </span>
-              <span style={{ fontSize: 17, fontWeight: 800, color: 'var(--forest)' }}>{shownSaved} kr./md.</span>
+              <span style={{ fontSize: 17, fontWeight: 800, color: 'var(--forest)', display: 'inline-block', width: 112, flexShrink: 0, textAlign: 'right', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>{shownSaved} kr./md.</span>
             </div>
           </div>
         </div>
