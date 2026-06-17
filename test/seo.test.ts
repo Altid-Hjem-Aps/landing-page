@@ -25,6 +25,7 @@ describe('sitemap.xml', () => {
       'https://altidhjem.dk/',
       'https://altidhjem.dk/spiir-alternativ',
       'https://altidhjem.dk/hvornar-er-strommen-billigst',
+      'https://altidhjem.dk/hvad-koster-forsikring',
       'https://altidhjem.dk/kontakt',
       'https://altidhjem.dk/privatlivspolitik',
       'https://altidhjem.dk/slet-konto',
