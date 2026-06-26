@@ -15,3 +15,8 @@ export const ICON_APP_LIGHT = `${BASE}/email/app-icon.png`
 export const ICON_APP_HOUSE = `${BASE}/email/altid-hjem-house.png`
 
 export const PHONE_MOCKUP = `${BASE}/email/phone-mockup.png`
+
+// Referral-progress bar, pre-rendered as images so it can't collapse in the
+// Gmail app (CSS percentage bars do). One PNG per 10% step (0,10,…,100); the
+// referral-progress template picks one via bar-{{{progress_pct}}}.png.
+export const progressBar = (pct: number) => `${BASE}/email/bar-${Math.round(pct / 10) * 10}.png`
