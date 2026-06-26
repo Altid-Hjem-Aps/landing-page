@@ -12,6 +12,6 @@ export const ICON_6   = `${BASE}/icons/aktiv-6.svg`
 
 export const ICON_APP_DARK  = `${BASE}/email/info-icon.png`
 export const ICON_APP_LIGHT = `${BASE}/email/app-icon.png`
+export const ICON_APP_HOUSE = `${BASE}/email/altid-hjem-house.png`
 
-// Add phone mockup to public/email/phone-mockup.png when available
-export const PHONE_MOCKUP = ''
+export const PHONE_MOCKUP = `${BASE}/email/phone-mockup.png`
