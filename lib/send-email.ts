@@ -100,6 +100,9 @@ export async function sendReferralProgress(
       variables: {
         first_name: firstName(name),
         referral_count: vars.referralCount,
+        // Danish singular/plural noun for the invited-friends count, so the
+        // template reads "1 ven" instead of the wrong "1 venner".
+        friends_label: vars.referralCount === 1 ? 'ven' : 'venner',
         position: vars.position,
         progress_pct: vars.progressPct,
         invite_url: vars.inviteUrl,
