@@ -14,6 +14,14 @@ export const metadata: Metadata = {
   alternates: { canonical: './' },
   title: 'Altid Hjem – Skriv dig på ventelisten',
   description: 'Altid Hjem samler hjemmets faste udgifter i én app – ét overblik, ét login, én regning.',
+  openGraph: {
+    title: 'Altid Hjem – Skriv dig på ventelisten',
+    description: 'Altid Hjem samler hjemmets faste udgifter i én app – ét overblik, ét login, én regning.',
+    url: 'https://altidhjem.dk',
+    siteName: 'Altid Hjem',
+    locale: 'da_DK',
+    type: 'website',
+  },
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
