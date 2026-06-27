@@ -7,6 +7,13 @@ function firstName(name: string) {
   return name.split(' ')[0]
 }
 
+// The /inviter share page (copy link, native share, social buttons), keyed by
+// the same ref code as the invite link. Derived from inviteUrl so it always
+// stays in sync; one place to change if the path ever moves.
+function inviterPageUrl(inviteUrl: string) {
+  return inviteUrl.replace('/?ref=', '/inviter?ref=')
+}
+
 function getNurtureScheduledAt(signupDate: Date): string | null {
   const signupDay = new Date(signupDate)
   signupDay.setUTCHours(0, 0, 0, 0)
@@ -80,6 +87,7 @@ export async function sendReferralWelcome(
         first_name: firstName(name),
         invite_url: vars.inviteUrl,
         invite_url_encoded: encodeURIComponent(vars.inviteUrl),
+        invite_page_url: inviterPageUrl(vars.inviteUrl),
         unsubscribe_url: vars.unsubscribeUrl,
       },
     },
@@ -107,6 +115,7 @@ export async function sendReferralProgress(
         progress_pct: vars.progressPct,
         invite_url: vars.inviteUrl,
         invite_url_encoded: encodeURIComponent(vars.inviteUrl),
+        invite_page_url: inviterPageUrl(vars.inviteUrl),
         unsubscribe_url: vars.unsubscribeUrl,
       },
     },
