@@ -66,8 +66,8 @@ export default function InviterShare({ code }: { code: string }) {
     // Same event the landing-page success screen fires, so both copy actions
     // feed the referral funnel in Amplitude.
     amplitude.track('Referral Link Copied', { source: 'inviter-page', channel: 'copy' })
+    // Stays in the "Kopieret!" confirmed state — a one-time action.
     setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
   }
 
   // Every share counts toward the same funnel as a copy (Referral Link Copied),
@@ -102,7 +102,10 @@ export default function InviterShare({ code }: { code: string }) {
       </p>
 
       {/* Personal link + copy — matches the email's link block */}
-      <div className="mt-8 rounded-2xl p-5" style={{ background: '#fdfaf4', border: '1.5px solid #90ff7c' }}>
+      <div
+        className="mt-8 rounded-2xl p-5"
+        style={{ background: '#fdfaf4', border: `1.5px solid ${copied ? 'transparent' : '#90ff7c'}` }}
+      >
         <p
           style={{ color: '#163223', letterSpacing: '0.1em' }}
           className="text-[11px] font-semibold uppercase"
@@ -115,8 +118,9 @@ export default function InviterShare({ code }: { code: string }) {
         <button
           type="button"
           onClick={copyLink}
-          style={{ background: '#90ff7c', color: '#163223' }}
-          className="mt-4 w-full rounded-[20px] py-3.5 text-center text-base font-medium transition-opacity hover:opacity-90"
+          disabled={copied}
+          style={copied ? { color: '#163223' } : { background: '#90ff7c', color: '#163223' }}
+          className={`mt-4 w-full rounded-[20px] py-3.5 text-center text-base font-medium transition-colors ${copied ? 'cursor-default' : 'hover:opacity-90'}`}
         >
           {copied ? 'Kopieret!' : 'Kopiér link'}
         </button>
