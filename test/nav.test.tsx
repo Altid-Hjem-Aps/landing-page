@@ -94,8 +94,10 @@ describe('Spiir banner', () => {
     fireEvent.click(burger)
     expect(screen.getByRole('button', { name: 'Luk menu' })).toHaveAttribute('aria-expanded', 'true')
     // Panel + desktop menu both render the links; the panel adds a second set.
-    expect(screen.getAllByRole('link', { name: 'Mad' }).length).toBeGreaterThan(1)
-    fireEvent.click(screen.getAllByRole('link', { name: 'Mad' })[1])
+    // "Kommer snart" services are inactive text, so Energi is the clickable one.
+    expect(screen.queryAllByRole('link', { name: /Mad/ })).toHaveLength(0)
+    expect(screen.getAllByRole('link', { name: 'Energi' }).length).toBeGreaterThan(1)
+    fireEvent.click(screen.getAllByRole('link', { name: 'Energi' })[1])
     expect(screen.getByRole('button', { name: 'Åbn menu' })).toHaveAttribute('aria-expanded', 'false')
   })
 

@@ -158,36 +158,43 @@ export function CarouselPagination({
 }) {
   const { active, reduced, inView, paused, goTo, togglePaused, autoMs } = carousel
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-0">
       {Array.from({ length: count }).map((_, i) => (
+        // The button is the (invisible) 24px+ touch target — WCAG 2.5.8 /
+        // Lighthouse target-size; the visible dot is the span inside.
         <button
           key={i}
           type="button"
           aria-label={itemLabel(i)}
           onClick={() => goTo(i)}
-          className="relative overflow-hidden rounded-full transition-[width] duration-300"
-          style={{
-            width: active === i ? 52 : 9,
-            height: 9,
-            background: 'rgba(22,50,35,0.2)',
-          }}
+          className="flex items-center justify-center"
+          style={{ minWidth: 24, height: 24, padding: 0 }}
         >
-          {active === i && (
-            <span
-              className="absolute inset-y-0 left-0 rounded-full"
-              style={{
-                background: '#163223',
-                width: reduced ? '100%' : undefined,
-                // Longhand props (not the `animation` shorthand) so the
-                // play-state can change without React shorthand conflicts.
-                animationName: reduced || !inView ? undefined : 'blog-progress',
-                animationDuration: `${autoMs}ms`,
-                animationTimingFunction: 'linear',
-                animationFillMode: 'forwards',
-                animationPlayState: paused ? 'paused' : 'running',
-              }}
-            />
-          )}
+          <span
+            className="relative overflow-hidden rounded-full transition-[width] duration-300 block"
+            style={{
+              width: active === i ? 52 : 9,
+              height: 9,
+              background: 'rgba(22,50,35,0.2)',
+            }}
+          >
+            {active === i && (
+              <span
+                className="absolute inset-y-0 left-0 rounded-full"
+                style={{
+                  background: '#163223',
+                  width: reduced ? '100%' : undefined,
+                  // Longhand props (not the `animation` shorthand) so the
+                  // play-state can change without React shorthand conflicts.
+                  animationName: reduced || !inView ? undefined : 'blog-progress',
+                  animationDuration: `${autoMs}ms`,
+                  animationTimingFunction: 'linear',
+                  animationFillMode: 'forwards',
+                  animationPlayState: paused ? 'paused' : 'running',
+                }}
+              />
+            )}
+          </span>
         </button>
       ))}
 
