@@ -33,7 +33,7 @@ export default function Hero() {
             </h1>
 
             <p
-              className={`mt-7 ${BODY} mx-auto lg:mx-0`}
+              className={`mt-7 ${BODY} lg:text-[18px] mx-auto lg:mx-0`}
               style={{ color: '#6f6a61', maxWidth: 620 }}
             >
               {/* Desktop: two lines with the dash line forced onto its own
@@ -41,7 +41,7 @@ export default function Hero() {
                   "i én løsning" tail keeps the wrap from orphaning a word). */}
               <span className="lg:block">Altid Hjem samler hjemmets faste udgifter i én løsning</span>
               {' '}
-              <span className="lg:block">– ét overblik, ét login, én regning. Altid.</span>
+              <span className="lg:block">– ét overblik, ét login, én regning. <span style={{ color: '#163223' }}>Altid.</span></span>
             </p>
 
             <div id="venteliste" className="mt-8 w-full max-w-[600px] mx-auto lg:mx-0">
