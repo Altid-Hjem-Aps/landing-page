@@ -2,9 +2,7 @@ import Link from 'next/link'
 import { Logo } from '@/components/Logo'
 import { FINE_PRINT } from '@/lib/typography'
 
-// NBSP before the dot glues it to the preceding link, so a wrapped line can
-// never start with a floating separator.
-const SEP = '\u00A0· '
+const SEP = ' · '
 
 const footerLinks = [
   { href: '/kontakt', label: 'Support' },
@@ -29,6 +27,35 @@ const SUBBRAND_ICONS = [
   '/services/icon-opladning.svg',
 ]
 
+const linkStyle: React.CSSProperties = { color: 'rgba(255,255,255,0.85)' }
+
+const InternalLink = ({ href, label }: { href: string; label: string }) => (
+  <Link href={href} className="underline-offset-2 hover:underline" style={linkStyle}>
+    {label}
+  </Link>
+)
+
+const SocialLink = ({ href, label }: { href: string; label: string }) => (
+  <a href={href} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:underline" style={linkStyle}>
+    {label}
+  </a>
+)
+
+const Copyright = () => (
+  <>
+    © 2026 Altid Hjem · Skabt af teamet bag{' '}
+    <a
+      href="https://altidenergi.dk"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="underline-offset-2 hover:underline"
+      style={linkStyle}
+    >
+      Altid Energi
+    </a>
+  </>
+)
+
 export default function Footer() {
   return (
     <footer
@@ -48,59 +75,49 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Right — links + ©. One inline run on desktop; on mobile two lines
-          with the links on top and the copyright below. */}
-      <p className={`${FINE_PRINT} flex flex-col gap-1.5 max-lg:w-full max-lg:text-center lg:block`} style={{ color: 'rgba(255,255,255,0.6)' }}>
-        <span className="order-2 lg:order-none">
-          © 2026 Altid Hjem · Skabt af teamet bag{' '}
-          <a
-            href="https://altidenergi.dk"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline-offset-2 hover:underline"
-            style={{ color: 'rgba(255,255,255,0.85)' }}
-          >
-            Altid Energi
-          </a>
+      {/* Right — one inline run on desktop; three fixed, centred lines on
+          phones (socials / legal / ©). The two layouts group the links
+          differently, so each breakpoint renders its own block. */}
+      <p className={`${FINE_PRINT} hidden lg:block`} style={{ color: 'rgba(255,255,255,0.6)' }}>
+        <Copyright />
+        {SEP}
+        {footerLinks.map(({ href, label }, i) => (
+          <span key={href}>
+            {i > 0 && SEP}
+            <InternalLink href={href} label={label} />
+          </span>
+        ))}
+        {socialLinks.map(({ href, label }) => (
+          <span key={href}>
+            {SEP}
+            <SocialLink href={href} label={label} />
+          </span>
+        ))}
+        {SEP}
+        <InternalLink href="/slet-konto" label="Slet konto" />
+      </p>
+
+      <p className={`${FINE_PRINT} lg:hidden flex flex-col gap-1.5 w-full text-center`} style={{ color: 'rgba(255,255,255,0.6)' }}>
+        <span>
+          {socialLinks.map(({ href, label }, i) => (
+            <span key={href}>
+              {i > 0 && SEP}
+              <SocialLink href={href} label={label} />
+            </span>
+          ))}
         </span>
-        {/* Balanced wrap on phones — the link run splits into even lines
-            instead of orphaning the last link. */}
-        <span className="order-1 lg:order-none max-lg:[text-wrap:balance]">
-          <span className="hidden lg:inline">{' · '}</span>
+        <span>
           {footerLinks.map(({ href, label }, i) => (
             <span key={href}>
               {i > 0 && SEP}
-              <Link
-                href={href}
-                className="underline-offset-2 hover:underline"
-                style={{ color: 'rgba(255,255,255,0.85)' }}
-              >
-                {label}
-              </Link>
-            </span>
-          ))}
-          {socialLinks.map(({ href, label }) => (
-            <span key={href}>
-              {SEP}
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline-offset-2 hover:underline"
-                style={{ color: 'rgba(255,255,255,0.85)' }}
-              >
-                {label}
-              </a>
+              <InternalLink href={href} label={label} />
             </span>
           ))}
           {SEP}
-          <Link
-            href="/slet-konto"
-            className="underline-offset-2 hover:underline"
-            style={{ color: 'rgba(255,255,255,0.85)' }}
-          >
-            Slet konto
-          </Link>
+          <InternalLink href="/slet-konto" label="Slet konto" />
+        </span>
+        <span>
+          <Copyright />
         </span>
       </p>
     </footer>
