@@ -1,83 +1,72 @@
 import WaitlistForm from '@/components/WaitlistForm'
 import IPhoneMockup from '@/components/IPhoneMockup'
-import { AltidMark } from '@/components/AltidMark'
+import { H1, BODY } from '@/lib/typography'
+import LiveSavingsStat from '@/components/LiveSavingsStat'
+
+// Stats from the CVI frame (node 45:6428) — left column below the CTA.
+const STATS = [
+  // Desktop only — the approved mobile layout shows just the two stats below.
+  { value: '0 kr.', label: 'at oprette en konto', color: '#202820', desktopOnly: true },
+  { value: '+15.000', label: 'Altid Energi-kunder', color: '#202820' },
+  // Live, exact amount — same source + burst behaviour as SavingsCounter.
+  { value: <LiveSavingsStat />, label: 'har Altid Energi-kunder sparet', color: '#163223', tightLabel: true },
+]
 
 export default function Hero() {
   return (
-    <section
-      id="top"
-      className="relative overflow-hidden flex flex-col"
-      style={{ minHeight: '100svh', background: 'var(--forest)' }}
-    >
-      {/* Ambient glows */}
-      <div
-        className="pointer-events-none absolute"
-        style={{
-          top: -100, right: -100, width: 600, height: 600,
-          background: 'radial-gradient(circle, rgba(168,224,99,0.1) 0%, transparent 70%)',
-        }}
-      />
-      <div
-        className="pointer-events-none absolute"
-        style={{
-          bottom: -80, left: -80, width: 400, height: 400,
-          background: 'radial-gradient(circle, rgba(143,204,255,0.07) 0%, transparent 70%)',
-        }}
-      />
+    <section id="top" className="relative overflow-hidden" style={{ background: '#fdfaf4' }}>
+      {/* Spacer matching the fixed nav height (CTA button up to 70px + py-5). */}
+      <div className="h-[112px] shrink-0" />
 
-      {/* Spacer matching fixed nav height (py-5 + h-11 logo = 84px) */}
-      <div className="h-[84px] shrink-0" />
+      {/* Wide grid as in the CVI frame: ~71px margins at 1920 (= Figma's ~95/47). */}
+      <div className="max-w-[1920px] mx-auto w-full px-6 sm:px-10 lg:px-[clamp(48px,3.7vw,72px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-[47fr_53fr] gap-12 lg:gap-[clamp(48px,4.8vw,92px)] items-center py-12 lg:py-10 lg:min-h-[680px]">
 
-      {/* Content centered in remaining viewport height */}
-      <div className="flex-1 flex items-center">
-        <div className="max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-[5fr_6fr] gap-10 lg:gap-8 items-center">
+          {/* Left: copy + form + stats */}
+          <div className="flex flex-col text-center lg:text-left">
+            <h1
+              className={`${H1} lg:-ml-[0.05em]`}
+              style={{ color: '#163223' }}
+            >
+              <span className="block">Snart får danskerne</span>
+              <span className="block">bedre råd til hjemmet</span>
+            </h1>
 
-            {/* Left: copy + form */}
-            <div className="flex flex-col gap-8">
-              <div className="text-center lg:text-left">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-7 animate-fade-up-1 text-[13px] leading-none items-center lg:items-start">
-                  <span style={{ color: 'rgba(255,255,255,0.5)' }}>
-                    <span className="font-semibold" style={{ color: 'var(--sage)' }}>+14.000</span>
-                    {' '}er allerede kunde hos Altid Energi
-                  </span>
-                  <span className="flex items-center gap-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                    <span
-                      className="w-1.5 h-1.5 rounded-full shrink-0"
-                      style={{ background: 'var(--sage)', animation: 'pulse-dot 2s ease-in-out infinite' }}
-                    />
-                    Altid Hjem kommer snart
-                  </span>
+            <p
+              className={`mt-7 ${BODY} mx-auto lg:mx-0`}
+              style={{ color: '#6f6a61', maxWidth: 620 }}
+            >
+              Altid Hjem samler hjemmets faste udgifter i én løsning
+              <br />– ét overblik, ét login, én regning. Altid.
+            </p>
+
+            <div id="venteliste" className="mt-8 w-full max-w-[600px] mx-auto lg:mx-0">
+              <WaitlistForm variant="light" />
+            </div>
+
+            {/* Stats row */}
+            <div className="mt-20 max-lg:mt-10 grid grid-cols-2 gap-x-6 gap-y-6 lg:flex lg:flex-nowrap lg:justify-start lg:gap-x-[clamp(28px,5.2vw,100px)]">
+              {STATS.map(s => (
+                <div key={s.label} className={`text-left max-lg:text-center whitespace-nowrap max-lg:whitespace-normal${s.desktopOnly ? ' hidden lg:block' : ''}`}>
+                  <div
+                    className="font-normal tabular-nums leading-none text-[clamp(22px,calc(20px+0.52vw),30px)]"
+                    style={{ color: s.color }}
+                  >
+                    {s.value}
+                  </div>
+                  <div className={`mt-2.5 text-[clamp(13px,0.85vw,16px)] leading-snug${s.tightLabel ? ' max-lg:tracking-[-0.01em]' : ''}`} style={{ color: '#6f6a61' }}>
+                    {s.label}
+                  </div>
                 </div>
-                <h1
-                  className="font-extrabold leading-[1.1] tracking-tight text-white mb-6 animate-fade-up-2 text-[clamp(28px,8vw,38px)] sm:text-[clamp(38px,10vw,72px)] lg:text-[64px] xl:text-[72px]"
-                >
-                  <span className="block sm:inline lg:block">Snart får danskerne</span>{' '}
-                  <span className="block sm:inline lg:block">
-                    <em className="not-italic" style={{ color: 'var(--sage)' }}>bedre råd</em>
-                  </span>{' '}
-                  <span className="block sm:inline lg:block">til hjemmet</span>
-                </h1>
-                <p className="text-lg leading-relaxed animate-fade-up-3 mx-auto lg:mx-0" style={{ color: 'rgba(255,255,255,0.6)', maxWidth: 440 }}>
-                  Altid Hjem samler hjemmets faste udgifter i én app – ét overblik, ét login, én regning. <AltidMark dark />
-                </p>
-              </div>
-
-              <div id="venteliste" className="animate-fade-up-4">
-                <WaitlistForm variant="light" />
-              </div>
+              ))}
             </div>
-
-            {/* Right: iPhone mockup. No animate-fade-up wrapper here —
-                that class ends with `transform: translateY(0)`, which
-                creates a containing block for `filter: blur()` and clips
-                the phone's drop-shadow halo at the wrapper edges (345px
-                wide on phone) instead of letting it bleed across the hero. */}
-            <div className="flex items-center justify-center">
-              <IPhoneMockup />
-            </div>
-
           </div>
+
+          {/* Right: our existing iPhone mockup (not the Figma phones) */}
+          <div className="flex items-center justify-center">
+            <IPhoneMockup />
+          </div>
+
         </div>
       </div>
     </section>

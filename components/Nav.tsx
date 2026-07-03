@@ -1,34 +1,55 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import * as amplitude from '@amplitude/analytics-browser'
 import { Logo } from '@/components/Logo'
 
 const HIDE_THRESHOLD = 80
-// Kampagnebanneret er skjult i toppen og glider først ind, når brugeren
-// begynder at scrolle (≈ et lille stykke ned, så det ikke flimrer).
+// The campaign banner is hidden at the top and only slides in once the user
+// starts scrolling (≈ a small distance down, so it doesn't flicker).
 const BANNER_REVEAL = 8
 // Larger delta on touch UAs absorbs the iOS Safari URL-bar collapse jump,
 // which can fire ~30px of phantom scrollY without a real user gesture.
 const SCROLL_DELTA_DESKTOP = 6
 const SCROLL_DELTA_TOUCH = 30
 
+// The CVI navigation: one active item (Hjem), the two live products (Mad,
+// Energi) in white, and the upcoming services muted. href points at the
+// services section so the link works from every page (homepage + SEO pages).
+type LinkTone = 'home' | 'live' | 'soon'
+interface NavLink {
+  label: string
+  href: string
+  tone: LinkTone
+}
+const NAV_LINKS: NavLink[] = [
+  { label: 'Hjem', href: '/', tone: 'home' },
+  // All services muted until their sites are live — flip Mad/Energi back to
+  // 'live' (white) when they launch.
+  { label: 'Mad', href: '/#tjenester', tone: 'soon' },
+  { label: 'Energi', href: '/#tjenester', tone: 'soon' },
+  { label: 'Alarm', href: '/#tjenester', tone: 'soon' },
+  { label: 'Opladning', href: '/#tjenester', tone: 'soon' },
+  { label: 'Forsikring', href: '/#tjenester', tone: 'soon' },
+  { label: 'Mobil', href: '/#tjenester', tone: 'soon' },
+]
+
 interface BannerConfig {
-  /** Lang indledning — vises kun fra md (768px), hvor den kan stå på én linje. */
+  /** Long lead-in — only shown from md (768px), where it fits on one line. */
   longPrefix: string
-  /** Kort indledning til smalle skærme. */
+  /** Short lead-in for narrow screens. */
   shortPrefix: string
-  /** Amplitude-source for klik på banneret, fx 'spiir-banner'. */
+  /** Amplitude source for banner clicks, e.g. 'spiir-banner'. */
   source: string
-  /** CTA-tekst i banneret — falder tilbage til 'Skriv dig på ventelisten'. */
+  /** Banner CTA text — falls back to the default waitlist label. */
   cta?: string
 }
 
 interface NavProps {
-  /** Vis Spiir-kampagnebanneret over menuen (kun på /spiir-alternativ). */
+  /** Show the Spiir campaign banner above the menu (only on /spiir-alternativ). */
   spiirBanner?: boolean
-  /** Generelt kampagnebanner over menuen — samme udseende som Spiir-banneret. */
+  /** Generic campaign banner above the menu — same look as the Spiir banner. */
   banner?: BannerConfig
 }
 
@@ -38,11 +59,23 @@ const SPIIR_BANNER: BannerConfig = {
   source: 'spiir-banner',
 }
 
+// Colours from the CVI frame (node 45:6428)
+const FOREST = '#163223'
+const SIGNAL = '#90ff7c'
+const MUTED = '#6f6a61'
+
 export default function Nav({ spiirBanner = false, banner }: NavProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const [hidden, setHidden] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const lastY = useRef(0)
+
+  // Close the burger menu on page navigation.
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [pathname])
 
   useEffect(() => {
     lastY.current = window.scrollY
@@ -56,8 +89,8 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
       const y = window.scrollY
       const dy = y - lastY.current
 
-      // Banner-reveal må ikke vente på delta-gaten — det skal reagere på det
-      // allerførste scroll-pixel.
+      // The banner reveal must not wait for the delta gate — it has to react
+      // to the very first scrolled pixel.
       setScrolled(y > BANNER_REVEAL)
 
       if (Math.abs(dy) < delta) return
@@ -79,10 +112,10 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
 
   function handleCTA(source: string) {
     amplitude.track('Waitlist CTA Clicked', { source })
-    // Har siden sin egen tilmeldingsformular (fx /spiir-alternativ's BottomCta,
-    // id 'venteliste2'), så scroll til den — det bevarer sidens signup_source.
-    // Ellers: forsidens hero-formular (kun på '/' findes 'expand-waitlist'-
-    // lytteren; alle andre steder navigeres hjem med #venteliste-hash).
+    // If the page has its own signup form (e.g. /spiir-alternativ's BottomCta,
+    // id 'venteliste2'), scroll to it — that preserves the page's signup_source.
+    // Otherwise: the homepage hero form (the 'expand-waitlist' listener only
+    // exists on '/'; everywhere else navigate home with the #venteliste hash).
     const onPageForm = document.getElementById('venteliste2')
     if (onPageForm) {
       onPageForm.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -95,67 +128,172 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
     window.dispatchEvent(new CustomEvent('expand-waitlist'))
   }
 
-  const navInner = (
-    <>
-      <a href="/">
-        <Logo className="h-11 w-auto" variant="dark" />
-      </a>
+  function linkColor(tone: LinkTone) {
+    if (tone === 'home' && pathname === '/') return SIGNAL
+    if (tone === 'live') return '#fff'
+    return MUTED
+  }
+
+  // Right-aligned desktop menu: links + CTA in ONE flex with a shared gap, so
+  // the spacing between the words = the spacing between the last link and the
+  // CTA button (per Figma). The whole group is right-aligned (logo on the
+  // left, generous space in between).
+  const desktopMenu = (
+    <div className="hidden xl:flex items-center gap-[clamp(56px,5.5vw,105px)]">
+      {NAV_LINKS.map(({ label, href, tone }) => {
+        const active = tone === 'home' && pathname === '/'
+        return (
+          <span key={label} className="relative">
+            <a
+              href={href}
+              className="text-[16px] font-medium transition-opacity hover:opacity-80 whitespace-nowrap"
+              style={{ color: linkColor(tone) }}
+            >
+              {label}
+            </a>
+            {active && (
+              <span
+                aria-hidden
+                className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-[7px] h-[7px] rounded-full"
+                style={{ background: SIGNAL }}
+              />
+            )}
+          </span>
+        )
+      })}
       <button
         type="button"
         onClick={() => handleCTA('nav')}
-        className="text-xs sm:text-sm font-semibold px-3.5 sm:px-5 py-2.5 rounded-full transition-opacity hover:opacity-90 whitespace-nowrap"
+        className="inline-flex items-center justify-center font-medium rounded-[20px] transition-opacity hover:opacity-90 whitespace-nowrap text-[16px] w-[clamp(200px,15.83vw,304px)] h-[clamp(52px,3.65vw,70px)]"
         style={{
-          background: 'var(--sage)',
-          color: 'var(--forest)',
-          // Lift onto its own compositor layer + opt out of iOS tap delay.
-          // iOS Safari has dead tap zones inside fixed parents with
-          // backdrop-filter; both lines below mitigate that.
+          background: SIGNAL,
+          color: '#003c16',
           transform: 'translateZ(0)',
           touchAction: 'manipulation',
           WebkitTapHighlightColor: 'transparent',
           cursor: 'pointer',
         }}
       >
-        Skriv dig på ventelisten →
+        Skriv dig på ventelisten
       </button>
+    </div>
+  )
+
+  // Burger button — only below the xl breakpoint. Toggles between hamburger and cross.
+  const burger = (
+    <button
+      type="button"
+      aria-label={menuOpen ? 'Luk menu' : 'Åbn menu'}
+      aria-expanded={menuOpen}
+      onClick={() => setMenuOpen(o => !o)}
+      className="xl:hidden shrink-0 flex items-center justify-center w-10 h-10 -mr-1"
+      style={{ color: '#fff', touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        {menuOpen ? (
+          <>
+            <line x1="5" y1="5" x2="19" y2="19" />
+            <line x1="19" y1="5" x2="5" y2="19" />
+          </>
+        ) : (
+          <>
+            <line x1="3" y1="7" x2="21" y2="7" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="17" x2="21" y2="17" />
+          </>
+        )}
+      </svg>
+    </button>
+  )
+
+  // Drop-down panel with all links — shown while the burger is open (below xl only).
+  const mobilePanel = menuOpen && (
+    <div
+      className="xl:hidden absolute top-full left-0 right-0 overflow-hidden"
+      style={{
+        background: FOREST,
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: '0 18px 40px rgba(0,0,0,0.28)',
+        animation: 'slide-down-fade 0.2s ease',
+      }}
+    >
+      <ul className="flex flex-col px-5 sm:px-8 pt-2">
+        {NAV_LINKS.map(({ label, href, tone }) => {
+          const active = tone === 'home' && pathname === '/'
+          return (
+            <li key={label}>
+              <a
+                href={href}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2 py-3.5 text-[17px] font-medium"
+                style={{ color: linkColor(tone), borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+              >
+                {label}
+                {active && <span aria-hidden className="w-[7px] h-[7px] rounded-full" style={{ background: SIGNAL }} />}
+              </a>
+            </li>
+          )
+        })}
+      </ul>
+      <div className="px-5 sm:px-8 py-4">
+        <button
+          type="button"
+          onClick={() => { setMenuOpen(false); handleCTA('nav') }}
+          className="w-full text-base font-medium py-3.5 rounded-[20px]"
+          style={{ background: SIGNAL, color: '#003c16', touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+        >
+          Skriv dig på ventelisten
+        </button>
+      </div>
+    </div>
+  )
+
+  const navInner = (
+    <>
+      <a href="/" className="shrink-0">
+        <Logo className="h-11 w-auto" variant="forest" />
+      </a>
+      {desktopMenu}
+      {burger}
+      {mobilePanel}
     </>
   )
 
-  // Spiir-banneret er blot en fast konfiguration af det generelle banner.
+  // The Spiir banner is just a fixed configuration of the generic banner.
   const bannerConfig = banner ?? (spiirBanner ? SPIIR_BANNER : null)
 
-  // Uden banner: PRÆCIS den oprindelige struktur — fixed + transform +
-  // backdrop-filter direkte på <nav>. Forsiden må ikke ændre sig, og
-  // backdrop-filter under en transformeret forælder er kendt WebKit-bøvl,
-  // så den kombination undgås helt her.
+  // Without a banner: fixed forest bar that hides on scroll down and returns
+  // on scroll up.
   if (!bannerConfig) {
     return (
       <nav
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 sm:px-8 lg:px-12 py-5"
+        className="fixed top-0 left-0 right-0 z-50 px-5 sm:px-8 lg:px-9 py-5"
         style={{
-          background: 'rgba(245,240,232,0.92)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(46,125,82,0.08)',
+          background: FOREST,
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
           transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
           transition: 'transform 300ms ease',
           willChange: 'transform',
         }}
       >
-        {navInner}
+        <div className="max-w-[1848px] mx-auto flex items-center justify-between gap-6">
+          {navInner}
+        </div>
       </nav>
     )
   }
 
-  // Med banner: nav'en "forvandler" sig til den slanke beige banner-stribe, så
-  // snart man forlader toppen — full-nav glider op bag banneret, og banneret
-  // glider ind. Nav'en kommer kun tilbage, når man er helt i toppen igen.
+  // With a banner: the nav "morphs" into the slim beige banner strip as soon
+  // as the user leaves the top — the full nav slides up behind the banner and
+  // the banner slides in. The nav only returns once back at the very top.
   return (
     <div className="fixed top-0 left-0 right-0 z-50">
-      {/* Kampagnebanner (~36px — ændres højden, skal sidernes pt-32 følge med).
-          Skjult i toppen (maxHeight 0), glider ind ved scroll og forbliver pinnet.
-          Højere z end nav'en, så nav'en kan gemme sig bag den.
-          Den lange tekst først fra md (768px) — på smallere skærme ville den
-          ombrydes til to linjer og skubbe indholdet under sidens pt-32. */}
+      {/* Campaign banner (~36px — if the height changes, the pages' pt-32 must
+          follow). Hidden at the top (maxHeight 0), slides in on scroll and
+          stays pinned. Higher z than the nav so the nav can hide behind it.
+          The long text only from md (768px) — on narrower screens it would
+          wrap to two lines and push content under the page's pt-32. */}
       <div
         className="relative z-10"
         style={{
@@ -173,7 +311,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
           className="block w-full text-center px-4 py-2 text-[12.5px] sm:text-[13px] font-medium"
           style={{
             background: 'var(--cream)',
-            color: 'var(--forest)',
+            color: FOREST,
             borderBottom: '1px solid rgba(26,61,34,0.10)',
             transform: 'translateZ(0)',
             touchAction: 'manipulation',
@@ -184,25 +322,26 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
           <span className="hidden md:inline align-middle">{bannerConfig.longPrefix}</span>
           <span className="md:hidden align-middle">{bannerConfig.shortPrefix}</span>
           <span
-            className="inline-block align-middle ml-2 px-3 py-1 rounded-full font-semibold"
-            style={{ background: 'var(--sage)', color: 'var(--forest)' }}
+            className="inline-block align-middle ml-2 px-3 py-1 rounded-full font-medium"
+            style={{ background: SIGNAL, color: '#003c16' }}
           >
             {(bannerConfig.cta ?? 'Skriv dig på ventelisten').replace(/\s*→\s*$/, '')}
           </span>
         </button>
       </div>
       <nav
-        className="relative z-0 flex items-center justify-between px-5 sm:px-8 lg:px-12 py-5"
+        className="relative z-0 px-5 sm:px-8 lg:px-9 py-5"
         style={{
-          background: 'rgba(245,240,232,0.92)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(46,125,82,0.08)',
+          background: FOREST,
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
           transform: scrolled ? 'translateY(-100%)' : 'translateY(0)',
           transition: 'transform 300ms ease',
           willChange: 'transform',
         }}
       >
-        {navInner}
+        <div className="max-w-[1848px] mx-auto flex items-center justify-between gap-6">
+          {navInner}
+        </div>
       </nav>
     </div>
   )

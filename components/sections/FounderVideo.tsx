@@ -1,8 +1,11 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import * as amplitude from '@amplitude/analytics-browser'
 import dynamic from 'next/dynamic'
+import { fluid } from '@/lib/fluid'
+import { H2, EYEBROW, BODY } from '@/lib/typography'
 
 const PLAYBACK_ID = 'DyDNFoKamidSWoQJTmOPUc02utl7gORPYm7HycdeFZVU'
 const POSTER_TIME = 8
@@ -13,19 +16,11 @@ const MuxPlayer = dynamic(() => import('@mux/mux-player-react'), {
   loading: () => <PlayerSkeleton />,
 })
 
-// Skeleton renders the real Mux poster as a plain <img> so users on iOS
-// Safari see the founder while @mux/mux-player-react's chunk loads (or if
-// it fails to load at all). Without this, the skeleton was an empty tinted
-// box and looked broken on slow networks / strict-privacy iOS.
+// Skeleton renders the real Mux poster as a plain <img> so users see the
+// founder while @mux/mux-player-react's chunk loads (or if it fails entirely).
 function PlayerSkeleton() {
   return (
-    <div
-      className="w-full relative"
-      style={{
-        aspectRatio: '16 / 9',
-        background: 'rgba(15,55,30,0.04)',
-      }}
-    >
+    <div className="absolute inset-0" style={{ background: 'rgba(15,55,30,0.06)' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={POSTER_URL}
@@ -38,154 +33,181 @@ function PlayerSkeleton() {
   )
 }
 
-function PlayButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label="Afspil video"
-      className="absolute inset-0 flex items-center justify-center group"
-      style={{
-        background: 'rgba(15,55,30,0.0)',
-        transition: 'background 0.2s ease',
-        cursor: 'pointer',
-        WebkitTapHighlightColor: 'transparent',
-        touchAction: 'manipulation',
-      }}
-    >
-      <span
-        className="flex items-center justify-center rounded-full transition-transform"
-        style={{
-          width: 84,
-          height: 84,
-          background: 'rgba(15,55,30,0.85)',
-          boxShadow: '0 10px 32px rgba(0,0,0,0.35)',
-          backdropFilter: 'blur(6px)',
-          transform: 'translateZ(0)',
-        }}
-      >
-        <svg width="28" height="32" viewBox="0 0 28 32" fill="none" aria-hidden>
-          <path d="M4 3 L24 16 L4 29 Z" fill="#a8e063" />
-        </svg>
-      </span>
-    </button>
-  )
+
+type PlayerEl = HTMLElement & {
+  muted?: boolean
+  paused?: boolean
+  currentTime?: number
+  play?: () => Promise<void>
+  pause?: () => void
 }
 
 export default function FounderVideo() {
+  const router = useRouter()
   const wrapperRef = useRef<HTMLDivElement>(null)
-  const [paused, setPaused] = useState(true)
 
-  // Watch the underlying mux-player custom element for play/pause events
-  // and toggle our overlay accordingly. We poll for the element because
-  // it's lazy-loaded via next/dynamic.
+  // Two modes: ambient (muted autoplay when scrolled into view) and sound mode
+  // — pressing the video restarts it from 0:00 with sound on. After that the
+  // observer only pauses off-screen and resumes on return; it never re-mutes
+  // or restarts a video the user chose to hear.
+  const [soundMode, setSoundMode] = useState(false)
+  const soundModeRef = useRef(false)
+
+  const getPlayer = () => wrapperRef.current?.querySelector('mux-player') as PlayerEl | null
+
   useEffect(() => {
     const wrapper = wrapperRef.current
     if (!wrapper) return
-    let detach: (() => void) | null = null
+    if (typeof IntersectionObserver !== 'function') return // no ambient autoplay without it
+    // Reduced motion: no ambient autoplay — the poster + controls (and the
+    // "Se med lyd" press) still work on demand.
+    const reduced = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    let inView = false
+    let tracked = false
+    let pausedByUs = false
 
-    const attach = () => {
-      const player = wrapper.querySelector('mux-player') as
-        | (HTMLElement & { paused?: boolean; play?: () => Promise<void> })
-        | null
-      if (!player) return false
-      const onPlay = () => setPaused(false)
-      const onPause = () => setPaused(true)
-      const onEnded = () => setPaused(true)
-      player.addEventListener('play', onPlay)
-      player.addEventListener('pause', onPause)
-      player.addEventListener('ended', onEnded)
-      // Sync initial state.
-      setPaused(player.paused !== false)
-      detach = () => {
-        player.removeEventListener('play', onPlay)
-        player.removeEventListener('pause', onPause)
-        player.removeEventListener('ended', onEnded)
-      }
-      return true
-    }
-
-    if (!attach()) {
-      const interval = setInterval(() => {
-        if (attach()) clearInterval(interval)
-      }, 200)
-      return () => {
-        clearInterval(interval)
-        detach?.()
+    const sync = () => {
+      const p = getPlayer()
+      if (!p) return
+      if (inView) {
+        if (soundModeRef.current) {
+          // Only resume what WE paused — respect a manual pause via the controls.
+          if (pausedByUs) { pausedByUs = false; p.play?.().catch(() => {}) }
+        } else if (!reduced) {
+          p.muted = true
+          p.play?.()
+            .then(() => { if (!tracked) { tracked = true; amplitude.track('Founder Video Autoplayed') } })
+            .catch(() => {})
+        }
+      } else {
+        if (p.paused === false) pausedByUs = true
+        p.pause?.()
       }
     }
 
-    return () => detach?.()
+    const io = new IntersectionObserver(([e]) => { inView = e.isIntersecting; sync() }, { threshold: 0.4 })
+    io.observe(wrapper)
+    // The player is lazy-loaded — poll until it exists, then sync and stop.
+    const poll = setInterval(() => { if (getPlayer()) { clearInterval(poll); sync() } }, 250)
+    const stopPoll = setTimeout(() => clearInterval(poll), 8000)
+    return () => { io.disconnect(); clearInterval(poll); clearTimeout(stopPoll) }
   }, [])
 
-  function handlePlay() {
-    const wrapper = wrapperRef.current
-    if (!wrapper) return
-    const player = wrapper.querySelector('mux-player') as
-      | (HTMLElement & { play?: () => Promise<void> })
-      | null
-    amplitude.track('Founder Video Played')
-    setPaused(false)
-    void player?.play?.()?.catch(() => {
-      // Swallow autoplay rejection — user can tap again.
-      setPaused(true)
-    })
+  // Press on the video (ambient mode): restart from the beginning with sound.
+  // Runs in the click's gesture context, so unmuted play() is allowed.
+  function handleWatchWithSound() {
+    const p = getPlayer()
+    if (!p) return
+    soundModeRef.current = true
+    setSoundMode(true)
+    p.currentTime = 0
+    p.muted = false
+    p.play?.().catch(() => {})
+    amplitude.track('Founder Video Sound On')
+  }
+
+  // Same signup flow as nav/hero: scroll to the bottom form, otherwise expand
+  // the hero form, otherwise navigate home with #venteliste.
+  function handleCTA() {
+    amplitude.track('Waitlist CTA Clicked', { source: 'founder' })
+    const onPageForm = document.getElementById('venteliste2')
+    if (onPageForm) { onPageForm.scrollIntoView({ behavior: 'smooth', block: 'center' }); return }
+    if (window.location.pathname !== '/') { router.push('/#venteliste'); return }
+    window.dispatchEvent(new CustomEvent('expand-waitlist'))
   }
 
   return (
-    <section
-      className="py-20 sm:py-28 px-6 sm:px-10 lg:px-12"
-      style={{ background: 'var(--cream)' }}
-    >
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-10 sm:mb-12">
-          <p
-            className="text-xs font-semibold tracking-[0.12em] uppercase mb-4"
-            style={{ color: 'var(--text-light)' }}
-          >
+    <section className="relative overflow-hidden" style={{ background: '#193d23' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch">
+
+        {/* Left: text + CTA */}
+        <div
+          className="flex flex-col justify-center py-16 lg:py-20 pr-6 sm:pr-10 lg:pr-14 max-w-[880px]"
+          style={{ paddingLeft: fluid(140, 32) }}
+        >
+          <p className={EYEBROW} style={{ color: '#90ff7c' }}>
             Mød grundlæggeren
           </p>
+
+          {/* Hanging quote mark: text-indent pulls the opening " into the
+              margin so the first words align with the subtext + button. Fixed
+              line breaks match the Figma frame. */}
           <h2
-            className="font-extrabold leading-[1.2] tracking-tight"
-            style={{ fontSize: 'clamp(24px, 3.4vw, 40px)', color: 'var(--forest)' }}
+            className={`mt-6 ${H2} text-white`}
+            style={{ textIndent: '-0.42em' }}
           >
-            <span style={{ color: 'var(--text-mid)', fontWeight: 600 }}>
-              “Der er gebyrer overalt. Og det er noget af det,
-            </span>{' '}
-            <em className="not-italic" style={{ color: 'var(--forest)' }}>
-              vi danskere hader allermest
-            </em>
-            <span style={{ color: 'var(--text-mid)', fontWeight: 600 }}>.”</span>
+            &ldquo;Der er gebyrer overalt.<br />
+            Og det er noget af det,<br />
+            <span style={{ color: '#90ff7c' }}>vi danskere hader allermest.&rdquo;</span>
           </h2>
+
+          <p className={`mt-7 max-w-[520px] ${BODY} text-white`}>
+            Altid Hjem er udviklet af teamet bag Altid Energi. Nu tager vi samme opgør med skjulte gebyrer videre til resten af hjemmets aftaler.
+          </p>
+
+          <button
+            type="button"
+            onClick={handleCTA}
+            className="mt-9 inline-flex w-fit items-center justify-center font-medium rounded-[20px] px-8 py-[18px] xl:p-0 xl:w-[clamp(200px,15.83vw,304px)] xl:h-[clamp(52px,3.65vw,70px)] text-[16px] transition-opacity hover:opacity-90"
+            style={{ background: '#90ff7c', color: '#003c16', cursor: 'pointer', touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+          >
+            Skriv dig på ventelisten
+          </button>
         </div>
 
+        {/* Right: video, fills the entire right half (cover) */}
         <div
           ref={wrapperRef}
-          className="rounded-2xl overflow-hidden relative"
-          style={{ boxShadow: '0 32px 64px rgba(15,55,30,0.18)' }}
+          // Phones get a 1:1 frame — the 16:9 source is centre-cropped by the
+          // player's object-fit:cover, which keeps the (centred) subtitles and
+          // trims the sides. Tablets show the full 16:9; desktop fills the
+          // right half as before.
+          className="relative w-full aspect-square sm:aspect-video lg:aspect-auto lg:h-full lg:min-h-[460px] self-stretch"
         >
           <MuxPlayer
             playbackId={PLAYBACK_ID}
             streamType="on-demand"
-            accentColor="#a8e063"
+            accentColor="#90ff7c"
             poster={POSTER_URL}
             playsInline
+            muted
+            // metadata only: the section is below the fold and the poster <img>
+            // covers first paint — preload="auto" would buffer HLS segments for
+            // every visitor, including those who never scroll here.
             preload="metadata"
-            metadata={{
-              video_title: 'Altid Hjem — Werner Valeur',
-              video_id: 'founder-manifesto',
-            }}
-            style={{ width: '100%', aspectRatio: '16 / 9', display: 'block' }}
+            metadata={{ video_title: 'Altid Hjem — Werner Valeur', video_id: 'founder-manifesto' }}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', '--media-object-fit': 'cover', display: 'block' }}
           />
-          {paused && <PlayButton onClick={handlePlay} />}
+
+          {/* Ambient mode: pressing the video restarts it with sound. The
+              overlay stops above the Mux control bar (~56px) so the native
+              controls stay usable; it unmounts once sound mode is on. */}
+          {!soundMode && (
+            <button
+              type="button"
+              onClick={handleWatchWithSound}
+              aria-label="Afspil videoen forfra med lyd"
+              // Pill sits top-left below lg — on the narrow crops the burned-in
+              // subtitles own the bottom of the frame; desktop has room at the
+              // bottom-left.
+              className="absolute inset-x-0 top-0 bottom-14 z-10 flex items-start lg:items-end justify-start p-5 cursor-pointer"
+              style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+            >
+              <span
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium text-white"
+                style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)' }}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <path d="M3 9v6h4l5 5V4L7 9H3z" />
+                  <line x1="16" y1="9" x2="22" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <line x1="22" y1="9" x2="16" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+                Se med lyd
+              </span>
+            </button>
+          )}
         </div>
 
-        <p
-          className="text-sm text-center mt-6"
-          style={{ color: 'var(--text-light)' }}
-        >
-          Werner Valeur · Stifter og serieiværksætter · 1 min
-        </p>
       </div>
     </section>
   )

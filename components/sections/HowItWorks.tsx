@@ -1,37 +1,120 @@
-import { AltidMark } from '@/components/AltidMark'
+'use client'
 
-const steps: { n: string; title: string; desc: React.ReactNode }[] = [
-  { n: '01', title: 'Tilmeld dig ventelisten', desc: 'Skriv dit navn og din e-mail, og vi holder dig opdateret.' },
-  { n: '02', title: 'Få besked, når appen er klar', desc: 'Du er blandt de første til at prøve Altid Hjem.' },
+import { useRouter } from 'next/navigation'
+import { motion, useReducedMotion } from 'framer-motion'
+import * as amplitude from '@amplitude/analytics-browser'
+import { H2, EYEBROW, BUTTON_PRIMARY } from '@/lib/typography'
+
+type Step = { n: string; title: string; desc: React.ReactNode }
+
+const STEPS: Step[] = [
+  { n: '01', title: 'Tilmeld dig ventelisten gratis', desc: 'Skriv dit navn og din e-mail, og vi holder dig opdateret.' },
+  { n: '02', title: 'Få besked, når appen er klar', desc: 'Vi sender dig en e-mail, når appen er klar. Så du er blandt de første til at prøve Altid Hjem.' },
   { n: '03', title: 'Vælg dine løsninger', desc: 'Sammenlign og vælg de tjenester, der passer til dit hjem.' },
-  { n: '04', title: 'Én samlet regning', desc: <>Alle faste udgifter samlet ét sted, med ét login. <AltidMark dark /></> },
+  { n: '04', title: 'Fuldt overblik', desc: <>Alle faste udgifter samlet ét sted, med ét login. <span style={{ color: '#163223' }}>Altid.</span></> },
+]
+
+// Hairline dividers ONLY between touching cards (no outer frame), as borders on
+// the cards themselves — so there's no grey container behind them to flash
+// through while a card animates in from opacity 0. Per index for the 1 / 2 / 4
+// column grid.
+const DIVIDERS = [
+  '',
+  'border-t sm:border-t-0 sm:border-l',
+  'border-t lg:border-t-0 lg:border-l',
+  'border-t sm:border-l lg:border-t-0',
 ]
 
 export default function HowItWorks() {
-  return (
-    <section className="py-16 sm:py-24 px-6 sm:px-10 lg:px-12" style={{ background: 'var(--forest)' }}>
-      <div className="max-w-5xl mx-auto">
-        <p className="text-xs font-semibold tracking-[0.12em] uppercase mb-4" style={{ color: 'rgba(168,224,99,0.6)' }}>
-          Sådan fungerer det
-        </p>
-        <h2
-          className="font-extrabold leading-[1.15] tracking-tight text-white mb-10 sm:mb-14"
-          style={{ fontSize: 'clamp(28px, 3.5vw, 44px)' }}
-        >
-          Fire trin til overblik
-        </h2>
+  const router = useRouter()
+  const prefersReducedMotion = useReducedMotion()
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {steps.map((step) => (
-            <div key={step.n} className="relative">
-              <div className="text-5xl font-extrabold leading-none mb-4" style={{ color: 'rgba(168,224,99,0.2)' }}>
-                {step.n}
-              </div>
-              <p className="text-[15px] font-semibold text-white mb-2">{step.title}</p>
-              <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>{step.desc}</p>
-            </div>
-          ))}
+  // Cards animate in 01→04 (staggered) when the grid scrolls into view; static
+  // when the user prefers reduced motion.
+  const gridMotion = prefersReducedMotion
+    ? {}
+    : {
+        initial: 'hidden' as const,
+        whileInView: 'show' as const,
+        viewport: { once: true, amount: 0.3 },
+        variants: { hidden: {}, show: { transition: { staggerChildren: 0.13, delayChildren: 0.05 } } },
+      }
+  const cardVariants = prefersReducedMotion
+    ? undefined
+    : { hidden: { opacity: 0, y: 26 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } } }
+
+  // Same signup flow as nav/hero/founder: scroll to the bottom form if present,
+  // otherwise expand the hero form, otherwise navigate home with #venteliste.
+  function handleCTA() {
+    amplitude.track('Waitlist CTA Clicked', { source: 'how-it-works' })
+    const onPageForm = document.getElementById('venteliste2')
+    if (onPageForm) { onPageForm.scrollIntoView({ behavior: 'smooth', block: 'center' }); return }
+    if (window.location.pathname !== '/') { router.push('/#venteliste'); return }
+    window.dispatchEvent(new CustomEvent('expand-waitlist'))
+  }
+
+  return (
+    <section className="py-20 sm:py-28" style={{ background: '#fdfaf4' }}>
+      {/* Same wide margin as the hero (~72px @1920 → cards span ~90% of 1920). */}
+      <div className="max-w-[1920px] mx-auto w-full px-6 sm:px-10 lg:px-[clamp(48px,3.7vw,72px)]">
+
+        {/* Eyebrow + heading */}
+        <div className="text-center mb-12 sm:mb-16">
+          <p className={`${EYEBROW} mb-4`} style={{ color: '#6f6a61' }}>
+            Sådan virker det
+          </p>
+          <h2 className={H2} style={{ color: '#163223' }}>
+            Fire trin til fuldt overblik
+          </h2>
         </div>
+
+        {/* Four steps — white cards with a hairline divider ONLY between the
+            cards that touch. The `gap-px` reveals the container background as
+            those internal dividers; there's no outer frame (no padding), so the
+            perimeter has no stroke. Cards are 4:3 from sm up, number top / text
+            bottom to fill the format nicely. */}
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 overflow-hidden rounded-[20px]"
+          {...gridMotion}
+        >
+          {STEPS.map((step, i) => (
+            // The 4:3 format is a MINIMUM, not the card's height: an invisible
+            // aspect spacer is stacked under the content (both in grid cell
+            // 1/1), so the card is max(4:3, its text) and can never clip.
+            // Aspect-ratio'd boxes don't stretch to the grid row, so putting
+            // the ratio directly on the card left uneven rows at ~1024–1400px.
+            <motion.div
+              key={step.n}
+              variants={cardVariants}
+              className={`grid grid-cols-[minmax(0,1fr)] ${DIVIDERS[i]}`}
+              style={{ background: '#ffffff', borderColor: 'rgba(22,50,35,0.12)' }}
+            >
+              <div aria-hidden className="hidden sm:block w-full sm:aspect-[4/3] col-start-1 row-start-1" />
+              <div className="col-start-1 row-start-1 flex flex-col gap-4" style={{ padding: 'clamp(28px,2.4vw,44px)' }}>
+                <div className="font-normal leading-none text-[clamp(36px,calc(31.2px+1.24vw),55px)]" style={{ color: '#163223' }}>
+                  {step.n}
+                </div>
+                <div>
+                  <p className="font-normal text-[clamp(16px,1.3vw,20px)] leading-snug mb-2.5" style={{ color: '#163223' }}>{step.title}</p>
+                  <p className="font-normal text-[14px] leading-[1.7]" style={{ color: '#6f6a61' }}>{step.desc}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* CTA — same button design as the hero, redirecting to the bottom form */}
+        <div className="flex justify-center mt-12 sm:mt-14">
+          <button
+            type="button"
+            onClick={handleCTA}
+            className={`${BUTTON_PRIMARY} w-full px-5 lg:w-auto lg:px-[42px]`}
+            style={{ background: '#90ff7c', color: '#003c16' }}
+          >
+            Skriv dig på ventelisten og få ro på hjemmets udgifter
+          </button>
+        </div>
+
       </div>
     </section>
   )

@@ -84,7 +84,7 @@ function PulseRings({ hovered }: { hovered: boolean }) {
           width: 10,
           height: 10,
           borderRadius: '50%',
-          background: '#a8e063',
+          background: '#90FF7C',
           transform: hovered ? 'scale(1.25)' : 'scale(1)',
           transition: 'transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1)',
           boxShadow: hovered ? '0 0 10px rgba(168,224,99,0.55)' : 'none',
@@ -132,7 +132,7 @@ export default function HomeScreen({ hovered }: Props) {
                 height: 5,
                 borderRadius: '50%',
                 display: 'block',
-                background: i < 3 ? '#a8e063' : hovered ? '#a8e063' : 'rgba(168,224,99,0.25)',
+                background: i < 3 ? '#90FF7C' : hovered ? '#90FF7C' : 'rgba(168,224,99,0.25)',
                 transition: 'background 0.5s ease',
               }}
             />
@@ -146,14 +146,8 @@ export default function HomeScreen({ hovered }: Props) {
       >
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5">
-            <div
-              className="w-5 h-5 rounded-lg flex items-center justify-center shrink-0"
-              style={{ background: 'rgba(168,224,99,0.22)' }}
-            >
-              <svg width="9" height="11" viewBox="0 0 9 11" fill="none">
-                <path d="M5.5 1L1 6H4.5L3.5 10L8 5H4.5L5.5 1Z" fill="#1a3d22" />
-              </svg>
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/services/icon-strom.svg" alt="" className="w-5 h-5 shrink-0" />
             <span
               style={{
                 fontSize: 9,
@@ -197,22 +191,8 @@ export default function HomeScreen({ hovered }: Props) {
           className="flex items-center gap-2.5 px-3.5 py-2"
           style={{ borderBottom: '1px solid rgba(27,104,64,0.06)' }}
         >
-          <div
-            style={{
-              width: 22,
-              height: 22,
-              borderRadius: 7,
-              background: 'rgba(143,204,255,0.22)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <svg width="10" height="11" viewBox="0 0 8 9" fill="none">
-              <path d="M4 0.5L0.5 2V5C0.5 6.9 2 8.6 4 9C6 8.6 7.5 6.9 7.5 5V2L4 0.5Z" fill="#2e6da8" />
-            </svg>
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/services/icon-forsikring.svg" alt="" style={{ width: 22, height: 22, flexShrink: 0 }} />
           <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-dark)', flex: 1 }}>
             Forsikring
           </span>
@@ -223,22 +203,8 @@ export default function HomeScreen({ hovered }: Props) {
           className="flex items-center gap-2.5 px-3.5 py-2"
           style={{ borderBottom: '1px solid rgba(27,104,64,0.06)' }}
         >
-          <div
-            style={{
-              width: 22,
-              height: 22,
-              borderRadius: 7,
-              background: 'rgba(245,240,118,0.28)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <svg width="9" height="10" viewBox="0 0 8 9" fill="none">
-              <path d="M4.5 0.5L1 5H4L3 8.5L7 4H4L4.5 0.5Z" fill="#7a6a00" />
-            </svg>
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/services/icon-opladning.svg" alt="" style={{ width: 22, height: 22, flexShrink: 0 }} />
           <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-dark)', flex: 1 }}>Ladning</span>
           <span style={{ fontSize: 10, color: 'var(--text-light)' }}>Oplader kl. 02:00</span>
         </div>
@@ -250,23 +216,8 @@ export default function HomeScreen({ hovered }: Props) {
             transition: 'background 0.45s ease',
           }}
         >
-          <div
-            style={{
-              width: 22,
-              height: 22,
-              borderRadius: 7,
-              background: 'rgba(189,176,249,0.28)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <svg width="7" height="10" viewBox="0 0 6 9" fill="none">
-              <rect x="0.5" y="0.5" width="5" height="8" rx="1.2" stroke="#5040b0" strokeWidth="1" fill="none" />
-              <rect x="2" y="7" width="2" height="0.8" rx="0.4" fill="#5040b0" />
-            </svg>
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/services/icon-mobil.svg" alt="" style={{ width: 22, height: 22, flexShrink: 0 }} />
           <span
             style={{
               fontSize: 10,
@@ -305,7 +256,7 @@ export default function HomeScreen({ hovered }: Props) {
         >
           <div className="flex items-center gap-1">
             <svg width="8" height="10" viewBox="0 0 8 10" fill="none">
-              <path d="M4.5 1L1 5.5H4L3 9L7 4.5H4L4.5 1Z" fill="#a8e063" />
+              <path d="M4.5 1L1 5.5H4L3 9L7 4.5H4L4.5 1Z" fill="#90FF7C" />
             </svg>
             <span
               style={{
@@ -325,7 +276,7 @@ export default function HomeScreen({ hovered }: Props) {
           <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', lineHeight: 1.3 }}>
             Lav elpris kl. 13–15 i dag
           </p>
-          <span style={{ fontSize: 9, fontWeight: 600, color: '#a8e063' }}>Se alle besparelser →</span>
+          <span style={{ fontSize: 9, fontWeight: 600, color: '#90FF7C' }}>Se alle besparelser →</span>
         </div>
 
         <div
@@ -340,7 +291,6 @@ export default function HomeScreen({ hovered }: Props) {
           }}
         >
           <div className="flex items-center gap-1">
-            <span style={{ fontSize: 9, lineHeight: 1 }}>🤖</span>
             <span
               style={{
                 fontSize: 8,
@@ -359,7 +309,7 @@ export default function HomeScreen({ hovered }: Props) {
           <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', lineHeight: 1.3 }}>
             5 måltider bestilt på Nemlig
           </p>
-          <span style={{ fontSize: 9, fontWeight: 600, color: '#a8e063' }}>Se ugeplanen →</span>
+          <span style={{ fontSize: 9, fontWeight: 600, color: '#90FF7C' }}>Se ugeplanen →</span>
         </div>
       </div>
 

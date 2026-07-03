@@ -1,12 +1,12 @@
 import WaitlistForm from '@/components/WaitlistForm'
-import { AltidMark } from '@/components/AltidMark'
+import { H2, EYEBROW, BODY } from '@/lib/typography'
 
 interface BottomCtaProps {
-  /** Lille overlinje over overskriften — forsiden bruger standardteksten. */
+  /** Small line above the heading — the front page uses the default text. */
   eyebrow?: string
-  /** Undertekst under overskriften — forsiden bruger standardteksten. */
+  /** Subtitle under the heading — the front page uses the default text. */
   subtitle?: string
-  /** Hvor tilmeldingen kom fra (fx 'spiir-alternativ') — gemmes på signup'et. */
+  /** Where the signup came from (e.g. 'spiir-alternativ') — stored on the signup. */
   source?: string
 }
 
@@ -16,24 +16,45 @@ export default function BottomCta({
   source,
 }: BottomCtaProps) {
   return (
-    <section className="py-16 sm:py-24 px-6 sm:px-10 lg:px-12" style={{ background: 'var(--forest)' }}>
-      <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+    <section className="relative lg:overflow-hidden" style={{ background: '#163223' }}>
+      {/* Mobile: the app badge sits ON the seam to the Blog section above */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/app-badge.png"
+        alt=""
+        aria-hidden
+        className="lg:hidden absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 z-10"
+        style={{ width: 'clamp(68px,5.5vw,105px)', filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.3))' }}
+      />
+      <div className="relative max-w-[1377px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-24 items-center px-6 sm:px-10 lg:px-[clamp(48px,3.7vw,72px)] py-[clamp(72px,7vw,130px)]">
+        {/* Left — copy */}
         <div className="text-center lg:text-left">
-          <p className="text-xs font-semibold tracking-[0.12em] uppercase mb-4" style={{ color: 'rgba(168,224,99,0.6)' }}>
+          <p className={`${EYEBROW} mb-5`} style={{ color: '#90ff7c' }}>
             {eyebrow}
           </p>
           <h2
-            className="font-extrabold leading-[1.15] tracking-tight text-white mb-5"
-            style={{ fontSize: 'clamp(28px, 3.5vw, 44px)' }}
+            className={`${H2} text-white mb-6 mx-auto lg:mx-0`}
+            style={{ maxWidth: 520 }}
           >
             Få besked, når Altid Hjem åbner dørene
           </h2>
-          <p className="text-lg leading-relaxed mx-auto lg:mx-0" style={{ color: 'rgba(255,255,255,0.6)', maxWidth: 420 }}>
+          <p className={`${BODY} mx-auto lg:mx-0`} style={{ color: '#fff', maxWidth: 420 }}>
             {subtitle}
           </p>
         </div>
 
-        <WaitlistForm variant="dark" id="venteliste2" source={source} />
+        {/* Right — signup form with the app badge on its top-right corner */}
+        <div className="relative">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/app-badge.png"
+            alt=""
+            aria-hidden
+            className="hidden lg:block absolute z-10 right-0 top-0 translate-x-1/2 -translate-y-1/2"
+            style={{ width: 'clamp(68px,5.5vw,105px)', filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.3))' }}
+          />
+          <WaitlistForm variant="dark" id="venteliste2" source={source} />
+        </div>
       </div>
     </section>
   )

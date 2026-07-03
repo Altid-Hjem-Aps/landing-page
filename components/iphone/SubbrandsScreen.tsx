@@ -16,33 +16,29 @@ type Service = {
 const services: Service[] = [
   {
     label: 'Energi',
-    bgIcon: 'rgba(168,224,99,0.22)',
+    bgIcon: 'transparent',
     active: true,
     icon: (
-      <svg width="9" height="11" viewBox="0 0 9 11" fill="none">
-        <path d="M5.5 1L1 6H4.5L3.5 10L8 5H4.5L5.5 1Z" fill="#1a3d22" />
-      </svg>
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/services/icon-strom.svg" alt="" style={{ width: 20, height: 20 }} />
     ),
   },
   {
     label: 'Mobil',
-    bgIcon: 'rgba(189,176,249,0.28)',
+    bgIcon: 'transparent',
     active: true,
     icon: (
-      <svg width="7" height="10" viewBox="0 0 6 9" fill="none">
-        <rect x="0.5" y="0.5" width="5" height="8" rx="1.2" stroke="#5040b0" strokeWidth="1" fill="none" />
-        <rect x="2" y="7" width="2" height="0.8" rx="0.4" fill="#5040b0" />
-      </svg>
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/services/icon-mobil.svg" alt="" style={{ width: 20, height: 20 }} />
     ),
   },
   {
     label: 'Forsikring',
-    bgIcon: 'rgba(143,204,255,0.22)',
+    bgIcon: 'transparent',
     active: true,
     icon: (
-      <svg width="10" height="11" viewBox="0 0 8 9" fill="none">
-        <path d="M4 0.5L0.5 2V5C0.5 6.9 2 8.6 4 9C6 8.6 7.5 6.9 7.5 5V2L4 0.5Z" fill="#2e6da8" />
-      </svg>
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/services/icon-forsikring.svg" alt="" style={{ width: 20, height: 20 }} />
     ),
   },
   {
@@ -70,24 +66,20 @@ const services: Service[] = [
   },
   {
     label: 'Alarm',
-    bgIcon: 'rgba(255,186,184,0.32)',
+    bgIcon: 'transparent',
     active: true,
     icon: (
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-        <path d="M5 1C3.3 1 2 2.3 2 4V5.5L1 7H9L8 5.5V4C8 2.3 6.7 1 5 1Z" fill="#a04040" />
-        <path d="M3.8 7.5C3.8 8.2 4.3 8.7 5 8.7C5.7 8.7 6.2 8.2 6.2 7.5" stroke="#a04040" strokeWidth="0.8" fill="none" />
-      </svg>
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/services/icon-alarm.svg" alt="" style={{ width: 20, height: 20 }} />
     ),
   },
   {
     label: 'Madplan',
-    bgIcon: 'rgba(168,224,99,0.22)',
+    bgIcon: 'transparent',
     active: true,
     icon: (
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-        <path d="M3 1.5V5.5M3 5.5C3 6.3 3.7 7 4.5 7H5.5C6.3 7 7 6.3 7 5.5V1.5M5 1.5V5" stroke="#1a3d22" strokeWidth="0.9" strokeLinecap="round" fill="none" />
-        <path d="M5 7V9" stroke="#1a3d22" strokeWidth="0.9" strokeLinecap="round" />
-      </svg>
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/services/icon-mad.svg" alt="" style={{ width: 20, height: 20 }} />
     ),
   },
 ]
@@ -152,7 +144,7 @@ export default function SubbrandsScreen({ hovered }: Props) {
                   height: 6,
                   borderRadius: '50%',
                   display: 'block',
-                  background: isLit ? '#a8e063' : 'rgba(168,224,99,0.22)',
+                  background: isLit ? '#90FF7C' : 'rgba(168,224,99,0.22)',
                   boxShadow: isLit && hovered ? '0 0 6px rgba(168,224,99,0.55)' : 'none',
                   transition: 'background 0.4s ease, box-shadow 0.4s ease',
                   transitionDelay: !isLitAtRest && hovered ? '0.45s' : '0s',

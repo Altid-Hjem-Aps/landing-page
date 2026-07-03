@@ -1,0 +1,217 @@
+'use client'
+
+import { useEffect, useRef, useState } from 'react'
+
+// Shared looping auto-carousel engine (Testimonials + Blog):
+// - the track renders its items ×3 and starts centred on the middle set; once
+//   scrolling settles, a teleport of exactly one set-width pulls the centred
+//   card back into the middle set (mid-scroll jumps fight snap and glitch)
+// - autoplay glides to the next card every `autoMs` while the track is in
+//   view; the Apple-style pagination fill runs in sync and can be paused
+//   (elapsed time is banked so resume continues where it left off)
+// - programmatic moves use an eased rAF glide with scroll-snap suspended for
+//   the ride (snap-mandatory would collapse the glide into a hard switch);
+//   a user grab cancels the glide and restores snap immediately
+export function useAutoCarousel(n: number, autoMs = 5000) {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const animRef = useRef<number | null>(null)
+  const startedAtRef = useRef(0)
+  const remainingRef = useRef(autoMs)
+  const prevActiveRef = useRef(0)
+  const [active, setActive] = useState(0)
+  const [reduced, setReduced] = useState(false)
+  const [inView, setInView] = useState(false)
+  const [paused, setPaused] = useState(false)
+
+  const cancelGlide = () => {
+    if (animRef.current) cancelAnimationFrame(animRef.current)
+    animRef.current = null
+    if (trackRef.current) trackRef.current.style.scrollSnapType = ''
+  }
+
+  const glideTo = (el: HTMLElement, target: number, dur: number) => {
+    cancelGlide()
+    const start = el.scrollLeft
+    const dist = target - start
+    if (Math.abs(dist) < 1) return
+    el.style.scrollSnapType = 'none'
+    const t0 = performance.now()
+    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
+    const step = (now: number) => {
+      const p = Math.min((now - t0) / dur, 1)
+      el.scrollLeft = start + dist * ease(p)
+      if (p < 1) {
+        animRef.current = requestAnimationFrame(step)
+      } else {
+        animRef.current = null
+        el.style.scrollSnapType = ''
+      }
+    }
+    animRef.current = requestAnimationFrame(step)
+  }
+
+  const nearestCard = (el: HTMLElement) => {
+    const cards = [...el.children] as HTMLElement[]
+    const center = el.scrollLeft + el.clientWidth / 2
+    let best = 0
+    cards.forEach((c, i) => {
+      if (Math.abs(c.offsetLeft + c.offsetWidth / 2 - center) < Math.abs(cards[best].offsetLeft + cards[best].offsetWidth / 2 - center)) best = i
+    })
+    return { cards, best }
+  }
+
+  // Teleport back into the middle set ONLY once scrolling has settled.
+  const settle = () => {
+    const el = trackRef.current
+    if (!el) return
+    const { cards, best } = nearestCard(el)
+    const setW = cards[n].offsetLeft - cards[0].offsetLeft
+    if (best < n) el.scrollLeft += setW
+    else if (best >= 2 * n) el.scrollLeft -= setW
+  }
+
+  const onScroll = () => {
+    const el = trackRef.current
+    if (!el) return
+    setActive(nearestCard(el).best % n)
+    if (idleTimer.current) clearTimeout(idleTimer.current)
+    idleTimer.current = setTimeout(settle, 150)
+  }
+
+  // Dot click → glide the middle-set card to the centre.
+  const goTo = (i: number) => {
+    const el = trackRef.current
+    if (!el) return
+    const card = el.children[n + i] as HTMLElement | undefined
+    if (card) glideTo(el, card.offsetLeft + card.offsetWidth / 2 - el.clientWidth / 2, 750)
+  }
+
+  // Pause/play — banking the elapsed time so resume continues in sync with
+  // the frozen progress fill.
+  const togglePaused = () => {
+    setPaused(p => {
+      if (!p) remainingRef.current = Math.max(400, remainingRef.current - (Date.now() - startedAtRef.current))
+      return !p
+    })
+  }
+
+  // Start centred on the first card of the middle set; only autoplay while
+  // the carousel is actually on screen.
+  useEffect(() => {
+    setReduced(!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)
+    const el = trackRef.current
+    if (!el) return
+    const c = el.children[n] as HTMLElement
+    el.scrollLeft = c.offsetLeft + c.offsetWidth / 2 - el.clientWidth / 2
+    let io: IntersectionObserver | undefined
+    if (typeof IntersectionObserver !== 'undefined') {
+      io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.3 })
+      io.observe(el)
+    } else {
+      setInView(true)
+    }
+    return () => {
+      io?.disconnect()
+      if (idleTimer.current) clearTimeout(idleTimer.current)
+      cancelGlide()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Autoplay: whenever a card becomes (or stays) active, glide to the NEXT
+  // absolute card once the (pausable) interval runs out.
+  useEffect(() => {
+    if (reduced || !inView || paused) return
+    if (prevActiveRef.current !== active) {
+      prevActiveRef.current = active
+      remainingRef.current = autoMs
+    }
+    startedAtRef.current = Date.now()
+    const t = setTimeout(() => {
+      remainingRef.current = autoMs
+      const el = trackRef.current
+      if (!el) return
+      const { cards, best } = nearestCard(el)
+      const next = cards[best + 1]
+      if (next) glideTo(el, next.offsetLeft + next.offsetWidth / 2 - el.clientWidth / 2, 950)
+    }, remainingRef.current)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, reduced, inView, paused])
+
+  return { trackRef, active, reduced, inView, paused, onScroll, cancelGlide, goTo, togglePaused, autoMs }
+}
+
+// Apple-gallery pagination: dots where the active one stretches into a pill
+// whose fill loads over the autoplay interval, plus a pause/play toggle.
+export function CarouselPagination({
+  count,
+  carousel,
+  itemLabel,
+}: {
+  count: number
+  // Structural subset of useAutoCarousel's return — lets surfaces with their
+  // own slide logic (the hero phone) reuse the exact same pagination UI.
+  carousel: Pick<ReturnType<typeof useAutoCarousel>, 'active' | 'reduced' | 'inView' | 'paused' | 'goTo' | 'togglePaused' | 'autoMs'>
+  itemLabel: (i: number) => string
+}) {
+  const { active, reduced, inView, paused, goTo, togglePaused, autoMs } = carousel
+  return (
+    <div className="flex items-center justify-center gap-2">
+      {Array.from({ length: count }).map((_, i) => (
+        <button
+          key={i}
+          type="button"
+          aria-label={itemLabel(i)}
+          onClick={() => goTo(i)}
+          className="relative overflow-hidden rounded-full transition-[width] duration-300"
+          style={{
+            width: active === i ? 52 : 9,
+            height: 9,
+            background: 'rgba(22,50,35,0.2)',
+          }}
+        >
+          {active === i && (
+            <span
+              className="absolute inset-y-0 left-0 rounded-full"
+              style={{
+                background: '#163223',
+                width: reduced ? '100%' : undefined,
+                // Longhand props (not the `animation` shorthand) so the
+                // play-state can change without React shorthand conflicts.
+                animationName: reduced || !inView ? undefined : 'blog-progress',
+                animationDuration: `${autoMs}ms`,
+                animationTimingFunction: 'linear',
+                animationFillMode: 'forwards',
+                animationPlayState: paused ? 'paused' : 'running',
+              }}
+            />
+          )}
+        </button>
+      ))}
+
+      {/* Pause/play toggle, like Apple's gallery control */}
+      {!reduced && (
+        <button
+          type="button"
+          aria-label={paused ? 'Afspil automatisk visning' : 'Sæt automatisk visning på pause'}
+          onClick={togglePaused}
+          className="ml-3 flex items-center justify-center rounded-full transition-colors hover:bg-[rgba(22,50,35,0.18)]"
+          style={{ width: 30, height: 30, background: 'rgba(22,50,35,0.1)' }}
+        >
+          {paused ? (
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="#163223" aria-hidden>
+              <path d="M3 1.5v9l7.5-4.5L3 1.5z" />
+            </svg>
+          ) : (
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="#163223" aria-hidden>
+              <rect x="1.5" y="1" width="3.2" height="10" rx="1.1" />
+              <rect x="7.3" y="1" width="3.2" height="10" rx="1.1" />
+            </svg>
+          )}
+        </button>
+      )}
+    </div>
+  )
+}

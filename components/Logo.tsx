@@ -16,10 +16,15 @@ const PATHS_HJEM = [
 export function Logo({ className, style, variant = 'default' }: {
   className?: string
   style?: React.CSSProperties
-  variant?: 'default' | 'dark' | 'white'
+  variant?: 'default' | 'dark' | 'white' | 'forest'
 }) {
-  const altidColor = variant === 'white' ? '#fff' : '#003c16'
-  const hjemColor = variant === 'white' ? '#fff' : variant === 'dark' ? '#003c16' : '#aff193'
+  // 'forest' = wordmark on the deep-green nav bar: white "altid" + signal-green "hjem".
+  const altidColor = variant === 'white' || variant === 'forest' ? '#fff' : '#003c16'
+  const hjemColor =
+    variant === 'forest' ? '#90ff7c'
+      : variant === 'white' ? '#fff'
+      : variant === 'dark' ? '#003c16'
+      : '#aff193'
 
   return (
     <svg

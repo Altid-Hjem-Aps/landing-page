@@ -23,11 +23,10 @@ const tips: Tip[] = [
     title: 'Kør opvasker kl. 14',
     reason: 'Lavest elpris i dag',
     saving: '+4 kr.',
-    bgIcon: 'rgba(168,224,99,0.22)',
+    bgIcon: 'transparent',
     icon: (
-      <svg width="9" height="11" viewBox="0 0 9 11" fill="none">
-        <path d="M5.5 1L1 6H4.5L3.5 10L8 5H4.5L5.5 1Z" fill="#1a3d22" />
-      </svg>
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/services/icon-strom.svg" alt="" style={{ width: 18, height: 18 }} />
     ),
   },
   {
@@ -36,12 +35,10 @@ const tips: Tip[] = [
     title: 'Skift til mindre datapakke',
     reason: 'Du bruger kun 4 GB / md.',
     saving: '+30 kr./md.',
-    bgIcon: 'rgba(189,176,249,0.28)',
+    bgIcon: 'transparent',
     icon: (
-      <svg width="7" height="10" viewBox="0 0 6 9" fill="none">
-        <rect x="0.5" y="0.5" width="5" height="8" rx="1.2" stroke="#5040b0" strokeWidth="1" fill="none" />
-        <rect x="2" y="7" width="2" height="0.8" rx="0.4" fill="#5040b0" />
-      </svg>
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/services/icon-mobil.svg" alt="" style={{ width: 18, height: 18 }} />
     ),
   },
   {
@@ -50,11 +47,10 @@ const tips: Tip[] = [
     title: 'Saml indbo og ulykke',
     reason: 'Aftaler udløber 1. juni',
     saving: '+180 kr./md.',
-    bgIcon: 'rgba(143,204,255,0.22)',
+    bgIcon: 'transparent',
     icon: (
-      <svg width="10" height="11" viewBox="0 0 8 9" fill="none">
-        <path d="M4 0.5L0.5 2V5C0.5 6.9 2 8.6 4 9C6 8.6 7.5 6.9 7.5 5V2L4 0.5Z" fill="#2e6da8" />
-      </svg>
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/services/icon-forsikring.svg" alt="" style={{ width: 18, height: 18 }} />
     ),
   },
   {
@@ -161,8 +157,8 @@ export default function SmartTipsScreen({ hovered }: Props) {
             animation: hovered ? 'tips-badge-glow 1.4s ease 2' : 'none',
           }}
         >
-          <span style={{ fontSize: 9, lineHeight: 1, color: '#a8e063' }}>✦</span>
-          <span style={{ fontSize: 8, fontWeight: 700, color: '#a8e063', letterSpacing: '0.06em' }}>
+          <span style={{ fontSize: 9, lineHeight: 1, color: '#90FF7C' }}>✦</span>
+          <span style={{ fontSize: 8, fontWeight: 700, color: '#90FF7C', letterSpacing: '0.06em' }}>
             <NumberSlot from={3} to={4} hovered={hovered} />
             <span style={{ marginLeft: 3 }}>NYE</span>
           </span>
@@ -177,7 +173,6 @@ export default function SmartTipsScreen({ hovered }: Props) {
         }}
       >
         {tips.map((tip, i) => {
-          const isFocused = hovered && i === 0
           const isNew = !!tip.isNew
 
           const cardEl = (
@@ -187,14 +182,7 @@ export default function SmartTipsScreen({ hovered }: Props) {
                 background: 'white',
                 paddingTop: hovered ? 6 : 8,
                 paddingBottom: hovered ? 6 : 8,
-                border:
-                  isFocused || (isNew && hovered)
-                    ? '1px solid rgba(168,224,99,0.55)'
-                    : '1px solid rgba(27,104,64,0.08)',
-                boxShadow:
-                  isFocused || (isNew && hovered)
-                    ? '0 4px 14px rgba(168,224,99,0.22)'
-                    : 'none',
+                border: '1px solid rgba(27,104,64,0.08)',
                 transition:
                   'border 0.4s ease, box-shadow 0.4s ease, padding-top 0.4s ease, padding-bottom 0.4s ease',
               }}
@@ -246,7 +234,7 @@ export default function SmartTipsScreen({ hovered }: Props) {
                       padding: '2px 5px',
                       borderRadius: 4,
                       background: '#1a6e3c',
-                      color: '#a8e063',
+                      color: '#90FF7C',
                       letterSpacing: '0.08em',
                       marginLeft: 'auto',
                       animation: hovered ? 'tips-new-pulse 1.2s ease 2' : 'none',
@@ -306,11 +294,9 @@ export default function SmartTipsScreen({ hovered }: Props) {
                     fontWeight: 700,
                     padding: '3px 8px',
                     borderRadius: 999,
-                    background: 'var(--forest)',
-                    color: '#a8e063',
+                    background: '#90FF7C',
+                    color: '#163223',
                     letterSpacing: '0.04em',
-                    boxShadow: hovered ? '0 0 0 3px rgba(168,224,99,0.22)' : 'none',
-                    transition: `box-shadow 0.45s ease ${200 + i * 120}ms`,
                   }}
                 >
                   Aktivér →

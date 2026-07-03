@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import * as amplitude from '@amplitude/analytics-browser'
 import { AltidMark } from '@/components/AltidMark'
 import { DEFAULT_SIGNUP_SOURCE } from '@/lib/signup-source'
+import { BUTTON_PRIMARY, FINE_PRINT } from '@/lib/typography'
 
 type View = 'form' | 'questions' | 'success'
 
@@ -43,7 +44,7 @@ interface Props {
   variant?: 'light' | 'dark'
   id?: string
   defaultView?: View
-  /** Hvor tilmeldingen kom fra (fx 'spiir-alternativ') — gemmes på signup'et. */
+  /** Where the signup came from (e.g. 'spiir-alternativ') — stored on the signup. */
   source?: string
 }
 
@@ -106,11 +107,21 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     if (!phone || !email || !name) return
     setLoading(true)
     setError('')
-    const res = await fetch('/api/waitlist', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, name, email, referredBy, source, step: 1 }),
-    })
+    // A rejected fetch (offline, DNS) must not leave the button stuck on
+    // "Sender..." — surface an error and let the user retry.
+    let res: Response
+    try {
+      res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, name, email, referredBy, source, step: 1 }),
+      })
+    } catch {
+      setLoading(false)
+      setError('Noget gik galt. Tjek din forbindelse og prøv igen.')
+      amplitude.track('Waitlist Step 1 Failed', { error: 'network', status: 0 })
+      return
+    }
     const data = await res.json().catch(() => ({}))
     setLoading(false)
     if (!res.ok) {
@@ -126,18 +137,31 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
 
   async function submitStep2() {
     setLoading(true)
-    await fetch('/api/waitlist', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: signupId, surveyToken, age, household, why, electricity, step: 2 }),
-    })
+    // Best-effort: the signup itself already succeeded in step 1, so a failed
+    // step-2 save still lands on the success screen — but don't let a rejected
+    // fetch throw, and record the failure instead of a fake submit event.
+    let ok = false
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: signupId, surveyToken, age, household, why, electricity, step: 2 }),
+      })
+      ok = res.ok
+    } catch {
+      ok = false
+    }
     setLoading(false)
-    amplitude.track('Waitlist Step 2 Submitted', {
-      has_age: !!age,
-      has_household: !!household,
-      has_why: !!why,
-      electricity_provider: electricity || null,
-    })
+    if (ok) {
+      amplitude.track('Waitlist Step 2 Submitted', {
+        has_age: !!age,
+        has_household: !!household,
+        has_why: !!why,
+        electricity_provider: electricity || null,
+      })
+    } else {
+      amplitude.track('Waitlist Step 2 Failed')
+    }
     setView('success')
   }
 
@@ -158,7 +182,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   const darkLabelStyle: React.CSSProperties = {
     display: 'block',
     fontSize: 11,
-    fontWeight: 600,
+    fontWeight: 400,
     letterSpacing: '0.08em',
     textTransform: 'uppercase',
     marginBottom: 6,
@@ -171,7 +195,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     if (view === 'questions') {
       return (
         <form id={id} onSubmit={e => { e.preventDefault(); submitStep2() }} className="rounded-[20px] p-6 sm:p-10" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
-          <h2 className="text-xl font-bold mb-1 text-white">Fortæl os lidt om dig.</h2>
+          <h2 className="text-xl font-normal mb-1 text-white">Fortæl os lidt om dig.</h2>
           <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.5)' }}>Svar på 4 korte spørgsmål.</p>
           <div className="flex flex-col gap-3 mb-5">
             <div>
@@ -198,14 +222,14 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
             </div>
           </div>
           <div className="flex flex-col gap-2.5">
-            <button type="submit" disabled={loading} className="w-full py-3.5 rounded-[10px] text-[15px] font-semibold disabled:opacity-60" style={{ background: 'var(--sage)', color: 'var(--forest)' }}>
+            <button type="submit" disabled={loading} className={`w-full disabled:opacity-60 ${BUTTON_PRIMARY}`} style={{ background: '#90ff7c', color: '#003c16' }}>
               {loading ? 'Sender...' : 'Indsend'}
             </button>
-            <button type="button" onClick={() => { amplitude.track('Waitlist Step 2 Skipped'); setView('success') }} className="w-full py-3 rounded-[10px] text-sm font-medium border" style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.5)' }}>
+            <button type="button" onClick={() => { amplitude.track('Waitlist Step 2 Skipped'); setView('success') }} className="w-full py-3 rounded-[20px] text-sm font-normal border" style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.5)' }}>
               Ikke nu
             </button>
           </div>
-          <p className="text-xs text-center mt-3.5 leading-relaxed" style={{ color: 'rgba(255,255,255,0.35)' }}>
+          <p className={`${FINE_PRINT} text-center mt-3.5`} style={{ color: 'rgba(255,255,255,0.35)' }}>
             Dine svar bruges kun til at forbedre Altid Hjem.
           </p>
         </form>
@@ -214,7 +238,8 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
 
     return (
       <form id={id} onSubmit={e => { e.preventDefault(); submitStep1() }} className="rounded-[20px] p-6 sm:p-10" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
-        <h2 className="text-2xl font-bold text-white mb-1">Skriv dig gratis på ventelisten</h2>
+        <h2 className="text-2xl font-normal text-white mb-1">Skriv dig gratis på ventelisten</h2>
+        {/* Same colour as the uppercase field labels (darkLabelStyle). */}
         <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.5)' }}>Få tidlig adgang, når appen lanceres.</p>
         <div className="flex flex-col gap-3 mb-5">
           <div>
@@ -234,13 +259,13 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
           </div>
         </div>
         {error && <p className="text-sm mb-3 text-center" style={{ color: '#ff8080' }}>{error}</p>}
-        <button type="submit" disabled={loading} className="w-full py-3.5 rounded-[10px] text-[15px] font-semibold disabled:opacity-60" style={{ background: 'var(--sage)', color: 'var(--forest)' }}>
-          {loading ? 'Sender...' : 'Skriv mig på ventelisten →'}
+        <button type="submit" disabled={loading} className={`w-full disabled:opacity-60 ${BUTTON_PRIMARY}`} style={{ background: '#90ff7c', color: '#003c16' }}>
+          {loading ? 'Sender...' : 'Skriv mig på ventelisten'}
         </button>
-        <p className="text-xs text-center mt-3 leading-relaxed" style={{ color: 'rgba(255,255,255,0.35)' }}>
-          Gratis. Ingen spam. <AltidMark dark />
+        <p className={`${FINE_PRINT} text-center mt-3`} style={{ color: 'rgba(255,255,255,0.35)' }}>
+          Gratis. Ingen spam. <span style={{ color: '#fff' }}>Altid.</span>
         </p>
-        <p className="text-xs text-center mt-1" style={{ color: 'rgba(255,255,255,0.25)' }}>
+        <p className={`${FINE_PRINT} text-center mt-1`} style={{ color: 'rgba(255,255,255,0.25)' }}>
           <a href="/privatlivspolitik" className="underline underline-offset-2 hover:opacity-50 transition-opacity">Privatlivspolitik</a>
         </p>
       </form>
@@ -249,14 +274,14 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
 
   // ─── Light variant (Hero) ─────────────────────────────────────────────────
 
-  if (view === 'success') return <SuccessCard inviteUrl={signupId ? `https://altidhjem.dk/?ref=${signupId}` : undefined} />
+  if (view === 'success') return <SuccessCard variant="cream" inviteUrl={signupId ? `https://altidhjem.dk/?ref=${signupId}` : undefined} />
 
   if (view === 'questions') {
     return (
       <form id={id} onSubmit={e => { e.preventDefault(); submitStep2() }}>
-        <div className="rounded-2xl p-2 mb-3" style={{ background: 'rgba(168,224,99,0.08)', border: '1px solid rgba(168,224,99,0.2)' }}>
-          <h3 className="text-white font-bold text-lg px-3 pt-3 mb-1">Fortæl os lidt om dig.</h3>
-          <p className="text-sm px-3 pb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>4 korte spørgsmål.</p>
+        <div className="rounded-[20px] p-2 mb-3" style={{ background: '#f1ece0', border: '1px solid #e6e2d8' }}>
+          <h3 className="font-normal text-xl px-3 pt-3 mb-1" style={{ color: '#163223' }}>Fortæl os lidt om dig.</h3>
+          <p className="text-sm px-3 pb-2" style={{ color: '#6f6a61' }}>4 korte spørgsmål.</p>
           <div className="flex flex-col gap-1.5 px-1 pb-1">
             {[
               { label: 'Alder', el: <input type="number" value={age} onChange={e => setAge(e.target.value)} placeholder="Din alder" className="w-full px-4 rounded-xl text-[15px] outline-none placeholder:text-[#999] bg-white" style={{ height: 50, fontFamily: 'var(--font-onest)', color: 'var(--text-dark)' }} /> },
@@ -265,17 +290,17 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
               { label: 'Hvilket elselskab har du i dag?', el: <select value={electricity} onChange={e => setElectricity(e.target.value)} className="w-full px-4 rounded-xl text-[15px] outline-none appearance-none bg-white cursor-pointer" style={{ height: 50, fontFamily: 'var(--font-onest)', color: electricity ? 'var(--text-dark)' : '#999' }}><option value="" disabled>Vælg elselskab</option>{DK_ELECTRICITY_PROVIDERS.map(o => <option key={o}>{o}</option>)}</select> },
             ].map(({ label, el }) => (
               <div key={label} className="pb-0.5">
-                <label className="block text-[11px] font-semibold tracking-widest uppercase mb-1 px-1" style={{ color: 'rgba(255,255,255,0.5)' }}>{label}</label>
+                <label className="block text-[11px] font-normal tracking-[0.08em] uppercase mb-1 px-1" style={{ color: '#6f6a61' }}>{label}</label>
                 {el}
               </div>
             ))}
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <button type="submit" disabled={loading} className="w-full py-4 rounded-2xl text-[15px] font-semibold disabled:opacity-60" style={{ background: 'var(--sage)', color: 'var(--forest)' }}>
+          <button type="submit" disabled={loading} className={`w-full disabled:opacity-60 ${BUTTON_PRIMARY}`} style={{ background: '#90ff7c', color: '#003c16' }}>
             {loading ? 'Sender...' : 'Indsend'}
           </button>
-          <button type="button" onClick={() => { amplitude.track('Waitlist Step 2 Skipped'); setView('success') }} className="w-full py-3 rounded-2xl text-sm font-medium" style={{ color: 'rgba(255,255,255,0.45)', border: '1px solid rgba(255,255,255,0.15)' }}>
+          <button type="button" onClick={() => { amplitude.track('Waitlist Step 2 Skipped'); setView('success') }} className="w-full py-3 rounded-[20px] text-sm font-normal" style={{ color: '#6f6a61', border: '1px solid #e6e2d8' }}>
             Ikke nu
           </button>
         </div>
@@ -297,10 +322,10 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
         <div style={{ overflow: 'hidden', minHeight: 0 }}>
           {/* Entire form card invisible during beat 1 — no clipping visible */}
           <div
-            className="rounded-2xl p-2 mb-2"
+            className="rounded-[20px] p-2 mb-2"
             style={{
-              background: 'rgba(168,224,99,0.07)',
-              border: '1px solid rgba(168,224,99,0.3)',
+              background: '#f1ece0',
+              border: '1px solid #e6e2d8',
               opacity: expanded ? 1 : 0,
               transform: expanded ? 'translateY(0)' : 'translateY(-6px)',
               transition: expanded
@@ -360,27 +385,36 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
       </div>
 
       {/* Single button — always visible, drops down as fields expand above it */}
-      {error && <p className="text-sm mb-2 text-center" style={{ color: '#ff8080' }}>{error}</p>}
+      {error && <p className="text-sm mb-2 text-center" style={{ color: '#c6000f' }}>{error}</p>}
       <button
         type={expanded ? 'submit' : 'button'}
         onClick={!expanded ? () => { amplitude.track('Waitlist CTA Clicked', { source: 'hero' }); setExpanded(true); setTimeout(() => document.getElementById('name-input-hero')?.focus(), 60) } : undefined}
         disabled={expanded && loading}
-        className="w-full py-4 rounded-2xl text-[15px] font-semibold disabled:opacity-60"
+        className={`${BUTTON_PRIMARY} disabled:opacity-60 ${
+          expanded ? 'w-full px-5' : 'w-full px-5 lg:w-auto lg:px-[42px]'
+        }`}
         style={{
-          background: 'var(--sage)',
-          color: 'var(--forest)',
+          background: '#90ff7c',
+          color: '#003c16',
           animation: !expanded ? 'pulse-glow 2s ease-in-out infinite' : 'none',
         }}
       >
-        {expanded ? (loading ? 'Sender...' : 'Skriv mig på ventelisten →') : 'Skriv dig på ventelisten →'}
+        {expanded ? (loading ? 'Sender...' : 'Skriv mig på ventelisten →') : (
+          <>
+            <span className="lg:hidden">Skriv dig gratis på ventelisten</span>
+            <span className="hidden lg:inline">Skriv dig på ventelisten og få ro på hjemmets udgifter</span>
+          </>
+        )}
       </button>
 
-      {/* Microcopy — travels with button */}
-      <p className="text-xs text-center mt-2.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
-        {expanded ? <>Gratis. Ingen spam. <AltidMark dark /></> : 'Vær blandt de første — vi giver dig besked, når appen er klar.'}
-      </p>
+      {/* Microcopy — only shown once the form is expanded (collapsed text removed). */}
       {expanded && (
-        <p className="text-xs text-center mt-1" style={{ color: 'rgba(255,255,255,0.28)' }}>
+        <p className={`${FINE_PRINT} text-center mt-2.5`} style={{ color: '#6f6a61' }}>
+          Gratis. Ingen spam. <AltidMark />
+        </p>
+      )}
+      {expanded && (
+        <p className={`${FINE_PRINT} text-center mt-1`} style={{ color: '#8a857c' }}>
           <a href="/privatlivspolitik" className="underline underline-offset-2 hover:opacity-50 transition-opacity">Privatlivspolitik</a>
         </p>
       )}
@@ -389,18 +423,24 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   )
 }
 
-export function SuccessCard({ inviteUrl }: { inviteUrl?: string }) {
+export function SuccessCard({ inviteUrl, variant = 'dark' }: { inviteUrl?: string; variant?: 'dark' | 'cream' }) {
   const [copied, setCopied] = useState(false)
+  // On the light (cream) hero the confirmation renders as a solid forest-green
+  // card so the white text still works — otherwise the original translucent
+  // variant for the dark sections.
+  const cardStyle: React.CSSProperties = variant === 'cream'
+    ? { background: '#163223', border: '1px solid rgba(255,255,255,0.08)' }
+    : { background: 'rgba(168,224,99,0.08)', border: '1px solid rgba(168,224,99,0.2)' }
   return (
-    <div className="rounded-2xl p-8 sm:p-10" style={{ background: 'rgba(168,224,99,0.08)', border: '1px solid rgba(168,224,99,0.2)' }}>
-      <h3 className="text-3xl font-bold mb-3 text-white tracking-tight">Tak. Du er med.</h3>
+    <div className="rounded-[20px] p-8 sm:p-10" style={cardStyle}>
+      <h3 className="text-3xl font-normal mb-3 text-white">Tak. Du er med.</h3>
       <p className="text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
         Vi giver dig besked, så snart Altid Hjem åbner dørene.
       </p>
 
       {inviteUrl && (
         <div className="mt-7 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          <p className="text-[15px] font-semibold text-white mb-1">Vil du rykke frem i køen? 🚀</p>
+          <p className="text-[15px] font-medium text-white mb-1">Vil du rykke frem i køen? 🚀</p>
           <p className="text-sm mb-3" style={{ color: 'rgba(255,255,255,0.6)' }}>
             Del dit personlige link. Jo flere venner der tilmelder sig, jo hurtigere får du adgang.
           </p>
@@ -420,7 +460,7 @@ export function SuccessCard({ inviteUrl }: { inviteUrl?: string }) {
                 setCopied(true)
                 setTimeout(() => setCopied(false), 2000)
               }}
-              className="px-4 py-2 rounded-lg text-sm font-semibold shrink-0"
+              className="px-4 py-2 rounded-lg text-sm font-medium shrink-0"
               style={{ background: 'var(--sage)', color: 'var(--forest)' }}
             >
               {copied ? 'Kopieret ✓' : 'Kopiér'}
