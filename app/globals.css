@@ -186,6 +186,20 @@ body {
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* The bill-pile idle bob is applied via inline animation shorthand, so the
+   reduced-motion escape hatch is to no-op the keyframes themselves. The JS
+   clocks are already gated on useReducedMotion — this is belt and braces. */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes chaos-bob {
+    from, to { transform: none; }
+  }
+}
+
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
