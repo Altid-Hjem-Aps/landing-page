@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Onest } from 'next/font/google'
+import { Onest, Afacad } from 'next/font/google'
 import './globals.css'
 import ResetScrollOnLoad from '@/components/ResetScrollOnLoad'
 
@@ -7,6 +7,14 @@ const onest = Onest({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700', '800'],
   variable: '--font-onest',
+})
+
+// Afacad is the brand font for the subbrand wordmarks ("energi", "mobil", …)
+// in the service-card logo lockups.
+const afacad = Afacad({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-afacad',
 })
 
 export const metadata: Metadata = {
@@ -33,7 +41,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="da" className={onest.variable}>
+    <html lang="da" className={`${onest.variable} ${afacad.variable}`}>
       <body>
         <ResetScrollOnLoad />
         {children}

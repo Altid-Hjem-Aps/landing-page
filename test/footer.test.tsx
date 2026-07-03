@@ -6,13 +6,15 @@ import Home from '@/app/page'
 // the footer is what's under test here.
 vi.mock('@/components/Nav', () => ({ default: () => null }))
 vi.mock('@/components/Hero', () => ({ default: () => null }))
-vi.mock('@/components/sections/WhatIs', () => ({ default: () => null }))
+vi.mock('@/components/sections/Testimonials', () => ({ default: () => null }))
 vi.mock('@/components/sections/FounderVideo', () => ({ default: () => null }))
 vi.mock('@/components/sections/SavingsCounter', () => ({ default: () => null }))
 vi.mock('@/components/sections/Services', () => ({ default: () => null }))
 vi.mock('@/components/sections/HowItWorks', () => ({ default: () => null }))
-vi.mock('@/components/sections/Why', () => ({ default: () => null }))
+vi.mock('@/components/sections/WhatIs', () => ({ default: () => null }))
 vi.mock('@/components/sections/Trust', () => ({ default: () => null }))
+vi.mock('@/components/sections/Faq', () => ({ default: () => null }))
+vi.mock('@/components/sections/Blog', () => ({ default: () => null }))
 vi.mock('@/components/sections/BottomCta', () => ({ default: () => null }))
 vi.mock('@/components/Logo', () => ({ Logo: () => null }))
 

@@ -8,10 +8,17 @@ export default function PhoneShell({
   children,
   variant = 'foreground',
   hovered: externalHovered,
+  sheen = true,
+  softShadow = false,
 }: {
   children: ReactNode | ChildrenFn
   variant?: 'foreground' | 'back'
   hovered?: boolean
+  /** The glass reflection overlay tints everything under it toward white —
+   *  turn it off where exact brand colours matter. */
+  sheen?: boolean
+  /** Gentler halo — used by the hero's single-phone mobile layout. */
+  softShadow?: boolean
 }) {
   const isBack = variant === 'back'
   const [internalHovered, setInternalHovered] = useState(false)
@@ -71,8 +78,10 @@ export default function PhoneShell({
               'inset -1px 0 0 rgba(0,0,0,0.6)',
               'inset 0 -1px 0 rgba(0,0,0,0.5)',
               isBack
-                ? '0 24px 56px 4px rgba(0,0,0,0.22)'
-                : '0 32px 72px 6px rgba(0,0,0,0.32)',
+                ? '0 24px 39px 4px rgba(0,0,0,0.16)'
+                : softShadow
+                  ? '0 18px 36px 2px rgba(0,0,0,0.13)'
+                  : '0 32px 50px 6px rgba(0,0,0,0.25)',
             ].join(', '),
           }}
         >
@@ -100,17 +109,19 @@ export default function PhoneShell({
               {rendered}
             </div>
 
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                borderRadius: 44,
-                background:
-                  'linear-gradient(130deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.03) 30%, transparent 55%)',
-                pointerEvents: 'none',
-                zIndex: 10,
-              }}
-            />
+            {sheen && (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  borderRadius: 44,
+                  background:
+                    'linear-gradient(130deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.03) 30%, transparent 55%)',
+                  pointerEvents: 'none',
+                  zIndex: 10,
+                }}
+              />
+            )}
             <div
               style={{
                 position: 'absolute',
@@ -132,10 +143,23 @@ export default function PhoneShell({
 }
 
 function StatusBar() {
+  // Live clock in Danish time (Europe/Copenhagen). Starts as the classic 9:41
+  // for SSR, then syncs on the client and ticks every 30s.
+  const [time, setTime] = useState('9:41')
+  useEffect(() => {
+    const sync = () =>
+      setTime(
+        new Intl.DateTimeFormat('da-DK', { hour: 'numeric', minute: '2-digit', timeZone: 'Europe/Copenhagen' }).format(new Date()),
+      )
+    sync()
+    const id = setInterval(sync, 30_000)
+    return () => clearInterval(id)
+  }, [])
+
   return (
     <div className="flex items-center justify-between px-6 pt-5 pb-2 shrink-0">
-      <span className="text-[11px] font-semibold" style={{ color: 'var(--text-dark)' }}>
-        9:41
+      <span suppressHydrationWarning className="text-[11px] font-semibold" style={{ color: 'var(--text-dark)' }}>
+        {time}
       </span>
       <div className="flex items-center gap-1">
         <svg width="15" height="10" viewBox="0 0 15 10" fill="none">

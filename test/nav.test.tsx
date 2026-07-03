@@ -8,8 +8,12 @@ vi.mock('@amplitude/analytics-browser', () => ({ track: vi.fn() }))
 vi.mock('@/components/Logo', () => ({ Logo: () => null }))
 
 // Nav navigates via the App Router off the front page — capture push calls.
+// usePathname (active-link highlighting) follows the stubbed window.location.
 const push = vi.fn()
-vi.mock('next/navigation', () => ({ useRouter: () => ({ push }) }))
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push }),
+  usePathname: () => window.location.pathname,
+}))
 
 const realLocation = window.location
 
@@ -77,7 +81,22 @@ describe('Spiir banner', () => {
     stubLocation('/')
     render(<Nav />)
     expect(screen.queryByText(/Spiir/)).toBeNull()
-    expect(screen.getAllByRole('button')).toHaveLength(1)
+    // Only the nav's own controls: the waitlist CTA and the burger toggle.
+    expect(screen.getByRole('button', { name: /ventelisten/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Åbn menu' })).toBeInTheDocument()
+    expect(screen.getAllByRole('button')).toHaveLength(2)
+  })
+
+  it('burger menu opens with the nav links and closes when a link is clicked', () => {
+    stubLocation('/')
+    render(<Nav />)
+    const burger = screen.getByRole('button', { name: 'Åbn menu' })
+    fireEvent.click(burger)
+    expect(screen.getByRole('button', { name: 'Luk menu' })).toHaveAttribute('aria-expanded', 'true')
+    // Panel + desktop menu both render the links; the panel adds a second set.
+    expect(screen.getAllByRole('link', { name: 'Mad' }).length).toBeGreaterThan(1)
+    fireEvent.click(screen.getAllByRole('link', { name: 'Mad' })[1])
+    expect(screen.getByRole('button', { name: 'Åbn menu' })).toHaveAttribute('aria-expanded', 'false')
   })
 
   it('renders above the nav when spiirBanner is set', () => {

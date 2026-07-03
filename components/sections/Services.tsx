@@ -1,128 +1,285 @@
-import { AltidMark } from '@/components/AltidMark'
+'use client'
 
-function Desc({ text }: { text: string }) {
-  const [before, after] = text.split('Altid.')
-  if (after === undefined) return <>{text}</>
-  return <>{before}<AltidMark /></>
+import { useEffect, useRef, useState } from 'react'
+import { fluid } from '@/lib/fluid'
+import { H2, EYEBROW, BODY } from '@/lib/typography'
+
+// Spring-ish easing for the on-scroll card reveal (slight overshoot on settle).
+const REVEAL_SPRING = 'cubic-bezier(0.34, 1.2, 0.64, 1)'
+
+// "Hvad finder du i appen?" — forest section presenting the six Altid subbrands
+// as white cards, each with its official logo lockup (round icon + "altid" +
+// subbrand wordmark) and a one-line, transparency-focused description.
+//
+// Logo assets live in /public/services. Energi ships as a single flattened
+// lockup SVG; the other five are composed from a round icon SVG + the coloured
+// "altid" wordmark SVG + the subbrand word set in Afacad (the brand font).
+
+type Split = {
+  icon: string
+  altid: string
+  /** subbrand word, e.g. "alarm" */
+  word: string
+  /** brand colour for the subbrand word (matches the "altid" wordmark) */
+  color: string
 }
 
-const F = '#003c16'
+type Service = {
+  label: string
+  desc: string
+  /** flattened lockup SVG (used by Energi) */
+  full?: string
+  /** composed lockup pieces (used by everyone else) */
+  logo?: Split
+  /** render the "altid" wordmark as the charge-up animation (Opladning) */
+  charge?: boolean
+  /** lit-bulb overlay SVG, faded in on light-up (Energi) */
+  bulb?: string
+  /** render the icon inline so the phone can vibrate (Mobil) */
+  vibrate?: boolean
+}
 
-const services = [
+// The five "altid" letter paths (viewBox 84.0116 × 28.7848), inlined so the
+// Opladning card can render them as an outline that fills up on charge.
+const ALTID_PATHS = [
+  'M16.6449 28.0645V25.7886H16.5699C15.6682 27.6468 13.1885 28.7848 10.4457 28.7848C4.28321 28.7857 2.20893e-05 23.8925 2.20893e-05 17.5211C2.20893e-05 11.1496 4.47141 6.29519 10.4457 6.29519C13.0003 6.29519 15.3676 7.31884 16.5699 9.25359H16.6449V7.01634H22.8823V28.0645H16.6449ZM16.6449 17.5211C16.6449 14.5627 14.2776 12.1742 11.3466 12.1742C8.41565 12.1742 6.23659 14.5636 6.23659 17.5976C6.23659 20.6316 8.52893 22.9076 11.4215 22.9076C14.3142 22.9076 16.644 20.556 16.644 17.522L16.6449 17.5211Z',
+  'M27.6149 28.0642V0H33.8523V28.0642H27.6149Z',
+  'M39.6008 28.0642V11.7949H36.52V7.01606H39.6008V0H45.8383V7.01606H48.8442V11.7949H45.8383V28.0642H39.6008Z',
+  'M51.5497 4.77881V0H57.7872V4.77881H51.5497ZM51.5497 28.0642V7.01606H57.7872V28.0642H51.5497Z',
+  'M78.0757 28.0642V25.7883H78.0007C76.8358 27.7221 74.7317 28.7467 71.7633 28.7467C65.4509 28.7467 61.3176 23.8544 61.3176 17.483C61.3176 11.1115 65.5633 6.29492 71.65 6.29492C74.0547 6.29492 76.0081 7.01516 77.7742 8.79776V0H84.0117V28.0642H78.0748H78.0757ZM78.1131 17.4452C78.1131 14.5246 75.8966 12.1739 72.8149 12.1739C69.7332 12.1739 67.5541 14.3733 67.5541 17.4452C67.5541 20.517 69.7706 22.8686 72.7765 22.8686C75.7824 22.8686 78.1122 20.5548 78.1122 17.4452H78.1131Z',
+]
+
+// "altid" wordmark that charges up: a faint "empty" fill underneath (no stroke,
+// so nothing gets clipped by the tight viewBox), plus the solid black fill
+// revealed bottom-to-top in steps (clip-rect) once `charging` flips on.
+function ChargingAltid({ charging, reduced, width }: { charging: boolean; reduced: boolean; width: string }) {
+  return (
+    <svg
+      viewBox="0 0 84.0116 28.7848"
+      style={{ width, height: 'auto', overflow: 'visible' }}
+      className={`altid-charge shrink-0${charging ? ' is-charging' : ''}${reduced ? ' is-filled' : ''}`}
+      aria-label="Altid Opladning"
+    >
+      <defs>
+        <clipPath id="altid-charge-clip">
+          <rect className="altid-charge-fill" x="0" y="0" width="84.0116" height="28.7848" />
+        </clipPath>
+      </defs>
+      <g fill="rgba(0,0,0,0.16)">
+        {ALTID_PATHS.map((d, i) => <path key={i} d={d} />)}
+      </g>
+      <g fill="#000" clipPath="url(#altid-charge-clip)">
+        {ALTID_PATHS.map((d, i) => <path key={i} d={d} />)}
+      </g>
+    </svg>
+  )
+}
+
+const services: Service[] = [
   {
-    name: 'Energi',
-    desc: '+14.000 kunder. Gennemsigtig strøm til fair pris. Altid.',
-    bg: '#8fccff',
-    icon: (
-      <path fill={F} d="M20.83,25.03c0,.16-.06.31-.18.42-.11.11-.27.18-.42.18h-6.01c-.16,0-.31-.06-.42-.18-.11-.11-.18-.27-.18-.42s.06-.31.18-.42c.11-.11.27-.18.42-.18h6.01c.16,0,.31.06.42.18.11.11.18.27.18.42ZM23.83,15.42c0,1-.22,1.99-.66,2.89-.44.9-1.08,1.69-1.87,2.31-.15.11-.27.26-.35.43-.08.17-.13.35-.13.54v.45c0,.32-.13.62-.35.85-.23.23-.53.35-.85.35h-4.81c-.32,0-.62-.13-.85-.35-.23-.23-.35-.53-.35-.85v-.45c0-.18-.04-.36-.12-.53-.08-.16-.2-.31-.34-.42-.79-.61-1.42-1.4-1.86-2.29-.44-.9-.67-1.88-.67-2.88-.02-3.58,2.87-6.56,6.45-6.65.88-.02,1.76.13,2.58.46.82.32,1.57.81,2.2,1.42.63.62,1.13,1.35,1.47,2.16.34.81.52,1.69.52,2.57ZM22.63,15.42c0-.72-.14-1.44-.42-2.1-.28-.66-.69-1.27-1.21-1.77-.52-.5-1.13-.9-1.8-1.16-.67-.26-1.39-.39-2.11-.37-2.93.07-5.29,2.51-5.28,5.44,0,.82.19,1.62.55,2.35.36.73.88,1.37,1.53,1.88.29.23.52.51.68.84.16.33.24.69.24,1.06v.45h1.8v-3.36l-2.23-2.23c-.11-.11-.18-.27-.18-.43s.06-.31.18-.43.27-.18.43-.18.31.06.43.18l1.98,1.98,1.98-1.98c.06-.06.12-.1.2-.13.07-.03.15-.05.23-.05s.16.02.23.05c.07.03.14.07.2.13.06.06.1.12.13.2.03.07.05.15.05.23s-.02.16-.05.23c-.03.07-.07.14-.13.2l-2.23,2.23v3.36h1.8v-.45c0-.37.09-.73.25-1.06.16-.33.4-.62.69-.84.65-.5,1.17-1.15,1.53-1.89.36-.74.54-1.55.54-2.37Z"/>
-    ),
+    label: 'Altid Energi',
+    desc: '+15.000 kunder. Gennemsigtig strøm til fair pris. ',
+    full: '/services/altid-energi.svg',
+    bulb: '/services/altid-energi-bulb.svg',
   },
   {
-    name: 'Alarm',
-    desc: 'Tryg boligsikring med professionel overvågning. Altid.',
-    bg: '#fffa86',
-    icon: (
-      <>
-        <path fill={F} fillRule="evenodd" stroke={F} strokeWidth="0.5" d="M9.49,15.39v8.3c0,.41.33.74.74.74h13.99c.41,0,.74-.33.74-.74v-8.3c0-.64-.34-1.23-.9-1.55l-6.48-3.73c-.23-.13-.51-.13-.74,0l-6.45,3.73c-.55.32-.9.91-.9,1.55ZM8.64,23.69v-8.3c0-.94.5-1.81,1.32-2.28l6.45-3.73c.49-.28,1.09-.28,1.58,0l6.48,3.73c.82.47,1.32,1.34,1.32,2.29v8.3c0,.87-.71,1.58-1.58,1.58h-13.99c-.87,0-1.58-.71-1.58-1.58Z"/>
-        <path fill={F} fillRule="evenodd" stroke={F} strokeWidth="0.5" d="M21.79,17.15h-2.27v4.11h2.27v-4.11ZM22.63,16.31v5.8h-3.96v-5.8h3.96Z"/>
-      </>
-    ),
+    label: 'Altid Alarm',
+    desc: 'Tryg boligsikring med professionel overvågning. ',
+    logo: { icon: '/services/icon-alarm.svg', altid: '/services/altid-alarm.svg', word: 'alarm', color: '#c6000f' },
   },
   {
-    name: 'Opladning',
-    desc: 'Smart elbilsopladning til hjemmet. Altid.',
-    bg: '#b7f2a7',
-    icon: (
-      <path fill={F} d="M18.57,16.91c.06.09.09.18.11.29.01.1,0,.21-.04.3l-1.27,3.17c-.06.16-.18.28-.34.35-.15.07-.33.07-.49,0-.16-.06-.28-.18-.35-.34-.07-.15-.07-.33,0-.49l.92-2.3h-1.6c-.1,0-.21-.03-.3-.07-.09-.05-.17-.12-.23-.21s-.09-.18-.11-.29,0-.21.04-.3l1.27-3.17c.03-.08.08-.15.14-.21.06-.06.13-.11.2-.14.08-.03.16-.05.24-.05.08,0,.17.01.24.05.08.03.15.08.21.14.06.06.11.13.14.2.03.08.05.16.05.24,0,.08-.01.17-.05.24l-.92,2.3h1.6c.1,0,.21.03.3.07.09.05.17.12.23.2ZM27.54,13.99v6.44c0,.5-.2.99-.56,1.34-.36.36-.84.56-1.34.56s-.99-.2-1.34-.56c-.36-.36-.56-.84-.56-1.34v-3.17c0-.17-.07-.33-.19-.45-.12-.12-.28-.19-.45-.19h-1.27v6.97h1.27c.17,0,.33.07.45.19.12.12.19.28.19.45s-.07.33-.19.45c-.12.12-.28.19-.45.19h-12.67c-.17,0-.33-.07-.45-.19-.12-.12-.19-.28-.19-.45s.07-.33.19-.45c.12-.12.28-.19.45-.19h1.27v-12.03c0-.5.2-.99.56-1.34.36-.36.84-.56,1.34-.56h6.33c.5,0,.99.2,1.34.56.36.36.56.84.56,1.34v3.8h1.27c.5,0,.99.2,1.34.56.36.36.56.84.56,1.34v3.17c0,.17.07.33.19.45.12.12.28.19.45.19s.33-.07.45-.19c.12-.12.19-.28.19-.45v-6.44c0-.17-.07-.33-.19-.45l-1.53-1.53c-.12-.12-.19-.28-.19-.45s.07-.33.19-.45c.12-.12.28-.19.45-.19s.33.07.45.19l1.53,1.53c.18.18.32.39.41.62.1.23.14.48.14.73ZM20.58,23.6v-12.03c0-.17-.07-.33-.19-.45-.12-.12-.28-.19-.45-.19h-6.33c-.17,0-.33.07-.45.19-.12.12-.19.28-.19.45v12.03h7.6Z"/>
-    ),
+    label: 'Altid Opladning',
+    desc: 'Smart elbilsopladning til hjemmet. ',
+    logo: { icon: '/services/icon-opladning.svg', altid: '/services/altid-opladning.svg', word: 'opladning', color: '#000000' },
+    charge: true,
   },
   {
-    name: 'Forsikring',
-    desc: 'Gennemsigtige forsikringer uden skjulte vilkår. Altid.',
-    bg: '#ffbab8',
-    icon: (
-      <path fill={F} d="M26.02,16.98c-.14-1.62-.73-3.17-1.71-4.46-.98-1.3-2.3-2.3-3.81-2.89-1.52-.59-3.16-.74-4.76-.43-1.6.3-3.08,1.05-4.27,2.15-1.59,1.46-2.58,3.48-2.76,5.63-.01.17,0,.34.06.5.06.16.14.31.26.44.12.13.26.23.41.3.16.07.33.1.5.1h6.8v4.33c0,.66.26,1.29.72,1.75.46.46,1.09.72,1.75.72s1.29-.26,1.75-.72c.46-.46.72-1.09.72-1.75,0-.16-.07-.32-.18-.44-.12-.12-.27-.18-.44-.18s-.32.07-.44.18c-.12.12-.18.27-.18.44,0,.33-.13.64-.36.87-.23.23-.55.36-.87.36s-.64-.13-.87-.36c-.23-.23-.36-.55-.36-.87v-4.33h6.8c.17,0,.34-.03.5-.1.16-.07.3-.17.42-.3.12-.13.21-.28.26-.44.06-.16.08-.33.06-.51ZM9.94,17.09c.14-1.59.78-3.1,1.85-4.3s2.48-2.02,4.04-2.34c-.91,1.23-2.04,3.4-2.17,6.64h-3.72ZM14.9,17.09c.11-2.38.81-4.08,1.41-5.12.3-.52.65-1,1.05-1.44.4.44.75.92,1.05,1.44,1.03,1.77,1.35,3.67,1.41,5.12h-4.92ZM21.06,17.09c-.13-3.24-1.26-5.41-2.16-6.64,1.57.33,2.99,1.15,4.05,2.34,1.06,1.2,1.71,2.7,1.84,4.3h-3.73Z"/>
-    ),
+    label: 'Altid Forsikring',
+    desc: 'Gennemsigtige forsikringer uden skjulte vilkår. ',
+    logo: { icon: '/services/icon-forsikring.svg', altid: '/services/altid-forsikring.svg', word: 'forsikring', color: '#a7d3f9' },
   },
   {
-    name: 'Mobil',
-    desc: 'Mobilabonnement på gennemsigtige vilkår. Altid.',
-    bg: '#ffbbf8',
-    icon: (
-      <path fill={F} d="M20.92,8.6h-7.39c-.49,0-.96.19-1.31.54-.35.35-.54.82-.54,1.31v13.55c0,.49.19.96.54,1.31.35.35.82.54,1.31.54h7.39c.49,0,.96-.19,1.31-.54s.54-.82.54-1.31v-13.55c0-.49-.19-.96-.54-1.31-.35-.35-.82-.54-1.31-.54ZM12.91,12.29h8.62v9.85h-8.62v-9.85ZM13.53,9.83h7.39c.16,0,.32.06.44.18.12.12.18.27.18.44v.62h-8.62v-.62c0-.16.06-.32.18-.44s.27-.18.44-.18ZM20.92,24.61h-7.39c-.16,0-.32-.06-.44-.18s-.18-.27-.18-.44v-.62h8.62v.62c0,.16-.06.32-.18.44-.12.12-.27.18-.44.18Z"/>
-    ),
+    label: 'Altid Mobil',
+    desc: 'Mobilabonnement på gennemsigtige vilkår. ',
+    logo: { icon: '/services/icon-mobil.svg', altid: '/services/altid-mobil.svg', word: 'mobil', color: '#5530de' },
+    vibrate: true,
   },
   {
-    name: 'Madplan',
-    desc: 'Nem madplanlægning tilpasset din husstand. Altid.',
-    bg: '#bdb0f9',
-    icon: (
-      <>
-        <path fill={F} d="M21.4,16c-2.8,0-5,2.2-5,5s2.2,5,5,5,5-2.2,5-5-2.2-5-5-5ZM21.4,24.8c-2.1,0-3.8-1.7-3.8-3.8s1.7-3.8,3.8-3.8,3.8,1.7,3.8,3.8-1.7,3.8-3.8,3.8Z"/>
-        <path fill={F} d="M21.4,15.3h3.6c0-1-.8-1.8-1.8-1.8s-1.8.7-1.8,1.7v-3.5c-1,0-1.8.8-1.8,1.8s.8,1.8,1.8,1.8Z"/>
-        <path fill={F} d="M15.4,23.1h-4.7c-.2,0-.2,0-.2-.2v-6.6c0-.5,0-1,.3-1.5l1.7-3.7h2.4l1.7,3.7c.2.5.3,1,.3,1.5v.5c.3-.3.7-.6,1-.8,0-.6-.2-1.1-.4-1.6l-1.5-3.3h.7c.3,0,.6-.3.6-.6v-.7c0-.3-.3-.6-.6-.6h-5.6c-.3,0-.6.3-.6.6v.7c0,.3.3.6.6.6h.4l-1.5,3.3c-.3.6-.4,1.2-.4,1.9v6.6c0,.7.5,1.2,1.2,1.2h5.2c0-.3-.3-.7-.4-1h-.1Z"/>
-      </>
-    ),
+    label: 'Altid Mad',
+    desc: 'Nem madplanlægning tilpasset din husstand. ',
+    logo: { icon: '/services/icon-mad.svg', altid: '/services/altid-mad.svg', word: 'mad', color: '#0f6e68' },
   },
 ]
 
-export default function Services() {
+// Altid Mobil icon inlined so the phone path can vibrate (the circle stays put).
+function MobilIcon({ vibrating, size }: { vibrating: boolean; size: string }) {
   return (
-    <section className="py-16 sm:py-24 px-6 sm:px-10 lg:px-12" style={{ background: 'var(--cream)' }}>
-      <div className="max-w-5xl mx-auto">
-        <p className="text-xs font-semibold tracking-[0.12em] uppercase mb-4" style={{ color: 'var(--text-light)' }}>
+    <svg viewBox="0 0 52 52" style={{ width: size, height: size }} className="shrink-0" aria-hidden>
+      <rect width="52" height="52" rx="26" fill="#5530DE" />
+      <path
+        className={`mobil-phone${vibrating ? ' is-vibrating' : ''}`}
+        fill="#F9CBF4"
+        d="M31.1667 13.1709H19.8333C19.0819 13.1709 18.3612 13.4644 17.8299 13.9868C17.2985 14.5092 17 15.2178 17 15.9566V36.3852C17 37.124 17.2985 37.8326 17.8299 38.355C18.3612 38.8774 19.0819 39.1709 19.8333 39.1709H31.1667C31.9181 39.1709 32.6388 38.8774 33.1701 38.355C33.7015 37.8326 34 37.124 34 36.3852V15.9566C34 15.2178 33.7015 14.5092 33.1701 13.9868C32.6388 13.4644 31.9181 13.1709 31.1667 13.1709ZM18.8889 18.7423H32.1111V33.5995H18.8889V18.7423ZM19.8333 15.028H31.1667C31.4171 15.028 31.6574 15.1259 31.8345 15.3C32.0116 15.4742 32.1111 15.7103 32.1111 15.9566V16.8852H18.8889V15.9566C18.8889 15.7103 18.9884 15.4742 19.1655 15.3C19.3426 15.1259 19.5829 15.028 19.8333 15.028ZM31.1667 37.3138H19.8333C19.5829 37.3138 19.3426 37.2159 19.1655 37.0418C18.9884 36.8676 18.8889 36.6315 18.8889 36.3852V35.4566H32.1111V36.3852C32.1111 36.6315 32.0116 36.8676 31.8345 37.0418C31.6574 37.2159 31.4171 37.3138 31.1667 37.3138Z"
+      />
+    </svg>
+  )
+}
+
+function Lockup({ service, charging, reduced, lit, vibrating }: { service: Service; charging: boolean; reduced: boolean; lit: boolean; vibrating: boolean }) {
+  if (service.full) {
+    // self-start + w-auto so the flattened lockup keeps its intrinsic width and
+    // left-aligns, instead of stretching to the full card width (which made the
+    // centred SVG look indented).
+    return (
+      <div className="relative self-start w-auto shrink-0" style={{ height: fluid(52, 40) }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={service.full} alt={service.label} className="w-auto h-full" />
+        {service.bulb && (
+          // Lit-bulb overlay, aligned exactly over the icon (same viewBox); fades
+          // in with a glow on light-up.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={service.bulb} alt="" className={`energi-bulb-overlay absolute inset-0 w-auto h-full pointer-events-none${lit ? ' is-lit' : ''}`} />
+        )}
+      </div>
+    )
+  }
+  const { icon, altid, word, color } = service.logo!
+  return (
+    <div className="flex items-center shrink-0" style={{ gap: fluid(14, 11) }}>
+      {service.vibrate ? (
+        <MobilIcon vibrating={vibrating} size={fluid(52, 40)} />
+      ) : (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={icon} alt="" style={{ width: fluid(52, 40), height: fluid(52, 40) }} className="shrink-0" />
+      )}
+      {/* Wordmark: "altid" stacked over the subbrand word (right-aligned), with a
+          gap that matches the flattened Altid Energi lockup so they don't clash. */}
+      <div className="flex flex-col items-end shrink-0">
+        {service.charge ? (
+          <ChargingAltid charging={charging} reduced={reduced} width={fluid(84, 64)} />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={altid} alt={service.label} className="shrink-0" style={{ width: fluid(84, 64) }} />
+        )}
+        <span
+          className="leading-none whitespace-nowrap"
+          style={{
+            fontFamily: 'var(--font-afacad)',
+            fontSize: fluid(20, 15),
+            color,
+          }}
+        >
+          {word}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+export default function Services() {
+  const gridRef = useRef<HTMLDivElement>(null)
+  const reduceRef = useRef(false)
+  const [revealed, setRevealed] = useState(false)
+  const [charging, setCharging] = useState(false)
+  const [bulbLit, setBulbLit] = useState(false)
+  const [phoneVibrate, setPhoneVibrate] = useState(false)
+
+  useEffect(() => {
+    const el = gridRef.current
+    if (!el) return
+    reduceRef.current = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    // Reveal immediately if motion is reduced or IntersectionObserver is missing.
+    if (reduceRef.current || typeof IntersectionObserver === 'undefined') {
+      setRevealed(true)
+      return
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setRevealed(true)
+          io.disconnect()
+        }
+      },
+      { threshold: 0.15 },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
+  // Once the cards have settled, run the icon sequence with 1s gaps between:
+  // (1) Opladning wordmark charges up, (2) Energi bulb lights up, (3) Mobil
+  // phone vibrates.
+  useEffect(() => {
+    if (!revealed) return
+    if (reduceRef.current) { setCharging(true); return }
+    const CHARGE_DELAY = 1000
+    const CHARGE_DURATION = 2600
+    const BULB_DELAY = CHARGE_DELAY + CHARGE_DURATION + 1000 // 1s after charge finishes
+    const BULB_DURATION = 2200
+    const PHONE_DELAY = BULB_DELAY + BULB_DURATION + 1000 // 1s after the bulb finishes
+    const t1 = setTimeout(() => setCharging(true), CHARGE_DELAY)
+    const t2 = setTimeout(() => setBulbLit(true), BULB_DELAY)
+    const t3 = setTimeout(() => setPhoneVibrate(true), PHONE_DELAY)
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
+  }, [revealed])
+
+  return (
+    <section id="tjenester" className="scroll-mt-24" style={{ background: '#193d24' }}>
+      <div
+        className="max-w-[1920px] mx-auto"
+        style={{ paddingLeft: fluid(48, 24), paddingRight: fluid(48, 24), paddingTop: fluid(120, 64), paddingBottom: fluid(120, 64) }}
+      >
+        <p
+          className={`${EYEBROW} text-center mb-4`}
+          style={{ color: '#90ff7c' }}
+        >
           Tjenesterne
         </p>
-        <h2
-          className="font-extrabold leading-[1.15] tracking-tight mb-4"
-          style={{ fontSize: 'clamp(28px, 3.5vw, 44px)', color: 'var(--forest)' }}
-        >
+        <h2 className={`${H2} text-center text-white`}>
           Hvad finder du i appen?
         </h2>
-        <p className="text-lg leading-relaxed mb-12" style={{ color: 'var(--text-mid)', maxWidth: 560 }}>
-          Nøje udvalgte tjenester til hjemmet – valgt på baggrund af kvalitet, pris og gennemsigtighed.
-        </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {services.map((s) => (
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mx-auto"
+          style={{ gap: fluid(24, 16), maxWidth: 'min(1377px, max(76vw, 340px))', marginTop: fluid(56, 40) }}
+        >
+          {services.map((s, i) => (
             <div
-              key={s.name}
-              className="bg-white rounded-2xl p-6 flex items-start gap-4 border transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-              style={{ borderColor: 'rgba(27,104,64,0.06)', boxShadow: '0 2px 8px rgba(27,104,64,0.04)', position: 'relative', overflow: 'visible' }}
+              key={s.label}
+              className="bg-white flex flex-col"
+              style={{
+                gap: fluid(14, 12),
+                padding: fluid(26, 22),
+                borderRadius: fluid(20, 16),
+                boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
+                // Container so the description can size to the card width (below).
+                containerType: 'inline-size',
+                // On-scroll reveal: fade + rise, staggered per card.
+                opacity: revealed ? 1 : 0,
+                transform: revealed ? 'none' : 'translateY(24px)',
+                transition: reduceRef.current
+                  ? 'none'
+                  : `opacity 0.5s ease ${i * 70}ms, transform 0.6s ${REVEAL_SPRING} ${i * 70}ms`,
+                willChange: 'opacity, transform',
+              }}
             >
-              {/* Altid Energi stamp — only on the Energi card */}
-              {s.name === 'Energi' && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: -10,
-                    right: -10,
-                    background: 'var(--forest)',
-                    borderRadius: 8,
-                    padding: '7px 12px',
-                    transform: 'rotate(4deg)',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
-                    zIndex: 10,
-                  }}
-                >
-                  <img src="/altidenergi-logo-stamp.svg" alt="Altid Energi" style={{ height: 22, width: 'auto', display: 'block' }} />
-                </div>
-              )}
-
-              <svg className="w-12 h-12 shrink-0" viewBox="0 0 34.44 34.44">
-                <circle cx="17.22" cy="17.22" r="17.22" fill={s.bg}/>
-                {s.icon}
-              </svg>
-              <div>
-                <p className="text-[17px] font-semibold mb-1" style={{ color: 'var(--forest)' }}>{s.name}</p>
-                <p className="text-[13px] leading-snug" style={{ color: 'var(--text-light)' }}><Desc text={s.desc} /></p>
-              </div>
+              <Lockup service={s} charging={charging} reduced={reduceRef.current} lit={bulbLit} vibrating={phoneVibrate} />
+              {/* Shrinks with the card so the longest description stays on ONE line;
+                  caps at 16px on the widest cards. */}
+              <p className="leading-[1.4] whitespace-nowrap" style={{ fontSize: 'min(16px, 4cqw)', letterSpacing: '-0.01em', color: '#4a5a4e' }}>
+                {s.desc}
+                <span className="font-medium" style={{ color: '#1a3d24' }}>Altid.</span>
+              </p>
             </div>
           ))}
         </div>
 
-        <p className="text-center mt-8 text-[15px] italic" style={{ color: 'var(--text-light)' }}>
-          – Og meget mere.
+        <p
+          className={`text-center text-white mx-auto ${BODY}`}
+          style={{ maxWidth: fluid(923, 720), marginTop: fluid(48, 36) }}
+        >
+          Nøje udvalgte tjenester til hjemmet – valgt på baggrund af kvalitet, pris og gennemsigtighed.
         </p>
       </div>
     </section>

@@ -5,9 +5,10 @@ import PhoneShell from './iphone/PhoneShell'
 import HomeScreen from './iphone/HomeScreen'
 import SubbrandsScreen from './iphone/SubbrandsScreen'
 import SmartTipsScreen from './iphone/SmartTipsScreen'
+import { CarouselPagination } from './useAutoCarousel'
 
 const SCREEN_COUNT = 3
-const AUTO_ADVANCE_MS = 3000
+const AUTO_ADVANCE_MS = 6000
 const RESUME_AFTER_MS = 5000
 const SWIPE_THRESHOLD = 40
 
@@ -15,6 +16,18 @@ export default function IPhoneMockup() {
   const [hovered, setHovered] = useState(false)
   const [showSidePhones, setShowSidePhones] = useState(false)
   const [carouselIndex, setCarouselIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const pausedRef = useRef(false)
+  // Real prefers-reduced-motion value — gates autoplay and the pagination pill.
+  const [reducedMotion, setReducedMotion] = useState(false)
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return
+    const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const sync = () => setReducedMotion(mql.matches)
+    sync()
+    mql.addEventListener('change', sync)
+    return () => mql.removeEventListener('change', sync)
+  }, [])
   const containerRef = useRef<HTMLDivElement>(null)
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const autoPlayRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -26,7 +39,9 @@ export default function IPhoneMockup() {
   // JS-driven md+ gate — prevents side phones leaking into mobile DOM
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return
-    const mql = window.matchMedia('(min-width: 768px)')
+    // Below 1050px the side phones crop harshly, so narrower windows get the
+    // single phone + pagination instead of the three-phone fan.
+    const mql = window.matchMedia('(min-width: 1050px)')
     const sync = () => setShowSidePhones(mql.matches)
     sync()
     mql.addEventListener('change', sync)
@@ -59,27 +74,35 @@ export default function IPhoneMockup() {
     }
   }, [])
 
-  // Carousel autoplay — mobile only
+  // Carousel autoplay — single-phone layout only (below the 1050px fan gate)
   const startAutoPlay = useCallback(() => {
     if (autoPlayRef.current) clearInterval(autoPlayRef.current)
+    if (pausedRef.current) return
     autoPlayRef.current = setInterval(() => {
       setCarouselIndex(i => (i + 1) % SCREEN_COUNT)
     }, AUTO_ADVANCE_MS)
   }, [])
 
+  // The delayed resume re-checks the gates (in view, not hovered-out, not
+  // paused) so it can't restart the interval for an off-screen carousel.
+  const gatesRef = useRef({ hovered: false, paused: false, showSidePhones: false })
   const pauseAutoPlay = useCallback(() => {
     if (autoPlayRef.current) clearInterval(autoPlayRef.current)
     autoPlayRef.current = null
     if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current)
-    resumeTimerRef.current = setTimeout(startAutoPlay, RESUME_AFTER_MS)
+    resumeTimerRef.current = setTimeout(() => {
+      const g = gatesRef.current
+      if (g.hovered && !g.paused && !g.showSidePhones) startAutoPlay()
+    }, RESUME_AFTER_MS)
   }, [startAutoPlay])
 
   useEffect(() => {
+    gatesRef.current = { hovered, paused, showSidePhones }
     if (showSidePhones) {
       if (autoPlayRef.current) clearInterval(autoPlayRef.current)
       return
     }
-    if (hovered) {
+    if (hovered && !paused && !reducedMotion) {
       startAutoPlay()
     } else {
       if (autoPlayRef.current) clearInterval(autoPlayRef.current)
@@ -87,7 +110,7 @@ export default function IPhoneMockup() {
     return () => {
       if (autoPlayRef.current) clearInterval(autoPlayRef.current)
     }
-  }, [hovered, showSidePhones, startAutoPlay])
+  }, [hovered, paused, showSidePhones, reducedMotion, startAutoPlay])
 
   useEffect(() => {
     return () => {
@@ -126,6 +149,12 @@ export default function IPhoneMockup() {
     setCarouselIndex(i =>
       delta < 0 ? (i + 1) % SCREEN_COUNT : (i - 1 + SCREEN_COUNT) % SCREEN_COUNT,
     )
+  }
+
+  function togglePaused() {
+    const next = !pausedRef.current
+    pausedRef.current = next
+    setPaused(next)
   }
 
   function goToSlide(i: number) {
@@ -223,7 +252,7 @@ export default function IPhoneMockup() {
       ) : (
         /* Mobile: single phone, screens slide inside */
         <div className="flex flex-col items-center">
-          <PhoneShell hovered={hovered}>
+          <PhoneShell hovered={hovered} softShadow>
             <div
               style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}
               onTouchStart={handleTouchStart}
@@ -256,26 +285,21 @@ export default function IPhoneMockup() {
             </div>
           </PhoneShell>
 
-          {/* Dot indicators */}
-          <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
-            {Array.from({ length: SCREEN_COUNT }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => goToSlide(i)}
-                aria-label={`Skærm ${i + 1}`}
-                style={{
-                  width: carouselIndex === i ? 18 : 6,
-                  height: 6,
-                  borderRadius: 999,
-                  background:
-                    carouselIndex === i ? 'var(--forest)' : 'rgba(26,61,34,0.2)',
-                  transition: 'width 0.3s ease, background 0.3s ease',
-                  border: 'none',
-                  padding: 0,
-                  cursor: 'pointer',
-                }}
-              />
-            ))}
+          {/* Same Apple-style pagination as Blog/Testimonials */}
+          <div style={{ marginTop: 28 }}>
+            <CarouselPagination
+              count={SCREEN_COUNT}
+              carousel={{
+                active: carouselIndex,
+                reduced: reducedMotion,
+                inView: hovered,
+                paused,
+                goTo: goToSlide,
+                togglePaused,
+                autoMs: AUTO_ADVANCE_MS,
+              }}
+              itemLabel={(i) => `Skærm ${i + 1}`}
+            />
           </div>
         </div>
       )}
