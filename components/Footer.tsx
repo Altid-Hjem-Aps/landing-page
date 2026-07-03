@@ -2,6 +2,10 @@ import Link from 'next/link'
 import { Logo } from '@/components/Logo'
 import { FINE_PRINT } from '@/lib/typography'
 
+// NBSP before the dot glues it to the preceding link, so a wrapped line can
+// never start with a floating separator.
+const SEP = '\u00A0· '
+
 const footerLinks = [
   { href: '/kontakt', label: 'Support' },
   { href: '/privatlivspolitik', label: 'Privatlivspolitik' },
@@ -31,13 +35,15 @@ export default function Footer() {
       className="flex flex-wrap items-center justify-between gap-y-4 gap-x-8 px-6 sm:px-10 lg:px-[clamp(48px,3.7vw,72px)] py-6 sm:py-7"
       style={{ background: '#163223', borderTop: '1px solid rgba(255,255,255,0.08)' }}
     >
-      {/* Left — wordmark + subbrand icon row (sized to the Figma footer) */}
-      <div className="flex items-center gap-8">
-        <Logo className="h-12 w-auto" variant="forest" />
-        <div className="flex items-center gap-5" aria-hidden>
+      {/* Left — wordmark + subbrand icon row (sized to the Figma footer).
+          On phones the row spans the full width (logo left, icons right) and
+          everything shrinks so all six icons fit without cropping. */}
+      <div className="flex items-center gap-8 max-lg:w-full max-lg:justify-between max-lg:gap-4">
+        <Logo className="h-9 sm:h-12 w-auto shrink-0" variant="forest" />
+        <div className="flex items-center gap-2 sm:gap-5" aria-hidden>
           {SUBBRAND_ICONS.map((src) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={src} src={src} alt="" className="w-10 h-10 rounded-full" />
+            <img key={src} src={src} alt="" className="w-7 h-7 sm:w-10 sm:h-10 rounded-full" />
           ))}
         </div>
       </div>
@@ -57,11 +63,13 @@ export default function Footer() {
             Altid Energi
           </a>
         </span>
-        <span className="order-1 lg:order-none">
+        {/* Balanced wrap on phones — the link run splits into even lines
+            instead of orphaning the last link. */}
+        <span className="order-1 lg:order-none max-lg:[text-wrap:balance]">
           <span className="hidden lg:inline">{' · '}</span>
           {footerLinks.map(({ href, label }, i) => (
             <span key={href}>
-              {i > 0 && ' · '}
+              {i > 0 && SEP}
               <Link
                 href={href}
                 className="underline-offset-2 hover:underline"
@@ -73,7 +81,7 @@ export default function Footer() {
           ))}
           {socialLinks.map(({ href, label }) => (
             <span key={href}>
-              {' · '}
+              {SEP}
               <a
                 href={href}
                 target="_blank"
@@ -85,7 +93,7 @@ export default function Footer() {
               </a>
             </span>
           ))}
-          {' · '}
+          {SEP}
           <Link
             href="/slet-konto"
             className="underline-offset-2 hover:underline"

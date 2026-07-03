@@ -57,10 +57,10 @@ const tips: Tip[] = [
     category: 'Internet',
     when: 'lige nu',
     title: 'Skift til mindre pakke',
+    isNew: true,
     reason: 'Du bruger kun 8% af din kapacitet',
     saving: '+100 kr./md.',
     bgIcon: 'rgba(245,240,118,0.32)',
-    isNew: true,
     icon: (
       <svg width="11" height="9" viewBox="0 0 12 9" fill="none">
         <path d="M6 7.5C6.4 7.5 6.7 7.8 6.7 8.2C6.7 8.6 6.4 9 6 9C5.6 9 5.3 8.6 5.3 8.2C5.3 7.8 5.6 7.5 6 7.5Z" fill="#7a6a00" />
@@ -98,7 +98,7 @@ export default function SmartTipsScreen({ hovered }: Props) {
             className="text-[10px] font-medium uppercase tracking-widest mb-0.5"
             style={{ color: 'var(--text-light)' }}
           >
-            Til dig · Lige nu
+            Til dig
           </p>
           <h2 className="text-base font-bold" style={{ color: 'var(--forest)' }}>
             Anbefalinger
@@ -157,7 +157,6 @@ export default function SmartTipsScreen({ hovered }: Props) {
             animation: hovered ? 'tips-badge-glow 1.4s ease 2' : 'none',
           }}
         >
-          <span style={{ fontSize: 9, lineHeight: 1, color: '#90FF7C' }}>✦</span>
           <span style={{ fontSize: 8, fontWeight: 700, color: '#90FF7C', letterSpacing: '0.06em' }}>
             <NumberSlot from={3} to={4} hovered={hovered} />
             <span style={{ marginLeft: 3 }}>NYE</span>
@@ -226,23 +225,6 @@ export default function SmartTipsScreen({ hovered }: Props) {
                 >
                   · {tip.when}
                 </span>
-                {isNew && (
-                  <span
-                    style={{
-                      fontSize: 7,
-                      fontWeight: 800,
-                      padding: '2px 5px',
-                      borderRadius: 4,
-                      background: '#1a6e3c',
-                      color: '#90FF7C',
-                      letterSpacing: '0.08em',
-                      marginLeft: 'auto',
-                      animation: hovered ? 'tips-new-pulse 1.2s ease 2' : 'none',
-                    }}
-                  >
-                    ✦ NY
-                  </span>
-                )}
               </div>
 
               <p
@@ -340,9 +322,6 @@ export default function SmartTipsScreen({ hovered }: Props) {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.06); }
         }
-        @keyframes tips-new-pulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(168,224,99,0); }
-          50% { box-shadow: 0 0 0 4px rgba(168,224,99,0.35); }
         }
       `}</style>
     </>

@@ -111,7 +111,8 @@ export default function HowItWorks() {
             className={`${BUTTON_PRIMARY} w-full px-5 lg:w-auto lg:px-[42px]`}
             style={{ background: '#90ff7c', color: '#003c16' }}
           >
-            Skriv dig på ventelisten og få ro på hjemmets udgifter
+            <span className="lg:hidden">Skriv dig gratis på ventelisten</span>
+            <span className="hidden lg:inline">Skriv dig på ventelisten og få ro på hjemmets udgifter</span>
           </button>
         </div>
 

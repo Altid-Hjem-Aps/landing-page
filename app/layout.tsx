@@ -41,7 +41,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="da" className={`${onest.variable} ${afacad.variable}`}>
+    // data-scroll-behavior: opt-in so Next keeps smooth scrolling for anchor
+    // jumps but disables it during route transitions (silences the Next 15+
+    // console warning).
+    <html lang="da" data-scroll-behavior="smooth" className={`${onest.variable} ${afacad.variable}`}>
       <body>
         <ResetScrollOnLoad />
         {children}

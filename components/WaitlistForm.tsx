@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import * as amplitude from '@amplitude/analytics-browser'
-import { AltidMark } from '@/components/AltidMark'
 import { DEFAULT_SIGNUP_SOURCE } from '@/lib/signup-source'
 import { BUTTON_PRIMARY, FINE_PRINT } from '@/lib/typography'
 
@@ -366,7 +365,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
                   className="flex items-center justify-center pl-4 pr-3 text-sm font-semibold select-none border-r shrink-0"
                   style={{ height: 52, color: 'var(--text-mid)', borderColor: 'rgba(27,104,64,0.1)', background: 'var(--cream)' }}
                 >
-                  🇩🇰 +45
+                  +45
                 </span>
                 <input
                   type="tel"
@@ -410,7 +409,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
       {/* Microcopy — only shown once the form is expanded (collapsed text removed). */}
       {expanded && (
         <p className={`${FINE_PRINT} text-center mt-2.5`} style={{ color: '#6f6a61' }}>
-          Gratis. Ingen spam. <AltidMark />
+          Gratis. Ingen spam. <span style={{ color: 'var(--forest)' }}>Altid.</span>
         </p>
       )}
       {expanded && (

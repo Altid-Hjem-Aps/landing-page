@@ -36,8 +36,10 @@ export default function Hero() {
               className={`mt-7 ${BODY} mx-auto lg:mx-0`}
               style={{ color: '#6f6a61', maxWidth: 620 }}
             >
-              Altid Hjem samler hjemmets faste udgifter i én løsning
-              <br />– ét overblik, ét login, én regning. Altid.
+              {/* Two block lines: the first balances on narrow screens (no
+                  orphan word), the dash line always starts its own line. */}
+              <span className="block [text-wrap:balance]">Altid Hjem samler hjemmets faste udgifter i én løsning</span>
+              <span className="block">– ét overblik, ét login, én regning. Altid.</span>
             </p>
 
             <div id="venteliste" className="mt-8 w-full max-w-[600px] mx-auto lg:mx-0">
@@ -45,16 +47,17 @@ export default function Hero() {
             </div>
 
             {/* Stats row */}
-            <div className="mt-20 max-lg:mt-10 grid grid-cols-2 gap-x-6 gap-y-6 lg:flex lg:flex-nowrap lg:justify-start lg:gap-x-[clamp(28px,5.2vw,100px)]">
+            <div className="mt-20 max-lg:mt-10 grid grid-cols-[auto_auto] justify-center gap-x-5 gap-y-6 lg:flex lg:flex-nowrap lg:justify-start lg:gap-x-[clamp(28px,5.2vw,100px)]">
               {STATS.map(s => (
-                <div key={s.label} className={`text-left max-lg:text-center whitespace-nowrap max-lg:whitespace-normal${s.desktopOnly ? ' hidden lg:block' : ''}`}>
+                <div key={s.label} className={`text-left max-lg:text-center whitespace-nowrap${s.desktopOnly ? ' hidden lg:block' : ''}`}>
                   <div
                     className="font-normal tabular-nums leading-none text-[clamp(22px,calc(20px+0.52vw),30px)]"
                     style={{ color: s.color }}
                   >
                     {s.value}
                   </div>
-                  <div className={`mt-2.5 text-[clamp(13px,0.85vw,16px)] leading-snug${s.tightLabel ? ' max-lg:tracking-[-0.01em]' : ''}`} style={{ color: '#6f6a61' }}>
+                  {/* 12px below lg so both one-line labels fit side by side down to 360px. */}
+                  <div className={`mt-2.5 text-[clamp(13px,0.85vw,16px)] max-lg:text-[12px] leading-snug${s.tightLabel ? ' max-lg:tracking-[-0.01em]' : ''}`} style={{ color: '#6f6a61' }}>
                     {s.label}
                   </div>
                 </div>

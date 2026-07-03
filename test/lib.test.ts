@@ -36,8 +36,8 @@ describe('fluid', () => {
 })
 
 // The animated receipt hard-codes per-subbrand savings that must equal the
-// saving derived from the household's member prices — and the "18.600 kr.
-// årligt" claim is 12× that. A price edit that forgets the receipt fails here.
+// saving derived from the household's member prices — and the yearly claim in
+// the green box is 12× that. A price edit that forgets the receipt fails here.
 describe('household story data invariants', () => {
   it('receipt rows sum to the derived monthly saving', () => {
     expect(RECEIPT_ROWS.reduce((s, r) => s + r.save, 0)).toBe(SAVING)
@@ -45,5 +45,9 @@ describe('household story data invariants', () => {
 
   it('the yearly claim is 12x the monthly saving', () => {
     expect(YEAR_SAVING).toBe(SAVING * 12)
+  })
+
+  it('receipt rows are ordered biggest saving first', () => {
+    expect(RECEIPT_ROWS.every((r, i, a) => i === 0 || a[i - 1].save >= r.save)).toBe(true)
   })
 })
