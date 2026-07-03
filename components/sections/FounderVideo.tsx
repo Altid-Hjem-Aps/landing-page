@@ -273,7 +273,7 @@ export default function FounderVideo() {
           <button
             type="button"
             onClick={handleCTA}
-            className="mt-9 inline-flex w-fit items-center justify-center font-medium rounded-[20px] px-8 py-[18px] xl:p-0 xl:w-[clamp(200px,15.83vw,304px)] xl:h-[clamp(52px,3.65vw,70px)] text-[16px] transition-opacity hover:opacity-90"
+            className="mt-9 inline-flex w-fit items-center justify-center font-medium rounded-[20px] px-8 py-[18px] xl:px-0 xl:py-[23px] xl:w-[clamp(200px,15.83vw,304px)] text-[16px] transition-opacity hover:opacity-90"
             style={{ background: '#90ff7c', color: '#003c16', cursor: 'pointer', touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
           >
             Skriv dig på ventelisten

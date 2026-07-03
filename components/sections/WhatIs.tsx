@@ -187,7 +187,7 @@ export default function WhatIs() {
         </div>
 
         {/* The mt offsets the stage's negative bottom margin above. */}
-        <p className={`${FINE_PRINT} text-center mx-auto mt-8 sm:mt-14 max-w-[560px] max-sm:px-4`} style={{ color: '#8a857c' }}>
+        <p className={`${FINE_PRINT} text-center mx-auto mt-8 sm:mt-14 max-w-[560px] max-sm:px-4`} style={{ color: '#6f6a61' }}>
           Eksempelberegning. Besparelsen er vejledende og baseret på antagelser. Den faktiske besparelse afhænger af husstandens forbrug, adresse, aftaler, dækning og gældende priser.
         </p>
 

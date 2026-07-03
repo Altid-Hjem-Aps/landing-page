@@ -62,6 +62,9 @@ const SPIIR_BANNER: BannerConfig = {
 // Colours from the CVI frame (node 45:6428)
 const FOREST = '#163223'
 const SIGNAL = '#90ff7c'
+// Deliberately low-contrast: these links are INACTIVE until each service's
+// site launches (WCAG 1.4.3 exempts inactive components); they flip to
+// 'live'/white when switched on.
 const MUTED = '#6f6a61'
 
 export default function Nav({ spiirBanner = false, banner }: NavProps) {
@@ -164,7 +167,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
       <button
         type="button"
         onClick={() => handleCTA('nav')}
-        className="inline-flex items-center justify-center font-medium rounded-[20px] transition-opacity hover:opacity-90 whitespace-nowrap text-[16px] w-[clamp(200px,15.83vw,304px)] h-[clamp(52px,3.65vw,70px)]"
+        className="inline-flex items-center justify-center font-medium rounded-[20px] transition-opacity hover:opacity-90 whitespace-nowrap text-[16px] leading-tight w-[clamp(200px,15.83vw,304px)] py-[23px]"
         style={{
           background: SIGNAL,
           color: '#003c16',
@@ -251,7 +254,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
 
   const navInner = (
     <>
-      <a href="/" className="shrink-0">
+      <a href="/" aria-label="Altid Hjem — forside" className="shrink-0">
         <Logo className="h-11 w-auto" variant="forest" />
       </a>
       {desktopMenu}
