@@ -33,7 +33,10 @@ export default function Hero() {
             </h1>
 
             <p
-              className={`mt-7 ${BODY} mx-auto lg:mx-0`}
+              // Phone-fluid size: the first sentence is 400px wide at 16px,
+              // wider than any phone — this ramp keeps it on ONE line from
+              // 360px up (back to the 16px BODY size by ~455px viewport).
+              className={`mt-7 ${BODY} max-lg:text-[clamp(12px,calc(3.95vw-2px),16px)] mx-auto lg:mx-0`}
               style={{ color: '#6f6a61', maxWidth: 620 }}
             >
               {/* Two block lines: the first wraps naturally so it fills the
