@@ -25,10 +25,10 @@ interface NavLink {
 }
 const NAV_LINKS: NavLink[] = [
   { label: 'Hjem', href: '/', tone: 'home' },
-  // All services muted until their sites are live — flip Mad/Energi back to
-  // 'live' (white) when they launch.
+  // 'soon' services are muted with a "Kommer snart" sublabel (Figma 26:105)
+  // and flip to 'live' (white, no sublabel) when their site launches.
   { label: 'Mad', href: '/#tjenester', tone: 'soon' },
-  { label: 'Energi', href: '/#tjenester', tone: 'soon' },
+  { label: 'Energi', href: 'https://altidenergi.dk', tone: 'live' },
   { label: 'Alarm', href: '/#tjenester', tone: 'soon' },
   { label: 'Opladning', href: '/#tjenester', tone: 'soon' },
   { label: 'Forsikring', href: '/#tjenester', tone: 'soon' },
@@ -145,21 +145,39 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
     <div className="hidden xl:flex items-center gap-[clamp(56px,5.5vw,105px)]">
       {NAV_LINKS.map(({ label, href, tone }) => {
         const active = tone === 'home' && pathname === '/'
+        const external = href.startsWith('http')
         return (
-          <span key={label} className="relative">
-            <a
-              href={href}
-              className="text-[16px] font-medium transition-opacity hover:opacity-80 whitespace-nowrap"
-              style={{ color: linkColor(tone) }}
-            >
-              {label}
-            </a>
+          <span key={label} className="relative" style={tone === 'soon' ? { opacity: 0.6 } : undefined}>
+            {tone === 'soon' ? (
+              // Not a link: "Kommer snart" services are inactive until launch.
+              <span className="text-[16px] font-medium whitespace-nowrap cursor-default select-none" style={{ color: linkColor(tone) }}>
+                {label}
+              </span>
+            ) : (
+              <a
+                href={href}
+                target={external ? '_blank' : undefined}
+                rel={external ? 'noopener noreferrer' : undefined}
+                className="text-[16px] font-medium transition-opacity hover:opacity-80 whitespace-nowrap"
+                style={{ color: linkColor(tone) }}
+              >
+                {label}
+              </a>
+            )}
             {active && (
               <span
                 aria-hidden
                 className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-[7px] h-[7px] rounded-full"
                 style={{ background: SIGNAL }}
               />
+            )}
+            {tone === 'soon' && (
+              <span
+                className="absolute left-1/2 -translate-x-1/2 top-full mt-0.5 text-[9px] font-medium uppercase tracking-[0.08em] whitespace-nowrap"
+                style={{ color: MUTED }}
+              >
+                Kommer snart
+              </span>
             )}
           </span>
         )
@@ -224,17 +242,39 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
       <ul className="flex flex-col px-5 sm:px-8 pt-2">
         {NAV_LINKS.map(({ label, href, tone }) => {
           const active = tone === 'home' && pathname === '/'
+          const external = href.startsWith('http')
+          const inner = (
+            <>
+              {label}
+              {active && <span aria-hidden className="w-[7px] h-[7px] rounded-full" style={{ background: SIGNAL }} />}
+              {tone === 'soon' && (
+                <span className="text-[10px] font-medium uppercase tracking-[0.08em]" style={{ color: MUTED }}>
+                  Kommer snart
+                </span>
+              )}
+            </>
+          )
+          const rowClass = 'flex items-center gap-2 py-3.5 text-[17px] font-medium'
+          const rowStyle = { color: linkColor(tone), borderBottom: '1px solid rgba(255,255,255,0.06)' }
           return (
             <li key={label}>
-              <a
-                href={href}
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 py-3.5 text-[17px] font-medium"
-                style={{ color: linkColor(tone), borderBottom: '1px solid rgba(255,255,255,0.06)' }}
-              >
-                {label}
-                {active && <span aria-hidden className="w-[7px] h-[7px] rounded-full" style={{ background: SIGNAL }} />}
-              </a>
+              {tone === 'soon' ? (
+                // Inactive until launch — rendered as plain text, not a link.
+                <span className={`${rowClass} cursor-default select-none`} style={{ ...rowStyle, opacity: 0.6 }}>
+                  {inner}
+                </span>
+              ) : (
+                <a
+                  href={href}
+                  target={external ? '_blank' : undefined}
+                  rel={external ? 'noopener noreferrer' : undefined}
+                  onClick={() => setMenuOpen(false)}
+                  className={rowClass}
+                  style={rowStyle}
+                >
+                  {inner}
+                </a>
+              )}
             </li>
           )
         })}

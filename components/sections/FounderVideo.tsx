@@ -352,7 +352,7 @@ export default function FounderVideo() {
             <button
               type="button"
               onClick={handleWatchWithSound}
-              aria-label="Afspil videoen forfra med lyd"
+              aria-label="Se med lyd — afspil videoen forfra"
               // Pill sits top-left below lg — on the narrow crops the burned-in
               // subtitles own the bottom of the frame; desktop has room at the
               // bottom-left.
