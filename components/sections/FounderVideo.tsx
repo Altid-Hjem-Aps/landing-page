@@ -54,10 +54,14 @@ export default function FounderVideo() {
   const [soundMode, setSoundMode] = useState(false)
   const soundModeRef = useRef(false)
 
-  // Touch devices get tap-controlled chrome in sound mode: the player's
-  // controls hide after ~2.5s, a tap on the picture toggles them, and a
-  // double-tap toggles fullscreen. Desktop keeps the native hover behaviour.
+  // Touch devices get tap-controlled chrome in sound mode: while the chrome
+  // is hidden, a tap layer covers the picture (tap = show, double-tap =
+  // fullscreen); while the chrome is VISIBLE the layer is gone, so every Mux
+  // control — including the centre play/pause — is directly tappable. The
+  // chrome auto-hides after ~2.5s of no touches, but never while paused.
+  // Desktop keeps the native hover behaviour.
   const [isTouch, setIsTouch] = useState(false)
+  const isTouchRef = useRef(false)
   const [controlsVisible, setControlsVisible] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -65,7 +69,7 @@ export default function FounderVideo() {
   useEffect(() => {
     if (typeof window.matchMedia !== 'function') return
     const mql = window.matchMedia('(hover: none) and (pointer: coarse)')
-    const sync = () => setIsTouch(mql.matches)
+    const sync = () => { isTouchRef.current = mql.matches; setIsTouch(mql.matches) }
     sync()
     mql.addEventListener('change', sync)
     const onFs = () => setIsFullscreen(!!document.fullscreenElement)
@@ -80,10 +84,19 @@ export default function FounderVideo() {
 
   const getPlayer = () => wrapperRef.current?.querySelector('mux-player') as PlayerEl | null
 
+  function scheduleHide() {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
+    hideTimerRef.current = setTimeout(() => {
+      // Standard player behaviour: the chrome stays up while paused — the
+      // 'play' listener below re-arms the hide when playback resumes.
+      if (getPlayer()?.paused) return
+      setControlsVisible(false)
+    }, 2600)
+  }
+
   function showControlsBriefly() {
     setControlsVisible(true)
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
-    hideTimerRef.current = setTimeout(() => setControlsVisible(false), 2600)
+    scheduleHide()
   }
 
   function toggleFullscreen() {
@@ -118,7 +131,7 @@ export default function FounderVideo() {
       setControlsVisible(v => {
         if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
         if (v) return false
-        hideTimerRef.current = setTimeout(() => setControlsVisible(false), 2600)
+        scheduleHide()
         return true
       })
     }, 280)
@@ -160,10 +173,27 @@ export default function FounderVideo() {
     // fires webkitbegin/endfullscreen on the native <video> instead of
     // document fullscreenchange, so mirror those into isFullscreen too.
     let fsVideo: HTMLVideoElement | null = null
+    let hookedPlayer: PlayerEl | null = null
+    const touchSound = () => isTouchRef.current && soundModeRef.current
     const onFsBegin = () => setIsFullscreen(true)
-    const onFsEnd = () => setIsFullscreen(false)
+    const onFsEnd = () => {
+      setIsFullscreen(false)
+      // iOS pauses the video when leaving native fullscreen — surface the
+      // chrome so play is one tap away (it stays up while paused).
+      if (touchSound()) { setControlsVisible(true); scheduleHide() }
+    }
+    // Chrome follows playback state on touch: stays up while paused,
+    // re-arms the auto-hide when playback resumes.
+    const onPause = () => { if (touchSound()) setControlsVisible(true) }
+    const onPlay = () => { if (touchSound()) scheduleHide() }
     const hookNative = () => {
-      const v = getPlayer()?.media?.nativeEl
+      const pl = getPlayer()
+      const v = pl?.media?.nativeEl
+      if (pl && !hookedPlayer) {
+        hookedPlayer = pl
+        pl.addEventListener('pause', onPause)
+        pl.addEventListener('play', onPlay)
+      }
       if (!v || fsVideo) return
       fsVideo = v
       v.addEventListener('webkitbeginfullscreen', onFsBegin)
@@ -179,6 +209,10 @@ export default function FounderVideo() {
       if (fsVideo) {
         fsVideo.removeEventListener('webkitbeginfullscreen', onFsBegin)
         fsVideo.removeEventListener('webkitendfullscreen', onFsEnd)
+      }
+      if (hookedPlayer) {
+        hookedPlayer.removeEventListener('pause', onPause)
+        hookedPlayer.removeEventListener('play', onPlay)
       }
     }
   }, [])
@@ -249,13 +283,19 @@ export default function FounderVideo() {
         {/* Right: video, fills the entire right half (cover) */}
         <div
           ref={wrapperRef}
-          onTouchStart={(e) => {
-            // Interacting with the visible control bar (the uncovered bottom
-            // strip) keeps the chrome alive — without this the 2.6s timer can
-            // hide it mid-scrub.
-            if (!soundModeRef.current || !controlsVisible) return
+          onTouchStart={() => {
+            // Any touch while the chrome is visible re-arms the auto-hide, so
+            // it can't vanish mid-scrub or mid-interaction.
+            if (soundModeRef.current && controlsVisible) scheduleHide()
+          }}
+          onDoubleClick={(e) => {
+            // Desktop: double-click on the picture toggles fullscreen (touch
+            // devices get this via the tap layer's double-tap instead).
+            // Control-bar double-clicks (bottom strip) stay with the player.
+            if (isTouchRef.current || !soundModeRef.current) return
             const r = e.currentTarget.getBoundingClientRect()
-            if (e.touches[0].clientY > r.bottom - 56) showControlsBriefly()
+            if (e.clientY > r.bottom - 60) return
+            toggleFullscreen()
           }}
           // Phones get a 1:1 frame — the 16:9 source is centre-cropped by the
           // player's object-fit:cover, which keeps the (centred) subtitles and
@@ -289,18 +329,18 @@ export default function FounderVideo() {
             }}
           />
 
-          {/* Sound mode on touch: invisible tap target — single tap toggles
-              the player chrome (auto-hides after 2.6s), double tap toggles
-              fullscreen. */}
-          {soundMode && isTouch && !isFullscreen && (
+          {/* Sound mode on touch, chrome hidden: full-area tap target —
+              single tap shows the chrome, double tap toggles fullscreen.
+              While the chrome is visible the layer unmounts entirely, so
+              every Mux control (incl. the CENTRE play/pause, which on mobile
+              sits mid-picture) is directly tappable; the wrapper's touch
+              handler keeps the chrome alive during interaction. */}
+          {soundMode && isTouch && !isFullscreen && !controlsVisible && (
             <button
               type="button"
               onClick={handleSoundModeTap}
-              aria-label={controlsVisible ? 'Skjul afspillerknapper' : 'Vis afspillerknapper — dobbelttryk for fuld skærm'}
-              // Full height while the chrome is hidden so bottom-strip taps
-              // can't fall through and silently pause the player; the control
-              // strip is only uncovered while the chrome is actually showing.
-              className={`absolute inset-x-0 top-0 z-10 cursor-pointer ${controlsVisible ? 'bottom-14' : 'bottom-0'}`}
+              aria-label="Vis afspillerknapper — dobbelttryk for fuld skærm"
+              className="absolute inset-0 z-10 cursor-pointer"
               style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent', background: 'transparent' }}
             />
           )}
