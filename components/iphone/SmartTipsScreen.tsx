@@ -230,7 +230,7 @@ export default function SmartTipsScreen({ hovered }: Props) {
               <p
                 style={{
                   fontSize: 11,
-                  fontWeight: 700,
+                  fontWeight: 500,
                   color: 'var(--text-dark)',
                   lineHeight: 1.2,
                   marginBottom: 1,
@@ -281,7 +281,7 @@ export default function SmartTipsScreen({ hovered }: Props) {
                     letterSpacing: '0.04em',
                   }}
                 >
-                  Aktivér →
+                  Aktivér
                 </span>
               </div>
             </div>
