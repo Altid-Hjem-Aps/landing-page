@@ -21,8 +21,15 @@ vi.mock('@/components/Logo', () => ({ Logo: () => null }))
 describe('home footer', () => {
   it('links to support and the legal pages Google Play requires to be reachable', () => {
     render(<Home />)
-    expect(screen.getByRole('link', { name: 'Support' })).toHaveAttribute('href', '/kontakt')
-    expect(screen.getByRole('link', { name: 'Privatlivspolitik' })).toHaveAttribute('href', '/privatlivspolitik')
-    expect(screen.getByRole('link', { name: 'Slet konto' })).toHaveAttribute('href', '/slet-konto')
+    // The footer renders the link run twice (desktop inline + mobile stacked),
+    // so each link appears in both blocks — assert every instance.
+    const expectAll = (name: string, href: string) => {
+      const links = screen.getAllByRole('link', { name })
+      expect(links.length).toBeGreaterThan(0)
+      links.forEach((l) => expect(l).toHaveAttribute('href', href))
+    }
+    expectAll('Support', '/kontakt')
+    expectAll('Privatlivspolitik', '/privatlivspolitik')
+    expectAll('Slet konto', '/slet-konto')
   })
 })
