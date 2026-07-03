@@ -20,7 +20,7 @@
 
 /** Hero headline only (Hero.tsx). Pair with the instance's own optical
  *  alignment tweaks (e.g. `lg:-ml-[0.05em]`) — those aren't part of the type role. */
-export const H1 = 'font-normal leading-[1.08] tracking-[-0.02em] text-[clamp(32px,calc(19.76px+3.137vw),80px)] lg:text-[clamp(40px,calc(29.8px+2.61vw),80px)]'
+export const H1 = 'font-normal leading-[1.08] max-lg:leading-[1.2] tracking-[-0.02em] text-[clamp(32px,calc(19.76px+3.137vw),80px)] max-sm:text-[clamp(28px,calc(10.28vw-5px),40px)] lg:text-[clamp(40px,calc(29.8px+2.61vw),80px)]'
 
 /** Every section heading — WhatIs, Services, HowItWorks, Trust, Faq, Blog,
  *  BottomCta, SavingsCounter, FounderVideo. */

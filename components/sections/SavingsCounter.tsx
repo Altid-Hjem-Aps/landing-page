@@ -326,7 +326,7 @@ export default function SavingsCounter() {
               Indtil videre
             </p>
             <h2 className={`${H2} mb-9 whitespace-normal md:whitespace-nowrap`} style={{ color: '#163223' }}>
-              Vores Altid Energi kunder har allerede sparet
+              Vores Altid Energi-kunder har allerede sparet
             </h2>
           </div>
 
