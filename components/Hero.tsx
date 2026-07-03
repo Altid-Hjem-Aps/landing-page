@@ -33,18 +33,15 @@ export default function Hero() {
             </h1>
 
             <p
-              // Phone-fluid size: the first sentence is 400px wide at 16px,
-              // wider than any phone — this ramp keeps it on ONE line from
-              // 360px up (back to the 16px BODY size by ~455px viewport).
-              className={`mt-7 ${BODY} max-lg:text-[clamp(12px,calc(3.95vw-2px),16px)] mx-auto lg:mx-0`}
+              className={`mt-7 ${BODY} mx-auto lg:mx-0`}
               style={{ color: '#6f6a61', maxWidth: 620 }}
             >
-              {/* Two block lines: the first wraps naturally so it fills the
-                  available width (text-wrap:balance made both halves equally
-                  narrow); the glued tail keeps the wrap from orphaning a
-                  single word. The dash line always starts its own line. */}
-              <span className="block">Altid Hjem samler hjemmets faste udgifter i én løsning</span>
-              <span className="block">– ét overblik, ét login, én regning. Altid.</span>
+              {/* Desktop: two lines with the dash line forced onto its own
+                  line. Phones: one naturally flowing paragraph (the glued
+                  "i én løsning" tail keeps the wrap from orphaning a word). */}
+              <span className="lg:block">Altid Hjem samler hjemmets faste udgifter i én løsning</span>
+              {' '}
+              <span className="lg:block">– ét overblik, ét login, én regning. Altid.</span>
             </p>
 
             <div id="venteliste" className="mt-8 w-full max-w-[600px] mx-auto lg:mx-0">
