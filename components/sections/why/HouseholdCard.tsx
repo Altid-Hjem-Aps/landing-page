@@ -52,7 +52,7 @@ export function HouseholdScreen({ progress }: Props) {
   return (
     <div className="flex-1 min-h-0 flex flex-col px-3.5 pt-1" style={{ color: '#163223' }}>
       <p style={{ fontSize: 15, fontWeight: 700 }}>Min husstand</p>
-      <p style={{ fontSize: 9.5, color: 'rgba(22,50,35,0.5)', marginBottom: 8 }}>3 medlemmer</p>
+      <p style={{ fontSize: 9.5, color: 'rgba(22,50,35,0.72)', marginBottom: 8 }}>3 medlemmer</p>
 
       <AssistantBar src={src} active={active} />
 

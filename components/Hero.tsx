@@ -15,8 +15,8 @@ const STATS = [
 export default function Hero() {
   return (
     <section id="top" className="relative overflow-hidden" style={{ background: '#fdfaf4' }}>
-      {/* Spacer matching the fixed nav height (CTA button up to 70px + py-5). */}
-      <div className="h-[112px] shrink-0" />
+      {/* Spacer matching the fixed nav height (66px CTA + py-5 + border). */}
+      <div className="h-[108px] shrink-0" />
 
       {/* Wide grid as in the CVI frame: ~71px margins at 1920 (= Figma's ~95/47). */}
       <div className="max-w-[1920px] mx-auto w-full px-6 sm:px-10 lg:px-[clamp(48px,3.7vw,72px)]">

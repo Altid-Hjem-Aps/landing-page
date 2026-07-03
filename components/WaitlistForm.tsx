@@ -185,7 +185,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     letterSpacing: '0.08em',
     textTransform: 'uppercase',
     marginBottom: 6,
-    color: 'rgba(255,255,255,0.5)',
+    color: 'rgba(255,255,255,0.62)',
   }
 
   if (isDark) {
@@ -239,7 +239,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
       <form id={id} onSubmit={e => { e.preventDefault(); submitStep1() }} className="rounded-[20px] p-6 sm:p-10" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
         <h2 className="text-2xl font-normal text-white mb-1">Skriv dig gratis på ventelisten</h2>
         {/* Same colour as the uppercase field labels (darkLabelStyle). */}
-        <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.5)' }}>Få tidlig adgang, når appen lanceres.</p>
+        <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.62)' }}>Få tidlig adgang, når appen lanceres.</p>
         <div className="flex flex-col gap-3 mb-5">
           <div>
             <label style={darkLabelStyle}>Navn</label>
@@ -252,7 +252,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
           <div>
             <label style={darkLabelStyle}>Mobil</label>
             <div className="flex overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 14 }}>
-              <span className="flex items-center px-3 text-sm font-medium border-r select-none shrink-0" style={{ borderColor: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.04)' }}>+45</span>
+              <span className="flex items-center px-3 text-sm font-medium border-r select-none shrink-0" style={{ borderColor: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.75)', background: 'rgba(255,255,255,0.04)' }}>+45</span>
               <input type="tel" name="tel" autoComplete="tel" value={phone} onChange={e => setPhone(formatPhone(e.target.value))} placeholder="12 34 56 78" className="flex-1 placeholder:text-white/40" style={{ padding: '14px 12px', fontSize: 15, outline: 'none', background: 'transparent', color: 'white', fontFamily: 'var(--font-onest)' }} />
             </div>
           </div>
@@ -261,10 +261,10 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
         <button type="submit" disabled={loading} className={`w-full disabled:opacity-60 ${BUTTON_PRIMARY}`} style={{ background: '#90ff7c', color: '#003c16' }}>
           {loading ? 'Sender...' : 'Skriv mig på ventelisten'}
         </button>
-        <p className={`${FINE_PRINT} text-center mt-3`} style={{ color: 'rgba(255,255,255,0.35)' }}>
+        <p className={`${FINE_PRINT} text-center mt-3`} style={{ color: 'rgba(255,255,255,0.62)' }}>
           Gratis. Ingen spam. <span style={{ color: '#fff' }}>Altid.</span>
         </p>
-        <p className={`${FINE_PRINT} text-center mt-1`} style={{ color: 'rgba(255,255,255,0.25)' }}>
+        <p className={`${FINE_PRINT} text-center mt-1`} style={{ color: 'rgba(255,255,255,0.62)' }}>
           <a href="/privatlivspolitik" className="underline underline-offset-2 hover:opacity-50 transition-opacity">Privatlivspolitik</a>
         </p>
       </form>

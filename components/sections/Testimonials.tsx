@@ -74,7 +74,7 @@ function Card({ t, clone = false }: { t: Testimonial; clone?: boolean }) {
       </p>
       <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
         <span className="text-[16px] text-[#193d23] whitespace-nowrap">{t.name}</span>
-        <span className="text-[16px]" style={{ color: 'rgba(25,61,35,0.5)' }}>{t.job}</span>
+        <span className="text-[16px]" style={{ color: 'rgba(25,61,35,0.72)' }}>{t.job}</span>
       </div>
     </article>
   )
@@ -94,6 +94,10 @@ export default function Testimonials() {
           sits centred with neighbours peeking in from both sides. */}
       <div
         ref={trackRef}
+        // Keyboard users can focus the track and scroll it with arrow keys.
+        role="region"
+        aria-label="Udtalelser fra ventelisten"
+        tabIndex={0}
         onScroll={onScroll}
         onPointerDown={cancelGlide}
         onWheel={cancelGlide}
