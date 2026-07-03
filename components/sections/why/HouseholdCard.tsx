@@ -291,12 +291,14 @@ function ReceiptRow({ index, src, active }: { index: number; src: MotionValue<nu
   const y = useTransform(opacity, (o) => (1 - o) * 6)
 
   return (
-    <motion.div className="flex items-center justify-between" style={{ opacity, y }}>
-      <span style={{ fontSize: 10, color: 'rgba(22,50,35,0.7)' }}>
-        <span style={{ color: '#163223', fontWeight: 700, marginRight: 4 }}>✓</span>
-        {row.label}
+    // Long labels may wrap: the check sits in its own column so wrapped lines
+    // indent under the text, and the amount never breaks.
+    <motion.div className="flex items-start justify-between gap-2" style={{ opacity, y }}>
+      <span className="flex items-start" style={{ fontSize: 10, color: 'rgba(22,50,35,0.7)' }}>
+        <span style={{ color: '#163223', fontWeight: 700, marginRight: 4, flexShrink: 0 }}>✓</span>
+        <span>{row.label}</span>
       </span>
-      <span style={{ fontSize: 10, fontWeight: 600, color: '#163223' }}>−{row.save.toLocaleString('da-DK')} kr./md.</span>
+      <span className="whitespace-nowrap" style={{ fontSize: 10, fontWeight: 600, color: '#163223' }}>−{row.save.toLocaleString('da-DK')} kr./md.</span>
     </motion.div>
   )
 }

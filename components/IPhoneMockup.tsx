@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import PhoneShell from './iphone/PhoneShell'
 import HomeScreen from './iphone/HomeScreen'
 import SubbrandsScreen from './iphone/SubbrandsScreen'
@@ -9,7 +9,6 @@ import { CarouselPagination } from './useAutoCarousel'
 
 const SCREEN_COUNT = 3
 const AUTO_ADVANCE_MS = 6000
-const RESUME_AFTER_MS = 5000
 const SWIPE_THRESHOLD = 40
 
 export default function IPhoneMockup() {
@@ -30,8 +29,12 @@ export default function IPhoneMockup() {
   }, [])
   const containerRef = useRef<HTMLDivElement>(null)
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const autoPlayRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Autoplay bookkeeping — mirrors useAutoCarousel so the slide advance and
+  // the pagination pill's fill share the same epoch (the pill restarts its
+  // CSS animation on every active-slide change and on view re-entry).
+  const remainingRef = useRef(AUTO_ADVANCE_MS)
+  const startedAtRef = useRef(0)
+  const prevIndexRef = useRef(0)
   const touchStartX = useRef<number | null>(null)
   const hoverCountRef = useRef(0)
   const leaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -74,50 +77,33 @@ export default function IPhoneMockup() {
     }
   }, [])
 
-  // Carousel autoplay — single-phone layout only (below the 1050px fan gate)
-  const startAutoPlay = useCallback(() => {
-    if (autoPlayRef.current) clearInterval(autoPlayRef.current)
-    if (pausedRef.current) return
-    autoPlayRef.current = setInterval(() => {
+  // Carousel autoplay — single-phone layout only (below the 1050px fan gate).
+  // One timeout per slide, keyed on carouselIndex: any slide change (auto,
+  // swipe or dot tap) restarts both this timer and the pill fill together, so
+  // the advance always lands exactly when the pill completes.
+  useEffect(() => {
+    if (showSidePhones || reducedMotion || !hovered || paused) return
+    if (prevIndexRef.current !== carouselIndex) {
+      prevIndexRef.current = carouselIndex
+      remainingRef.current = AUTO_ADVANCE_MS
+    }
+    startedAtRef.current = Date.now()
+    const t = setTimeout(() => {
+      remainingRef.current = AUTO_ADVANCE_MS
       setCarouselIndex(i => (i + 1) % SCREEN_COUNT)
-    }, AUTO_ADVANCE_MS)
-  }, [])
-
-  // The delayed resume re-checks the gates (in view, not hovered-out, not
-  // paused) so it can't restart the interval for an off-screen carousel.
-  const gatesRef = useRef({ hovered: false, paused: false, showSidePhones: false })
-  const pauseAutoPlay = useCallback(() => {
-    if (autoPlayRef.current) clearInterval(autoPlayRef.current)
-    autoPlayRef.current = null
-    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current)
-    resumeTimerRef.current = setTimeout(() => {
-      const g = gatesRef.current
-      if (g.hovered && !g.paused && !g.showSidePhones) startAutoPlay()
-    }, RESUME_AFTER_MS)
-  }, [startAutoPlay])
-
-  useEffect(() => {
-    gatesRef.current = { hovered, paused, showSidePhones }
-    if (showSidePhones) {
-      if (autoPlayRef.current) clearInterval(autoPlayRef.current)
-      return
-    }
-    if (hovered && !paused && !reducedMotion) {
-      startAutoPlay()
-    } else {
-      if (autoPlayRef.current) clearInterval(autoPlayRef.current)
-    }
+    }, remainingRef.current)
     return () => {
-      if (autoPlayRef.current) clearInterval(autoPlayRef.current)
+      clearTimeout(t)
+      // Sentinel: no timer is live — togglePaused must not bank elapsed time.
+      startedAtRef.current = 0
     }
-  }, [hovered, paused, showSidePhones, reducedMotion, startAutoPlay])
+  }, [carouselIndex, hovered, paused, reducedMotion, showSidePhones])
 
+  // Leaving the viewport (or switching to/from the desktop fan) resets the
+  // pill fill — reset the timer budget with it so they stay in lockstep.
   useEffect(() => {
-    return () => {
-      if (autoPlayRef.current) clearInterval(autoPlayRef.current)
-      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current)
-    }
-  }, [])
+    if (!hovered || showSidePhones) remainingRef.current = AUTO_ADVANCE_MS
+  }, [hovered, showSidePhones])
 
   // Per-phone desktop hover — only fires when cursor is over an actual phone shape
   function onPhoneEnter() {
@@ -138,7 +124,6 @@ export default function IPhoneMockup() {
   // Swipe handlers
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX
-    pauseAutoPlay()
   }
 
   function handleTouchEnd(e: React.TouchEvent) {
@@ -154,12 +139,17 @@ export default function IPhoneMockup() {
   function togglePaused() {
     const next = !pausedRef.current
     pausedRef.current = next
+    // Bank remaining time only while a timer is actually live (startedAtRef
+    // is 0 otherwise) — a pause tap before autoplay starts must not clamp
+    // the first slide to the 400ms floor.
+    if (next && startedAtRef.current) {
+      remainingRef.current = Math.max(400, remainingRef.current - (Date.now() - startedAtRef.current))
+    }
     setPaused(next)
   }
 
   function goToSlide(i: number) {
     setCarouselIndex(i)
-    pauseAutoPlay()
   }
 
   const screens = [

@@ -133,13 +133,15 @@ export default function WhatIs() {
   return (
     <section
       ref={sectionRef}
-      className="relative pt-20 sm:pt-28 pb-8 sm:pb-10 px-3 sm:px-10 lg:px-12"
+      className="relative isolate pt-20 sm:pt-28 pb-8 sm:pb-10 px-3 sm:px-10 lg:px-12"
       style={{ background: '#ffffff' }}
     >
       <div className="max-w-6xl mx-auto">
 
         {/* Heading + body */}
-        <div className="text-center mx-auto mb-8 sm:mb-10" style={{ maxWidth: 1040 }}>
+        {/* max-sm padding: section px is only 12px on phones — +16px here gives
+            the text the same 28px edge as the Trust section's boxes. */}
+        <div className="text-center mx-auto mb-8 sm:mb-10 max-sm:px-4" style={{ maxWidth: 1040 }}>
           <p className={`${EYEBROW} mb-4`} style={{ color: '#6f6a61' }}>
             Problematikken, vi alle kender
           </p>
@@ -185,8 +187,8 @@ export default function WhatIs() {
         </div>
 
         {/* The mt offsets the stage's negative bottom margin above. */}
-        <p className={`${FINE_PRINT} text-center mx-auto mt-8 sm:mt-14 max-w-[560px]`} style={{ color: '#8a857c' }}>
-          Eksempelberegning. Den viste besparelse er vejledende og baseret på antagelser. Faktisk besparelse afhænger af husstandens forbrug, aftaler og gældende priser.
+        <p className={`${FINE_PRINT} text-center mx-auto mt-8 sm:mt-14 max-w-[560px] max-sm:px-4`} style={{ color: '#8a857c' }}>
+          Eksempelberegning. Besparelsen er vejledende og baseret på antagelser. Den faktiske besparelse afhænger af husstandens forbrug, adresse, aftaler, dækning og gældende priser.
         </p>
 
       </div>

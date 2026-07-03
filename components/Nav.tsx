@@ -14,9 +14,9 @@ const BANNER_REVEAL = 8
 const SCROLL_DELTA_DESKTOP = 6
 const SCROLL_DELTA_TOUCH = 30
 
-// The CVI navigation: one active item (Hjem), the two live products (Mad,
-// Energi) in white, and the upcoming services muted. href points at the
-// services section so the link works from every page (homepage + SEO pages).
+// The CVI navigation: one active item (Hjem); service links are muted until
+// their sites launch ('live' renders white). href points at the services
+// section so the link works from every page (homepage + SEO pages).
 type LinkTone = 'home' | 'live' | 'soon'
 interface NavLink {
   label: string
@@ -268,7 +268,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
   if (!bannerConfig) {
     return (
       <nav
-        className="fixed top-0 left-0 right-0 z-50 px-5 sm:px-8 lg:px-9 py-5"
+        className="fixed top-0 left-0 right-0 z-[100] px-5 sm:px-8 lg:px-9 py-5"
         style={{
           background: FOREST,
           borderBottom: '1px solid rgba(255,255,255,0.06)',
@@ -288,7 +288,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
   // as the user leaves the top — the full nav slides up behind the banner and
   // the banner slides in. The nav only returns once back at the very top.
   return (
-    <div className="fixed top-0 left-0 right-0 z-50">
+    <div className="fixed top-0 left-0 right-0 z-[100]">
       {/* Campaign banner (~36px — if the height changes, the pages' pt-32 must
           follow). Hidden at the top (maxHeight 0), slides in on scroll and
           stays pinned. Higher z than the nav so the nav can hide behind it.

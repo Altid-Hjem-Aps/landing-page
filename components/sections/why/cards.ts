@@ -67,22 +67,22 @@ export const ICON_POS: Record<'mail' | 'eboks', { x: number; y: number }> = {
 // by the static prerender and go stale when the month turns).
 
 export const ITEMS: Bill[] = [
-  { name: 'Elregning',        provider: 'NordEl A/S', source: 'letter', envIndex: 0, price:  649, dueDay: 1,  x: -200, y: -110, rotate: -9 },
-  { name: 'Bilforsikring',    provider: 'SikkerPlus', source: 'letter', envIndex: 1, price:  519, dueDay: 3,  x:   60, y: -40,  rotate:  6 },
-  { name: 'Indboforsikring',  provider: 'SikkerPlus', source: 'letter', envIndex: 2, price:  189, dueDay: 12, x:  230, y: -140, rotate: 10 },
-  { name: 'Husforsikring',    provider: 'SikkerPlus', source: 'letter', envIndex: 3, price:  389, dueDay: 4,  x: -330, y: -160, rotate: -6 },
-  { name: 'Ulykkesforsikring', provider: 'SikkerPlus', source: 'letter', envIndex: 1, price: 129, dueDay: 6,  x: -190, y:  225, rotate:  5 },
+  { name: 'Elregning',        provider: 'NordEl A/S', source: 'letter', envIndex: 0, price:  949, dueDay: 1,  x: -200, y: -110, rotate: -9 },
+  { name: 'Bilforsikring',    provider: 'SikkerPlus', source: 'letter', envIndex: 1, price:  659, dueDay: 3,  x:   60, y: -40,  rotate:  6 },
+  { name: 'Indboforsikring',  provider: 'SikkerPlus', source: 'letter', envIndex: 2, price:  249, dueDay: 12, x:  230, y: -140, rotate: 10 },
+  { name: 'Husforsikring',    provider: 'SikkerPlus', source: 'letter', envIndex: 3, price:  549, dueDay: 4,  x: -330, y: -160, rotate: -6 },
+  { name: 'Ulykkesforsikring', provider: 'SikkerPlus', source: 'letter', envIndex: 1, price: 139, dueDay: 6,  x: -190, y:  225, rotate:  5 },
   { name: 'Mobilregning',     provider: 'TeleNu',     source: 'mail',                price:  249, dueDay: 5,  x: -230, y:  100, rotate: -5 },
   { name: 'Mobilt bredbånd',  provider: 'TeleNu',     source: 'mail',                price:  299, dueDay: 15, x:  100, y:  135, rotate:  8 },
-  { name: 'Madplan',          provider: 'MadKurven',  source: 'mail',                price: 5200, dueDay: 7,  x:  -40, y: -10,  rotate:  3 },
-  { name: 'Opladning',        provider: 'LadNemt',    source: 'mail',                price:  429, dueDay: 10, x: -330, y: -15,  rotate: -7 },
+  { name: 'Madplan',          provider: 'MadKurven',  source: 'mail',                price: 5800, dueDay: 7,  x:  -40, y: -10,  rotate:  3 },
+  { name: 'Opladning',        provider: 'LadNemt',    source: 'mail',                price:  699, dueDay: 10, x: -330, y: -15,  rotate: -7 },
   { name: 'Mobilregning',     provider: 'TeleNu',     source: 'mail',                price:  149, dueDay: 14, x:  330, y: -30,  rotate:  7 },
-  { name: 'Rejseforsikring',  provider: 'SikkerPlus', source: 'eboks',               price:   89, dueDay: 8,  x:  270, y:  60,  rotate: -6 },
+  { name: 'Rejseforsikring',  provider: 'SikkerPlus', source: 'eboks',               price:   99, dueDay: 8,  x:  270, y:  60,  rotate: -6 },
   { name: 'Mobil (barn)',     provider: 'TeleNu',     source: 'eboks',               price:   99, dueDay: 18, x:  -60, y:  215, rotate:  4 },
-  { name: 'Alarm',            provider: 'VagtPlus',   source: 'eboks',               price:  399, dueDay: 20, x:  180, y: -225, rotate:  5 },
-  { name: 'Ulykkesforsikring', provider: 'SikkerPlus', source: 'eboks',               price: 129, dueDay: 9,  x:  300, y:  175, rotate:  6 },
-  { name: 'Børneulykke',      provider: 'SikkerPlus', source: 'eboks',               price:   59, dueDay: 11, x:   35, y: -195, rotate: -5 },
-  { name: 'Skolemad',         provider: 'MadKurven',  source: 'eboks',               price:  180, dueDay: 22, x:  150, y:  210, rotate: -4 },
+  { name: 'Alarm',            provider: 'VagtPlus',   source: 'eboks',               price:  449, dueDay: 20, x:  180, y: -225, rotate:  5 },
+  { name: 'Ulykkesforsikring', provider: 'SikkerPlus', source: 'eboks',               price: 139, dueDay: 9,  x:  300, y:  175, rotate:  6 },
+  { name: 'Børneulykke',      provider: 'SikkerPlus', source: 'eboks',               price:   69, dueDay: 11, x:   35, y: -195, rotate: -5 },
+  { name: 'Skolemad',         provider: 'MadKurven',  source: 'eboks',               price:  540, dueDay: 22, x:  150, y:  210, rotate: -4 },
 ]
 
 export const M = ITEMS.length
@@ -93,51 +93,51 @@ export const MEMBERS: Member[] = [
   {
     name: 'Dig', role: 'adult',
     services: [
-      { label: 'El',      icon: '/services/icon-strom.svg',      oldPrice: 649, newPrice: 569 },
-      { label: 'Mobil',   icon: '/services/icon-mobil.svg',      oldPrice: 249, newPrice: 199 },
-      { label: 'Bil',     icon: '/services/icon-forsikring.svg', oldPrice: 519, newPrice: 459 },
-      { label: 'Hus',     icon: '/services/icon-forsikring.svg', oldPrice: 389, newPrice: 339 },
-      { label: 'Ulykke',  icon: '/services/icon-forsikring.svg', oldPrice: 129, newPrice: 109 },
-      { label: 'Ladning', icon: '/services/icon-opladning.svg',  oldPrice: 429, newPrice: 379 },
-      { label: 'Alarm',   icon: '/services/icon-alarm.svg',      oldPrice: 399, newPrice: 349 },
+      { label: 'El',      icon: '/services/icon-strom.svg',      oldPrice: 949, newPrice: 749 },
+      { label: 'Mobil',   icon: '/services/icon-mobil.svg',      oldPrice: 249, newPrice: 129 },
+      { label: 'Bil',     icon: '/services/icon-forsikring.svg', oldPrice: 659, newPrice: 459 },
+      { label: 'Hus',     icon: '/services/icon-forsikring.svg', oldPrice: 549, newPrice: 379 },
+      { label: 'Ulykke',  icon: '/services/icon-forsikring.svg', oldPrice: 139, newPrice: 99 },
+      { label: 'Ladning', icon: '/services/icon-opladning.svg',  oldPrice: 699, newPrice: 399 },
+      { label: 'Alarm',   icon: '/services/icon-alarm.svg',      oldPrice: 449, newPrice: 299 },
     ],
   },
   {
     name: 'Marie', role: 'adult',
     services: [
-      { label: 'Indbo',    icon: '/services/icon-forsikring.svg', oldPrice:  189, newPrice:  159 },
-      { label: 'Bredbånd', icon: '/services/icon-mobil.svg',      oldPrice:  299, newPrice:  269 },
-      { label: 'Mobil',    icon: '/services/icon-mobil.svg',      oldPrice:  149, newPrice:  119 },
+      { label: 'Indbo',    icon: '/services/icon-forsikring.svg', oldPrice:  249, newPrice:  179 },
+      { label: 'Bredbånd', icon: '/services/icon-mobil.svg',      oldPrice:  299, newPrice:  199 },
+      { label: 'Mobil',    icon: '/services/icon-mobil.svg',      oldPrice:  149, newPrice:  99 },
       // Groceries dominate a real family budget — Altid Mad alone saves
-      // 1.000 kr./md. = 12.000 kr./year (Thor: realistically 10–15k/year).
-      { label: 'Mad',      icon: '/services/icon-mad.svg',        oldPrice: 5200, newPrice: 4200 },
-      { label: 'Rejse',    icon: '/services/icon-forsikring.svg', oldPrice:   89, newPrice:   69 },
-      { label: 'Ulykke',   icon: '/services/icon-forsikring.svg', oldPrice:  129, newPrice:  109 },
+      // ~1.240 kr./md. ≈ 14.900 kr./year (prices vetted against Danish sources).
+      { label: 'Mad',      icon: '/services/icon-mad.svg',        oldPrice: 5800, newPrice: 4700 },
+      { label: 'Rejse',    icon: '/services/icon-forsikring.svg', oldPrice:   99, newPrice:   59 },
+      { label: 'Ulykke',   icon: '/services/icon-forsikring.svg', oldPrice:  139, newPrice:  99 },
     ],
   },
   {
     name: 'Lukas', role: 'child',
     services: [
-      { label: 'Mobil',    icon: '/services/icon-mobil.svg',      oldPrice:  99, newPrice:  69 },
-      { label: 'Ulykke',   icon: '/services/icon-forsikring.svg', oldPrice:  59, newPrice:  49 },
-      { label: 'Skolemad', icon: '/services/icon-mad.svg',        oldPrice: 180, newPrice: 160 },
+      { label: 'Mobil',    icon: '/services/icon-mobil.svg',      oldPrice:  99, newPrice:  59 },
+      { label: 'Ulykke',   icon: '/services/icon-forsikring.svg', oldPrice:  69, newPrice:  39 },
+      { label: 'Skolemad', icon: '/services/icon-mad.svg',        oldPrice: 540, newPrice: 402 },
     ],
   },
 ]
 
-export const OLD_TOTAL = MEMBERS.reduce((s, m) => s + m.services.reduce((t, x) => t + x.oldPrice, 0), 0) // 9156
-export const NEW_TOTAL = MEMBERS.reduce((s, m) => s + m.services.reduce((t, x) => t + x.newPrice, 0), 0) // 7606 → saving 1550
-export const SAVING = OLD_TOTAL - NEW_TOTAL // 1550
-export const YEAR_SAVING = SAVING * 12 // 18600
+export const OLD_TOTAL = MEMBERS.reduce((s, m) => s + m.services.reduce((t, x) => t + x.oldPrice, 0), 0) // 11136
+export const NEW_TOTAL = MEMBERS.reduce((s, m) => s + m.services.reduce((t, x) => t + x.newPrice, 0), 0) // 8348 → saving 2788
+export const SAVING = OLD_TOTAL - NEW_TOTAL // 2788
+export const YEAR_SAVING = SAVING * 12 // 33456
 
 // The final receipt: the changes, one row per Altid subbrand, biggest first.
 export const RECEIPT_ROWS = [
-  { label: '2 madaftaler → Altid Mad',          save: 1020 },
-  { label: '7 forsikringer → Altid Forsikring', save: 210 },
-  { label: '4 mobilaftaler → Altid Mobil',      save: 140 },
-  { label: 'El-aftale → Altid Energi',          save: 80 },
-  { label: 'Opladning → Altid Opladning',       save: 50 },
-  { label: 'Alarm → Altid Alarm',               save: 50 },
+  { label: '2 madaftaler → Altid Mad',          save: 1238 },
+  { label: '7 forsikringer → Altid Forsikring', save: 590 },
+  { label: '3 mobilabonnementer + bredbånd → Altid Mobil', save: 310 },
+  { label: 'Opladning → Altid Opladning',       save: 300 },
+  { label: 'El-aftale → Altid Energi',          save: 200 },
+  { label: 'Alarm → Altid Alarm',               save: 150 },
 ]
 
 // === Timeline (fractions of entranceProgress) ===

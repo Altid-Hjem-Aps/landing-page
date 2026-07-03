@@ -40,6 +40,7 @@ type PlayerEl = HTMLElement & {
   currentTime?: number
   play?: () => Promise<void>
   pause?: () => void
+  media?: { nativeEl?: HTMLVideoElement & { webkitEnterFullscreen?: () => void } }
 }
 
 export default function FounderVideo() {
@@ -53,7 +54,75 @@ export default function FounderVideo() {
   const [soundMode, setSoundMode] = useState(false)
   const soundModeRef = useRef(false)
 
+  // Touch devices get tap-controlled chrome in sound mode: the player's
+  // controls hide after ~2.5s, a tap on the picture toggles them, and a
+  // double-tap toggles fullscreen. Desktop keeps the native hover behaviour.
+  const [isTouch, setIsTouch] = useState(false)
+  const [controlsVisible, setControlsVisible] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const tapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return
+    const mql = window.matchMedia('(hover: none) and (pointer: coarse)')
+    const sync = () => setIsTouch(mql.matches)
+    sync()
+    mql.addEventListener('change', sync)
+    const onFs = () => setIsFullscreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', onFs)
+    return () => {
+      mql.removeEventListener('change', sync)
+      document.removeEventListener('fullscreenchange', onFs)
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
+      if (tapTimerRef.current) clearTimeout(tapTimerRef.current)
+    }
+  }, [])
+
   const getPlayer = () => wrapperRef.current?.querySelector('mux-player') as PlayerEl | null
+
+  function showControlsBriefly() {
+    setControlsVisible(true)
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
+    hideTimerRef.current = setTimeout(() => setControlsVisible(false), 2600)
+  }
+
+  function toggleFullscreen() {
+    const p = getPlayer()
+    if (!p) return
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.().catch(() => {})
+      return
+    }
+    // iOS Safari only allows fullscreen on the native <video>, exposed by
+    // mux-player as media.nativeEl (verified in the live shadow DOM).
+    const nativeVideo = p.media?.nativeEl
+    if (p.requestFullscreen) {
+      p.requestFullscreen().catch(() => nativeVideo?.webkitEnterFullscreen?.())
+    } else {
+      nativeVideo?.webkitEnterFullscreen?.()
+    }
+  }
+
+  // Single tap toggles the chrome; two taps within 280ms go fullscreen.
+  function handleSoundModeTap() {
+    if (tapTimerRef.current) {
+      clearTimeout(tapTimerRef.current)
+      tapTimerRef.current = null
+      toggleFullscreen()
+      return
+    }
+    tapTimerRef.current = setTimeout(() => {
+      tapTimerRef.current = null
+      // Functional update: the auto-hide can fire inside this 280ms window,
+      // so decide on the CURRENT visibility, not the tap-time closure value.
+      setControlsVisible(v => {
+        if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
+        if (v) return false
+        hideTimerRef.current = setTimeout(() => setControlsVisible(false), 2600)
+        return true
+      })
+    }, 280)
+  }
 
   useEffect(() => {
     const wrapper = wrapperRef.current
@@ -87,10 +156,31 @@ export default function FounderVideo() {
 
     const io = new IntersectionObserver(([e]) => { inView = e.isIntersecting; sync() }, { threshold: 0.4 })
     io.observe(wrapper)
+    // iPhone Safari has no element Fullscreen API — webkitEnterFullscreen()
+    // fires webkitbegin/endfullscreen on the native <video> instead of
+    // document fullscreenchange, so mirror those into isFullscreen too.
+    let fsVideo: HTMLVideoElement | null = null
+    const onFsBegin = () => setIsFullscreen(true)
+    const onFsEnd = () => setIsFullscreen(false)
+    const hookNative = () => {
+      const v = getPlayer()?.media?.nativeEl
+      if (!v || fsVideo) return
+      fsVideo = v
+      v.addEventListener('webkitbeginfullscreen', onFsBegin)
+      v.addEventListener('webkitendfullscreen', onFsEnd)
+    }
     // The player is lazy-loaded — poll until it exists, then sync and stop.
-    const poll = setInterval(() => { if (getPlayer()) { clearInterval(poll); sync() } }, 250)
+    const poll = setInterval(() => { if (getPlayer()) { clearInterval(poll); hookNative(); sync() } }, 250)
     const stopPoll = setTimeout(() => clearInterval(poll), 8000)
-    return () => { io.disconnect(); clearInterval(poll); clearTimeout(stopPoll) }
+    return () => {
+      io.disconnect()
+      clearInterval(poll)
+      clearTimeout(stopPoll)
+      if (fsVideo) {
+        fsVideo.removeEventListener('webkitbeginfullscreen', onFsBegin)
+        fsVideo.removeEventListener('webkitendfullscreen', onFsEnd)
+      }
+    }
   }, [])
 
   // Press on the video (ambient mode): restart from the beginning with sound.
@@ -103,6 +193,7 @@ export default function FounderVideo() {
     p.currentTime = 0
     p.muted = false
     p.play?.().catch(() => {})
+    if (isTouch) showControlsBriefly()
     amplitude.track('Founder Video Sound On')
   }
 
@@ -158,6 +249,14 @@ export default function FounderVideo() {
         {/* Right: video, fills the entire right half (cover) */}
         <div
           ref={wrapperRef}
+          onTouchStart={(e) => {
+            // Interacting with the visible control bar (the uncovered bottom
+            // strip) keeps the chrome alive — without this the 2.6s timer can
+            // hide it mid-scrub.
+            if (!soundModeRef.current || !controlsVisible) return
+            const r = e.currentTarget.getBoundingClientRect()
+            if (e.touches[0].clientY > r.bottom - 56) showControlsBriefly()
+          }}
           // Phones get a 1:1 frame — the 16:9 source is centre-cropped by the
           // player's object-fit:cover, which keeps the (centred) subtitles and
           // trims the sides. Tablets show the full 16:9; desktop fills the
@@ -170,14 +269,41 @@ export default function FounderVideo() {
             accentColor="#90ff7c"
             poster={POSTER_URL}
             playsInline
+            loop
             muted
             // metadata only: the section is below the fold and the poster <img>
             // covers first paint — preload="auto" would buffer HLS segments for
             // every visitor, including those who never scroll here.
             preload="metadata"
             metadata={{ video_title: 'Altid Hjem — Werner Valeur', video_id: 'founder-manifesto' }}
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', '--media-object-fit': 'cover', display: 'block' }}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              '--media-object-fit': 'cover',
+              display: 'block',
+              // Touch + sound mode: chrome only while "controlsVisible" (tap
+              // toggled, auto-hides) — never inside fullscreen.
+              '--controls': soundMode && isTouch && !controlsVisible && !isFullscreen ? 'none' : undefined,
+            }}
           />
+
+          {/* Sound mode on touch: invisible tap target — single tap toggles
+              the player chrome (auto-hides after 2.6s), double tap toggles
+              fullscreen. */}
+          {soundMode && isTouch && !isFullscreen && (
+            <button
+              type="button"
+              onClick={handleSoundModeTap}
+              aria-label={controlsVisible ? 'Skjul afspillerknapper' : 'Vis afspillerknapper — dobbelttryk for fuld skærm'}
+              // Full height while the chrome is hidden so bottom-strip taps
+              // can't fall through and silently pause the player; the control
+              // strip is only uncovered while the chrome is actually showing.
+              className={`absolute inset-x-0 top-0 z-10 cursor-pointer ${controlsVisible ? 'bottom-14' : 'bottom-0'}`}
+              style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent', background: 'transparent' }}
+            />
+          )}
 
           {/* Ambient mode: pressing the video restarts it with sound. The
               overlay stops above the Mux control bar (~56px) so the native
