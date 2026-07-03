@@ -36,9 +36,11 @@ export default function Hero() {
               className={`mt-7 ${BODY} mx-auto lg:mx-0`}
               style={{ color: '#6f6a61', maxWidth: 620 }}
             >
-              {/* Two block lines: the first balances on narrow screens (no
-                  orphan word), the dash line always starts its own line. */}
-              <span className="block [text-wrap:balance]">Altid Hjem samler hjemmets faste udgifter i én løsning</span>
+              {/* Two block lines: the first wraps naturally so it fills the
+                  available width (text-wrap:balance made both halves equally
+                  narrow); the glued tail keeps the wrap from orphaning a
+                  single word. The dash line always starts its own line. */}
+              <span className="block">Altid Hjem samler hjemmets faste udgifter i én løsning</span>
               <span className="block">– ét overblik, ét login, én regning. Altid.</span>
             </p>
 
@@ -47,7 +49,7 @@ export default function Hero() {
             </div>
 
             {/* Stats row */}
-            <div className="mt-20 max-lg:mt-10 grid grid-cols-[auto_auto] justify-center gap-x-5 gap-y-6 lg:flex lg:flex-nowrap lg:justify-start lg:gap-x-[clamp(28px,5.2vw,100px)]">
+            <div className="mt-20 max-lg:mt-10 grid grid-cols-[auto_auto] justify-center gap-x-8 gap-y-6 lg:flex lg:flex-nowrap lg:justify-start lg:gap-x-[clamp(28px,5.2vw,100px)]">
               {STATS.map(s => (
                 <div key={s.label} className={`text-left max-lg:text-center whitespace-nowrap${s.desktopOnly ? ' hidden lg:block' : ''}`}>
                   <div
