@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import * as amplitude from '@amplitude/analytics-browser'
 import { DEFAULT_SIGNUP_SOURCE } from '@/lib/signup-source'
+import { markWaitlistJoined } from '@/lib/waitlist-joined'
 import { BUTTON_PRIMARY, FINE_PRINT } from '@/lib/typography'
 
 type View = 'form' | 'questions' | 'success'
@@ -45,9 +46,15 @@ interface Props {
   defaultView?: View
   /** Where the signup came from (e.g. 'spiir-alternativ') — stored on the signup. */
   source?: string
+  /** Dark variant only: render bare fields without the card chrome and own
+   *  heading — for dialogs that supply their own headline (ExitIntentDialog). */
+  embedded?: boolean
+  /** Fires once when step 1 succeeds (the signup exists) — hosts use it to
+   *  distinguish converted closes from dismissals. */
+  onSignup?: () => void
 }
 
-export default function WaitlistForm({ variant = 'light', id, defaultView = 'form', source = DEFAULT_SIGNUP_SOURCE }: Props) {
+export default function WaitlistForm({ variant = 'light', id, defaultView = 'form', source = DEFAULT_SIGNUP_SOURCE, embedded = false, onSignup }: Props) {
   const [view, setView] = useState<View>(defaultView)
   const [expanded, setExpanded] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -124,11 +131,16 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     const data = await res.json().catch(() => ({}))
     setLoading(false)
     if (!res.ok) {
+      // 409 = this person is already on the list — that's a confirmed
+      // signup for popup-suppression purposes too.
+      if (res.status === 409) markWaitlistJoined()
       setError(data.error ?? 'Noget gik galt. Prøv igen.')
       amplitude.track('Waitlist Step 1 Failed', { error: data.error ?? 'unknown', status: res.status })
       return
     }
+    markWaitlistJoined()
     amplitude.track('Waitlist Step 1 Submitted', { signup_source: source })
+    onSignup?.()
     setSignupId(data.id)
     setSurveyToken(data.surveyToken ?? '')
     setView('questions')
@@ -188,12 +200,17 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     color: 'rgba(255,255,255,0.62)',
   }
 
+  // Card chrome shared by both dark form views — embedded hosts (the
+  // exit-intent dialog) strip it and supply their own framing.
+  const darkCardClass = embedded ? undefined : 'rounded-[20px] p-6 sm:p-10'
+  const darkCardStyle = embedded ? undefined : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }
+
   if (isDark) {
-    if (view === 'success') return <SuccessCard inviteUrl={signupId ? `https://altidhjem.dk/?ref=${signupId}` : undefined} />
+    if (view === 'success') return <SuccessCard bare={embedded} inviteUrl={signupId ? `https://altidhjem.dk/?ref=${signupId}` : undefined} />
 
     if (view === 'questions') {
       return (
-        <form id={id} onSubmit={e => { e.preventDefault(); submitStep2() }} className="rounded-[20px] p-6 sm:p-10" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
+        <form id={id} onSubmit={e => { e.preventDefault(); submitStep2() }} className={darkCardClass} style={darkCardStyle}>
           <h2 className="text-xl font-normal mb-1 text-white">Fortæl os lidt om dig.</h2>
           <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.5)' }}>Svar på 4 korte spørgsmål.</p>
           <div className="flex flex-col gap-3 mb-5">
@@ -236,10 +253,14 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
     }
 
     return (
-      <form id={id} onSubmit={e => { e.preventDefault(); submitStep1() }} className="rounded-[20px] p-6 sm:p-10" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
-        <h2 className="text-2xl font-normal text-white mb-1">Skriv dig gratis på ventelisten</h2>
-        {/* Same colour as the uppercase field labels (darkLabelStyle). */}
-        <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.62)' }}>Få tidlig adgang, når appen lanceres.</p>
+      <form id={id} onSubmit={e => { e.preventDefault(); submitStep1() }} className={darkCardClass} style={darkCardStyle}>
+        {!embedded && (
+          <>
+            <h2 className="text-2xl font-normal text-white mb-1">Skriv dig gratis på ventelisten</h2>
+            {/* Same colour as the uppercase field labels (darkLabelStyle). */}
+            <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.62)' }}>Få tidlig adgang, når appen lanceres.</p>
+          </>
+        )}
         <div className="flex flex-col gap-3 mb-5">
           <div>
             <label style={darkLabelStyle}>Navn</label>
@@ -422,16 +443,19 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   )
 }
 
-export function SuccessCard({ inviteUrl, variant = 'dark' }: { inviteUrl?: string; variant?: 'dark' | 'cream' }) {
+export function SuccessCard({ inviteUrl, variant = 'dark', bare = false }: { inviteUrl?: string; variant?: 'dark' | 'cream'; bare?: boolean }) {
   const [copied, setCopied] = useState(false)
   // On the light (cream) hero the confirmation renders as a solid forest-green
   // card so the white text still works — otherwise the original translucent
-  // variant for the dark sections.
-  const cardStyle: React.CSSProperties = variant === 'cream'
-    ? { background: '#163223', border: '1px solid rgba(255,255,255,0.08)' }
-    : { background: 'rgba(168,224,99,0.08)', border: '1px solid rgba(168,224,99,0.2)' }
+  // variant for the dark sections. `bare` (embedded dialogs) drops the card
+  // chrome so the confirmation matches the bare fields it replaces.
+  const cardStyle: React.CSSProperties | undefined = bare
+    ? undefined
+    : variant === 'cream'
+      ? { background: '#163223', border: '1px solid rgba(255,255,255,0.08)' }
+      : { background: 'rgba(168,224,99,0.08)', border: '1px solid rgba(168,224,99,0.2)' }
   return (
-    <div className="rounded-[20px] p-8 sm:p-10" style={cardStyle}>
+    <div className={bare ? undefined : 'rounded-[20px] p-8 sm:p-10'} style={cardStyle}>
       <h3 className="text-3xl font-normal mb-3 text-white">Tak. Du er med.</h3>
       <p className="text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
         Vi giver dig besked, så snart Altid Hjem åbner dørene.
