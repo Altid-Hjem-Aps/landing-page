@@ -1,6 +1,6 @@
 'use client'
 
-import { useAutoCarousel, CarouselPagination } from '@/components/useAutoCarousel'
+import { useAutoCarousel, useCarouselReveal, CarouselPagination } from '@/components/useAutoCarousel'
 import { EYEBROW } from '@/lib/typography'
 
 // Real quotes from waitlist signups (3 Jul 2026). `initials` is unused since
@@ -59,12 +59,12 @@ function Stars() {
 // Figma node 182:540 — no photo panel, full-width white card: stars, quote
 // (18px), name+job (16px) stacked with generous padding. Shadow matches the
 // Blog post cards (soft resting shadow, deeper on hover).
-function Card({ t, clone = false }: { t: Testimonial; clone?: boolean }) {
+function Card({ t, clone = false, revealStyle }: { t: Testimonial; clone?: boolean; revealStyle?: React.CSSProperties }) {
   return (
     <article
       aria-hidden={clone || undefined}
       className="snap-center shrink-0 w-[88vw] max-w-[640px] min-h-[220px] flex flex-col justify-between gap-5 overflow-hidden rounded-[20px] border border-[#e6e2d8] bg-white px-6 py-5 transition-shadow hover:shadow-[0_14px_34px_rgba(15,55,30,0.12)]"
-      style={{ boxShadow: '0 6px 18px rgba(0,0,0,0.05)' }}
+      style={{ boxShadow: '0 6px 18px rgba(0,0,0,0.05)', ...revealStyle }}
     >
       <Stars />
       {/* Hanging quote mark, same trick as FounderVideo/Trust: text-indent
@@ -83,6 +83,7 @@ function Card({ t, clone = false }: { t: Testimonial; clone?: boolean }) {
 export default function Testimonials() {
   const carousel = useAutoCarousel(N)
   const { trackRef, onScroll, cancelGlide } = carousel
+  const reveal = useCarouselReveal(trackRef, carousel.reduced, N, carousel.demoNudge)
 
   return (
     <section className="py-16 sm:py-20" style={{ background: '#fff' }}>
@@ -107,7 +108,7 @@ export default function Testimonials() {
         {LOOP.map((t, i) => {
           // Clone sets exist only for the seamless loop — hide them from AT.
           const clone = i < N || i >= 2 * N
-          return <Card key={`${t.name}-${i}`} t={t} clone={clone} />
+          return <Card key={`${t.name}-${i}`} t={t} clone={clone} revealStyle={reveal(i)} />
         })}
       </div>
 

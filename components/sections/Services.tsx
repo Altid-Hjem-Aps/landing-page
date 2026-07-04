@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { fluid } from '@/lib/fluid'
+import { REVEAL_SPRING } from '@/lib/motion'
 import { H2, EYEBROW, BODY } from '@/lib/typography'
 
-// Spring-ish easing for the on-scroll card reveal (slight overshoot on settle).
-const REVEAL_SPRING = 'cubic-bezier(0.34, 1.2, 0.64, 1)'
 
 // "Hvad finder du i appen?" — forest section presenting the six Altid subbrands
 // as white cards, each with its official logo lockup (round icon + "altid" +

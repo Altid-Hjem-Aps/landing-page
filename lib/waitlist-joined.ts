@@ -20,3 +20,10 @@ export function hasJoinedWaitlist(): boolean {
     return false
   }
 }
+
+/** QA reset only — forget that this browser joined. */
+export function clearWaitlistJoined() {
+  try {
+    window.localStorage.removeItem(WAITLIST_JOINED_KEY)
+  } catch {}
+}
