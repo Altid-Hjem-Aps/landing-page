@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, useMotionValue, useTransform, type MotionValue } from 'framer-motion'
+import { Logo } from '@/components/Logo'
 import type { SourceKind } from './cards'
 
 type Source = SourceKind
@@ -113,8 +114,10 @@ export const ENVELOPE_H = 116
 
 // A physical letter with a REAL flap: closed it covers the top half; when the
 // letter is opened (`flap` 0→1) it swings up around its top edge in 3D and the
-// bill slides out over it.
-export function Envelope({ flap }: { flap?: MotionValue<number> }) {
+// bill slides out over it. `logoStamp` swaps the postage stamp for the Altid
+// Hjem wordmark — used ONLY by the exit-intent dialog's big delivery letter;
+// the scene envelopes keep the anonymous stamp (they're the OLD bills).
+export function Envelope({ flap, logoStamp = false }: { flap?: MotionValue<number>; logoStamp?: boolean }) {
   const fallback = useMotionValue(0)
   const f = flap ?? fallback
   const rotateX = useTransform(f, (v) => -168 * v)
@@ -141,19 +144,23 @@ export function Envelope({ flap }: { flap?: MotionValue<number> }) {
           className="absolute"
           style={{ top: 0, left: 4, right: 4, height: 12, background: 'linear-gradient(180deg, rgba(15,55,30,0.10), transparent)' }}
         />
-        {/* Stamp */}
-        <div
-          className="absolute"
-          style={{
-            bottom: 12,
-            right: 10,
-            width: 26,
-            height: 30,
-            borderRadius: 3,
-            background: 'rgba(144,255,124,0.35)',
-            border: '1px dashed rgba(15,55,30,0.3)',
-          }}
-        />
+        {/* Stamp — or the sender's wordmark on the dialog's delivery letter */}
+        {logoStamp ? (
+          <Logo variant="dark" className="absolute" style={{ bottom: 12, right: 10, width: 48, height: 'auto' }} />
+        ) : (
+          <div
+            className="absolute"
+            style={{
+              bottom: 12,
+              right: 10,
+              width: 26,
+              height: 30,
+              borderRadius: 3,
+              background: 'rgba(144,255,124,0.35)',
+              border: '1px dashed rgba(15,55,30,0.3)',
+            }}
+          />
+        )}
         {/* Address lines */}
         <div className="absolute left-4 bottom-4 flex flex-col gap-[6px]">
           <span style={{ height: 5, width: 84, background: 'rgba(15,55,30,0.2)', borderRadius: 2 }} />

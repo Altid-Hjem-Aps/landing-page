@@ -50,6 +50,8 @@ function stubPointer(matches: boolean) {
 beforeEach(() => {
   vi.useFakeTimers()
   sessionStorage.clear()
+  window.localStorage.clear()
+  window.history.replaceState(null, '', '/')
   nav.path = '/'
   stubPointer(true)
 })
@@ -81,12 +83,12 @@ describe('ExitIntentModal trigger guards', () => {
     expect(await findDialog()).toBeNull()
   })
 
-  it('opens on a top-edge exit after arming, marks the session, tracks Shown', async () => {
+  it('opens on a top-edge exit after arming, marks the browser, tracks Shown', async () => {
     render(<ExitIntentModal />)
     await arm()
     act(() => exitTop(10))
     expect(await findDialog()).toBeInTheDocument()
-    expect(sessionStorage.getItem('ah-exit-intent-shown')).toBe('1')
+    expect(window.localStorage.getItem('ah-exit-intent-shown')).toBe('1')
     expect(amplitude.track).toHaveBeenCalledWith('Exit Intent Shown', { path: '/' })
   })
 
@@ -98,6 +100,48 @@ describe('ExitIntentModal trigger guards', () => {
     expect(await findDialog()).toBeNull()
   })
 
+  it('fires on a fast upward flick even when the last sample is below the zone', async () => {
+    render(<ExitIntentModal />)
+    await arm()
+    // Cursor sampled at y=300, then the exit reports y=180 — travelling up.
+    act(() => {
+      document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientY: 300 }))
+      exitTop(180)
+    })
+    expect(await findDialog()).toBeInTheDocument()
+  })
+
+  it('does NOT fire on a downward exit below the zone', async () => {
+    render(<ExitIntentModal />)
+    await arm()
+    act(() => {
+      document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientY: 100 }))
+      exitTop(400)
+    })
+    expect(await findDialog()).toBeNull()
+  })
+
+  it('fires via mouseleave on the root element (Safari path)', async () => {
+    render(<ExitIntentModal />)
+    await arm()
+    act(() => {
+      document.documentElement.dispatchEvent(new MouseEvent('mouseleave', { clientY: 10 }))
+    })
+    expect(await findDialog()).toBeInTheDocument()
+  })
+
+  it('?exit-intent=reset clears both guards but still requires the gesture', async () => {
+    window.localStorage.setItem('ah-exit-intent-shown', '1')
+    window.localStorage.setItem('ah-waitlist-joined', '1')
+    window.history.replaceState(null, '', '/?exit-intent=reset')
+    render(<ExitIntentModal />)
+    // No gesture yet — clearing the flags must not open anything by itself.
+    expect(await findDialog()).toBeNull()
+    await arm()
+    act(() => exitTop(10))
+    expect(await findDialog()).toBeInTheDocument()
+  })
+
   it('never binds on touch devices', async () => {
     stubPointer(false)
     render(<ExitIntentModal />)
@@ -106,11 +150,43 @@ describe('ExitIntentModal trigger guards', () => {
     expect(await findDialog()).toBeNull()
   })
 
-  it('never fires again in a session that already saw it', async () => {
-    sessionStorage.setItem('ah-exit-intent-shown', '1')
+  it('never fires again on a browser that already saw it (persistent)', async () => {
+    window.localStorage.setItem('ah-exit-intent-shown', '1')
     render(<ExitIntentModal />)
     await arm()
     act(() => exitTop())
+    expect(await findDialog()).toBeNull()
+  })
+
+  it('opens at most once — a second exit after closing does not reopen it', async () => {
+    const { rerender } = render(<ExitIntentModal />)
+    await arm()
+    act(() => exitTop(10))
+    const dialog = await findDialog()
+    expect(dialog).toBeInTheDocument()
+    // Close it (the dialog stub exposes the Luk button wired to onClose).
+    act(() => screen.getByRole('button', { name: 'Luk' }).click())
+    expect(await findDialog()).toBeNull()
+    // Re-arm and try to exit again — the persistent flag must keep it shut.
+    rerender(<ExitIntentModal />)
+    await arm()
+    act(() => exitTop(10))
+    expect(await findDialog()).toBeNull()
+  })
+
+  it('with ?exit-intent=reset it still opens only once, not on every close', async () => {
+    window.history.replaceState(null, '', '/?exit-intent=reset')
+    const { rerender } = render(<ExitIntentModal />)
+    await arm()
+    act(() => exitTop(10))
+    expect(await findDialog()).toBeInTheDocument()
+    act(() => screen.getByRole('button', { name: 'Luk' }).click())
+    expect(await findDialog()).toBeNull()
+    // The reset only runs on mount, so closing must NOT re-clear the flag and
+    // let the popup reappear on the next exit gesture.
+    rerender(<ExitIntentModal />)
+    await arm()
+    act(() => exitTop(10))
     expect(await findDialog()).toBeNull()
   })
 
@@ -120,7 +196,6 @@ describe('ExitIntentModal trigger guards', () => {
     await arm()
     act(() => exitTop())
     expect(await findDialog()).toBeNull()
-    window.localStorage.clear()
   })
 
   it('stays away from excluded utility pages, but not from prefix look-alikes', async () => {
@@ -145,12 +220,39 @@ describe('ExitIntentModal trigger guards', () => {
     await arm()
     const video = document.createElement('video')
     Object.defineProperty(document, 'fullscreenElement', { value: video, configurable: true })
-    act(() => exitTop())
-    expect(await findDialog()).toBeNull()
-    Object.defineProperty(document, 'fullscreenElement', { value: null, configurable: true })
+    try {
+      act(() => exitTop())
+      expect(await findDialog()).toBeNull()
+    } finally {
+      // try/finally: a failing assertion must not leak the stubbed property
+      // into the rest of the file (jsdom's document is shared per file).
+      Object.defineProperty(document, 'fullscreenElement', { value: null, configurable: true })
+    }
   })
 
-  it('survives a sessionStorage that throws (blocked cookies) without crashing', async () => {
+  it('does NOT fire on a sideways exit with only a tiny upward drift', async () => {
+    render(<ExitIntentModal />)
+    await arm()
+    act(() => {
+      // Cursor at mid-page drifting up 3px while exiting through a side edge
+      // — must not spend the once-per-browser showing.
+      document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientY: 403 }))
+      exitTop(400)
+    })
+    expect(await findDialog()).toBeNull()
+  })
+
+  it('does NOT re-pitch someone who joined the waitlist after the listeners were armed', async () => {
+    render(<ExitIntentModal />)
+    await arm()
+    // Signing up via the hero form sets the flag WITHOUT re-rendering the
+    // root-layout trigger — the fire-time guard must catch it.
+    window.localStorage.setItem('ah-waitlist-joined', '1')
+    act(() => exitTop(10))
+    expect(await findDialog()).toBeNull()
+  })
+
+  it('survives a localStorage that throws (blocked cookies) without crashing', async () => {
     const throwing = {
       getItem: () => {
         throw new DOMException('denied', 'SecurityError')
@@ -158,8 +260,11 @@ describe('ExitIntentModal trigger guards', () => {
       setItem: () => {
         throw new DOMException('denied', 'SecurityError')
       },
+      removeItem: () => {
+        throw new DOMException('denied', 'SecurityError')
+      },
     }
-    vi.stubGlobal('sessionStorage', throwing)
+    vi.stubGlobal('localStorage', throwing)
     render(<ExitIntentModal />)
     await arm()
     act(() => exitTop())

@@ -23,6 +23,7 @@ import {
   flapOpen,
   LOOP_PAUSE,
   LOOP_FADE,
+  INTRO_FADE_END,
   type Bill,
 } from './cards'
 
@@ -107,16 +108,21 @@ export default function EtHjemStage({ compact = false }: {
     }
   }, [compact])
 
-  // entranceProgress starts at 1 so the mockup renders in its optimised
-  // end-state on first paint; on scroll-in we replay 0→1 for the full story,
-  // hold the finished receipt for LOOP_PAUSE, fade the stage out, and loop —
-  // the sources scene fades back in (introFade) for a seamless restart.
-  // Kicked off from an effect — setting the value during render would trigger
-  // setState in progress subscribers (HouseholdScreen's view switch) mid-render.
-  const entranceProgress = useMotionValue(1)
+  // The RESTING frame: sources fully faded in (introFade completes at 0.015),
+  // no bill emitted yet — the physical letters, Mail and e-Boks icons simply
+  // sit there. The stage renders this frame from first paint, and the clock
+  // only starts on scroll-in — starting the story FROM the resting frame, so
+  // there is no visible snap from the finished phone back to the beginning.
+  const SOURCES_READY = INTRO_FADE_END
+  const entranceProgress = useMotionValue(SOURCES_READY)
   const stageOpacity = useMotionValue(1)
   useEffect(() => {
-    if (!inView || prefersReducedMotion) return
+    if (prefersReducedMotion) {
+      // No animation: show the finished receipt end-state statically.
+      entranceProgress.set(1)
+      return
+    }
+    if (!inView) return
     let clockRaf = 0
     let fadeRaf = 0
     let timer: ReturnType<typeof setTimeout> | null = null
@@ -130,26 +136,40 @@ export default function EtHjemStage({ compact = false }: {
       }
       fadeRaf = requestAnimationFrame(step)
     }
-    const play = () => {
-      entranceProgress.set(0)
+    // The clock always advances at the same speed; `from` lets the first run
+    // start at the resting frame while loop restarts replay the intro fade
+    // from 0 (the stage is faded to black-out during the loop's crossfade,
+    // so the 0-start is never visible as a jump).
+    const play = (from: number) => {
+      entranceProgress.set(from)
       const startT = performance.now()
       const tick = (now: number) => {
-        const t = Math.min((now - startT) / DURATION, 1)
+        const t = Math.min(from + (now - startT) / DURATION, 1)
         entranceProgress.set(t)
         if (t < 1) clockRaf = requestAnimationFrame(tick)
         else
           timer = setTimeout(() => {
             fade(1, 0, () => {
               fade(0, 1)
-              play()
+              play(0)
             })
           }, LOOP_PAUSE)
       }
       clockRaf = requestAnimationFrame(tick)
     }
-    // Reset opacity in case the previous run was torn down mid-fade.
     stageOpacity.set(1)
-    play()
+    if (entranceProgress.get() <= SOURCES_READY + 0.0001) {
+      // First start (or restart from rest) — begin directly, no fade needed.
+      play(SOURCES_READY)
+    } else {
+      // Re-entering mid-story (user scrolled away and back): crossfade the
+      // frozen frame back to the resting scene instead of hard-cutting.
+      fade(1, 0, () => {
+        entranceProgress.set(SOURCES_READY)
+        fade(0, 1)
+        play(SOURCES_READY)
+      })
+    }
     return () => {
       cancelAnimationFrame(clockRaf)
       cancelAnimationFrame(fadeRaf)

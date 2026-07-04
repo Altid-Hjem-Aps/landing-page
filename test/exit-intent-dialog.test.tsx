@@ -16,6 +16,11 @@ vi.mock('@/components/sections/why/EtHjemStage', () => ({ default: () => null })
 
 beforeEach(() => {
   document.body.style.overflow = ''
+  document.body.style.paddingRight = ''
+  // The html element is the EFFECTIVE lock (body overflow doesn't propagate
+  // past globals.css's html{overflow-x:clip}) — reset it too so one failing
+  // test can't strand a lock for the rest of the file.
+  document.documentElement.style.overflowY = ''
 })
 
 afterEach(() => {
@@ -24,9 +29,13 @@ afterEach(() => {
 })
 
 describe('ExitIntentDialog dismissal & cleanup', () => {
-  it('locks body scroll while open and restores it on Escape, tracking the dismissal', () => {
+  it('locks page scroll while open and restores it on Escape, tracking the dismissal', () => {
     const onClose = vi.fn()
     const { unmount } = render(<ExitIntentDialog onClose={onClose} />)
+    // The html element is the effective lock: globals.css sets
+    // html{overflow-x:clip}, which stops body overflow from propagating to
+    // the viewport — body-only locking left the page scrollable.
+    expect(document.documentElement.style.overflowY).toBe('hidden')
     expect(document.body.style.overflow).toBe('hidden')
 
     fireEvent.keyDown(document, { key: 'Escape' })
@@ -35,7 +44,20 @@ describe('ExitIntentDialog dismissal & cleanup', () => {
 
     // The host unmounts the dialog on close — that must release the lock.
     unmount()
+    expect(document.documentElement.style.overflowY).toBe('')
     expect(document.body.style.overflow).toBe('')
+  })
+
+  it('restores PRE-EXISTING inline overflow values instead of blanking them', () => {
+    document.documentElement.style.overflowY = 'scroll'
+    document.body.style.overflow = 'auto'
+    const { unmount } = render(<ExitIntentDialog onClose={vi.fn()} />)
+    expect(document.documentElement.style.overflowY).toBe('hidden')
+    unmount()
+    expect(document.documentElement.style.overflowY).toBe('scroll')
+    expect(document.body.style.overflow).toBe('auto')
+    document.documentElement.style.overflowY = ''
+    document.body.style.overflow = ''
   })
 
   it('does not close on Escape delivered to an open native <select>', () => {

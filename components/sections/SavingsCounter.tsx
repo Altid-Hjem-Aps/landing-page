@@ -2,34 +2,24 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { liveSavings } from '@/lib/liveSavings'
+import { subscribeSavings, TICKER_GAP } from '@/lib/savingsTicker'
+import { REVEAL_SPRING as SPRING } from '@/lib/motion'
 import { H2, EYEBROW, BODY } from '@/lib/typography'
 
-// FAST_END = altidenergi.dk's live value at page load, from the exact formula
-// (nothing hard-coded — it's whatever liveSavings() returns right now).
+// The VALUE shown here comes from the shared ticker (lib/savingsTicker.ts),
+// which starts TICKER_GAP below altidenergi.dk's live formula and catches up
+// in random-looking bursts — the SAME value stream the hero stat renders, so
+// scrolling between the two always shows the same number.
 //
 // Two phases:
-//   1. reveal — fast slot-reel spin landing COUNTUP_GAP below the live value
-//   2. bursts — random jumps that each roll the changed digits up to a CLEAN
-//               whole number, then rest. The jump targets follow a schedule
-//               that catches up to the STILL-RISING live value over
-//               ~PHASE2_DURATION (10 min), so the number looks like it just
-//               keeps growing, then stops on live.
+//   1. reveal — fast slot-reel spin landing on the ticker's start value
+//   2. follow — every ticker burst rolls the changed digits up to the new
+//               landed value, then rests until the next burst.
 const FAST_DURATION = 780
 const FAST_SPEED = 0.5
 const STOP_DURATION = 480
 const STOP_STAGGER = 240
-// Phase 2 pacing. A burst roughly every BURST_EVERY, of a random amount, reaching
-// the live value in ~PHASE2_DURATION. COUNTUP_GAP (how far below live phase 1
-// lands) is DERIVED from these three so the maths always adds up — nothing
-// hard-coded, and the start point is live − COUNTUP_GAP at page load.
-const PHASE2_DURATION = 10 * 60 * 1000 // ~10 min to catch up to the live value
-const BURST_EVERY = 2500               // ms between bursts (≈ 2–3s apart)
-const AVG_BURST = 200                  // mean kr added per burst
-const COUNTUP_GAP = Math.round((PHASE2_DURATION / BURST_EVERY) * AVG_BURST) // ≈ 48 000
-const SETTLE_MIN = 1400                // ms the clean number rests …
-const SETTLE_RANGE = 900               // … + random up to this (→ ~2–3s incl. the roll)
 const BURST_ROLL = 190                 // base ms for a burst roll (scales with distance)
-const SPRING = 'cubic-bezier(0.34, 1.2, 0.64, 1)'
 
 function easeOut(t: number) {
   return 1 - Math.pow(1 - t, 3)
@@ -45,16 +35,18 @@ function getDigitValues(n: number): number[] {
 
 // Layout derived from the live value — computed per MOUNT (not module scope,
 // which would freeze the clock read into the build's static HTML) so the
-// digit count and targets always reflect the actual visit time.
+// digit count and targets always reflect the actual visit time. Pure formula
+// only (no ticker state): this also runs during SSR.
 function computeLayout() {
   const FAST_END = liveSavings()
   const TARGET_CHARS = fmt(FAST_END).split('')
   let ri = 0
   const REEL_FOR_CHAR = TARGET_CHARS.map(c => (/\d/.test(c) ? ri++ : null))
   const NUM_REELS = ri
-  // Where phase 1 lands (real value minus the count-up headroom). Guarded so it
-  // keeps the same digit count as the live value; otherwise skip straight to it.
-  const nearRaw = Math.round((FAST_END - COUNTUP_GAP) / 100) * 100
+  // Where phase 1 lands: the ticker's start point (live − the shared gap),
+  // rounded for a clean reveal. Guarded so it keeps the same digit count as
+  // the live value; otherwise skip straight to it.
+  const nearRaw = Math.round((FAST_END - TICKER_GAP) / 100) * 100
   const NEAR_END = getDigitValues(nearRaw).length === NUM_REELS ? nearRaw : FAST_END
   const NEAR_DIGIT_VALUES = getDigitValues(NEAR_END)
   return { TARGET_CHARS, REEL_FOR_CHAR, NUM_REELS, NEAR_END, NEAR_DIGIT_VALUES }
@@ -94,20 +86,17 @@ export default function SavingsCounter() {
 
   const sectionRef = useRef<HTMLDivElement>(null)
   const startedRef = useRef(false)
-  // Drives which phase the rAF loop is running. 'done' = landed, animation over.
-  const modeRef = useRef<'reveal' | 'bursting' | 'done'>('reveal')
-  const currentValRef = useRef(NEAR_END) // whole-kr value the last burst landed on
+  // Drives which phase the rAF loop is running.
+  const modeRef = useRef<'reveal' | 'following'>('reveal')
+  const currentValRef = useRef(NEAR_END) // whole-kr value the reels last landed on
 
-  // Phase 2 — the current burst: each reel rolls from its digit to a clean
-  // target digit, then holds a random settle before the next burst.
-  const phase2StartRef = useRef(0) // when bursting began (for the PHASE2_DURATION schedule)
-  const finalRef = useRef(false)   // is the current burst the last one (landing on live)?
-  const burstSubRef = useRef<'rolling' | 'settling'>('rolling')
+  // Phase 2 — follow the ticker: each landed value rolls the changed digits.
+  const pendingTargetRef = useRef<number | null>(null)
+  const rollingRef = useRef(false)
   const burstFromArr = useRef<number[]>(Array(NUM_REELS).fill(0))
   const burstToArr = useRef<number[]>(Array(NUM_REELS).fill(0))
   const burstRollStartRef = useRef(0)
   const burstRollDurRef = useRef(BURST_ROLL)
-  const settleUntilRef = useRef(0)
 
   const rafRef = useRef<number>(0)
 
@@ -133,14 +122,15 @@ export default function SavingsCounter() {
     setDisplay('reels')
     startedRef.current = false
     modeRef.current = 'reveal'
-    burstSubRef.current = 'rolling'
-    finalRef.current = false
+    rollingRef.current = false
+    pendingTargetRef.current = null
     currentValRef.current = NEAR_END
     const el = sectionRef.current
     if (!el) return
 
     let entranceTimer: ReturnType<typeof setTimeout>
     const stopTimers: ReturnType<typeof setTimeout>[] = []
+    let unsubscribe: (() => void) | null = null
 
     const applyReel = (i: number) => {
       const ref = reelRefs.current[i]
@@ -176,27 +166,15 @@ export default function SavingsCounter() {
       }, delay))
     }
 
-    // Phase 2 — set up one burst. Add a RANDOM amount, sized so we still reach the
-    // (rising) live value at ~PHASE2_DURATION: baseInc = what's left / how many
-    // bursts are left, then multiplied by a hard random factor so each jump is a
-    // different-looking number. Self-correcting, so the randomness never derails
-    // the deadline. The last burst lands exactly on live.
-    const startBurst = (now: number) => {
-      const live = liveSavings()
-      const elapsed = now - phase2StartRef.current
-      let newVal: number
-      if (live - currentValRef.current <= 0 || elapsed >= PHASE2_DURATION) {
-        newVal = live
-        finalRef.current = true
-      } else {
-        const remaining = live - currentValRef.current
-        const burstsLeft = Math.max(1, (PHASE2_DURATION - elapsed) / BURST_EVERY)
-        const baseInc = remaining / burstsLeft
-        const factor = 0.2 + Math.random() * Math.random() * 2.4 // skewed 0.2–2.6
-        const inc = Math.max(1, Math.round(baseInc * factor))
-        newVal = currentValRef.current + inc
-        finalRef.current = newVal >= live
-        if (finalRef.current) newVal = live
+    // Phase 2 — roll the reels from the last landed value to the ticker's new
+    // one. Each changed digit rolls forward to its target, then rests until
+    // the ticker's next burst (the ticker's cadence IS the settle).
+    const beginRoll = (now: number) => {
+      const newVal = pendingTargetRef.current
+      pendingTargetRef.current = null
+      if (newVal === null || newVal <= currentValRef.current) {
+        rollingRef.current = false
+        return
       }
 
       let maxDist = 0
@@ -214,37 +192,33 @@ export default function SavingsCounter() {
       currentValRef.current = newVal
       burstRollStartRef.current = now
       burstRollDurRef.current = Math.min(650, BURST_ROLL + maxDist * 45)
-      burstSubRef.current = 'rolling'
+      rollingRef.current = true
+      rafRef.current = requestAnimationFrame(loop)
     }
 
     const loop = (now: number) => {
-      // Landed — animation is finished, stop requesting frames.
-      if (modeRef.current === 'done') return
-
-      // Phase 2 — bursts: roll to a clean number, settle ~3s, jump again.
-      if (modeRef.current === 'bursting') {
-        if (burstSubRef.current === 'rolling') {
-          const t = Math.min((now - burstRollStartRef.current) / burstRollDurRef.current, 1)
-          const e = easeOut(t)
+      // Phase 2 — following the ticker: animate the current roll; go idle
+      // (no frames requested) between bursts.
+      if (modeRef.current === 'following') {
+        if (!rollingRef.current) return
+        const t = Math.min((now - burstRollStartRef.current) / burstRollDurRef.current, 1)
+        const e = easeOut(t)
+        for (let i = 0; i < NUM_REELS; i++) {
+          positions.current[i] = burstFromArr.current[i] + (burstToArr.current[i] - burstFromArr.current[i]) * e
+          applyReel(i)
+        }
+        if (t >= 1) {
+          // Snap onto the clean target digits.
           for (let i = 0; i < NUM_REELS; i++) {
-            positions.current[i] = burstFromArr.current[i] + (burstToArr.current[i] - burstFromArr.current[i]) * e
+            positions.current[i] = burstToArr.current[i] % 10
             applyReel(i)
           }
-          if (t >= 1) {
-            // Snap onto the clean target digits.
-            for (let i = 0; i < NUM_REELS; i++) {
-              positions.current[i] = burstToArr.current[i] % 10
-              applyReel(i)
-            }
-            if (finalRef.current) {
-              modeRef.current = 'done' // caught up to live — animation over
-              return
-            }
-            burstSubRef.current = 'settling'
-            settleUntilRef.current = now + SETTLE_MIN + Math.random() * SETTLE_RANGE
+          if (pendingTargetRef.current !== null) {
+            beginRoll(now) // a newer value landed while rolling
+          } else {
+            rollingRef.current = false
           }
-        } else if (now >= settleUntilRef.current) {
-          startBurst(now)
+          return
         }
         rafRef.current = requestAnimationFrame(loop)
         return
@@ -275,12 +249,17 @@ export default function SavingsCounter() {
         applyReel(i)
       }
 
-      // All reels settled on NEAR → start the bursts.
+      // All reels settled on NEAR → follow the shared ticker. Its immediate
+      // first callback rolls us from NEAR onto the shared displayed value,
+      // and every burst after that keeps us identical to the hero stat.
       if (revealComplete) {
-        modeRef.current = 'bursting'
+        modeRef.current = 'following'
         currentValRef.current = NEAR_END
-        phase2StartRef.current = now
-        startBurst(now)
+        unsubscribe = subscribeSavings(value => {
+          pendingTargetRef.current = value
+          if (!rollingRef.current) beginRoll(performance.now())
+        })
+        return
       }
 
       rafRef.current = requestAnimationFrame(loop)
@@ -299,6 +278,7 @@ export default function SavingsCounter() {
     }
     return () => {
       observer?.disconnect()
+      unsubscribe?.()
       clearTimeout(entranceTimer)
       cancelAnimationFrame(rafRef.current)
       stopTimers.forEach(clearTimeout)

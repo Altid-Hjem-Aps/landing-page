@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useTransform, animate, useReducedMotion } from 'framer-motion'
 import * as amplitude from '@amplitude/analytics-browser'
 import WaitlistForm from '@/components/WaitlistForm'
+import { SAVINGS_DISCLAIMER } from '@/lib/copy'
 import EtHjemStage from '@/components/sections/why/EtHjemStage'
 import { Envelope, ENVELOPE_W, ENVELOPE_H } from '@/components/sections/why/ChaosCard'
 
@@ -61,7 +62,20 @@ export default function ExitIntentDialog({ onClose }: { onClose: () => void }) {
 
   // Scroll lock + focus while open.
   useEffect(() => {
-    const prevOverflow = document.body.style.overflow
+    // body{overflow:hidden} alone does NOT reach the viewport here: CSS only
+    // propagates body overflow when html's overflow is `visible`, and
+    // globals.css sets html{overflow-x:clip} (iOS rubber-band guard) — so the
+    // page kept scrolling behind the dialog. Lock the html element itself.
+    const prevHtmlOverflowY = document.documentElement.style.overflowY
+    const prevBodyOverflow = document.body.style.overflow
+    const prevBodyPaddingRight = document.body.style.paddingRight
+    // Classic (non-overlay) scrollbars — Windows/Linux desktops, exactly the
+    // mouse-driven visitors this dialog targets — disappear when the lock
+    // lands, reflowing the page ~15px wider behind the overlay. Compensate
+    // with padding so the background doesn't jump on open/close.
+    const scrollbarGap = window.innerWidth - document.documentElement.clientWidth
+    if (scrollbarGap > 0) document.body.style.paddingRight = `${scrollbarGap}px`
+    document.documentElement.style.overflowY = 'hidden'
     document.body.style.overflow = 'hidden'
     // Focus the panel, not the close button — autofocusing a button draws
     // the browser's focus ring on open; Tab still reaches the close first.
@@ -105,7 +119,9 @@ export default function ExitIntentDialog({ onClose }: { onClose: () => void }) {
 
     document.addEventListener('keydown', onKeyDown)
     return () => {
-      document.body.style.overflow = prevOverflow
+      document.documentElement.style.overflowY = prevHtmlOverflowY
+      document.body.style.overflow = prevBodyOverflow
+      document.body.style.paddingRight = prevBodyPaddingRight
       document.removeEventListener('keydown', onKeyDown)
     }
   }, [close])
@@ -133,7 +149,7 @@ export default function ExitIntentDialog({ onClose }: { onClose: () => void }) {
           y: envelopeY,
         }}
       >
-        <Envelope flap={flap} />
+        <Envelope flap={flap} logoStamp />
       </motion.div>
 
       <motion.div
@@ -190,6 +206,14 @@ export default function ExitIntentDialog({ onClose }: { onClose: () => void }) {
               fold. The 620px floor is on the COLUMN so the grid row grows
               with it and the stage never renders into a clipped box. */}
           <div aria-hidden className="hidden lg:block relative overflow-hidden pointer-events-none" style={{ background: '#fbf9f3', borderLeft: '1px solid rgba(255,255,255,0.07)', minHeight: 620 }}>
+            {/* Same legal fine print as the WhatIs section — rendered BEFORE
+                the stage so the phone paints over it, and small enough for
+                two lines. Panel and stage keep their exact size/placement. */}
+            <div className="absolute bottom-0 left-0 right-0 px-6 pb-4 text-center">
+              <p className="text-[8px] font-normal leading-relaxed" style={{ color: '#6f6a61' }}>
+                {SAVINGS_DISCLAIMER}
+              </p>
+            </div>
             <div className="absolute inset-0">
               <EtHjemStage compact />
             </div>

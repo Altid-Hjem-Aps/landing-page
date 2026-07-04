@@ -216,9 +216,13 @@ export const emitStart = (i: number) => {
 /** Exit-flight progress of bill i (0..1): source → hovering pile. */
 export const itemEmit = (p: number, i: number) => clamp01((p - emitStart(i)) / EMIT_FLY)
 
+/** Where the sources scene finishes fading in — also the stage's RESTING
+ *  frame (EtHjemStage.SOURCES_READY imports this so the two can't drift). */
+export const INTRO_FADE_END = 0.015
+
 /** The sources scene fades in over the first beat — gives the loop a soft
  *  landing instead of a hard cut. */
-export const introFade = (p: number) => clamp01(p / 0.015)
+export const introFade = (p: number) => clamp01(p / INTRO_FADE_END)
 
 /** The letter's flap swings open just before its bill slides out. */
 export const flapOpen = (p: number, i: number) =>
