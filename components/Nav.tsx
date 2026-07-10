@@ -27,8 +27,8 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Hjem', href: '/', tone: 'home' },
   // 'soon' services are muted with a "Kommer snart" sublabel (Figma 26:105)
   // and flip to 'live' (white, no sublabel) when their site launches.
+  { label: 'Mad', href: 'https://altidmad.dk', tone: 'live' },
   { label: 'Energi', href: 'https://altidenergi.dk', tone: 'live' },
-  { label: 'Mad', href: '/#tjenester', tone: 'soon' },
   { label: 'Alarm', href: '/#tjenester', tone: 'soon' },
   { label: 'Opladning', href: '/#tjenester', tone: 'soon' },
   { label: 'Forsikring', href: '/#tjenester', tone: 'soon' },
