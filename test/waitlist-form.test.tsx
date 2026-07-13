@@ -81,6 +81,48 @@ describe('waitlist-joined flag (exit-popup suppression)', () => {
   })
 })
 
+describe('WaitlistForm marketing consent', () => {
+  it('renders the combined consent box naming all subbrands', () => {
+    render(<WaitlistForm variant="dark" />)
+    expect(screen.getByText(/Altid Mad, Altid Forsikring og Altid Mobil/)).toBeInTheDocument()
+    expect(screen.getByRole('checkbox')).not.toBeChecked()
+  })
+
+  it('is optional: submits with consent false on both flags when left unticked', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve({ id: 'abc', surveyToken: 'tok' }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+    fillAndSubmitDark() // never ticks the box
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled())
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body)
+    expect(body.consent.mad).toBe(false)
+    expect(body.consent.group).toBe(false)
+    expect(typeof body.consent.version).toBe('string')
+  })
+
+  it('sends both brand flags true when the combined box is ticked', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve({ id: 'abc', surveyToken: 'tok' }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+    render(<WaitlistForm variant="dark" />)
+    fireEvent.change(screen.getByPlaceholderText('Dit fulde navn'), { target: { value: 'Test Testesen' } })
+    fireEvent.change(screen.getByPlaceholderText('din@email.dk'), { target: { value: 'test@test.dk' } })
+    fireEvent.change(screen.getByPlaceholderText('12 34 56 78'), { target: { value: '12345678' } })
+    fireEvent.click(screen.getByRole('checkbox'))
+    fireEvent.click(screen.getByRole('button', { name: /skriv mig på ventelisten/i }))
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled())
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body)
+    expect(body.consent.mad).toBe(true)
+    expect(body.consent.group).toBe(true)
+  })
+})
+
 describe('WaitlistForm step 1 failure paths', () => {
   it('shows an error and re-enables the button when fetch rejects (offline)', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')))

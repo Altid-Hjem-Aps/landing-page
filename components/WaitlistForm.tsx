@@ -5,8 +5,33 @@ import * as amplitude from '@amplitude/analytics-browser'
 import { DEFAULT_SIGNUP_SOURCE } from '@/lib/signup-source'
 import { markWaitlistJoined } from '@/lib/waitlist-joined'
 import { BUTTON_PRIMARY, FINE_PRINT } from '@/lib/typography'
+import { SIGNUP_CONSENT_ALL, CONSENT_VERSION } from '@/lib/copy'
 
 type View = 'form' | 'questions' | 'success'
+
+// Single, active (not pre-checked), OPTIONAL marketing-consent box. One tick
+// opts the person into the whole Altid group (Hjem + all subbrands); it never
+// blocks submit. Rendered on both the dark and the light signup surface.
+function ConsentCheckbox({ dark, checked, onChange }: {
+  dark: boolean
+  checked: boolean
+  onChange: (v: boolean) => void
+}) {
+  return (
+    <label
+      className={`flex gap-2.5 items-start ${FINE_PRINT} cursor-pointer text-left mt-4 mb-1`}
+      style={{ color: dark ? 'rgba(255,255,255,0.62)' : '#6f6a61', lineHeight: 1.45 }}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={e => onChange(e.target.checked)}
+        style={{ width: 17, height: 17, marginTop: 2, flexShrink: 0, accentColor: dark ? '#90ff7c' : '#163223', cursor: 'pointer' }}
+      />
+      <span>{SIGNUP_CONSENT_ALL}</span>
+    </label>
+  )
+}
 
 const DK_ELECTRICITY_PROVIDERS = [
   'Aal El-Net',
@@ -77,6 +102,8 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   }
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  // Marketing consent: starts UNCHECKED, optional (never blocks submit).
+  const [consentAll, setConsentAll] = useState(false)
 
   const [age, setAge] = useState('')
   const [household, setHousehold] = useState('')
@@ -120,7 +147,11 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
       res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, name, email, referredBy, source, step: 1 }),
+        body: JSON.stringify({
+          phone, name, email, referredBy, source, step: 1,
+          // One combined opt-in → both brand flags carry the same choice.
+          consent: { version: CONSENT_VERSION, mad: consentAll, group: consentAll },
+        }),
       })
     } catch {
       setLoading(false)
@@ -278,6 +309,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
             </div>
           </div>
         </div>
+        <ConsentCheckbox dark checked={consentAll} onChange={setConsentAll} />
         {error && <p className="text-sm mb-3 text-center" style={{ color: '#ff8080' }}>{error}</p>}
         <button type="submit" disabled={loading} className={`w-full disabled:opacity-60 ${BUTTON_PRIMARY}`} style={{ background: '#90ff7c', color: '#003c16' }}>
           {loading ? 'Sender...' : 'Skriv mig på ventelisten'}
@@ -405,6 +437,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
       </div>
 
       {/* Single button — always visible, drops down as fields expand above it */}
+      {expanded && <ConsentCheckbox dark={false} checked={consentAll} onChange={setConsentAll} />}
       {error && <p className="text-sm mb-2 text-center" style={{ color: '#c6000f' }}>{error}</p>}
       <button
         type={expanded ? 'submit' : 'button'}
