@@ -82,8 +82,12 @@ describe('waitlist-joined flag (exit-popup suppression)', () => {
 })
 
 describe('WaitlistForm marketing consent', () => {
-  it('renders the combined consent box naming all subbrands', () => {
+  it('hides the consent box until the visitor starts filling the form, then shows it naming all subbrands', () => {
     render(<WaitlistForm variant="dark" />)
+    // Nothing typed yet → no checkbox.
+    expect(screen.queryByRole('checkbox')).toBeNull()
+    // Typing into any field (here: name) reveals the consent box above the button.
+    fireEvent.change(screen.getByPlaceholderText('Dit fulde navn'), { target: { value: 'A' } })
     expect(screen.getByText(/Altid Mad, Altid Forsikring og Altid Mobil/)).toBeInTheDocument()
     expect(screen.getByRole('checkbox')).not.toBeChecked()
   })
