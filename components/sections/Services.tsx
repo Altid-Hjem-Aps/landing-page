@@ -106,7 +106,7 @@ const services: Service[] = [
   {
     label: 'Altid Mad',
     desc: 'Nem madplanlægning tilpasset din husstand. ',
-    logo: { icon: '/services/icon-mad.svg', altid: '/services/altid-mad.svg', word: 'mad', color: '#0f6e68' },
+    logo: { icon: '/services/icon-mad.svg', altid: '/services/altid-mad.svg', word: 'mad', color: '#3E6924' },
   },
 ]
 
