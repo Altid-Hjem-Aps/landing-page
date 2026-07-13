@@ -2,7 +2,7 @@ import { NextRequest, NextResponse, after } from 'next/server'
 import { sendWaitlistConfirmation, sendReferralWelcome, scheduleReleaseEmail, sendReferralProgress } from '@/lib/send-email'
 import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
 import { trackServer, identifyServer } from '@/lib/amplitude.server'
-import { recordReferral, mirrorSignup, getReferrerProgress, getUnsubToken, isUnsubscribed, checkRateLimit, getQueuePosition } from '@/lib/db'
+import { recordReferral, mirrorSignup, mergeConsent, getReferrerProgress, getUnsubToken, isUnsubscribed, checkRateLimit, getQueuePosition } from '@/lib/db'
 import { syncContactTags, addAudienceContact } from '@/lib/resend'
 import { normalizeSignupSource } from '@/lib/signup-source'
 import { assertSurveyTokenConfigured, signSurveyToken, verifySurveyToken } from '@/lib/survey-token'
@@ -61,8 +61,14 @@ export async function POST(req: NextRequest) {
 
     const data = await res.json().catch(() => ({}))
 
-    if (res.status === 409)
+    if (res.status === 409) {
+      // A re-signup can carry NEW consent (e.g. someone already on the shared
+      // list ticks the combined box). mirrorSignup does not run on a 409, so
+      // merge the new consent into the existing row (keyed on email) instead of
+      // dropping it. Fail-safe: a hiccup here must never break the 409 response.
+      await mergeConsent(String(email), consentInput).catch((e) => console.error('mergeConsent failed', e))
       return NextResponse.json({ success: false, error: 'Du er allerede skrevet op!' }, { status: 409 })
+    }
     if (!res.ok)
       return NextResponse.json({ success: false, error: data.message ?? 'Noget gik galt' }, { status: res.status })
 
