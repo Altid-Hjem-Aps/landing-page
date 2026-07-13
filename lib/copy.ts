@@ -12,6 +12,8 @@ export const SAVINGS_DISCLAIMER =
 // CONSENT_VERSION is stored with each signup so the exact wording accepted is
 // documentable. The shared waitlist is also used by altidmad.dk, which has its
 // own granular two-box variant of this consent.
-export const CONSENT_VERSION = '2026-07-13'
+// Bumped from 2026-07-13 when the wording softened to "vil gerne modtage" —
+// consent_version stores the exact text accepted, so a wording change bumps it.
+export const CONSENT_VERSION = '2026-07-13.2'
 export const SIGNUP_CONSENT_ALL =
-  'Ja tak. Jeg vil modtage e-mails med nyheder, lanceringer, tilbud og markedsføring om Altid Hjem og brands under Altid Hjem (Altid Mad, Altid Forsikring og Altid Mobil) fra Altid Hjem ApS. Jeg kan til enhver tid trække mit samtykke tilbage via afmeldingslinket i e-mails.'
+  'Ja tak. Jeg vil gerne modtage e-mails med nyheder, lanceringer, tilbud og markedsføring om Altid Hjem og brands under Altid Hjem (Altid Mad, Altid Forsikring og Altid Mobil) fra Altid Hjem ApS. Jeg kan til enhver tid trække mit samtykke tilbage via afmeldingslinket i e-mails.'
