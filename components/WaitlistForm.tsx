@@ -5,31 +5,37 @@ import * as amplitude from '@amplitude/analytics-browser'
 import { DEFAULT_SIGNUP_SOURCE } from '@/lib/signup-source'
 import { markWaitlistJoined } from '@/lib/waitlist-joined'
 import { BUTTON_PRIMARY, FINE_PRINT } from '@/lib/typography'
-import { SIGNUP_CONSENT_ALL, CONSENT_VERSION } from '@/lib/copy'
+import { SIGNUP_CONSENT_ALL, SIGNUP_LAUNCH_NOTICE, CONSENT_VERSION } from '@/lib/copy'
 
 type View = 'form' | 'questions' | 'success'
 
-// Single, active (not pre-checked), OPTIONAL marketing-consent box. One tick
-// opts the person into the whole Altid group (Hjem + all subbrands); it never
-// blocks submit. Rendered on both the dark and the light signup surface.
+// The launch notice (basis: the signup itself is the §10 consent to the Altid
+// Hjem launch mail) plus a single active, non-pre-checked, OPTIONAL marketing box.
+// The notice frames the box as extra ongoing marketing: signing up already covers
+// the launch, so consent is never a condition for joining. One tick opts into the
+// whole Altid group. Rendered on both the dark and the light signup surface.
 function ConsentCheckbox({ dark, checked, onChange }: {
   dark: boolean
   checked: boolean
   onChange: (v: boolean) => void
 }) {
+  const textColor = dark ? 'rgba(255,255,255,0.62)' : '#6f6a61'
   return (
-    <label
-      className={`flex gap-2.5 items-start ${FINE_PRINT} cursor-pointer text-left mt-4 mb-1`}
-      style={{ color: dark ? 'rgba(255,255,255,0.62)' : '#6f6a61', lineHeight: 1.45 }}
-    >
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={e => onChange(e.target.checked)}
-        style={{ width: 17, height: 17, marginTop: 2, flexShrink: 0, accentColor: dark ? '#90ff7c' : '#163223', cursor: 'pointer' }}
-      />
-      <span>{SIGNUP_CONSENT_ALL}</span>
-    </label>
+    <div className="flex flex-col gap-2.5 mt-4 mb-1 text-left">
+      <p className={FINE_PRINT} style={{ color: textColor, lineHeight: 1.45 }}>{SIGNUP_LAUNCH_NOTICE}</p>
+      <label
+        className={`flex gap-2.5 items-start ${FINE_PRINT} cursor-pointer`}
+        style={{ color: textColor, lineHeight: 1.45 }}
+      >
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={e => onChange(e.target.checked)}
+          style={{ width: 17, height: 17, marginTop: 2, flexShrink: 0, accentColor: dark ? '#90ff7c' : '#163223', cursor: 'pointer' }}
+        />
+        <span>{SIGNUP_CONSENT_ALL}</span>
+      </label>
+    </div>
   )
 }
 
@@ -137,7 +143,9 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   }, [isDark])
 
   async function submitStep1() {
-    if (!phone || !email || !name) return
+    // Only name + email are required. Mobile is optional (data minimisation — the
+    // waitlist only needs an email to give notice at launch).
+    if (!email || !name) return
     setLoading(true)
     setError('')
     // A rejected fetch (offline, DNS) must not leave the button stuck on
@@ -302,7 +310,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
             <input type="email" name="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="din@email.dk" style={darkInputStyle} className="placeholder:text-white/40" />
           </div>
           <div>
-            <label style={darkLabelStyle}>Mobil</label>
+            <label style={darkLabelStyle}>Mobil (valgfrit)</label>
             <div className="flex overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 14 }}>
               <span className="flex items-center px-3 text-sm font-medium border-r select-none shrink-0" style={{ borderColor: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.75)', background: 'rgba(255,255,255,0.04)' }}>+45</span>
               <input type="tel" name="tel" autoComplete="tel" value={phone} onChange={e => setPhone(formatPhone(e.target.value))} placeholder="12 34 56 78" className="flex-1 placeholder:text-white/40" style={{ padding: '14px 12px', fontSize: 15, outline: 'none', background: 'transparent', color: 'white', fontFamily: 'var(--font-onest)' }} />
@@ -428,7 +436,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
                   autoComplete="tel"
                   value={phone}
                   onChange={e => setPhone(formatPhone(e.target.value))}
-                  placeholder="Dit mobilnummer"
+                  placeholder="Dit mobilnummer (valgfrit)"
                   className="flex-1 placeholder:text-[#bbb]"
                   style={{ height: 52, padding: '0 16px', fontSize: 15, outline: 'none', background: 'transparent', color: 'var(--text-dark)', fontFamily: 'var(--font-onest)' }}
                 />

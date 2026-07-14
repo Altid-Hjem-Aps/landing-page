@@ -39,10 +39,24 @@ export async function POST(req: NextRequest) {
 
     if (!email || !EMAIL_RE.test(email))
       return NextResponse.json({ success: false, error: 'Ugyldig e-mail' }, { status: 400 })
-    if (!phone || !PHONE_RE.test(String(phone).replace(/\s/g, '')))
+    // Mobile is optional for the user (data minimisation — an email is enough to
+    // give notice at launch). Validate the format only when one is supplied.
+    const rawPhone = phone ? String(phone).replace(/\s/g, '') : ''
+    if (rawPhone && !PHONE_RE.test(rawPhone))
       return NextResponse.json({ success: false, error: 'Ugyldigt mobilnummer' }, { status: 400 })
     if (!name || String(name).trim().length < 2)
       return NextResponse.json({ success: false, error: 'Navn mangler' }, { status: 400 })
+    // TEMPORARY BRIDGE — REMOVE once the backend makes Mobile optional (follow-up PR).
+    // The upstream API marks Mobile as [Required] (verified: 400 when missing) but does
+    // NOT validate the format (verified: it accepts 00000000). So when the user leaves
+    // mobile blank we send an obviously-fake sentinel that reads as "no number given":
+    // it is not a real Danish MSISDN (can never receive an SMS), is not anyone's real
+    // number, and is trivially identifiable for cleanup (WHERE mobile = '00000000').
+    // Sent ONLY upstream: never SMSed (the confirmation SMS below is gated on the user's
+    // own number, cleanPhone) and never mirrored to Supabase. Scrub these rows when the
+    // backend change lands.
+    const FALLBACK_MOBILE = '00000000'
+    const upstreamMobile = rawPhone || FALLBACK_MOBILE
 
     // Fail fast on missing survey-token secret BEFORE registering the user
     // upstream — otherwise signSurveyToken throws after side effects and the
@@ -54,7 +68,7 @@ export async function POST(req: NextRequest) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: String(name).trim(),
-        mobile: String(phone).replace(/\s/g, ''),
+        mobile: upstreamMobile,
         email: String(email).toLowerCase().trim(),
       }),
     })
@@ -77,7 +91,7 @@ export async function POST(req: NextRequest) {
 
     const cleanName = String(name).trim()
     const cleanEmail = String(email).toLowerCase().trim()
-    const cleanPhone = String(phone).replace(/\s/g, '')
+    const cleanPhone = rawPhone
     const firstName = cleanName.split(' ')[0]
     const userId = data.id as string
     const refBy = referredBy ? String(referredBy).trim() : ''
@@ -88,7 +102,7 @@ export async function POST(req: NextRequest) {
       // Awaited (not fire-and-forget): inside after() an un-awaited promise can be
       // killed when the serverless instance freezes. .catch() keeps one failure
       // from aborting the rest.
-      await sendWaitlistConfirmationSms(cleanName, cleanPhone).catch(console.error)
+      if (cleanPhone) await sendWaitlistConfirmationSms(cleanName, cleanPhone).catch(console.error)
       await scheduleReleaseEmail(cleanName, cleanEmail).catch(console.error)
 
       // Mirror the signup into Supabase and get this person's unsubscribe token.

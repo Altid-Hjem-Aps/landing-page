@@ -54,7 +54,13 @@ describe('savingsTicker', () => {
     const unsub = subscribeSavings(v => seen.push(v))
     // Run well past PHASE_DURATION (8 min).
     for (let i = 0; i < 250; i++) vi.advanceTimersByTime(3_500)
-    expect(seen[seen.length - 1]).toBe(Math.round(liveSavings()))
+    // The ticker emits discrete steps while liveSavings() rises continuously, so at a
+    // rounding boundary the last emission can sit exactly 1 kr below the live value
+    // (fast local runs miss the boundary; slower CI hits it). Assert it caught up to
+    // within one step and never overshot, not brittle exact equality.
+    const live = Math.round(liveSavings())
+    expect(seen[seen.length - 1]).toBeGreaterThanOrEqual(live - 1)
+    expect(seen[seen.length - 1]).toBeLessThanOrEqual(live)
     // Caught up → no further emissions (live rises too slowly under fake Date
     // that advances with the timers — a whole minute adds only ~5 kr, and any
     // burst that fires would emit; assert near-silence rather than churn).
