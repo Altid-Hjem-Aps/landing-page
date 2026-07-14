@@ -90,6 +90,11 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   const [expanded, setExpanded] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  // Set when the 409 path held the consent pending and mailed a confirmation
+  // link, or when there was nothing left to confirm. Not an error: the old code
+  // showed these as red text under the form, which is how "we sent you a link"
+  // ended up looking like a failure.
+  const [notice, setNotice] = useState<{ heading: string; body: string } | null>(null)
   const [signupId, setSignupId] = useState('')
   const [surveyToken, setSurveyToken] = useState('')
   const [referredBy, setReferredBy] = useState('')
@@ -173,6 +178,13 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
       // 409 = this person is already on the list — that's a confirmed
       // signup for popup-suppression purposes too.
       if (res.status === 409) markWaitlistJoined()
+      // A pending confirmation is an outcome, not a failure. Counting it as one
+      // would bury the fix in the same bucket as the dead ends it replaces.
+      if (data.confirmSent) {
+        setNotice({ heading: data.heading, body: data.error })
+        amplitude.track('Consent Confirmation Sent', { signup_source: source })
+        return
+      }
       setError(data.error ?? 'Noget gik galt. Prøv igen.')
       amplitude.track('Waitlist Step 1 Failed', { error: data.error ?? 'unknown', status: res.status })
       return
@@ -245,6 +257,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   const darkCardStyle = embedded ? undefined : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }
 
   if (isDark) {
+    if (notice) return <SuccessCard bare={embedded} heading={notice.heading} body={notice.body} />
     if (view === 'success') return <SuccessCard bare={embedded} inviteUrl={signupId ? `https://altidhjem.dk/?ref=${signupId}` : undefined} />
 
     if (view === 'questions') {
@@ -336,6 +349,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
 
   // ─── Light variant (Hero) ─────────────────────────────────────────────────
 
+  if (notice) return <SuccessCard variant="cream" heading={notice.heading} body={notice.body} />
   if (view === 'success') return <SuccessCard variant="cream" inviteUrl={signupId ? `https://altidhjem.dk/?ref=${signupId}` : undefined} />
 
   if (view === 'questions') {
@@ -488,7 +502,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   )
 }
 
-export function SuccessCard({ inviteUrl, variant = 'dark', bare = false }: { inviteUrl?: string; variant?: 'dark' | 'cream'; bare?: boolean }) {
+export function SuccessCard({ inviteUrl, variant = 'dark', bare = false, heading, body }: { inviteUrl?: string; variant?: 'dark' | 'cream'; bare?: boolean; heading?: string; body?: string }) {
   const [copied, setCopied] = useState(false)
   // On the light (cream) hero the confirmation renders as a solid forest-green
   // card so the white text still works — otherwise the original translucent
@@ -501,9 +515,9 @@ export function SuccessCard({ inviteUrl, variant = 'dark', bare = false }: { inv
       : { background: 'rgba(168,224,99,0.08)', border: '1px solid rgba(168,224,99,0.2)' }
   return (
     <div className={bare ? undefined : 'rounded-[20px] p-8 sm:p-10'} style={cardStyle}>
-      <h3 className="text-3xl font-normal mb-3 text-white">Tak. Du er med.</h3>
+      <h3 className="text-3xl font-normal mb-3 text-white">{heading ?? 'Tak. Du er med.'}</h3>
       <p className="text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
-        Vi giver dig besked, så snart Altid Hjem åbner dørene.
+        {body ?? 'Vi giver dig besked, så snart Altid Hjem åbner dørene.'}
       </p>
 
       {inviteUrl && (

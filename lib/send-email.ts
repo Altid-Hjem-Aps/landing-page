@@ -153,3 +153,39 @@ export async function scheduleNurtureEmail(
   // })
   return null
 }
+
+/**
+ * Double-opt-in confirmation for someone already on the shared waitlist who
+ * ticked the consent box. Their consent is NOT stored yet: the anonymous form
+ * cannot prove they own the address, so it is held pending until they click the
+ * link in their own inbox.
+ *
+ * This mail must stay BARE. It is lawful because it confirms a request the
+ * recipient made seconds earlier — a service message, not marketing. The moment
+ * it carries an offer, a referral CTA, or a brand pitch, it becomes marketing
+ * sent to an address whose consent we do not yet hold, which is the exact thing
+ * it exists to avoid. Do not reuse a referral template here: they carry an invite
+ * CTA.
+ */
+export async function sendConsentConfirmation(vars: {
+  name: string
+  email: string
+  confirmUrl: string
+  unsubscribeUrl: string
+  pending: { mad: boolean; group: boolean }
+}) {
+  const { CONSENT_CONFIRM_SUBJECT, renderConsentConfirmEmail } = await import('../emails/consent-confirm')
+
+  return getResend().emails.send({
+    from: FROM_EMAIL,
+    to: vars.email,
+    subject: CONSENT_CONFIRM_SUBJECT,
+    headers: listUnsubHeaders(vars.unsubscribeUrl),
+    html: renderConsentConfirmEmail({
+      firstName: firstName(vars.name),
+      confirmUrl: vars.confirmUrl,
+      unsubscribeUrl: vars.unsubscribeUrl,
+      pending: vars.pending,
+    }),
+  })
+}
