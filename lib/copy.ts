@@ -9,9 +9,11 @@ export const SAVINGS_DISCLAIMER =
 // it is marketing — per the Forbrugerombudsmanden/GDPR fact-check. Altid Hjem
 // is the umbrella brand, so a single opt-in covers the whole group; one tick
 // records consent to all subbrands. Sender is Altid Hjem ApS (CVR 45637476).
-// CONSENT_VERSION is stored with each signup so the exact wording accepted is
-// documentable. The shared waitlist is also used by altidmad.dk, which has its
-// own granular two-box variant of this consent.
+// CONSENT_VERSION is stored with each signup. The site suffix ('-hjem', vs the
+// altidmad.dk '-mad') makes it self-documenting on the SHARED waitlist: because
+// the two sites use different wording, the exact text accepted is identifiable
+// from the version alone, not only by joining on signup_source. altidmad.dk has
+// a granular two-box variant of this consent.
 // 2026-07-14 (legal fact-check): the Altid Hjem launch email is markedsføringslov
 // §10 direct marketing, but the waitlist signup itself is the specific prior
 // consent to that launch notice (SIGNUP_LAUNCH_NOTICE states the purpose above the
@@ -19,7 +21,7 @@ export const SAVINGS_DISCLAIMER =
 // box, here the person signs up for the whole Altid Hjem platform that bundles the
 // subbrands, so the platform launch is what they signed up for, not separate
 // unrequested launches. The box is therefore purely ongoing marketing.
-export const CONSENT_VERSION = '2026-07-14.2'
+export const CONSENT_VERSION = '2026-07-14.2-hjem'
 export const SIGNUP_LAUNCH_NOTICE =
   'Når du skriver dig op, giver Altid Hjem ApS dig besked på e-mail, når Altid Hjem lanceres. Du kan til enhver tid forlade ventelisten.'
 export const SIGNUP_CONSENT_ALL =
