@@ -2,9 +2,10 @@ import { NextRequest, NextResponse, after } from 'next/server'
 import { sendWaitlistConfirmation, sendReferralWelcome, scheduleReleaseEmail, sendReferralProgress } from '@/lib/send-email'
 import { sendWaitlistConfirmationSms } from '@/lib/send-sms'
 import { trackServer, identifyServer } from '@/lib/amplitude.server'
-import { recordReferral, mirrorSignup, mergeConsent, getReferrerProgress, getUnsubToken, isUnsubscribed, checkRateLimit, getQueuePosition } from '@/lib/db'
+import { recordReferral, mirrorSignup, getReferrerProgress, getUnsubToken, isUnsubscribed, checkRateLimit, getQueuePosition } from '@/lib/db'
 import { syncContactTags, addAudienceContact } from '@/lib/resend'
 import { normalizeSignupSource } from '@/lib/signup-source'
+import { CONSENT_VERSION } from '@/lib/copy'
 import { assertSurveyTokenConfigured, signSurveyToken, verifySurveyToken } from '@/lib/survey-token'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
@@ -30,13 +31,16 @@ export async function POST(req: NextRequest) {
     const { email, name, phone, referredBy, consent } = body
     const signupSource = normalizeSignupSource(body.source)
     // Normalise the documented marketing consent before it is stored: coerce the
-    // choices to real booleans and cap the wording version. A malformed or absent
-    // consent object records as "no consent" rather than trusting the body. The
-    // Hjem form is a single combined opt-in, so mad and group arrive equal.
+    // choices to real booleans. A malformed or absent consent object records as
+    // "no consent" rather than trusting the body. The Hjem form is a single
+    // combined opt-in, so mad and group arrive equal. The wording version is
+    // stamped server-side (not read from the body): the server knows which text
+    // it served, so the consent audit trail can never be poisoned by a tampered
+    // client sending an arbitrary version string.
     const consentInput =
       consent && typeof consent === 'object'
         ? {
-            version: typeof consent.version === 'string' ? consent.version.slice(0, 32) : undefined,
+            version: CONSENT_VERSION,
             mad: consent.mad === true,
             group: consent.group === true,
           }
@@ -81,14 +85,12 @@ export async function POST(req: NextRequest) {
     const data = await res.json().catch(() => ({}))
 
     if (res.status === 409) {
-      // A re-signup can carry NEW consent (e.g. someone already on the shared
-      // list ticks the combined box). mirrorSignup does not run on a 409, so
-      // merge the new consent into the existing row (keyed on email) instead of
-      // dropping it. Deferred via after() so a slow Supabase write never delays
-      // the 409 response; .catch keeps it fail-safe.
-      after(async () => {
-        await mergeConsent(String(email), consentInput).catch((e) => console.error('mergeConsent failed', e))
-      })
+      // Already on the shared list. We deliberately do NOT change stored consent
+      // here: the caller of this anonymous form is not proven to own the email,
+      // so letting a re-signup write consent would let anyone flip another
+      // person's marketing consent by knowing their address. Consent is only
+      // recorded on a genuine first signup (mirrorSignup, below); re-adding it
+      // later must go through an authenticated path (the preference center).
       return NextResponse.json({ success: false, error: 'Du er allerede skrevet op!' }, { status: 409 })
     }
     if (!res.ok)
