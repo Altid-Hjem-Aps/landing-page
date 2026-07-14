@@ -362,3 +362,220 @@ export async function getQueuePosition(publicId: string): Promise<number | null>
   if (error) throw new Error(error.message)
   return typeof data === 'number' ? data : null
 }
+
+/**
+ * Look up an existing signup by email, with everything the 409 path needs to
+ * decide in ONE round trip: who they are, what consent they already hold, and
+ * whether they have left the list. Fail-safe: any error returns null, and the
+ * lookup races a 2s timeout, so the 409 response can never break or stall on a
+ * Supabase hiccup. Oldest row wins (that is the original signup).
+ */
+export async function getSignupByEmail(email: string): Promise<{
+  publicId: string
+  firstName: string | null
+  unsubToken: string | null
+  unsubscribed: boolean
+  consentMad: boolean
+  consentGroup: boolean
+} | null> {
+  try {
+    const query = getClient()
+      .from('signup')
+      .select('public_id, first_name, unsub_token, unsubscribed, marketing_consent_mad, marketing_consent_group')
+      .eq('email', String(email).toLowerCase().trim())
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .maybeSingle()
+    const timeout = new Promise<null>((resolve) => setTimeout(() => resolve(null), 2000))
+    const result = await Promise.race([query, timeout])
+    if (!result) return null
+    const { data, error } = result
+    if (error || !data) return null
+    const row = data as {
+      public_id?: string | null
+      first_name?: string | null
+      unsub_token?: string | null
+      unsubscribed?: boolean | null
+      marketing_consent_mad?: boolean | null
+      marketing_consent_group?: boolean | null
+    }
+    if (!row.public_id) return null
+    return {
+      publicId: row.public_id,
+      firstName: row.first_name ?? null,
+      unsubToken: row.unsub_token ?? null,
+      // A NULL flag is a legacy row with no consent recorded — treat it as "not
+      // consented", never as consented.
+      unsubscribed: row.unsubscribed === true,
+      consentMad: row.marketing_consent_mad === true,
+      consentGroup: row.marketing_consent_group === true,
+    }
+  } catch {
+    return null
+  }
+}
+
+/**
+ * The row a confirmation token names. Used on the confirm POST to re-check the
+ * row still exists and has not left the list before writing consent — a token
+ * minted six days ago says nothing about the row's state today. Throws rather
+ * than returning null on error: this call gates a consent write, so a hiccup must
+ * fail the write, not silently skip the check.
+ */
+export async function getSignupByPublicId(publicId: string): Promise<{
+  email: string
+  unsubscribed: boolean
+  consentMad: boolean
+  consentGroup: boolean
+} | null> {
+  const id = String(publicId || '').trim()
+  if (!id) return null
+  const { data, error } = await getClient()
+    .from('signup')
+    .select('email, unsubscribed, marketing_consent_mad, marketing_consent_group')
+    .eq('public_id', id)
+    .maybeSingle()
+  if (error) throw new Error(error.message)
+  const row = data as {
+    email?: string | null
+    unsubscribed?: boolean | null
+    marketing_consent_mad?: boolean | null
+    marketing_consent_group?: boolean | null
+  } | null
+  if (!row?.email) return null
+  return {
+    email: row.email,
+    unsubscribed: row.unsubscribed === true,
+    consentMad: row.marketing_consent_mad === true,
+    consentGroup: row.marketing_consent_group === true,
+  }
+}
+
+/**
+ * Append-only record of every consent change: what was granted or withdrawn,
+ * under which wording, when, and HOW ownership of the address was proven.
+ *
+ * The signup row holds only the CURRENT state, and it has ONE consent_version /
+ * consent_at pair shared by both flags — so recording a later Mad consent
+ * overwrites the wording-version and timestamp that documented an earlier group
+ * consent. The row therefore cannot answer the only question a regulator asks:
+ * "did you hold this person's consent for this brand when you sent that mail?"
+ *
+ * Throws on failure. A consent write whose evidence did not land is worse than no
+ * write at all: it is a boolean with nothing behind it.
+ */
+export async function recordConsentEvent(e: {
+  publicId: string
+  method: 'double-opt-in-email' | 'preference-centre' | 'unsubscribe-all'
+  version: string
+  // The RESULTING state of both flags, never the delta. A regulator reads the
+  // latest row to answer "did you hold this consent when you sent that mail?" —
+  // a delta row would answer it wrong for anyone who holds one flag already.
+  mad: boolean
+  group: boolean
+  // Present only for the double-opt-in path: the confirmation token's identity.
+  // A unique index makes the confirmation SINGLE-USE — a replayed link (forwarded
+  // mail, scanner log, shared browser, back button) hits the index and throws
+  // instead of re-granting consent the person may have revoked since.
+  tokenId?: string
+}): Promise<void> {
+  const { error } = await getClient().from('consent_event').insert({
+    public_id: e.publicId,
+    method: e.method,
+    consent_version: e.version,
+    marketing_consent_mad: e.mad,
+    marketing_consent_group: e.group,
+    ...(e.tokenId ? { token_id: e.tokenId } : {}),
+  })
+  if (error) throw new Error(`consent_event insert failed: ${error.message}`)
+}
+
+/** True when this confirmation token has already been redeemed. */
+export function isTokenAlreadyUsed(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err)
+  // Postgres unique_violation.
+  return msg.includes('23505') || msg.includes('duplicate key')
+}
+
+/** The row an unsubscribe/preference token names, with its current consent state. */
+export async function getSignupByUnsubToken(token: string): Promise<{
+  publicId: string
+  email: string
+  unsubscribed: boolean
+  consentMad: boolean
+  consentGroup: boolean
+} | null> {
+  const t = String(token || '').trim()
+  if (!t) return null
+  const { data, error } = await getClient()
+    .from('signup')
+    .select('public_id, email, unsubscribed, marketing_consent_mad, marketing_consent_group')
+    .eq('unsub_token', t)
+    .maybeSingle()
+  if (error) throw new Error(error.message)
+  const row = data as {
+    public_id?: string | null
+    email?: string | null
+    unsubscribed?: boolean | null
+    marketing_consent_mad?: boolean | null
+    marketing_consent_group?: boolean | null
+  } | null
+  if (!row?.public_id || !row.email) return null
+  return {
+    publicId: row.public_id,
+    email: row.email,
+    unsubscribed: row.unsubscribed === true,
+    consentMad: row.marketing_consent_mad === true,
+    consentGroup: row.marketing_consent_group === true,
+  }
+}
+
+/**
+ * Set consent flags from the preference centre. Unlike mergeConsent this CAN set
+ * a flag to false: withdrawal must be as easy as giving consent (GDPR art. 7(3)),
+ * and the caller here is authenticated by possession of the emailed unsub_token,
+ * so a downgrade is a legitimate act by the address owner, not an attack.
+ */
+export async function setConsentByToken(
+  token: string,
+  consent: { version: string; mad: boolean; group: boolean },
+): Promise<{ publicId: string; email: string } | null> {
+  const t = String(token || '').trim()
+  if (!t) return null
+  const { data, error } = await getClient()
+    .from('signup')
+    .update({
+      marketing_consent_mad: consent.mad,
+      marketing_consent_group: consent.group,
+      consent_version: consent.version,
+      consent_at: new Date().toISOString(),
+    })
+    .eq('unsub_token', t)
+    .select('public_id, email')
+  if (error) throw new Error(error.message)
+  const rows = (data ?? []) as { public_id: string; email: string }[]
+  if (!rows.length) return null
+  return { publicId: rows[0].public_id, email: rows[0].email }
+}
+
+
+/**
+ * Rate limit that FAILS CLOSED: it throws instead of returning "not limited" when
+ * the check itself cannot run.
+ *
+ * checkRateLimit above returns false on any error, and false means "allowed" —
+ * fine for a signup form (a hiccup lets a few extra attempts through), fatal for
+ * an unauthenticated MAIL SEND aimed at an address a stranger typed. If the
+ * limiter is unreachable we must refuse to send, not send freely.
+ */
+export async function checkRateLimitStrict(key: string, max: number, windowSeconds: number): Promise<boolean> {
+  const k = String(key || '').trim()
+  if (!k) throw new Error('checkRateLimitStrict: empty key')
+  const { data, error } = await getClient().rpc('check_rate_limit', {
+    p_key: k,
+    p_max: max,
+    p_window_seconds: windowSeconds,
+  })
+  if (error) throw new Error(`rate limit unavailable: ${error.message}`)
+  return data === true
+}
