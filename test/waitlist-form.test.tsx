@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import WaitlistForm from '@/components/WaitlistForm'
+import { SIGNUP_CONSENT_ALL, SIGNUP_LAUNCH_NOTICE } from '@/lib/copy'
 
 // Amplitude is a browser SDK with network side effects — mock it.
 vi.mock('@amplitude/analytics-browser', () => ({ track: vi.fn() }))
@@ -105,6 +106,31 @@ describe('WaitlistForm marketing consent', () => {
     expect(body.consent.mad).toBe(false)
     expect(body.consent.group).toBe(false)
     expect(typeof body.consent.version).toBe('string')
+  })
+
+  it('lets the user submit without a mobile number (mobile is optional)', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve({ id: 'abc', surveyToken: 'tok' }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+    render(<WaitlistForm variant="dark" />)
+    fireEvent.change(screen.getByPlaceholderText('Dit fulde navn'), { target: { value: 'Test Testesen' } })
+    fireEvent.change(screen.getByPlaceholderText('din@email.dk'), { target: { value: 'test@test.dk' } })
+    // No mobile entered.
+    fireEvent.click(screen.getByRole('button', { name: /skriv mig på ventelisten/i }))
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled())
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body).phone).toBe('')
+  })
+
+  it('shows the signup-grounded launch notice and drops "lanceringer" from the box', () => {
+    // The launch mail rides on the signup, so it must not sit behind the optional
+    // marketing box (GDPR art. 7(4)); the box is purely ongoing marketing.
+    expect(SIGNUP_CONSENT_ALL).not.toContain('lanceringer')
+    render(<WaitlistForm variant="dark" />)
+    fireEvent.change(screen.getByPlaceholderText('Dit fulde navn'), { target: { value: 'A' } })
+    expect(screen.getByText(SIGNUP_LAUNCH_NOTICE)).toBeInTheDocument()
   })
 
   it('sends both brand flags true when the combined box is ticked', async () => {

@@ -12,8 +12,15 @@ export const SAVINGS_DISCLAIMER =
 // CONSENT_VERSION is stored with each signup so the exact wording accepted is
 // documentable. The shared waitlist is also used by altidmad.dk, which has its
 // own granular two-box variant of this consent.
-// Bumped from 2026-07-13 when the wording softened to "vil gerne modtage" —
-// consent_version stores the exact text accepted, so a wording change bumps it.
-export const CONSENT_VERSION = '2026-07-13.2'
+// 2026-07-14 (legal fact-check): the Altid Hjem launch email is markedsføringslov
+// §10 direct marketing, but the waitlist signup itself is the specific prior
+// consent to that launch notice (SIGNUP_LAUNCH_NOTICE states the purpose above the
+// button). "lanceringer" is dropped from the box: unlike the altidmad.dk group
+// box, here the person signs up for the whole Altid Hjem platform that bundles the
+// subbrands, so the platform launch is what they signed up for, not separate
+// unrequested launches. The box is therefore purely ongoing marketing.
+export const CONSENT_VERSION = '2026-07-14.2'
+export const SIGNUP_LAUNCH_NOTICE =
+  'Når du skriver dig op, giver Altid Hjem ApS dig besked på e-mail, når Altid Hjem lanceres. Du kan til enhver tid forlade ventelisten.'
 export const SIGNUP_CONSENT_ALL =
-  'Ja tak. Jeg vil gerne modtage e-mails med nyheder, lanceringer, tilbud og markedsføring om Altid Hjem og brands under Altid Hjem (Altid Mad, Altid Forsikring og Altid Mobil) fra Altid Hjem ApS. Jeg kan til enhver tid trække mit samtykke tilbage via afmeldingslinket i e-mails.'
+  'Ja tak. Jeg vil gerne modtage e-mails med nyheder, tilbud og anden markedsføring om Altid Hjem og brands under Altid Hjem (Altid Mad, Altid Forsikring og Altid Mobil) fra Altid Hjem ApS. Jeg kan til enhver tid trække mit samtykke tilbage.'
