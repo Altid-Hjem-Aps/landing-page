@@ -1,4 +1,5 @@
 import WaitlistForm from '@/components/WaitlistForm'
+import ComingSoonStores from '@/components/ComingSoonStores'
 import IPhoneMockup from '@/components/IPhoneMockup'
 import { H1, BODY } from '@/lib/typography'
 import LiveSavingsStat from '@/components/LiveSavingsStat'
@@ -46,6 +47,10 @@ export default function Hero() {
 
             <div id="venteliste" className="mt-8 w-full max-w-[600px] mx-auto lg:mx-0">
               <WaitlistForm variant="light" />
+            </div>
+
+            <div className="mt-6">
+              <ComingSoonStores />
             </div>
 
             {/* Stats row */}

@@ -21,6 +21,13 @@ const ITEMS: Item[] = [
     q: 'Hvornår lanceres Altid Hjem?',
     a: 'Vi lancerer snart. Skriv dig på ventelisten, så får du besked, så snart appen er klar – og du er blandt de første, der kan komme i gang.',
   },
+  // Answers the question the hero's "Kommer snart i App Store / Google Play"
+  // pills provoke. Sits inside MOBILE_VISIBLE so it's readable without tapping
+  // "Vis flere", and names no launch date — the store listings aren't live yet.
+  {
+    q: 'Hvor kan jeg hente Altid Hjem?',
+    a: 'Appen kommer til både App Store og Google Play. Du finder den ved at søge efter Altid Hjem. Du kan ikke hente den endnu, men skriver du dig på ventelisten, får du besked, så snart den er klar.',
+  },
   {
     q: 'Hvor meget sparer jeg med Altid Hjem?',
     a: 'Det afhænger af dine aftaler, men mange sparer langt over 1.000 kr. årligt alene på strøm. Hos Altid Energi har +15.000 kunder allerede sparet millioner – og med flere af hjemmets udgifter samlet vokser besparelsen.',
@@ -31,7 +38,7 @@ const ITEMS: Item[] = [
   },
   {
     q: 'Hvilke tjenester kan jeg samle i appen?',
-    a: 'Fra start kan du samle strøm, mobil, forsikring, mad, elbilsopladning og alarm – nøje udvalgte tjenester, valgt på baggrund af kvalitet, pris og gennemsigtighed. Flere kommer til.',
+    a: 'Med tiden vil du kunne samle strøm, mobil, forsikring, mad, elbilsopladning og alarm ét sted. Tjenesterne lanceres løbende og udvælges på baggrund af kvalitet, pris og gennemsigtighed. Flere kommer til.',
   },
   {
     q: 'Skal jeg selv opsige mine gamle aftaler?',
@@ -39,7 +46,10 @@ const ITEMS: Item[] = [
   },
 ]
 
-const MOBILE_VISIBLE = 3
+// 4, not 3: the "Hvor kan jeg hente" item sits at index 2, and at 3 it pushed
+// the savings question — the strongest copy on a savings product — behind
+// "Vis flere". Raise this if anything is ever inserted above index 3 again.
+const MOBILE_VISIBLE = 4
 
 export default function Faq() {
   // The first answer ends up open, but it STARTS closed and folds out when
