@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { cleanPhone } from '@/lib/phone'
 
 // Supabase client (service role — server-side only). Reachable from Vercel,
 // unlike the self-hosted MySQL which is firewalled.
@@ -143,6 +144,7 @@ export async function mirrorSignup(
     firstName?: string
     createdAt?: string
     source?: string
+    phone?: string
     consent?: { version?: string; mad?: boolean; group?: boolean }
   },
 ): Promise<string | null> {
@@ -155,6 +157,14 @@ export async function mirrorSignup(
   if (opts?.email) row.email = String(opts.email).toLowerCase()
   if (opts?.firstName) row.first_name = opts.firstName
   if (opts?.source) row.signup_source = opts.source
+  // The mobile number, so the preference centre can show people the number they
+  // actually gave us instead of an empty box. Until now it only went upstream to
+  // MySQL, which this database cannot see. cleanPhone rejects the '00000000'
+  // sentinel the waitlist route sends UPSTREAM only (that API marks Mobile as
+  // [Required]) — it is not a real MSISDN, and storing it would show the user a
+  // fake number as if it were theirs. A DB check constraint backs this up.
+  const mirroredPhone = cleanPhone(opts?.phone)
+  if (mirroredPhone) row.phone = mirroredPhone
   // Documented marketing consent (GDPR / Forbrugerombudsmanden): store exactly
   // which permission each person gave, when, and under which wording version,
   // so a later marketing send can be gated on it. Only written when the form
@@ -165,6 +175,17 @@ export async function mirrorSignup(
     row.marketing_consent_group = opts.consent.group === true
     if (opts.consent.version) row.consent_version = opts.consent.version
     row.consent_at = row.created_at
+    // Per-brand mirror of the same yes. SIGNUP_CONSENT_ALL names Altid Hjem,
+    // Altid Mad, Altid Forsikring and Altid Mobil in one box, so one tick is a
+    // yes to all four — for EMAIL. Writing the four flags is a subdivision of
+    // what they agreed to, not an expansion of it.
+    row.consent_mad_email = opts.consent.mad === true
+    row.consent_hjem_email = opts.consent.group === true
+    row.consent_forsikring_email = opts.consent.group === true
+    row.consent_mobil_email = opts.consent.group === true
+    // SMS is NOT set here, at any value. The signup form has no SMS box, and no
+    // wording we have ever shown mentions SMS. The columns default to false; an
+    // email consent must never imply an SMS one.
   }
 
   async function upsert(r: Record<string, unknown>) {
@@ -187,6 +208,13 @@ export async function mirrorSignup(
     'marketing_consent_group',
     'consent_version',
     'consent_at',
+    // Added by 20260716_pref_centre_sms_phone.sql. Listed here so a signup still
+    // succeeds against a prod database where that migration has not run yet.
+    'phone',
+    'consent_hjem_email',
+    'consent_mad_email',
+    'consent_forsikring_email',
+    'consent_mobil_email',
   ]
 
   let { data, error } = await upsert(row)
@@ -236,14 +264,40 @@ export async function mergeConsent(
   const addr = String(email || '').toLowerCase().trim()
   if (!addr || !consent) return
   const patch: Record<string, unknown> = {}
-  if (consent.mad === true) patch.marketing_consent_mad = true
-  if (consent.group === true) patch.marketing_consent_group = true
+  // Each legacy yes also writes its per-brand email subdivision (review 31/7):
+  // without it, every consent confirmed via /bekraeft AFTER the one-time
+  // migration backfill would be invisible to the matrix model — the preference
+  // centre would show the person all-unticked minutes after they confirmed, and
+  // a save from that misrendered state would revoke the consent they just gave.
+  // mad names Altid Mad; group names the other three. SMS is never written here:
+  // no double-opt-in wording has ever mentioned SMS.
+  if (consent.mad === true) {
+    patch.marketing_consent_mad = true
+    patch.consent_mad_email = true
+  }
+  if (consent.group === true) {
+    patch.marketing_consent_group = true
+    patch.consent_hjem_email = true
+    patch.consent_forsikring_email = true
+    patch.consent_mobil_email = true
+  }
   // Nothing affirmatively consented → nothing to merge (don't touch the row).
   if (Object.keys(patch).length === 0) return
   if (consent.version) patch.consent_version = consent.version
   patch.consent_at = new Date().toISOString()
 
-  const OPTIONAL_COLUMNS = ['marketing_consent_mad', 'marketing_consent_group', 'consent_version', 'consent_at']
+  const OPTIONAL_COLUMNS = [
+    'marketing_consent_mad',
+    'marketing_consent_group',
+    'consent_version',
+    'consent_at',
+    // Added by 20260716_pref_centre_sms_phone.sql — strippable so a re-consent
+    // still lands on a prod database where that migration has not run yet.
+    'consent_mad_email',
+    'consent_hjem_email',
+    'consent_forsikring_email',
+    'consent_mobil_email',
+  ]
   async function apply(p: Record<string, unknown>) {
     // Keyed on email: it is the shared-list natural key, so this works from
     // either site's 409 path without a public_id lookup first. .select() returns
@@ -427,27 +481,27 @@ export async function getSignupByPublicId(publicId: string): Promise<{
   unsubscribed: boolean
   consentMad: boolean
   consentGroup: boolean
+  matrix: ConsentMatrix
 } | null> {
   const id = String(publicId || '').trim()
   if (!id) return null
   const { data, error } = await getClient()
     .from('signup')
-    .select('email, unsubscribed, marketing_consent_mad, marketing_consent_group')
+    .select(`email, unsubscribed, marketing_consent_mad, marketing_consent_group, ${MATRIX_COLUMNS}`)
     .eq('public_id', id)
     .maybeSingle()
   if (error) throw new Error(error.message)
-  const row = data as {
-    email?: string | null
-    unsubscribed?: boolean | null
-    marketing_consent_mad?: boolean | null
-    marketing_consent_group?: boolean | null
-  } | null
+  const row = data as Record<string, unknown> | null
   if (!row?.email) return null
   return {
-    email: row.email,
+    email: row.email as string,
     unsubscribed: row.unsubscribed === true,
     consentMad: row.marketing_consent_mad === true,
     consentGroup: row.marketing_consent_group === true,
+    // For the confirm POST's audit event: the event records full post-state, so
+    // the caller needs the row's current matrix (SMS flags included) to merge
+    // the newly confirmed email consents into.
+    matrix: matrixFromRow(row),
   }
 }
 
@@ -473,6 +527,11 @@ export async function recordConsentEvent(e: {
   // a delta row would answer it wrong for anyone who holds one flag already.
   mad: boolean
   group: boolean
+  // The same answer at per-brand, per-channel resolution. Optional because the
+  // double-opt-in page still speaks the two-flag language; omitted leaves the
+  // new columns NULL, which reads as "recorded under the old model" — true, and
+  // better than inventing a per-channel value nobody actually gave.
+  matrix?: ConsentMatrix
   // Present only for the double-opt-in path: the confirmation token's identity.
   // A unique index makes the confirmation SINGLE-USE — a replayed link (forwarded
   // mail, scanner log, shared browser, back button) hits the index and throws
@@ -485,6 +544,7 @@ export async function recordConsentEvent(e: {
     consent_version: e.version,
     marketing_consent_mad: e.mad,
     marketing_consent_group: e.group,
+    ...(e.matrix ? matrixToColumns(e.matrix) : {}),
     ...(e.tokenId ? { token_id: e.tokenId } : {}),
   })
   if (error) throw new Error(`consent_event insert failed: ${error.message}`)
@@ -497,6 +557,99 @@ export function isTokenAlreadyUsed(err: unknown): boolean {
   return msg.includes('23505') || msg.includes('duplicate key')
 }
 
+/**
+ * Consent per brand, per channel — the shape the preference centre renders.
+ *
+ * Altid Energi is absent because it is a separate legal sender; Altid Alarm
+ * because it is named in no consent text we have ever shown. Neither omission is
+ * an oversight, and neither may be added without new wording naming the sender.
+ */
+export type ConsentMatrix = {
+  hjemEmail: boolean
+  hjemSms: boolean
+  madEmail: boolean
+  madSms: boolean
+  forsikringEmail: boolean
+  forsikringSms: boolean
+  mobilEmail: boolean
+  mobilSms: boolean
+}
+
+export const EMPTY_CONSENT: ConsentMatrix = {
+  hjemEmail: false,
+  hjemSms: false,
+  madEmail: false,
+  madSms: false,
+  forsikringEmail: false,
+  forsikringSms: false,
+  mobilEmail: false,
+  mobilSms: false,
+}
+
+const MATRIX_COLUMNS =
+  'consent_hjem_email, consent_hjem_sms, consent_mad_email, consent_mad_sms, ' +
+  'consent_forsikring_email, consent_forsikring_sms, consent_mobil_email, consent_mobil_sms'
+
+/**
+ * Read the matrix off a row.
+ *
+ * `=== true` everywhere on purpose: NULL, undefined and a column that does not
+ * exist yet must all read as "no consent", never as consent. Absence of evidence
+ * is not evidence of a yes.
+ *
+ * EMAIL flags additionally derive from the legacy pair (review 31/7): writers
+ * that predate the matrix — the altidmad.dk site's signup path and any
+ * still-deployed old code — set only marketing_consent_mad/group, and a row they
+ * touched after the one-time migration backfill would otherwise render as
+ * all-unticked, which a subsequent save would then persist, silently revoking a
+ * real consent. Deriving is a faithful subdivision of what those flags mean
+ * (mad names Altid Mad; group names the other three), and it cannot resurrect a
+ * withdrawn consent because every new-model write clears the legacy pair in the
+ * same UPDATE. SMS never derives from anything: no legacy flag ever meant SMS.
+ */
+function matrixFromRow(row: Record<string, unknown>): ConsentMatrix {
+  const legacyMad = row.marketing_consent_mad === true
+  const legacyGroup = row.marketing_consent_group === true
+  return {
+    hjemEmail: row.consent_hjem_email === true || legacyGroup,
+    hjemSms: row.consent_hjem_sms === true,
+    madEmail: row.consent_mad_email === true || legacyMad,
+    madSms: row.consent_mad_sms === true,
+    forsikringEmail: row.consent_forsikring_email === true || legacyGroup,
+    forsikringSms: row.consent_forsikring_sms === true,
+    mobilEmail: row.consent_mobil_email === true || legacyGroup,
+    mobilSms: row.consent_mobil_sms === true,
+  }
+}
+
+/**
+ * The legacy two-flag pair a matrix maps back to, used by every write that keeps
+ * the old columns in step. mad maps cleanly. group cannot: it was ONE consent
+ * naming three brands, and three flags cannot be squeezed back into it without
+ * lying. So it is derived CONSERVATIVELY — true only when all three are true —
+ * because a legacy consumer using it as a send-gate must never mail someone who
+ * ticked only one of the three. Under-including is a missed mail; over-including
+ * is marketing without consent. ONE definition, because the signup row and the
+ * consent_event audit row must never disagree about what "group" means.
+ */
+export function legacyFlagsFromMatrix(m: ConsentMatrix): { mad: boolean; group: boolean } {
+  return { mad: m.madEmail, group: m.hjemEmail && m.forsikringEmail && m.mobilEmail }
+}
+
+/** Column payload for a matrix write. */
+function matrixToColumns(m: ConsentMatrix): Record<string, boolean> {
+  return {
+    consent_hjem_email: m.hjemEmail,
+    consent_hjem_sms: m.hjemSms,
+    consent_mad_email: m.madEmail,
+    consent_mad_sms: m.madSms,
+    consent_forsikring_email: m.forsikringEmail,
+    consent_forsikring_sms: m.forsikringSms,
+    consent_mobil_email: m.mobilEmail,
+    consent_mobil_sms: m.mobilSms,
+  }
+}
+
 /** The row an unsubscribe/preference token names, with its current consent state. */
 export async function getSignupByUnsubToken(token: string): Promise<{
   publicId: string
@@ -504,29 +657,31 @@ export async function getSignupByUnsubToken(token: string): Promise<{
   unsubscribed: boolean
   consentMad: boolean
   consentGroup: boolean
+  phone: string | null
+  matrix: ConsentMatrix
 } | null> {
   const t = String(token || '').trim()
   if (!t) return null
   const { data, error } = await getClient()
     .from('signup')
-    .select('public_id, email, unsubscribed, marketing_consent_mad, marketing_consent_group')
+    .select(`public_id, email, unsubscribed, marketing_consent_mad, marketing_consent_group, phone, ${MATRIX_COLUMNS}`)
     .eq('unsub_token', t)
     .maybeSingle()
   if (error) throw new Error(error.message)
-  const row = data as {
-    public_id?: string | null
-    email?: string | null
-    unsubscribed?: boolean | null
-    marketing_consent_mad?: boolean | null
-    marketing_consent_group?: boolean | null
-  } | null
+  const row = data as Record<string, unknown> | null
   if (!row?.public_id || !row.email) return null
+  // The sentinel is never stored (check constraint + mirrorSignup guard), but a
+  // legacy row could still carry it. Read it as "no number given", which is what
+  // it has always meant, rather than showing a fake number back to its owner.
+  const rawPhone = String(row.phone ?? '').replace(/\s/g, '')
   return {
-    publicId: row.public_id,
-    email: row.email,
+    publicId: row.public_id as string,
+    email: row.email as string,
     unsubscribed: row.unsubscribed === true,
     consentMad: row.marketing_consent_mad === true,
     consentGroup: row.marketing_consent_group === true,
+    phone: rawPhone && rawPhone !== '00000000' ? rawPhone : null,
+    matrix: matrixFromRow(row),
   }
 }
 
@@ -538,17 +693,101 @@ export async function getSignupByUnsubToken(token: string): Promise<{
  */
 export async function setConsentByToken(
   token: string,
-  consent: { version: string; mad: boolean; group: boolean },
+  consent: { version: string; matrix: ConsentMatrix; phone?: string | null },
+): Promise<{ publicId: string; email: string; matrix: ConsentMatrix; phone: string | null } | null> {
+  const t = String(token || '').trim()
+  if (!t) return null
+
+  const phoneGiven = cleanPhone(consent.phone)
+  const hasPhone = phoneGiven !== null
+
+  // SMS consent without a number is not a consent, it is a boolean with nothing
+  // behind it — there is no one to send to, and nothing the person could ever
+  // withdraw by replying STOP. The browser disables the SMS boxes until a number
+  // is present, but the browser is not a security boundary: a JS-less client, a
+  // stale tab or a hand-made POST can still submit sms=true with no number. So
+  // the rule is enforced HERE, where it cannot be bypassed.
+  const m: ConsentMatrix = hasPhone
+    ? consent.matrix
+    : {
+        ...consent.matrix,
+        hjemSms: false,
+        madSms: false,
+        forsikringSms: false,
+        mobilSms: false,
+      }
+
+  const anySms = m.hjemSms || m.madSms || m.forsikringSms || m.mobilSms
+  // The number is kept only while an SMS consent justifies it. Without one it has
+  // no disclosed purpose, and holding data you have no purpose for is what data
+  // minimisation forbids (GDPR art. 5(1)(c)). So consent never outlives the
+  // number, and the number never outlives the consent.
+  const phoneToStore = anySms && hasPhone ? phoneGiven : null
+
+  const legacy = legacyFlagsFromMatrix(m)
+  const { data, error } = await getClient()
+    .from('signup')
+    .update({
+      ...matrixToColumns(m),
+      phone: phoneToStore,
+      // Legacy pair, kept in step (ONE definition — see legacyFlagsFromMatrix)
+      // so anything still reading it keeps working.
+      marketing_consent_mad: legacy.mad,
+      marketing_consent_group: legacy.group,
+      consent_version: consent.version,
+      consent_at: new Date().toISOString(),
+      // Saving preferences is an active choice to be reachable, so it also ends
+      // an unsubscribed state — in the SAME atomic UPDATE. Without this, a save
+      // racing an unsubscribe (two tabs, a double-submit) could leave the row
+      // "unsubscribed AND consented" at once, and whichever of the two a
+      // send-gate happens to read would decide whether they get mailed. With it,
+      // whichever write lands last leaves a coherent row: either fully out, or
+      // in with exactly the ticked consents.
+      unsubscribed: false,
+      unsubscribed_at: null,
+    })
+    .eq('unsub_token', t)
+    .select('public_id, email')
+  if (error) throw new Error(error.message)
+  const rows = (data ?? []) as { public_id: string; email: string }[]
+  if (!rows.length) return null
+  // Return what was ENFORCED, not what was asked for. The caller writes the audit
+  // trail from this, and the audit trail is the evidence for "did you hold this
+  // consent when you sent that mail?" — so it has to record the state that
+  // actually landed in the row. Returning only the ids let the caller log its own
+  // unsanitised input, which could claim an SMS consent this function had just
+  // refused for having no number behind it.
+  return { publicId: rows[0].public_id, email: rows[0].email, matrix: m, phone: phoneToStore }
+}
+
+/**
+ * "Afmeld mig fra alt" as ONE atomic UPDATE (review 31/7).
+ *
+ * The previous flow cleared consent and flipped `unsubscribed` in two separate
+ * writes; a concurrent preference save could interleave between them and leave
+ * the row "unsubscribed AND consented" — the exact state the send-gates must
+ * never see. One UPDATE has no in-between: every flag (SMS included), the legacy
+ * pair, and the phone number go in the same statement that sets unsubscribed.
+ * "Alt" has to mean alt, and the number's only purpose was the SMS consent that
+ * just went away (GDPR art. 5(1)(c)).
+ */
+export async function unsubscribeAllByToken(
+  token: string,
+  version: string,
 ): Promise<{ publicId: string; email: string } | null> {
   const t = String(token || '').trim()
   if (!t) return null
   const { data, error } = await getClient()
     .from('signup')
     .update({
-      marketing_consent_mad: consent.mad,
-      marketing_consent_group: consent.group,
-      consent_version: consent.version,
+      ...matrixToColumns(EMPTY_CONSENT),
+      phone: null,
+      marketing_consent_mad: false,
+      marketing_consent_group: false,
+      consent_version: version,
       consent_at: new Date().toISOString(),
+      unsubscribed: true,
+      unsubscribed_at: new Date().toISOString(),
     })
     .eq('unsub_token', t)
     .select('public_id, email')

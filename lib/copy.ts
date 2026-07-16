@@ -79,6 +79,47 @@ export const ALREADY_CONSENTED_BODY =
 // name each brand on its own. These are altidmad.dk's exact strings, reused
 // verbatim: the same flag must never be described in two different ways
 // depending on which site the person happens to be looking at.
+
+// ---------------------------------------------------------------------------
+// Preference-centre grid wording (final per Thor, 31 Jul 2026).
+// ---------------------------------------------------------------------------
+// Consents saved in the grid are stamped with THIS version, not CONSENT_VERSION:
+// that one identifies the signup form's email-only wording, which never
+// mentioned SMS or a per-brand grid. The audit trail must point to the wording a
+// consent was actually given under.
+export const PREF_CONSENT_VERSION = '2026-07-16.1-pref-grid'
+//
+// A grid cannot carry the full wording inside eight checkbox labels, so
+// PREF_CONSENT_GRID carries it ONCE, immediately below the grid and above the
+// save button, bound to each box by the per-cell aria-labels ("Altid Mad via
+// SMS").
+//
+// "Svar STOP" is stated as the SMS withdrawal route. It is a promise we cannot
+// keep yet: GatewayAPI's sender is the alphanumeric "Altid Hjem", and alphanumeric
+// sender IDs generally cannot receive inbound replies. Verify with GatewayAPI, or
+// move to a reply-capable number/shortcode, BEFORE any marketing SMS ships.
+
+export const PREF_PHONE_LABEL = 'Mobilnummer til valgfri SMS-markedsføring'
+
+export const PREF_PHONE_HINT =
+  'Nummeret bruges kun til SMS og gemmes kun, hvis du vælger mindst én SMS-kanal ovenfor.'
+
+export const PREF_PHONE_INVALID =
+  'Et dansk mobilnummer er 8 cifre. Skriv det uden landekode, fx 12 34 56 78.'
+
+export const PREF_CONSENT_GRID =
+  'Samtykket gælder nyheder, lanceringer, tilbud og anden markedsføring om de brands, du har valgt ovenfor, fra Altid Hjem ApS, CVR 45637476, på de kanaler du har valgt. Du kan til enhver tid trække et samtykke tilbage: fjern fluebenet her på siden, brug afmeldingslinket i vores e-mails, eller svar STOP til en SMS. Altid Energi er ikke omfattet og indhenter sit eget samtykke.'
+
+export const PREF_SAVE_NOTE =
+  'Når du gemmer, giver, opdaterer eller trækker du dine samtykker tilbage i overensstemmelse med valgene ovenfor.'
+
+// Shown on the saved-page when the server refused SMS choices for lack of a
+// valid number (a JS-less client or a stale tab can submit that combination).
+// The one message a consent screen must never show is "saved" for a choice that
+// was not.
+export const PREF_SMS_NOT_SAVED =
+  'Dine SMS-valg blev ikke gemt, fordi der ikke var et gyldigt mobilnummer. Skriv nummeret (8 cifre) og gem igen.'
+
 export const PREF_CONSENT_MAD =
   'Ja tak. Jeg vil gerne modtage e-mails med nyheder, tilbud og anden markedsføring om Altid Mad fra Altid Hjem ApS. Jeg kan til enhver tid trække mit samtykke tilbage.'
 export const PREF_CONSENT_GROUP =

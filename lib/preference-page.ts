@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
-import { PREF_CONSENT_MAD, PREF_CONSENT_GROUP } from '@/lib/copy'
+import { PREF_PHONE_LABEL, PREF_PHONE_HINT, PREF_PHONE_INVALID, PREF_CONSENT_GRID, PREF_SAVE_NOTE } from '@/lib/copy'
+import { PHONE_RE, SENTINEL_PHONE } from '@/lib/phone'
+import type { ConsentMatrix } from '@/lib/db'
 
 // The preference centre's markup, kept out of the route file so it can be
 // rendered and tested without a database. Route files may only export HTTP
@@ -57,36 +59,128 @@ export function button(token: string, act: string, label: string, primary = true
   </form>`
 }
 
+/** A link back to the preference centre, for the "saved" page. */
+export function backToPreferences(token: string) {
+  const url = `/api/unsubscribe?token=${encodeURIComponent(token)}`
+  return `<a href="${url}" style="display:inline-block;background:#ffffff;color:${FOREST};border:1px solid ${SAND};border-radius:999px;font-size:16px;font-weight:500;padding:14px 28px;text-decoration:none;font-family:inherit;">Ret mine præferencer</a>`
+}
+
+// The brands in the grid, in display order. Deliberately NOT here:
+//   Altid Energi — a separate legal sender; Altid Hjem ApS cannot hold consent
+//                  on its behalf, so it can never be a row here.
+//   Altid Alarm  — live on the site, but named in no consent text we have ever
+//                  shown, and its sending entity is unconfirmed.
+const BRANDS = [
+  { key: 'hjem', label: 'Altid Hjem' },
+  { key: 'mad', label: 'Altid Mad' },
+  { key: 'forsikring', label: 'Altid Forsikring' },
+  { key: 'mobil', label: 'Altid Mobil' },
+] as const
+
 /**
- * The preference centre.
+ * The preference centre: one row per brand, one column per channel.
  *
- * Withdrawal has to be as easy as giving consent (GDPR art. 7(3)), and it was
- * not: consent is per-brand (two flags), but unsubscribing was one global
- * boolean. Someone who wanted to stop the food mails but keep the rest had to
- * leave everything. Now each consent is its own box, and leaving entirely is
- * still one click.
- *
- * The boxes ARE pre-filled with the current state here — correct in this one
+ * The boxes ARE pre-filled with the current stored state — correct in this one
  * place, unlike on the double-opt-in confirm page. This is not the act of giving
  * consent; it is a person editing consent they already gave, and showing them
- * anything other than what is actually stored would misrepresent their own
- * record.
+ * anything other than what is actually stored would misrepresent their own record.
+ *
+ * A grid cannot carry the full legal wording inside eight labels, so the wording
+ * sits once, immediately below the grid and above the button, and is bound to
+ * every box by the per-cell accessible labels ("Altid Mad via SMS").
  */
-export function preferences(token: string, current: { consentMad: boolean; consentGroup: boolean }) {
+export function preferences(
+  token: string,
+  current: { matrix: ConsentMatrix; phone: string | null },
+) {
   const url = `/api/unsubscribe?token=${encodeURIComponent(token)}`
-  const box = (name: string, checked: boolean, text: string) => `
-    <label style="display:flex;gap:10px;align-items:flex-start;margin:0 0 14px;padding:12px 14px;background:${SAND};border-radius:12px;cursor:pointer;">
-      <input type="checkbox" name="consent" value="${name}" ${checked ? 'checked' : ''} style="margin-top:3px;flex-shrink:0;width:17px;height:17px;accent-color:${FOREST};"/>
-      <span style="font-size:14px;line-height:1.5;color:${FOREST};">${esc(text)}</span>
-    </label>`
+  const m = current.matrix
 
-  return `<form method="POST" action="${url}" style="margin:0 0 28px;">
+  const cell = (brand: string, label: string, channel: 'email' | 'sms', checked: boolean) => {
+    const name = `${brand}_${channel}`
+    const channelLabel = channel === 'email' ? 'e-mail' : 'SMS'
+    // SMS boxes render ENABLED even with no number (review 31/7): the inline
+    // script below disables them when the field is empty/invalid, but a client
+    // that strips scripts must still be able to tick SMS and type a number —
+    // otherwise no-JS users could never grant SMS at all. The real rule lives
+    // server-side in setConsentByToken, and the saved-page says so honestly when
+    // an SMS choice is refused for lack of a valid number.
+    return `<td align="center" style="background:${SAND};padding:14px;${channel === 'sms' ? `border-radius:0 12px 12px 0;` : ''}">
+      <input type="checkbox" name="consent" value="${name}" class="${channel}"
+        ${checked ? 'checked' : ''}
+        aria-label="${esc(label)} via ${channelLabel}"
+        style="width:17px;height:17px;accent-color:${FOREST};margin:0;"/>
+    </td>`
+  }
+
+  const rows = BRANDS.map(
+    (b) => `<tr>
+      <td style="background:${SAND};padding:14px;border-radius:12px 0 0 12px;font-size:15px;color:${FOREST};">${esc(b.label)}</td>
+      ${cell(b.key, b.label, 'email', m[`${b.key}Email` as keyof ConsentMatrix])}
+      ${cell(b.key, b.label, 'sms', m[`${b.key}Sms` as keyof ConsentMatrix])}
+    </tr>
+    <tr><td colspan="3" style="height:3px;line-height:3px;font-size:3px;">&nbsp;</td></tr>`,
+  ).join('')
+
+  return `<form method="POST" action="${url}" style="margin:0 0 28px;" id="prefForm">
     <input type="hidden" name="action" value="preferences"/>
-    ${box('mad', current.consentMad, PREF_CONSENT_MAD)}
-    ${box('group', current.consentGroup, PREF_CONSENT_GROUP)}
-    <button type="submit" style="background:${SIGNAL};color:${FOREST};border:0;border-radius:999px;font-size:16px;font-weight:500;padding:14px 28px;cursor:pointer;font-family:inherit;margin-top:6px;">Gem mine valg</button>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 14px;">
+      <tr>
+        <th align="left" style="font-size:11px;font-weight:600;color:${MUTED};text-transform:uppercase;letter-spacing:.06em;padding:0 0 10px;">Brand</th>
+        <th style="font-size:11px;font-weight:600;color:${MUTED};text-transform:uppercase;letter-spacing:.06em;padding:0 0 10px;width:64px;">E-mail</th>
+        <th style="font-size:11px;font-weight:600;color:${MUTED};text-transform:uppercase;letter-spacing:.06em;padding:0 0 10px;width:64px;">SMS</th>
+      </tr>
+      ${rows}
+    </table>
+
+    <div style="background:${SAND};border-radius:12px;padding:14px;margin:0 0 14px;">
+      <label for="tlf" style="display:block;font-size:11px;font-weight:600;color:${MUTED};text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;">${esc(PREF_PHONE_LABEL)}</label>
+      <input id="tlf" name="phone" type="tel" inputmode="numeric" autocomplete="tel"
+        value="${esc(current.phone ?? '')}" placeholder="12 34 56 78"
+        style="width:100%;box-sizing:border-box;border:1px solid #d5d0c4;border-radius:8px;padding:11px 12px;font-size:15px;font-family:inherit;color:${FOREST};background:#ffffff;"/>
+      <p id="phoneHint" style="font-size:12px;line-height:1.5;color:${MUTED};margin:8px 0 0;">${esc(PREF_PHONE_HINT)}</p>
+    </div>
+
+    <p style="font-size:12px;line-height:1.6;color:${MUTED};margin:0 0 20px;padding:14px;background:#faf8f3;border-radius:10px;">${esc(PREF_CONSENT_GRID)}</p>
+
+    <button type="submit" style="background:${SIGNAL};color:${FOREST};border:0;border-radius:999px;font-size:16px;font-weight:500;padding:14px 28px;cursor:pointer;font-family:inherit;">Gem mine valg</button>
+    <p style="font-size:13px;line-height:1.6;color:${MUTED};margin:12px 0 0;">${esc(PREF_SAVE_NOTE)}</p>
   </form>
   <p style="font-size:14px;line-height:1.6;color:${MUTED};margin:0 0 12px;">Vil du helt ud af det hele?</p>
-  ${button(token, 'unsubscribe', 'Afmeld mig fra alt')}`
+  ${button(token, 'unsubscribe', 'Afmeld mig fra alt')}
+  <script>
+  (function () {
+    var tlf = document.getElementById('tlf');
+    var sms = [].slice.call(document.querySelectorAll('input.sms'));
+    var hint = document.getElementById('phoneHint');
+    if (!tlf) return;
+    // EXACTLY the server's rule, interpolated from lib/phone.ts rather than
+    // hand-copied: regex AND the 00000000 sentinel (which the server refuses).
+    // A looser gate here would enable the boxes for input the server then drops,
+    // and the page would say "Dine valg er gemt" for a consent that was not. On
+    // a consent screen that is the one message that has to be true.
+    var phoneRe = new RegExp(${JSON.stringify(PHONE_RE.source)});
+    function valid(v) {
+      var c = v.replace(/\\s/g, '');
+      return phoneRe.test(c) && c !== ${JSON.stringify(SENTINEL_PHONE)};
+    }
+    function sync() {
+      var ok = valid(tlf.value);
+      var typed = tlf.value.replace(/\\s/g, '').length > 0;
+      sms.forEach(function (b) {
+        b.disabled = !ok;
+        // Consent must never outlive the number it belongs to.
+        if (!ok) b.checked = false;
+      });
+      if (hint) {
+        hint.textContent = typed && !ok
+          ? ${JSON.stringify(PREF_PHONE_INVALID)}
+          : ${JSON.stringify(PREF_PHONE_HINT)};
+      }
+    }
+    tlf.addEventListener('input', sync);
+    sync();
+  })();
+  </script>`
 }
 

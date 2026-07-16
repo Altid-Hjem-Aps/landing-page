@@ -5,6 +5,7 @@ import { trackServer, identifyServer } from '@/lib/amplitude.server'
 import { recordReferral, mirrorSignup, getReferrerProgress, getUnsubToken, isUnsubscribed, checkRateLimit, checkRateLimitStrict, getQueuePosition, getSignupByEmail } from '@/lib/db'
 import { syncContactTags, addAudienceContact } from '@/lib/resend'
 import { normalizeSignupSource } from '@/lib/signup-source'
+import { PHONE_RE, SENTINEL_PHONE } from '@/lib/phone'
 import {
   CONSENT_VERSION,
   CONFIRM_SENT_HEADING,
@@ -21,7 +22,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
 // and its host should not be derived from a request header.
 const SITE_ORIGIN = 'https://altidhjem.dk'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const PHONE_RE = /^\d{8}$/
 
 const WINDOW_SECONDS = 60 * 60 // 1 hour
 const MAX_ATTEMPTS = 3
@@ -75,8 +75,7 @@ export async function POST(req: NextRequest) {
     // Sent ONLY upstream: never SMSed (the confirmation SMS below is gated on the user's
     // own number, cleanPhone) and never mirrored to Supabase. Scrub these rows when the
     // backend change lands.
-    const FALLBACK_MOBILE = '00000000'
-    const upstreamMobile = rawPhone || FALLBACK_MOBILE
+    const upstreamMobile = rawPhone || SENTINEL_PHONE
 
     // Fail fast on missing survey-token secret BEFORE registering the user
     // upstream — otherwise signSurveyToken throws after side effects and the
@@ -212,7 +211,16 @@ export async function POST(req: NextRequest) {
       // Mirror the signup into Supabase and get this person's unsubscribe token.
       let token: string | null = null
       try {
-        token = await mirrorSignup(userId, { email: cleanEmail, firstName, source: signupSource, consent: consentInput })
+        // rawPhone, not upstreamMobile: the sentinel SENTINEL_PHONE goes upstream
+        // only. Mirroring it would store a fake number and show it back to the
+        // person as if it were theirs. mirrorSignup drops it defensively too.
+        token = await mirrorSignup(userId, {
+          email: cleanEmail,
+          firstName,
+          source: signupSource,
+          phone: rawPhone,
+          consent: consentInput,
+        })
       } catch (e) {
         console.error('mirrorSignup failed', e)
       }

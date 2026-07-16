@@ -70,6 +70,37 @@ describe('mirrorSignup consent storage', () => {
     expect(row.consent_at).toBe(row.created_at)
   })
 
+  it('subdivides the combined yes into per-brand EMAIL flags, and never writes SMS', async () => {
+    results = [{ data: { unsub_token: 't' }, error: null }]
+
+    await mirrorSignup('pub-brand', { email: 'b@x.dk', consent: CONSENT })
+
+    const row = upsertedRows[0]
+    // One tick under SIGNUP_CONSENT_ALL names all four brands — for EMAIL.
+    expect(row.consent_mad_email).toBe(true)
+    expect(row.consent_hjem_email).toBe(true)
+    expect(row.consent_forsikring_email).toBe(true)
+    expect(row.consent_mobil_email).toBe(true)
+    // No SMS key may ever appear here, at any value: the signup form has no SMS
+    // box, and an email consent must never imply an SMS one.
+    expect(Object.keys(row).some((k) => k.endsWith('_sms'))).toBe(false)
+  })
+
+  it('stores a whitespace-stripped phone and drops the 00000000 sentinel', async () => {
+    results = [
+      { data: { unsub_token: 't' }, error: null },
+      { data: { unsub_token: 't' }, error: null },
+    ]
+
+    await mirrorSignup('pub-p1', { email: 'p1@x.dk', phone: '30 48 92 97' })
+    await mirrorSignup('pub-p2', { email: 'p2@x.dk', phone: '00000000' })
+
+    expect(upsertedRows[0].phone).toBe('30489297')
+    // The sentinel is a bridge value for the upstream API, not a number: storing
+    // it would show the person a fake number as if it were theirs.
+    expect('phone' in upsertedRows[1]).toBe(false)
+  })
+
   it('records an unticked combined box as no consent on either flag', async () => {
     results = [{ data: { unsub_token: 't' }, error: null }]
 
@@ -154,6 +185,32 @@ describe('mergeConsent (409 re-signup path)', () => {
     const { patch } = updatePatches[0]
     expect('marketing_consent_mad' in patch).toBe(false) // false is not written (no downgrade)
     expect(patch.marketing_consent_group).toBe(true)
+  })
+
+  it('writes the per-brand EMAIL subdivision alongside each legacy flag', async () => {
+    // Regression (review 31/7): without this, every consent confirmed via
+    // /bekraeft after the one-time migration backfill was invisible to the
+    // matrix model — the preference centre showed the person all-unticked
+    // minutes after they confirmed.
+    updateResults = [{ data: [{ public_id: 'p1' }], error: null }]
+    await mergeConsent('b@x.dk', { version: 'v', mad: true, group: true })
+
+    const { patch } = updatePatches[0]
+    expect(patch.consent_mad_email).toBe(true)
+    expect(patch.consent_hjem_email).toBe(true)
+    expect(patch.consent_forsikring_email).toBe(true)
+    expect(patch.consent_mobil_email).toBe(true)
+    // Never SMS: no double-opt-in wording has ever mentioned SMS.
+    expect(Object.keys(patch).some((k) => k.endsWith('_sms'))).toBe(false)
+  })
+
+  it('group-only consent writes the three group brands but not Mad', async () => {
+    updateResults = [{ data: [{ public_id: 'p1' }], error: null }]
+    await mergeConsent('b@x.dk', { version: 'v', mad: false, group: true })
+
+    const { patch } = updatePatches[0]
+    expect('consent_mad_email' in patch).toBe(false)
+    expect(patch.consent_hjem_email).toBe(true)
   })
 
   it('is a no-op when nothing is affirmatively consented', async () => {
