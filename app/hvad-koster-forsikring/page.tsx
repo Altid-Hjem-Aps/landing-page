@@ -277,7 +277,7 @@ export default function HvadKosterForsikring() {
                 <p className="mb-3">
                   Altid Hjem samler hjemmets faste udgifter i én app. El, mobil, forsikring, internet og
                   flere services er på vej. Du får{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>ét login, én samlet regning</span>{' '}
+                  <span className="font-medium" style={{ color: 'var(--forest)' }}>ét overblik, ét login</span>{' '}
                   og et klart overblik over, hvad hjemmet koster hver måned.
                 </p>
                 <p className="mb-3">

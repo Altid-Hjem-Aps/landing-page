@@ -22,10 +22,10 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://altidhjem.dk'),
   alternates: { canonical: './' },
   title: 'Altid Hjem – Skriv dig på ventelisten',
-  description: 'Altid Hjem samler hjemmets faste udgifter i én app – ét overblik, ét login, én regning.',
+  description: 'Altid Hjem samler hjemmets faste udgifter i én app – ét overblik og ét login.',
   openGraph: {
     title: 'Altid Hjem – Skriv dig på ventelisten',
-    description: 'Altid Hjem samler hjemmets faste udgifter i én app – ét overblik, ét login, én regning.',
+    description: 'Altid Hjem samler hjemmets faste udgifter i én app – ét overblik og ét login.',
     url: 'https://altidhjem.dk',
     siteName: 'Altid Hjem',
     locale: 'da_DK',
