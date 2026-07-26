@@ -88,7 +88,7 @@ export default function Testimonials() {
   return (
     <section className="py-16 sm:py-20" style={{ background: '#fff' }}>
       <p className={`${EYEBROW} mx-auto max-w-[960px] px-6 text-center`} style={{ color: '#163223' }}>
-        Hør, hvorfor mere end 1.000 danskere allerede har skrevet sig på ventelisten
+        Hør, hvorfor mere end 2.000 danskere allerede har skrevet sig på ventelisten
       </p>
 
       {/* Centred snap carousel, same behaviour as the Blog: the active card
