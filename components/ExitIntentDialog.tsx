@@ -180,9 +180,9 @@ export default function ExitIntentDialog({ onClose }: { onClose: () => void }) {
               Gå ikke glip af besparelser på hjemmets udgifter
             </h2>
             {/* Lone and Michael are named (with consent) in the testimonial
-                section; the 1.000+ claim matches the eyebrow there. */}
+                section; the 2.000+ claim matches the eyebrow there. */}
             <p className="text-[16px] font-semibold text-white mb-2">
-              Gør som Lone, Michael og over 1.000 andre danskere
+              Gør som Lone, Michael og over 2.000 andre danskere
             </p>
             <p className="text-[16px] leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.7)' }}>
               Skriv dig på ventelisten til Altid Hjem, og få dine faste udgifter samlet ét sted med mulighed for lavere priser.
