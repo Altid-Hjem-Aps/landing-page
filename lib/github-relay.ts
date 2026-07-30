@@ -57,6 +57,7 @@ interface GithubReviewEvent {
   pull_request?: { number?: number }
   review?: MentionSource
   comment?: MentionSource
+  changes?: { body?: { from?: string } }
 }
 
 // Decide whether an incoming webhook delivery should trigger the agent, and
@@ -67,15 +68,30 @@ interface GithubReviewEvent {
 // that event runs from the default branch and is unaffected by conflicts.
 // Bot senders are ignored so the agent's own replies can never re-trigger
 // it, and only repo members' mentions count (see ALLOWED_ASSOCIATIONS).
+//
+// Edits count too. Writing the review first and adding the tag afterwards is
+// how people actually work, and GitHub sends that as `edited`, not
+// `submitted` (app PR #279: the mention sat unanswered until the 6-hourly
+// sweep). An edit only qualifies when it introduces the mention, so
+// re-editing a review that already said @claude cannot fire the agent twice.
 export function mentionToDispatch(eventName: string | null, event: GithubReviewEvent): number | null {
   if (event.sender?.type === 'Bot') return null
 
-  const source =
-    eventName === 'pull_request_review' && event.action === 'submitted'
-      ? event.review
-      : eventName === 'pull_request_review_comment' && event.action === 'created'
-        ? event.comment
-        : null
+  const isReview = eventName === 'pull_request_review'
+  const isReviewComment = eventName === 'pull_request_review_comment'
+  if (!isReview && !isReviewComment) return null
+
+  const action = event.action
+  const newAction = isReview ? 'submitted' : 'created'
+  if (action !== newAction && action !== 'edited') return null
+
+  if (action === 'edited') {
+    // No body diff means the edit changed something else: not a new mention.
+    const previousBody = event.changes?.body?.from
+    if (previousBody === undefined || previousBody.includes('@claude')) return null
+  }
+
+  const source = isReview ? event.review : event.comment
   if (!source?.body?.includes('@claude')) return null
   const allowed =
     ALLOWED_ASSOCIATIONS.has(source.author_association ?? '') || ALLOWED_LOGINS.has(source.user?.login ?? '')
