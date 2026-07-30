@@ -74,20 +74,37 @@ describe('mentionToDispatch', () => {
       expect(
         mentionToDispatch('pull_request_review', {
           ...review,
-          review: { ...review.review, author_association: association },
+          review: { ...review.review, author_association: association, user: { login: 'stranger' } },
         }),
       ).toBeNull()
     }
     expect(
       mentionToDispatch('pull_request_review_comment', {
         ...reviewComment,
-        comment: { ...reviewComment.comment, author_association: 'NONE' },
+        comment: { ...reviewComment.comment, author_association: 'NONE', user: { login: 'stranger' } },
       }),
     ).toBeNull()
     expect(
       mentionToDispatch('pull_request_review', {
         ...review,
         review: { ...review.review, author_association: 'OWNER' },
+      }),
+    ).toBe(264)
+  })
+
+  it('allows the team by login: private org membership reports MEMBER authors as CONTRIBUTOR', () => {
+    for (const login of ['alexanderthorup', 'larssn']) {
+      expect(
+        mentionToDispatch('pull_request_review', {
+          ...review,
+          review: { ...review.review, author_association: 'CONTRIBUTOR', user: { login } },
+        }),
+      ).toBe(264)
+    }
+    expect(
+      mentionToDispatch('pull_request_review_comment', {
+        ...reviewComment,
+        comment: { ...reviewComment.comment, author_association: 'CONTRIBUTOR', user: { login: 'larssn' } },
       }),
     ).toBe(264)
   })

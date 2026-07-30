@@ -29,19 +29,34 @@ export function verifyPathKey(key: string, expected: string): boolean {
   return a.length === b.length && timingSafeEqual(a, b)
 }
 
-// Author associations allowed to command the agent. The relayed workflow job
-// runs in prompt mode, which does not re-check the author the way the
-// action's native tag mode does — so the relay is where the write-access
-// gate lives. The app repo is private today; this keeps the pipeline safe
-// if that ever changes.
+// Authors allowed to command the agent. The relayed workflow job runs in
+// prompt mode, which does not re-check the author the way the action's
+// native tag mode does — so the relay is where the write-access gate lives.
+// The app repo is private today; this keeps the pipeline safe if that ever
+// changes.
+//
+// Two checks, either passes. The association check never fires for the
+// current team: their org memberships are private, and GitHub conceals
+// private membership from webhook payloads by reporting MEMBER authors as
+// CONTRIBUTOR (verified live against app PR #292). The login allowlist is
+// the gate that actually matches; the association check covers future
+// members with public visibility. Logins are public info, so listing them
+// here leaks nothing.
 const ALLOWED_ASSOCIATIONS = new Set(['OWNER', 'MEMBER', 'COLLABORATOR'])
+const ALLOWED_LOGINS = new Set(['alexanderthorup', 'larssn'])
+
+interface MentionSource {
+  body?: string | null
+  author_association?: string
+  user?: { login?: string }
+}
 
 interface GithubReviewEvent {
   action?: string
   sender?: { type?: string }
   pull_request?: { number?: number }
-  review?: { body?: string | null; author_association?: string }
-  comment?: { body?: string | null; author_association?: string }
+  review?: MentionSource
+  comment?: MentionSource
 }
 
 // Decide whether an incoming webhook delivery should trigger the agent, and
@@ -62,7 +77,9 @@ export function mentionToDispatch(eventName: string | null, event: GithubReviewE
         ? event.comment
         : null
   if (!source?.body?.includes('@claude')) return null
-  if (!ALLOWED_ASSOCIATIONS.has(source.author_association ?? '')) return null
+  const allowed =
+    ALLOWED_ASSOCIATIONS.has(source.author_association ?? '') || ALLOWED_LOGINS.has(source.user?.login ?? '')
+  if (!allowed) return null
 
   const pr = event.pull_request?.number
   return typeof pr === 'number' ? pr : null
