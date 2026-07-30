@@ -109,10 +109,38 @@ describe('mentionToDispatch', () => {
     ).toBe(264)
   })
 
-  it('ignores other actions: edited reviews, dismissed reviews, edited comments', () => {
+  it('dispatches an edit that adds the mention: people tag after writing the review', () => {
+    expect(
+      mentionToDispatch('pull_request_review', {
+        ...review,
+        action: 'edited',
+        changes: { body: { from: 'Requesting changes.' } },
+      }),
+    ).toBe(264)
+    expect(
+      mentionToDispatch('pull_request_review_comment', {
+        ...reviewComment,
+        action: 'edited',
+        changes: { body: { from: 'this line is wrong' } },
+      }),
+    ).toBe(264)
+  })
+
+  it('ignores edits that did not introduce the mention, so the agent never fires twice', () => {
+    expect(
+      mentionToDispatch('pull_request_review', {
+        ...review,
+        action: 'edited',
+        changes: { body: { from: '@claude can you fix?' } },
+      }),
+    ).toBeNull()
+    // An edit to something other than the body carries no `changes.body`.
     expect(mentionToDispatch('pull_request_review', { ...review, action: 'edited' })).toBeNull()
+  })
+
+  it('ignores other actions: dismissed reviews, deleted comments', () => {
     expect(mentionToDispatch('pull_request_review', { ...review, action: 'dismissed' })).toBeNull()
-    expect(mentionToDispatch('pull_request_review_comment', { ...reviewComment, action: 'edited' })).toBeNull()
+    expect(mentionToDispatch('pull_request_review_comment', { ...reviewComment, action: 'deleted' })).toBeNull()
   })
 
   it('ignores other event names, including issue_comment (handled natively by the workflow)', () => {
