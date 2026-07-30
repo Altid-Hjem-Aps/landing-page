@@ -22,12 +22,26 @@ export function verifyGithubSignature(rawBody: string, signature: string | null,
   return a.length === b.length && timingSafeEqual(a, b)
 }
 
+// The route's dynamic path segment must match GITHUB_RELAY_PATH_KEY.
+export function verifyPathKey(key: string, expected: string): boolean {
+  const a = Buffer.from(key)
+  const b = Buffer.from(expected)
+  return a.length === b.length && timingSafeEqual(a, b)
+}
+
+// Author associations allowed to command the agent. The relayed workflow job
+// runs in prompt mode, which does not re-check the author the way the
+// action's native tag mode does — so the relay is where the write-access
+// gate lives. The app repo is private today; this keeps the pipeline safe
+// if that ever changes.
+const ALLOWED_ASSOCIATIONS = new Set(['OWNER', 'MEMBER', 'COLLABORATOR'])
+
 interface GithubReviewEvent {
   action?: string
   sender?: { type?: string }
   pull_request?: { number?: number }
-  review?: { body?: string | null }
-  comment?: { body?: string | null }
+  review?: { body?: string | null; author_association?: string }
+  comment?: { body?: string | null; author_association?: string }
 }
 
 // Decide whether an incoming webhook delivery should trigger the agent, and
@@ -36,17 +50,19 @@ interface GithubReviewEvent {
 // Only review-shaped events qualify: @claude in plain PR conversation
 // comments (issue_comment) is still handled natively by the workflow, since
 // that event runs from the default branch and is unaffected by conflicts.
-// Bot senders are ignored so the agent's own replies can never re-trigger it.
+// Bot senders are ignored so the agent's own replies can never re-trigger
+// it, and only repo members' mentions count (see ALLOWED_ASSOCIATIONS).
 export function mentionToDispatch(eventName: string | null, event: GithubReviewEvent): number | null {
   if (event.sender?.type === 'Bot') return null
 
-  const body =
+  const source =
     eventName === 'pull_request_review' && event.action === 'submitted'
-      ? event.review?.body
+      ? event.review
       : eventName === 'pull_request_review_comment' && event.action === 'created'
-        ? event.comment?.body
+        ? event.comment
         : null
-  if (!body?.includes('@claude')) return null
+  if (!source?.body?.includes('@claude')) return null
+  if (!ALLOWED_ASSOCIATIONS.has(source.author_association ?? '')) return null
 
   const pr = event.pull_request?.number
   return typeof pr === 'number' ? pr : null

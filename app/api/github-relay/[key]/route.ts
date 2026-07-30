@@ -1,16 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { DISPATCH_EVENT, DISPATCH_REPO, mentionToDispatch, verifyGithubSignature } from '@/lib/github-relay'
+import {
+  DISPATCH_EVENT,
+  DISPATCH_REPO,
+  mentionToDispatch,
+  verifyGithubSignature,
+  verifyPathKey,
+} from '@/lib/github-relay'
 
 // GitHub webhook receiver: relays @claude mentions in PR reviews and inline
 // review comments to the app repo's Claude Agent pipeline via
 // repository_dispatch. Companion to /api/agent-relay (the Linear receiver);
 // see lib/github-relay.ts for why review mentions cannot use the native
 // workflow triggers.
-export async function POST(req: NextRequest) {
+//
+// The route lives under an unguessable path segment (GITHUB_RELAY_PATH_KEY)
+// so scanners never learn the endpoint exists: any other key 404s exactly
+// like a route that is not there. The HMAC signature remains the actual
+// security boundary; the path key is obscurity on top.
+export async function POST(req: NextRequest, { params }: { params: Promise<{ key: string }> }) {
+  const pathKey = process.env.GITHUB_RELAY_PATH_KEY
   const secret = process.env.GITHUB_WEBHOOK_SECRET
   const token = process.env.GITHUB_DISPATCH_TOKEN
-  if (!secret || !token) {
+  if (!pathKey || !secret || !token) {
     return NextResponse.json({ error: 'Relay not configured' }, { status: 500 })
+  }
+
+  const { key } = await params
+  if (!verifyPathKey(key, pathKey)) {
+    return new NextResponse(null, { status: 404 })
   }
 
   const rawBody = await req.text()
