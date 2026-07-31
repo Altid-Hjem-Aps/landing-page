@@ -265,8 +265,8 @@ export default function HvadKosterForsikring() {
                   <ForsikringHusstandMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Altid Hjem scanner husstandens forsikringer, finder mulige dobbeltdækninger og viser, hvad
-                  I kan rydde op i. Den personlige ulykkesforsikring beholdes.
+                  Altid Hjem skal kunne gennemgå husstandens forsikringer, finde mulige dobbeltdækninger og vise,
+                  hvad I kan rydde op i. Den personlige ulykkesforsikring beholdes. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
 
@@ -277,7 +277,7 @@ export default function HvadKosterForsikring() {
                 <p className="mb-3">
                   Altid Hjem samler hjemmets faste udgifter i én app. El, mobil, forsikring, internet og
                   flere services er på vej. Du får{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>ét login, én samlet regning</span>{' '}
+                  <span className="font-medium" style={{ color: 'var(--forest)' }}>ét overblik, ét login</span>{' '}
                   og et klart overblik over, hvad hjemmet koster hver måned.
                 </p>
                 <p className="mb-3">
@@ -286,7 +286,7 @@ export default function HvadKosterForsikring() {
                   hvis du betaler for meget.
                 </p>
                 <p>
-                  Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 14.000 danskere allerede får
+                  Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 15.000 danskere allerede får
                   gennemsigtig strøm til en fair pris. Nu tager vi samme princip videre til resten af hjemmet:
                   færre skjulte udgifter, færre spredte regninger og mere kontrol.
                 </p>

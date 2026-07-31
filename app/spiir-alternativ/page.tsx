@@ -17,7 +17,7 @@ const FAQ: { q: string; a: string[] }[] = [
     q: 'Er Altid Hjem et alternativ til Spiir?',
     a: [
       'Ja. Altid Hjem kan være et alternativ til Spiir, hvis du primært brugte Spiir til at holde overblik over dine faste udgifter.',
-      'Altid Hjem er dog ikke en klassisk budgetapp. Vi samler i stedet hjemmets faste udgifter i én app med ét login og én samlet regning.',
+      'Altid Hjem er dog ikke en klassisk budgetapp. Vi samler i stedet hjemmets faste udgifter i én app med ét overblik og ét login.',
     ],
   },
   {
@@ -128,7 +128,7 @@ export default function SpiirAlternativ() {
                 <p className="mb-3">
                   Vi samler hjemmets faste udgifter. El, mobil, forsikring, mad og mere. I{' '}
                   <span className="font-medium" style={{ color: 'var(--forest)' }}>
-                    én app med ét login og én samlet regning
+                    én app med ét overblik og ét login
                   </span>
                   .
                 </p>
@@ -163,7 +163,7 @@ export default function SpiirAlternativ() {
                   Hvem står bag Altid Hjem?
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 14.000 danskere
+                  Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 15.000 danskere
                   allerede får gennemsigtig strøm til en fair pris.
                 </p>
                 <p>

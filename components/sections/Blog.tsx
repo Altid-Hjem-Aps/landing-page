@@ -21,6 +21,78 @@ type Post = {
 
 const POSTS: Post[] = [
   {
+    href: '/billigste-mobilabonnement',
+    icon: '/services/icon-mobil.svg',
+    category: 'Mobil',
+    title: 'Billigste mobilabonnement i 2026',
+    excerpt: 'Abonnementer fås fra ca. 19 kr. om måneden, men husstandens samlede mobilregning er den, der batter. Se hvad priserne dækker, og hvor de gemmer sig.',
+    meta: '5 min læsning · 27. jul 2026',
+  },
+  {
+    href: '/hvad-koster-en-ladeboks',
+    icon: '/services/icon-opladning.svg',
+    category: 'Opladning',
+    title: 'Hvad koster en ladeboks?',
+    excerpt: 'Boks, installation, leje eller køb, og strømmen selv. Se de vejledende priser, og beregn din egen månedlige ladeudgift med beregneren på siden.',
+    meta: 'Beregner · 27. jul 2026',
+  },
+  {
+    href: '/hvad-koster-en-tyverialarm',
+    icon: '/services/icon-alarm.svg',
+    category: 'Alarm',
+    title: 'Hvad koster en tyverialarm?',
+    excerpt: 'Fra gør-det-selv til professionelt installerede systemer og abonnementer. Se de vejledende priser, og hvad de afhænger af, før du vælger.',
+    meta: '5 min læsning · 27. jul 2026',
+  },
+  {
+    href: '/hvad-koster-indboforsikring',
+    icon: '/services/icon-forsikring.svg',
+    category: 'Forsikring',
+    title: 'Hvad koster indboforsikring?',
+    excerpt: 'Typisk 100-400 kr. om måneden, men to ens husstande kan betale vidt forskelligt. Se hvad prisen afhænger af, og hvor dobbeltdækning gemmer sig.',
+    meta: '4 min læsning · 27. jul 2026',
+  },
+  {
+    href: '/billigste-elselskab',
+    icon: '/services/icon-strom.svg',
+    category: 'Energi',
+    title: 'Billigste elselskab: se på gebyrerne',
+    excerpt: 'kWh-prisen er ikke hele sandheden. Gebyrer og tillæg er den del af elregningen, selskabet selv bestemmer, og den del du faktisk kan styre.',
+    meta: '5 min læsning · 27. jul 2026',
+  },
+  {
+    href: '/opsig-abonnementer',
+    icon: '/app-badge.png',
+    category: 'Overblik',
+    title: 'Opsig de abonnementer, I ikke bruger',
+    excerpt: 'Glemte abonnementer gemmer sig i kontoudtoget. Få metoden til at finde dem alle, opsige rigtigt og gøre gennemgangen til en årlig vane.',
+    meta: '5 min læsning · 27. jul 2026',
+  },
+  {
+    href: '/gennemsnitligt-elforbrug',
+    icon: '/services/icon-strom.svg',
+    category: 'Energi',
+    title: 'Er jeres elforbrug normalt?',
+    excerpt: 'En familie i hus bruger typisk 4.500-5.000 kWh om året, en lejlighed langt mindre. Se benchmark for jeres boligtype, og hvad der flytter tallet.',
+    meta: '5 min læsning · 27. jul 2026',
+  },
+  {
+    href: '/bedste-budget-app',
+    icon: '/app-badge.png',
+    category: 'Overblik',
+    title: 'Budget-app eller samlet overblik?',
+    excerpt: 'En budget-app viser forbruget bagud. Et samlet overblik styrer de faste aftaler fremad. Se ærligt, hvad de to værktøjer kan, og hvad de ikke kan.',
+    meta: '4 min læsning · 27. jul 2026',
+  },
+  {
+    href: '/skift-forsikringsselskab',
+    icon: '/services/icon-forsikring.svg',
+    category: 'Forsikring',
+    title: 'Skift forsikringsselskab uden huller',
+    excerpt: 'Rækkefølgen beskytter dig: ny police på plads, før den gamle opsiges. Få tjeklisten til et sikkert skifte, og undgå de klassiske fælder.',
+    meta: '4 min læsning · 27. jul 2026',
+  },
+  {
     href: '/hvad-koster-forsikring',
     icon: '/services/icon-forsikring.svg',
     category: 'Forsikring',
@@ -95,7 +167,7 @@ function PostCard({ post, clone = false }: { post: Post; clone?: boolean }) {
       {/* Category chip */}
       <div className="flex items-center gap-3 mb-6">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={post.icon} alt="" className="shrink-0" style={{ width: 'clamp(34px,2.3vw,44px)', height: 'clamp(34px,2.3vw,44px)', borderRadius: 10 }} />
+        <img src={post.icon} alt="" loading="lazy" decoding="async" className="shrink-0" style={{ width: 'clamp(34px,2.3vw,44px)', height: 'clamp(34px,2.3vw,44px)', borderRadius: 10 }} />
         <span className="text-[13px] font-medium uppercase" style={{ color: '#163223', letterSpacing: '1.2px' }}>
           {post.category}
         </span>

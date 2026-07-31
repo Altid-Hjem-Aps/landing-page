@@ -15,7 +15,7 @@ type Item = { q: string; a: string }
 const ITEMS: Item[] = [
   {
     q: 'Hvad er Altid Hjem?',
-    a: 'Altid Hjem er en app, der samler hjemmets faste udgifter ét sted – strøm, mobil, forsikring, mad, opladning og alarm. Du får ét overblik, ét login og én samlet regning. Altid.',
+    a: 'Altid Hjem er en app, der samler hjemmets faste udgifter ét sted – strøm, mobil, forsikring, mad, opladning og alarm. Du får ét overblik og ét login. Altid.',
   },
   {
     q: 'Hvornår lanceres Altid Hjem?',
