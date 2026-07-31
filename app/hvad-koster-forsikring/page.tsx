@@ -8,7 +8,7 @@ import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
 export const metadata: Metadata = {
   title: 'Hvad koster forsikring i 2026? Se priser – Altid Hjem',
   description:
-    'Hvad koster forsikring i Danmark? Se vejledende priser på indbo, hus, bil, ulykke og rejse — og find ud af, om du betaler for meget. Skriv dig gratis på ventelisten til Altid Hjem.',
+    'Hvad koster forsikring i Danmark? Se vejledende priser på indbo, hus, bil, ulykke og rejse. Find ud af, om du betaler for meget. Skriv dig gratis på ventelisten til Altid Hjem.',
   alternates: { canonical: 'https://altidhjem.dk/hvad-koster-forsikring' },
   openGraph: {
     title: 'Hvad koster forsikring i Danmark?',
@@ -72,13 +72,13 @@ const FAQ: { q: string; a: string[] }[] = [
     q: 'Hvordan ved jeg, om jeg er dobbeltforsikret?',
     a: [
       'Du kan være dobbeltforsikret, hvis flere i husstanden betaler for den samme dækning hver for sig.',
-      'Det kan fx være indbo, rejse eller en dækning, der allerede indgår i en anden police. Altid Hjem samler overblikket og markerer mulige overlap.',
+      'Det kan fx være indbo, rejse eller en dækning, der allerede indgår i en anden police. Altid Hjem skal kunne samle overblikket og markere mulige overlap.',
     ],
   },
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem samler hjemmets faste udgifter i én app med ét overblik.',
+      'Altid Hjem er en kommende app, der skal samle hjemmets faste udgifter i ét overblik, ét login.',
       'Målet er at gøre det nemmere at se, hvad du betaler, finde unødvendige udgifter og få mere kontrol over økonomien i hjemmet.',
     ],
   },
@@ -203,7 +203,7 @@ export default function HvadKosterForsikring() {
                   for den samme dækning.
                 </p>
                 <p>
-                  Samlerabat kan hjælpe — men er ikke automatisk lig med den bedste pris. Det afgørende er
+                  Samlerabat kan hjælpe, men er ikke automatisk lig med den bedste pris. Det afgørende er
                   den samlede pris for hele husstanden.
                 </p>
               </section>
@@ -244,7 +244,7 @@ export default function HvadKosterForsikring() {
                 <p className="mb-3">
                   Det sker, når to personer i samme husstand betaler for den samme dækning hver for sig. Det
                   kan være to indboforsikringer, to rejseforsikringer, et barn der står på begge forældres
-                  police — eller en dækning, der allerede ligger som del af en anden forsikring.
+                  police eller en dækning, der allerede ligger som del af en anden forsikring.
                 </p>
                 <p className="mb-3">
                   Problemet er sjældent, at folk ikke vil rydde op. Problemet er, at de ikke kan se det:
@@ -253,7 +253,7 @@ export default function HvadKosterForsikring() {
                 <p className="mb-6">
                   Altid Hjem samler{' '}
                   <span className="font-medium" style={{ color: 'var(--forest)' }}>hele husstandens forsikringer ét sted</span>{' '}
-                  og markerer, hvor I kan være dækket dobbelt — så I kan beholde den rigtige dækning og opsige
+                  og markerer, hvor I kan være dækket dobbelt, så I kan beholde den rigtige dækning og opsige
                   det, I ikke har brug for.
                 </p>
 

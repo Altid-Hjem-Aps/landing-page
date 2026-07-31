@@ -26,7 +26,7 @@ const STEPS = [
   'Sammenlign dækningen',
   'Vælg det nye selskab',
   'Bekræft den nye police',
-  'Opsig den gamle police',
+  'Opsig den gamle forsikring',
 ]
 
 export default function SkiftTjeklisteMockup() {
@@ -41,7 +41,7 @@ export default function SkiftTjeklisteMockup() {
     <div
       ref={ref}
       role="img"
-      aria-label="Eksempel: de fem trin i et sikkert forsikringsskift gennemføres i rækkefølge"
+      aria-label="Eksempel: de fem trin i et sikkert forsikringsskift gennemgås i rækkefølge"
       className="w-full max-w-[400px] rounded-[24px] px-5 pt-5 pb-4 hjem-motion-scope"
       style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
     >

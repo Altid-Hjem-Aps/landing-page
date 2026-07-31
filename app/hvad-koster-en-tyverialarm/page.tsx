@@ -32,7 +32,7 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Hvad koster en tyverialarm?',
     a: [
-      'En tyverialarm koster vejledende 999-2.999 kr. som enkel gør-det-selv-løsning eller typisk 10.000-15.000 kr. for et professionelt installeret villasystem.',
+      'En tyverialarm koster vejledende 999-2.999 kr. som enkel gør-det-selv-løsning eller typisk 10.000-15.000 kr. for et professionelt installeret alarmsystem til en villa.',
       'Prisen varierer med boligens størrelse, antal sensorer og valgte funktioner.',
     ],
   },
@@ -130,7 +130,7 @@ export default function HvadKosterEnTyverialarm() {
               {/* Kort svar — målrettet Googles "fremhævede uddrag". */}
               <section>
                 <p className="mb-3">
-                  En tyverialarm koster vejledende fra under 1.000 kr. for en enkel gør-det-selv-løsning til typisk 10.000-15.000 kr. for et professionelt installeret villasystem.
+                  En tyverialarm koster vejledende fra under 1.000 kr. for en enkel gør-det-selv-løsning til typisk 10.000-15.000 kr. for et professionelt installeret alarmsystem til en villa.
                 </p>
                 <p>
                   Vælger du abonnement, starter prisen typisk fra ca. 299 kr./md. plus installation og ofte en bindingsperiode. Den endelige pris afhænger blandt andet af boligens størrelse, antal sensorer og behovet for kontrolcentral eller vagtudrykning.
@@ -192,7 +192,7 @@ export default function HvadKosterEnTyverialarm() {
               </section>
               <section>
                 <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Ferieperioder gør alarmsikkerhed aktuel
+                  I ferieperioder er indbrudssikring særlig relevant
                 </h2>
                 <p className="mb-3">
                   Interessen for tyverialarmer topper ofte i august, hvor mange tænker på indbrud i forbindelse med ferie og tomme boliger. En alarm kan være en del af sikringen, men den bør ikke stå alene.

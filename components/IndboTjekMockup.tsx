@@ -44,7 +44,7 @@ export default function IndboTjekMockup() {
     <div
       ref={ref}
       role="img"
-      aria-label="Eksempel: husstandens indbodækninger gennemgås, og et muligt overlap flages"
+      aria-label="Eksempel: husstandens indbodækninger gennemgås, og et muligt overlap markeres"
       className="w-full max-w-[400px] rounded-[24px] px-5 pt-5 pb-4 hjem-motion-scope"
       style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
     >
@@ -101,7 +101,7 @@ export default function IndboTjekMockup() {
                   className="shrink-0 font-semibold text-[10px] uppercase px-2 py-1"
                   style={{ borderRadius: 6, backgroundColor: SAGE, color: FOREST, letterSpacing: '0.4px', animation: animate ? `hjem-pop-in ${DUR_POP}ms ${EASE_OVERSHOOT} both` : 'none', animationDelay: staggerDelay(2, animate) }}
                 >
-                  Ryddet op
+                  Gennemgået
                 </span>
               )}
             </div>
@@ -125,7 +125,7 @@ export default function IndboTjekMockup() {
             Overblikket er klar <span style={{ color: SAGE }}>✓</span>
           </p>
           <p style={{ fontSize: 11, color: ON_FOREST_MUTED, marginTop: 2 }}>
-            Dækningerne er gennemgået, overlappet er væk
+            Dækningerne er gennemgået, et muligt overlap er markeret
           </p>
         </div>
         <span className="shrink-0 font-semibold text-[11px] px-2 py-1" style={{ borderRadius: 8, backgroundColor: SAGE, color: FOREST }}>

@@ -142,7 +142,7 @@ export default function OpsigAbonnementer() {
                   Sådan finder I alle husstandens abonnementer
                 </h2>
                 <p className="mb-3">
-                  Start med kontoudtoget fra de seneste måneder. Se efter gentagne betalinger til streaming, mobil, fitness, aviser, apps, cloud-lagring og andre tjenester.
+                  Start med kontoudtoget fra de seneste måneder. Se efter gentagne betalinger til streaming, mobil, fitness, aviser, apps, lagerplads i skyen og andre tjenester.
                 </p>
                 <p className="mb-3">
                   Tjek også abonnementslisterne i telefonens appbutik. Nogle aftaler bliver trukket gennem Apple eller Google og fremgår derfor ikke under tjenestens eget navn på kontoudtoget.

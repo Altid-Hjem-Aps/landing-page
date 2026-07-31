@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import IndboTjekMockup from '@/components/IndboTjekMockup'
 
 export const metadata: Metadata = {
-  title: 'Indboforsikring pris i 2026 – Altid Hjem',
+  title: 'Pris på indboforsikring i 2026 – Altid Hjem',
   description:
     'Se, hvad en indboforsikring typisk koster, hvorfor prisen varierer, og hvad du bør tjekke før et skifte. Få et ærligt overblik hos Altid Hjem.',
   alternates: { canonical: 'https://altidhjem.dk/hvad-koster-indboforsikring' },
@@ -187,7 +187,7 @@ export default function HvadKosterIndboforsikring() {
                   <IndboTjekMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Altid Hjem skal kunne gennemgå husstandens dækninger og flage mulige overlap. Illustration, ikke et skærmbillede fra appen.
+                  Altid Hjem skal kunne gennemgå husstandens dækninger og markere mulige overlap. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
               <section>
@@ -226,7 +226,7 @@ export default function HvadKosterIndboforsikring() {
                   Altid Hjem er bygget til at samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad i ét overblik, ét login. Forsikringsdelen skal kunne vise husstandens forsikringer samlet og gøre det lettere at opdage mulige overlap.
                 </p>
                 <p>
-                  Altid Energi er allerede live som Danmarks første gebyrfrie energiselskab og har mere end 15.000 danske kunder. Mobil, opladning, alarm og forsikring er på vej, og ventelisten til Altid Hjem er åben på altidhjem.dk.
+                  Altid Energi er allerede i drift som Danmarks første gebyrfrie energiselskab og har mere end 15.000 danske kunder. Mobil, opladning, alarm og forsikring er på vej, og ventelisten til Altid Hjem er åben på altidhjem.dk.
                 </p>
               </section>
 

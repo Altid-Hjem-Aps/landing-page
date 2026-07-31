@@ -28,9 +28,9 @@ const SEQ: { p: Phase; ms: number }[] = [
 
 const ROWS = [
   { name: 'Mor · fri tale', issue: null },
-  { name: 'Far · gammelt abonnement', issue: 'Overpris', scannedAt: 'scan-2' as Phase, fixedAt: 'fix-far' as Phase, fixed: 'Opdateret' },
-  { name: 'Freja · stor datapakke', issue: 'Ubrugt data', scannedAt: 'scan-3' as Phase, fixedAt: 'fix-freja' as Phase, fixed: 'Tilpasset' },
-  { name: 'Emil · discountaftale', issue: null },
+  { name: 'Far · gammelt abonnement', issue: 'Overpris', scannedAt: 'scan-2' as Phase, fixedAt: 'fix-far' as Phase, fixed: 'Gennemgået' },
+  { name: 'Freja · stor datapakke', issue: 'Ubrugt data', scannedAt: 'scan-3' as Phase, fixedAt: 'fix-freja' as Phase, fixed: 'Gennemgået' },
+  { name: 'Emil · 30 GB', issue: null },
 ]
 
 const STATUS: Record<Phase, string> = {
@@ -39,9 +39,9 @@ const STATUS: Record<Phase, string> = {
   'scan-2': 'Mulige problemer fundet',
   'scan-3': 'Mulige problemer fundet',
   'scan-4': 'Mulige problemer fundet',
-  'fix-far': 'Aftalerne er opdateret',
-  'fix-freja': 'Aftalerne er opdateret',
-  done: 'Aftalerne er opdateret',
+  'fix-far': 'Aftalerne er gennemgået',
+  'fix-freja': 'Aftalerne er gennemgået',
+  done: 'Aftalerne er gennemgået',
 }
 
 export default function MobilOverblikMockup() {
@@ -54,11 +54,11 @@ export default function MobilOverblikMockup() {
     <div
       ref={ref}
       role="img"
-      aria-label="Eksempel: husstandens mobilabonnementer gennemgås, og overpris flages"
+      aria-label="Eksempel: husstandens mobilabonnementer gennemgås, og en mulig overpris markeres"
       className="w-full max-w-[400px] rounded-[24px] px-5 pt-5 pb-4 hjem-motion-scope"
       style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
     >
-      <CardHeader eyebrow="Aftaletjek" title="Husstandens mobil" icon="/services/icon-mobil.svg" />
+      <CardHeader eyebrow="Aftaletjek" title="Husstandens mobilabonnementer" icon="/services/icon-mobil.svg" />
 
       <div
         className="rounded-2xl px-3.5 py-2.5 mb-3"

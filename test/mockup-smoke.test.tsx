@@ -15,7 +15,7 @@ import SkiftTjeklisteMockup from '@/components/SkiftTjeklisteMockup'
 
 const CASES = [
   { name: 'AbonnementMockup', C: AbonnementMockup, finalText: 'Gennemgangen er færdig' },
-  { name: 'AlarmStatusMockup', C: AlarmStatusMockup, finalText: 'Hjemmet er sikret' },
+  { name: 'AlarmStatusMockup', C: AlarmStatusMockup, finalText: 'Alarmen er slået til' },
   { name: 'BudgetAppSammenligning', C: BudgetAppSammenligning, finalText: 'Begge kan have værdi i jeres økonomi' },
   { name: 'GebyrMockup', C: GebyrMockup, finalText: 'Ingen faste gebyrer, intet abonnement' },
   { name: 'IndboTjekMockup', C: IndboTjekMockup, finalText: 'Overblikket er klar' },

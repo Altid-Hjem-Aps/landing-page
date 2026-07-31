@@ -21,7 +21,7 @@ const SEQ: { p: Phase; ms: number }[] = [
 ]
 
 
-const SENSORS = ['Fordør', 'Vinduer i stuen', 'Røgalarm', 'Bevægelse i gang', 'Udendørs kamera']
+const SENSORS = ['Fordør', 'Vinduer i stuen', 'Røgalarm', 'Bevægelsessensor, gang', 'Udendørs kamera']
 
 export default function AlarmStatusMockup() {
   const { ref, phase, at, reduced, entered } = usePhaseLoop(SEQ)
@@ -30,17 +30,17 @@ export default function AlarmStatusMockup() {
   // suppressed so the card snaps clean instead of unwinding row by row.
   const forward = phase !== SEQ[0].p
   const animate = forward && !reduced
-  const status = phase === 'secured' ? 'Hjemmet er sikret' : phase === 'all-active' ? 'Alle sensorer aktive' : 'Aktiverer …'
+  const status = phase === 'secured' ? 'Alarmen er slået til' : phase === 'all-active' ? 'Alle sensorer aktive' : 'Aktiverer …'
 
   return (
     <div
       ref={ref}
       role="img"
-      aria-label="Eksempel: hjemmets alarmsensorer aktiveres, og hjemmet meldes sikret"
+      aria-label="Eksempel: hjemmets alarmsensorer aktiveres, og alarmen slås til"
       className="w-full max-w-[400px] rounded-[24px] px-5 pt-5 pb-4 hjem-motion-scope"
       style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
     >
-      <CardHeader eyebrow="Alarmstatus" title="Hjemmet sikres" icon="/services/icon-alarm.svg" />
+      <CardHeader eyebrow="Alarmstatus" title="Alarmen slås til" icon="/services/icon-alarm.svg" />
 
       <div className="rounded-2xl px-3.5 py-2.5 mb-3 flex items-center justify-between gap-3" style={{ backgroundColor: SAGE_WASH, border: `1px solid ${CARD_BORDER}` }}>
         <span className="text-[11.5px] font-semibold" style={{ color: FOREST }}>
@@ -112,7 +112,7 @@ export default function AlarmStatusMockup() {
             Alarmstatus
           </p>
           <p className="font-bold text-[15px] leading-tight text-white">
-            Hjemmet er sikret <span style={{ color: SAGE }}>✓</span>
+            Alarmen er slået til <span style={{ color: SAGE }}>✓</span>
           </p>
           <p style={{ fontSize: 11, color: ON_FOREST_MUTED, marginTop: 2 }}>
             Alle fem sensorer er aktive

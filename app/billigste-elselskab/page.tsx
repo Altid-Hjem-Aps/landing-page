@@ -40,13 +40,13 @@ const FAQ: { q: string; a: string[] }[] = [
     q: 'Hvad betyder et gebyrfrit elselskab?',
     a: [
       'Det betyder, at elselskabet ikke opkræver faste gebyrer eller abonnement.',
-      'Du betaler fortsat for selve strømmen, transport, afgifter og eventuelle tydeligt oplyste pristillæg.',
+      'Du betaler fortsat for selve strømmen, nettariffer, elafgift og eventuelle tydeligt oplyste pristillæg.',
     ],
   },
   {
     q: 'Hvorfor er kWh-prisen ikke hele sandheden?',
     a: [
-      'Fordi din samlede elpris også indeholder transport, afgifter, tillæg og eventuelle faste gebyrer.',
+      'Fordi din samlede elpris også indeholder nettariffer, elafgift, tillæg og eventuelle faste gebyrer.',
       'En lav kWh-pris kan derfor ende med at være dyrere, hvis aftalen har et månedligt abonnement eller andre omkostninger.',
     ],
   },
@@ -142,7 +142,7 @@ export default function BilligsteElselskab() {
                   Hvad består elprisen egentlig af?
                 </h2>
                 <p className="mb-3">
-                  Din elpris består af spotpris, transport, afgifter samt elselskabets tillæg og gebyrer. Spotprisen bestemmes på elmarkedet, mens transporten betales til dit netselskab, og afgifterne fastsættes politisk.
+                  Din elpris består af spotpris, nettariffer, elafgift samt elselskabets tillæg og gebyrer. Spotprisen bestemmes på elmarkedet, mens nettarifferne betales til dit netselskab, og afgifterne fastsættes politisk.
                 </p>
                 <p className="mb-3">
                   Elselskabet kan primært konkurrere på tillæg og gebyrer. Derfor kan to aftaler med samme type spotpris ende med forskellige samlede priser.

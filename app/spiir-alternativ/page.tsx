@@ -7,7 +7,7 @@ import Footer from '@/components/Footer'
 export const metadata: Metadata = {
   title: 'Spiir-alternativ: Hvad skal du bruge i stedet for Spiir? – Altid Hjem',
   description:
-    'Spiir lukkede 8. juni 2026. Leder du efter et Spiir-alternativ, der giver overblik over dine faste udgifter? Altid Hjem samler el, mobil og forsikring i én app — skriv dig gratis på ventelisten.',
+    'Spiir lukkede 8. juni 2026. Leder du efter et Spiir-alternativ, der giver overblik over dine faste udgifter? Altid Hjem skal samle el, mobil og forsikring i én app. Skriv dig gratis på ventelisten.',
 }
 
 // FAQ-indholdet bruges to steder: på siden (afsnit for afsnit) og som

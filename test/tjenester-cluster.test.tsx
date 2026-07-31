@@ -56,14 +56,14 @@ describe('LadeboksCalculator', () => {
   it('warns when a filled refusion price cannot be read', () => {
     render(<LadeboksCalculator />)
     fireEvent.change(screen.getByPlaceholderText('F.eks. 0,73'), { target: { value: 'abc' } })
-    expect(screen.getByText(/Refusionsprisen kunne ikke læses/)).toBeInTheDocument()
+    expect(screen.getByText(/Elprisen efter refusion kunne ikke læses/)).toBeInTheDocument()
   })
 
   const FIELD_CASES = [
     { key: 'km', label: 'Km pr. måned', bad: '999999', copy: 'Indtast et tal mellem 50 og 10.000 km' },
     { key: 'kwh100', label: 'Forbrug (kWh/100 km)', bad: '99', copy: 'Indtast et tal mellem 8 og 35 kWh/100 km' },
     { key: 'price', label: 'Elpris (kr./kWh)', bad: '99', copy: 'Indtast en pris mellem 0,2 og 10 kr./kWh' },
-    { key: 'refusion', label: 'Evt. refusionspris (kr./kWh)', bad: 'abc', copy: 'Indtast en pris mellem 0,2 og 10 kr./kWh' },
+    { key: 'refusion', label: 'Evt. elpris efter refusion (kr./kWh)', bad: 'abc', copy: 'Indtast en pris mellem 0,2 og 10 kr./kWh' },
   ] as const
 
   it.each(FIELD_CASES)('shows the $key error only after blur, with linked copy', ({ key, label, bad, copy }) => {
