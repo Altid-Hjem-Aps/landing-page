@@ -58,6 +58,83 @@ describe('LadeboksCalculator', () => {
     fireEvent.change(screen.getByPlaceholderText('F.eks. 0,73'), { target: { value: 'abc' } })
     expect(screen.getByText(/Refusionsprisen kunne ikke læses/)).toBeInTheDocument()
   })
+
+  const FIELD_CASES = [
+    { key: 'km', label: 'Km pr. måned', bad: '999999', copy: 'Indtast et tal mellem 50 og 10.000 km' },
+    { key: 'kwh100', label: 'Forbrug (kWh/100 km)', bad: '99', copy: 'Indtast et tal mellem 8 og 35 kWh/100 km' },
+    { key: 'price', label: 'Elpris (kr./kWh)', bad: '99', copy: 'Indtast en pris mellem 0,2 og 10 kr./kWh' },
+    { key: 'refusion', label: 'Evt. refusionspris (kr./kWh)', bad: 'abc', copy: 'Indtast en pris mellem 0,2 og 10 kr./kWh' },
+  ] as const
+
+  it.each(FIELD_CASES)('shows the $key error only after blur, with linked copy', ({ key, label, bad, copy }) => {
+    render(<LadeboksCalculator />)
+    const input = screen.getByLabelText(label)
+    fireEvent.change(input, { target: { value: bad } })
+    expect(input).not.toHaveAttribute('aria-invalid')
+    expect(screen.queryByText(copy)).not.toBeInTheDocument()
+    fireEvent.blur(input)
+    expect(input).toHaveAttribute('aria-invalid', 'true')
+    expect(input).toHaveAttribute('aria-describedby', `ladeboks-${key}-error`)
+    expect(screen.getByText(copy)).toBeInTheDocument()
+  })
+
+  it('keeps the error text out of the input accessible name', () => {
+    render(<LadeboksCalculator />)
+    const km = screen.getByLabelText('Km pr. måned')
+    fireEvent.change(km, { target: { value: '999999' } })
+    fireEvent.blur(km)
+    // the label must still resolve exactly — error copy lives outside the <label>
+    expect(screen.getByLabelText('Km pr. måned')).toBe(km)
+  })
+
+  it('validates live while typing once a field has been touched', () => {
+    render(<LadeboksCalculator />)
+    const km = screen.getByLabelText('Km pr. måned')
+    fireEvent.change(km, { target: { value: '999999' } })
+    fireEvent.blur(km)
+    fireEvent.change(km, { target: { value: '1.500' } })
+    expect(km).not.toHaveAttribute('aria-invalid')
+    // touched has latched: an invalid retype flags immediately, no second blur needed
+    fireEvent.change(km, { target: { value: '999999' } })
+    expect(km).toHaveAttribute('aria-invalid', 'true')
+  })
+
+  it('clears the field error as soon as the value becomes valid again', () => {
+    render(<LadeboksCalculator />)
+    const km = screen.getByLabelText('Km pr. måned')
+    fireEvent.change(km, { target: { value: '999999' } })
+    fireEvent.blur(km)
+    expect(km).toHaveAttribute('aria-invalid', 'true')
+    fireEvent.change(km, { target: { value: '1.500' } })
+    expect(km).not.toHaveAttribute('aria-invalid')
+    expect(screen.queryByText('Indtast et tal mellem 50 og 10.000 km')).not.toBeInTheDocument()
+  })
+
+  it('keeps the empty optional refusion field neutral after blur', () => {
+    render(<LadeboksCalculator />)
+    const refusion = screen.getByPlaceholderText('F.eks. 0,73')
+    fireEvent.blur(refusion)
+    expect(refusion).not.toHaveAttribute('aria-invalid')
+  })
+
+  it('links an unreadable refusion price to its field error after blur', () => {
+    render(<LadeboksCalculator />)
+    const refusion = screen.getByPlaceholderText('F.eks. 0,73')
+    fireEvent.change(refusion, { target: { value: 'abc' } })
+    fireEvent.blur(refusion)
+    expect(refusion).toHaveAttribute('aria-invalid', 'true')
+    expect(refusion).toHaveAttribute('aria-describedby', 'ladeboks-refusion-error')
+  })
+
+  it('keeps the live-region node stable across value updates', () => {
+    const { container } = render(<LadeboksCalculator />)
+    const live = container.querySelector('[aria-live]')
+    expect(live).not.toBeNull()
+    fireEvent.change(screen.getByLabelText('Km pr. måned'), { target: { value: '2.000' } })
+    expect(container.querySelector('[aria-live]')).toBe(live)
+    // 2000/100*18 = 360 kWh * 2,50 = 900 kr. — figures stay correct with the motion markup
+    expect(screen.getByText(/900 kr\./)).toBeInTheDocument()
+  })
 })
 
 describe('blog strip routes', () => {

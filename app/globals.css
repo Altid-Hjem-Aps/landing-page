@@ -214,3 +214,55 @@ body {
   0%, 100% { opacity: 0.7; transform: scale(1.15); }
   50%      { opacity: 1;   transform: scale(1.22); }
 }
+
+/* SEO mockup motion kit (components/seo/hjemKit.tsx). Keyframes for the
+   wash → glyph → badge beat inside a phase change; scoped names to avoid
+   colliding with the marketing-page animations above. */
+@keyframes hjem-pop-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes hjem-glyph-in {
+  from { opacity: 0.35; transform: scale(0.72); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes hjem-value-in {
+  from { opacity: 0.35; transform: translateY(3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes hjem-invalid-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(2px); }
+  75% { transform: translateX(-1px); }
+}
+@keyframes hjem-panel-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* The entrance ships opacity:0 in the server HTML and relies on JS to reveal.
+   Without scripting (blocked JS, failed hydration on an old browser) the SEO
+   pages must not render invisible cards. */
+@media (scripting: none) {
+  .hjem-motion-scope {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Hard reduced-motion kill switch for the mockup cards: the JS `reduced`
+   flag is only known after hydration, so without this a reduced-motion user
+   would briefly see the pre-entrance state (card at opacity 0). */
+@media (prefers-reduced-motion: reduce) {
+  .hjem-motion-scope,
+  .hjem-motion-scope * {
+    animation: none !important;
+    transition: none !important;
+    transition-delay: 0ms !important;
+  }
+  .hjem-motion-scope {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

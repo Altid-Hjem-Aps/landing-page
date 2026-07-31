@@ -1,6 +1,6 @@
 'use client'
 
-import { CARD_BORDER, CARD_SHADOW, CardHeader, FOREST, HAIRLINE, ON_FOREST_MUTED, RED, RED_WASH, SAGE, SAGE_WASH, usePhaseLoop } from '@/components/seo/hjemKit'
+import { CARD_BORDER, CARD_SHADOW, CardHeader, DUR_FAST, DUR_MED, EASE_OUT, EASE_OVERSHOOT, EASE_STANDARD, FOREST, HAIRLINE, ON_FOREST_MUTED, RED, RED_WASH, SAGE, SAGE_WASH, mockupEntranceStyle, revealPanelStyle, staggerDelay, usePhaseLoop } from '@/components/seo/hjemKit'
 
 /**
  * Animated app-UI card for /billigste-elselskab: an electricity bill's
@@ -32,7 +32,10 @@ const LINES = [
 ]
 
 export default function GebyrMockup() {
-  const { ref, phase, at } = usePhaseLoop(SEQ)
+  const { ref, phase, at, reduced, entered } = usePhaseLoop(SEQ)
+  // During the wrap back to phase 0 every delay and keyed animation is
+  // suppressed so the card snaps clean instead of unwinding row by row.
+  const animate = phase !== SEQ[0].p && !reduced
   const status = at('collapse')
     ? 'Gebyrfrit = 0 kr.'
     : at('flag')
@@ -44,46 +47,57 @@ export default function GebyrMockup() {
       ref={ref}
       role="img"
       aria-label="Eksempel: elregningens gebyrlinjer findes og falder til nul kroner hos et gebyrfrit elselskab"
-      className="w-full max-w-[400px] rounded-[24px] px-5 pt-5 pb-4"
-      style={{ background: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)' }}
+      className="w-full max-w-[400px] rounded-[24px] px-5 pt-5 pb-4 hjem-motion-scope"
+      style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
     >
       <CardHeader eyebrow="Gebyrtjek" title="Tjek af din elregning" icon="/services/icon-strom.svg" />
 
-      <div className="rounded-2xl px-3.5 py-2.5 mb-3" style={{ background: SAGE_WASH, border: `1px solid ${CARD_BORDER}` }}>
+      <div className="rounded-2xl px-3.5 py-2.5 mb-3" style={{ backgroundColor: SAGE_WASH, border: `1px solid ${CARD_BORDER}` }}>
         <span className="text-[11.5px] font-semibold" style={{ color: FOREST }}>
-          {status}
+          <span key={status} style={{ display: 'inline-block', animation: animate ? `hjem-value-in ${DUR_MED}ms ${EASE_OUT} both` : 'none' }}>
+            {status}
+          </span>
         </span>
       </div>
 
-      <div className="rounded-2xl overflow-hidden mb-3" style={{ background: '#ffffff', border: `1px solid ${CARD_BORDER}` }}>
+      <div className="rounded-2xl overflow-hidden mb-3" style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}` }}>
         {LINES.map((l, i) => {
           const scanned = at(SEQ[i].p)
           const flagged = l.fee && at('flag') && !at('collapse')
           const collapsed = l.fee && at('collapse')
+          // The fee rows change in the same phase; each later fee row's
+          // content trails one extra beat so it reads as a sweep, while the
+          // washes change together. Derived from LINES so reordering is safe.
+          const feeBeat = l.fee ? LINES.slice(0, i).filter(x => x.fee).length : 0
           return (
             <div
               key={l.name}
               className="flex items-center gap-2.5 px-3.5 py-2.5"
               style={{
                 borderBottom: i < LINES.length - 1 ? `1px solid ${HAIRLINE}` : 'none',
-                background: flagged ? RED_WASH : collapsed ? SAGE_WASH : 'transparent',
+                backgroundColor: flagged ? RED_WASH : collapsed ? SAGE_WASH : 'transparent',
                 opacity: scanned ? 1 : 0.4,
-                transition: 'background 0.5s ease, opacity 0.5s ease',
+                transition: `background-color ${DUR_MED}ms ${EASE_STANDARD}, opacity ${DUR_MED}ms ${EASE_STANDARD}`,
               }}
             >
               <span
                 className="shrink-0 grid place-items-center text-[11px] font-bold"
-                style={{ width: 24, height: 24, borderRadius: '50%', background: flagged ? RED : 'var(--forest)', color: '#fff', transition: 'background 0.5s ease' }}
+                style={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: flagged ? RED : 'var(--forest)', color: '#fff', transition: `background-color ${DUR_MED}ms ${EASE_STANDARD}` }}
               >
-                {flagged ? '!' : scanned ? '✓' : '·'}
+                <span
+                  key={flagged ? '!' : scanned ? 'check' : 'dot'}
+                  style={{ display: 'inline-block', animation: animate ? `hjem-glyph-in ${DUR_FAST}ms ${EASE_OVERSHOOT} both` : 'none', animationDelay: staggerDelay(1 + feeBeat, animate) }}
+                >
+                  {flagged ? '!' : scanned ? '✓' : '·'}
+                </span>
               </span>
               <span
                 className="flex-1 min-w-0 truncate font-semibold text-[13.5px]"
                 style={{
                   color: 'var(--text-dark)',
-                  textDecoration: collapsed ? 'line-through' : 'none',
+                  textDecorationLine: collapsed ? 'line-through' : 'none',
                   textDecorationColor: 'rgba(26,61,34,0.4)',
-                  transition: 'color 0.5s ease',
+                  transition: `color ${DUR_MED}ms ${EASE_STANDARD}`,
                 }}
               >
                 {l.name}
@@ -93,18 +107,29 @@ export default function GebyrMockup() {
                   className="shrink-0 font-semibold text-[10px] uppercase px-2 py-1"
                   style={{
                     borderRadius: 6,
-                    background: flagged ? RED : collapsed ? SAGE : 'rgba(26,61,34,0.08)',
+                    backgroundColor: flagged ? RED : collapsed ? SAGE : 'rgba(26,61,34,0.08)',
                     color: flagged ? '#fff' : FOREST,
                     letterSpacing: '0.4px',
                     opacity: scanned ? 1 : 0.6,
-                    transition: 'background 0.5s ease',
+                    transition: `background-color ${DUR_MED}ms ${EASE_STANDARD}, opacity ${DUR_MED}ms ${EASE_STANDARD}`,
                   }}
                 >
-                  {collapsed ? '0 kr.' : 'Gebyr'}
+                  <span
+                    key={collapsed ? '0 kr.' : 'Gebyr'}
+                    className="tabular-nums"
+                    style={{ display: 'inline-block', animation: animate ? `hjem-value-in ${DUR_MED}ms ${EASE_OUT} both` : 'none', animationDelay: staggerDelay(2 + feeBeat, animate) }}
+                  >
+                    {collapsed ? '0 kr.' : 'Gebyr'}
+                  </span>
                 </span>
               ) : (
-                <span className="shrink-0 text-[12px]" style={{ color: scanned ? FOREST : INKFADE, transition: 'color 0.5s ease' }}>
-                  {scanned ? '✓' : '· · ·'}
+                <span className="shrink-0 text-[12px]" style={{ color: scanned ? FOREST : INKFADE, transition: `color ${DUR_MED}ms ${EASE_STANDARD}` }}>
+                  <span
+                    key={scanned ? 'check' : 'dots'}
+                    style={{ display: 'inline-block', animation: animate ? `hjem-glyph-in ${DUR_FAST}ms ${EASE_OVERSHOOT} both` : 'none', animationDelay: staggerDelay(1, animate) }}
+                  >
+                    {scanned ? '✓' : '· · ·'}
+                  </span>
                 </span>
               )}
             </div>
@@ -115,10 +140,8 @@ export default function GebyrMockup() {
       <div
         className="rounded-2xl px-4 py-3 flex items-center justify-between gap-3"
         style={{
-          background: 'var(--forest)',
-          opacity: phase === 'done' ? 1 : 0,
-          transform: phase === 'done' ? 'translateY(0)' : 'translateY(6px)',
-          transition: 'opacity 0.7s ease, transform 0.7s ease',
+          backgroundColor: 'var(--forest)',
+          ...revealPanelStyle(phase === 'done'),
         }}
         aria-hidden={phase !== 'done'}
       >
@@ -133,7 +156,7 @@ export default function GebyrMockup() {
             Ingen faste gebyrer, intet abonnement
           </p>
         </div>
-        <span className="shrink-0 font-semibold text-[11px] px-2 py-1" style={{ borderRadius: 8, background: SAGE, color: FOREST }}>
+        <span className="shrink-0 font-semibold text-[11px] px-2 py-1" style={{ borderRadius: 8, backgroundColor: SAGE, color: FOREST }}>
           Gebyrfrit
         </span>
       </div>
