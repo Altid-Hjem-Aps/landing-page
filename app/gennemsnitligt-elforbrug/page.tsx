@@ -123,7 +123,7 @@ export default function GennemsnitligtElforbrug() {
             <h1 className="text-3xl sm:text-4xl font-bold mb-1 text-balance" style={{ color: 'var(--forest)' }}>
               Hvad er et normalt elforbrug?
             </h1>
-            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026 · Kilde: Energistyrelsen og elselskabernes opgørelser</p>
+            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026 · Kilde: <a href="https://sparenergi.dk" className="underline" target="_blank" rel="noopener noreferrer">Energistyrelsen (Sparenergi)</a> og elselskabernes opgørelser</p>
 
             <div className="space-y-10 text-sm leading-relaxed text-pretty" style={{ color: 'rgba(26,61,34,0.75)' }}>
 
@@ -229,7 +229,7 @@ export default function GennemsnitligtElforbrug() {
                   Altid Hjem er ikke lanceret endnu, og ventelisten er åben på altidhjem.dk. Mobil, opladning, alarm og forsikring er på vej og skal kunne indgå i overblikket, når tjenesterne bliver tilgængelige.
                 </p>
                 <p>
-                  Altid Energi er live i dag og er Danmarks første gebyrfrie energiselskab, uden faste gebyrer eller abonnement. Mere end 14.000 danskere er allerede kunder hos Altid Energi.
+                  Altid Energi er live i dag og er Danmarks første gebyrfrie energiselskab, uden faste gebyrer eller abonnement. Mere end 15.000 danskere er allerede kunder hos Altid Energi.
                 </p>
               </section>
 

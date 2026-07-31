@@ -123,7 +123,7 @@ export default function BilligsteElselskab() {
             <h1 className="text-3xl sm:text-4xl font-bold mb-1 text-balance" style={{ color: 'var(--forest)' }}>
               Hvilket elselskab er billigst?
             </h1>
-            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026</p>
+            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026 · Sammenlign selv elprodukter på <a href="https://elpris.dk" className="underline" target="_blank" rel="noopener noreferrer">elpris.dk</a></p>
 
             <div className="space-y-10 text-sm leading-relaxed text-pretty" style={{ color: 'rgba(26,61,34,0.75)' }}>
 
@@ -187,7 +187,7 @@ export default function BilligsteElselskab() {
                   <GebyrMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Gebyrerne er den del af elregningen, selskabet selv bestemmer. Hos Altid Energi er de 0 kr.
+                  Gebyrerne er den del af elregningen, selskabet selv bestemmer. Hos Altid Energi er de 0 kr. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
               <section>
@@ -220,7 +220,7 @@ export default function BilligsteElselskab() {
                   Altid Hjem er en kommende dansk app, der er bygget til at samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad. Målet er ét overblik, ét login, så du lettere skal kunne forstå priser og holde styr på aftaler.
                 </p>
                 <p className="mb-3">
-                  Altid Energi er tilgængeligt i dag og har allerede mere end 14.000 danske kunder. Mobil, opladning, alarm og forsikring er på vej og skal kunne indgå i Altid Hjem, når de enkelte tjenester bliver tilgængelige.
+                  Altid Energi er tilgængeligt i dag og har allerede mere end 15.000 danske kunder. Mobil, opladning, alarm og forsikring er på vej og skal kunne indgå i Altid Hjem, når de enkelte tjenester bliver tilgængelige.
                 </p>
                 <p>
                   Ventelisten til Altid Hjem er åben på altidhjem.dk. Du kan skrive dig op, hvis du vil følge med.

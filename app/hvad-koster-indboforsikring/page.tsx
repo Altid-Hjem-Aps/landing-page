@@ -123,7 +123,7 @@ export default function HvadKosterIndboforsikring() {
             <h1 className="text-3xl sm:text-4xl font-bold mb-1 text-balance" style={{ color: 'var(--forest)' }}>
               Hvad koster en indboforsikring?
             </h1>
-            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026</p>
+            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026 · Priserne er vejledende markedsintervaller · Sammenlign selv på <a href="https://www.forsikringsguiden.dk" className="underline" target="_blank" rel="noopener noreferrer">Forsikringsguiden.dk</a></p>
 
             <div className="space-y-10 text-sm leading-relaxed text-pretty" style={{ color: 'rgba(26,61,34,0.75)' }}>
 
@@ -187,7 +187,7 @@ export default function HvadKosterIndboforsikring() {
                   <IndboTjekMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Altid Hjem skal kunne gennemgå husstandens dækninger og flage mulige overlap.
+                  Altid Hjem skal kunne gennemgå husstandens dækninger og flage mulige overlap. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
               <section>
@@ -226,7 +226,7 @@ export default function HvadKosterIndboforsikring() {
                   Altid Hjem er bygget til at samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad i ét overblik, ét login. Forsikringsdelen skal kunne vise husstandens forsikringer samlet og gøre det lettere at opdage mulige overlap.
                 </p>
                 <p>
-                  Altid Energi er allerede live som Danmarks første gebyrfrie energiselskab og har mere end 14.000 danske kunder. Mobil, opladning, alarm og forsikring er på vej, og ventelisten til Altid Hjem er åben på altidhjem.dk.
+                  Altid Energi er allerede live som Danmarks første gebyrfrie energiselskab og har mere end 15.000 danske kunder. Mobil, opladning, alarm og forsikring er på vej, og ventelisten til Altid Hjem er åben på altidhjem.dk.
                 </p>
               </section>
 

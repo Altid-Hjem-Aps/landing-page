@@ -187,7 +187,7 @@ export default function BedsteBudgetApp() {
                   <BudgetAppSammenligning />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  En budget-app ser bagud på forbruget. Et samlet overblik styrer de faste aftaler fremad.
+                  En budget-app ser bagud på forbruget. Et samlet overblik styrer de faste aftaler fremad. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
               <section>
@@ -226,7 +226,7 @@ export default function BedsteBudgetApp() {
                   Altid Hjem er ikke bygget som en klassisk budget-app. Appen skal kunne samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad, så I får ét overblik, ét login.
                 </p>
                 <p className="mb-3">
-                  Altid Energi er allerede aktivt som Danmarks første gebyrfrie energiselskab, uden faste gebyrer eller abonnement, og mere end 14.000 danskere er kunder. Mobil, opladning, alarm og forsikring er på vej og skal kunne indgå i Altid Hjem.
+                  Altid Energi er allerede aktivt som Danmarks første gebyrfrie energiselskab, uden faste gebyrer eller abonnement, og mere end 15.000 danskere er kunder. Mobil, opladning, alarm og forsikring er på vej og skal kunne indgå i Altid Hjem.
                 </p>
                 <p>
                   Altid Hjem er endnu ikke lanceret. I kan skrive jer på ventelisten på altidhjem.dk, hvis I vil følge udviklingen.

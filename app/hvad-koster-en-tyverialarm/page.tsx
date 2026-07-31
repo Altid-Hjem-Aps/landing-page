@@ -123,7 +123,7 @@ export default function HvadKosterEnTyverialarm() {
             <h1 className="text-3xl sm:text-4xl font-bold mb-1 text-balance" style={{ color: 'var(--forest)' }}>
               Hvad koster en tyverialarm?
             </h1>
-            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026</p>
+            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026 · Priserne er vejledende markedsintervaller · Se også <a href="https://dkr.dk/indbrud" className="underline" target="_blank" rel="noopener noreferrer">Det Kriminalpræventive Råd om indbrudssikring</a></p>
 
             <div className="space-y-10 text-sm leading-relaxed text-pretty" style={{ color: 'rgba(26,61,34,0.75)' }}>
 
@@ -187,7 +187,7 @@ export default function HvadKosterEnTyverialarm() {
                   <AlarmStatusMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Alarmen er en af hjemmets faste udgifter. Altid Hjem skal kunne samle den i overblikket.
+                  Alarmen er en af hjemmets faste udgifter. Altid Hjem skal kunne samle den i overblikket. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
               <section>
@@ -223,7 +223,7 @@ export default function HvadKosterEnTyverialarm() {
                   Altid Hjem er bygget til at samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad i ét overblik, ét login. Alarm skal kunne indgå som en tjeneste i overblikket, så det bliver lettere at se pris og vilkår sammen med resten af hjemmets aftaler.
                 </p>
                 <p className="mb-3">
-                  Altid Hjem er ikke lanceret endnu, og ventelisten er åben på altidhjem.dk. Appen bygges af teamet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 14.000 danskere allerede er kunder.
+                  Altid Hjem er ikke lanceret endnu, og ventelisten er åben på altidhjem.dk. Appen bygges af teamet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder.
                 </p>
                 <p>
                   Altid Energi er i drift i dag, mens mobil, opladning, alarm og forsikring er på vej. Du kan i mellemtiden bruge prisguiden her på siden til at sammenligne markedets løsninger.

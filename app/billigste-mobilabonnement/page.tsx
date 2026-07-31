@@ -190,7 +190,7 @@ export default function BilligsteMobilabonnement() {
                   <MobilOverblikMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Altid Hjem skal kunne samle husstandens mobilaftaler i ét overblik og vise, hvor I betaler for meget.
+                  Altid Hjem skal kunne samle husstandens mobilaftaler i ét overblik og vise, hvor I betaler for meget. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
               <section>
@@ -221,7 +221,7 @@ export default function BilligsteMobilabonnement() {
                   På mobilområdet skal Altid Hjem kunne samle husstandens aftaler og gøre det lettere at opdage gamle priser, unødvendige tillæg og mulige overpriser. Mobilfunktionen er på vej og findes ikke endnu.
                 </p>
                 <p>
-                  Altid Hjem er udviklet af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab. Altid Energi er i drift i dag og har allerede mere end 14.000 danske kunder, mens de øvrige tjenester er på vej.
+                  Altid Hjem er udviklet af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab. Altid Energi er i drift i dag og har allerede mere end 15.000 danske kunder, mens de øvrige tjenester er på vej.
                 </p>
               </section>
 

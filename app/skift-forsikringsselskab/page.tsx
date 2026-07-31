@@ -123,7 +123,7 @@ export default function SkiftForsikringsselskab() {
             <h1 className="text-3xl sm:text-4xl font-bold mb-1 text-balance" style={{ color: 'var(--forest)' }}>
               Sådan skifter du forsikringsselskab
             </h1>
-            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026</p>
+            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026 · Sammenlign selv på <a href="https://www.forsikringsguiden.dk" className="underline" target="_blank" rel="noopener noreferrer">Forsikringsguiden.dk</a></p>
 
             <div className="space-y-10 text-sm leading-relaxed text-pretty" style={{ color: 'rgba(26,61,34,0.75)' }}>
 
@@ -187,7 +187,7 @@ export default function SkiftForsikringsselskab() {
                   <SkiftTjeklisteMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Rækkefølgen beskytter dig: ny police på plads, før den gamle opsiges.
+                  Rækkefølgen beskytter dig: ny police på plads, før den gamle opsiges. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
               <section>
@@ -238,7 +238,7 @@ export default function SkiftForsikringsselskab() {
                   Forsikringsdelen er på vej og skal kunne gøre husstandens policer mere overskuelige. Altid Hjem er endnu ikke lanceret, men ventelisten er åben på altidhjem.dk.
                 </p>
                 <p>
-                  Bag Altid Hjem står teamet bag Altid Energi, Danmarks første gebyrfrie energiselskab. Altid Energi er i drift i dag og har allerede mere end 14.000 danskere som kunder.
+                  Bag Altid Hjem står teamet bag Altid Energi, Danmarks første gebyrfrie energiselskab. Altid Energi er i drift i dag og har allerede mere end 15.000 danskere som kunder.
                 </p>
               </section>
 

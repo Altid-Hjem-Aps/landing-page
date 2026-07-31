@@ -123,7 +123,7 @@ export default function OpsigAbonnementer() {
             <h1 className="text-3xl sm:text-4xl font-bold mb-1 text-balance" style={{ color: 'var(--forest)' }}>
               Sådan opsiger I husstandens abonnementer
             </h1>
-            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026</p>
+            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026 · Læs om dine abonnementsrettigheder på <a href="https://www.forbrug.dk" className="underline" target="_blank" rel="noopener noreferrer">forbrug.dk</a></p>
 
             <div className="space-y-10 text-sm leading-relaxed text-pretty" style={{ color: 'rgba(26,61,34,0.75)' }}>
 
@@ -187,7 +187,7 @@ export default function OpsigAbonnementer() {
                   <AbonnementMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Altid Hjem skal kunne samle husstandens faste aftaler, så glemte abonnementer ikke kan gemme sig.
+                  Altid Hjem skal kunne samle husstandens faste aftaler, så glemte abonnementer ikke kan gemme sig. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
               <section>
@@ -223,7 +223,7 @@ export default function OpsigAbonnementer() {
                   Altid Hjem er bygget til at samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad. Tanken er ét overblik, ét login, så aftalerne bliver lettere at finde og vurdere.
                 </p>
                 <p className="mb-3">
-                  Altid Energi er allerede i drift og er Danmarks første gebyrfrie energiselskab med mere end 14.000 danske kunder. Mobil, opladning, alarm og forsikring er på vej og skal kunne indgå i Altid Hjem.
+                  Altid Energi er allerede i drift og er Danmarks første gebyrfrie energiselskab med mere end 15.000 danske kunder. Mobil, opladning, alarm og forsikring er på vej og skal kunne indgå i Altid Hjem.
                 </p>
                 <p>
                   Altid Hjem skal gøre det sværere for faste aftaler at gemme sig i forskellige apps og indbakker. Læs også om forskellen på Altid Hjem og traditionelle <A href="/spiir-alternativ">budget- og kontooverblik-apps</A>.

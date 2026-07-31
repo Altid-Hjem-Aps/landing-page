@@ -68,7 +68,7 @@ const FAQ: { q: string; a: string[] }[] = [
     q: 'Hvad er Altid Hjem?',
     a: [
       'Altid Hjem er en dansk app på vej, som skal kunne samle el, mobil, forsikring, opladning, alarm og mad i ét overblik med ét login.',
-      'Appen bygges af holdet bag det gebyrfrie energiselskab Altid Energi, hvor mere end 14.000 danskere allerede er kunder.',
+      'Appen bygges af holdet bag det gebyrfrie energiselskab Altid Energi, hvor mere end 15.000 danskere allerede er kunder.',
     ],
   },
   {
@@ -123,7 +123,7 @@ export default function HvadKosterEnLadeboks() {
             <h1 className="text-3xl sm:text-4xl font-bold mb-1 text-balance" style={{ color: 'var(--forest)' }}>
               Hvad koster en ladeboks?
             </h1>
-            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026</p>
+            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026 · Priserne er vejledende markedsintervaller · Se også <a href="https://fdm.dk/vaerd-at-vide/ladeloesninger/hvad-koster-det-at-lade-en-elbil-op-hjemme" className="underline" target="_blank" rel="noopener noreferrer">FDM om hjemmeladning</a></p>
 
             <div className="space-y-10 text-sm leading-relaxed text-pretty" style={{ color: 'rgba(26,61,34,0.75)' }}>
 
@@ -229,7 +229,7 @@ export default function HvadKosterEnLadeboks() {
                   For opladning skal Altid Hjem kunne gøre det lettere at se tjenesten sammen med hjemmets øvrige aftaler. Målet er et mere overskueligt grundlag for at forstå priser, vilkår og løbende udgifter.
                 </p>
                 <p>
-                  Altid Hjem bygges af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 14.000 danskere allerede er kunder. Du kan skrive dig på ventelisten på altidhjem.dk.
+                  Altid Hjem bygges af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder. Du kan skrive dig på ventelisten på altidhjem.dk.
                 </p>
               </section>
 

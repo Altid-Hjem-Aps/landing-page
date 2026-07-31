@@ -163,7 +163,7 @@ export default function SpiirAlternativ() {
                   Hvem står bag Altid Hjem?
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 14.000 danskere
+                  Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 15.000 danskere
                   allerede får gennemsigtig strøm til en fair pris.
                 </p>
                 <p>
