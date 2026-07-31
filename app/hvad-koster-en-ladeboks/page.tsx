@@ -47,7 +47,7 @@ const FAQ: { q: string; a: string[] }[] = [
     q: 'Hvad koster det at lade elbilen hjemme?',
     a: [
       'Hjemmeladning koster typisk 2,00-3,50 kr. pr. kWh før refusion.',
-      'Den faktiske pris varierer med elaftalen, tidspunktet, transport, afgifter, tillæg og gebyrer, mens en refusionsaftale i et eksempel kan bringe den effektive pris ned omkring 0,73 kr. pr. kWh.',
+      'Den faktiske pris varierer med elaftalen, tidspunktet, nettariffer, elafgift, tillæg og gebyrer, mens en refusionsaftale i et eksempel kan bringe den effektive pris ned omkring 0,73 kr. pr. kWh.',
     ],
   },
   {
@@ -98,7 +98,7 @@ export default function HvadKosterEnLadeboks() {
           longPrefix: 'Ladeboks og elaftale hænger sammen. Regn din ladepris ud her. ',
           shortPrefix: 'Hvad koster hjemmeladning? ',
           source: 'ladeboks-banner',
-          cta: 'Beregn din ladepris →',
+          cta: 'Beregn din ladeudgift →',
         }}
       />
       <script
@@ -170,7 +170,7 @@ export default function HvadKosterEnLadeboks() {
                   Det egentlige regnestykke er strømmen
                 </h2>
                 <p className="mb-3">
-                  Hjemmeladning koster typisk 2,00-3,50 kr. pr. kWh før refusion. Prisen varierer med elaftalen, tidspunktet for opladning, transport, afgifter og eventuelle tillæg og gebyrer.
+                  Hjemmeladning koster typisk 2,00-3,50 kr. pr. kWh før refusion. Prisen varierer med elaftalen, tidspunktet for opladning, nettariffer, elafgift og eventuelle tillæg og gebyrer.
                 </p>
                 <p className="mb-3">
                   Med en refusionsaftale kan den effektive pris i et eksempel lande omkring 0,73 kr. pr. kWh. Det er ikke en fast pris eller en garanti, da både elpris, refusionsbeløb og aftalevilkår kan ændre sig.
@@ -209,7 +209,7 @@ export default function HvadKosterEnLadeboks() {
                   Ladeboks og elaftale hænger sammen
                 </h2>
                 <p className="mb-3">
-                  En billig ladeboks sikrer ikke nødvendigvis billig opladning. Elprisen består af spotpris, transport, afgifter samt elselskabets tillæg og gebyrer, så den løbende strømpris kan få stor betydning over tid.
+                  En billig ladeboks sikrer ikke nødvendigvis billig opladning. Elprisen består af spotpris, nettariffer, elafgift samt elselskabets tillæg og gebyrer, så den løbende strømpris kan få stor betydning over tid.
                 </p>
                 <p className="mb-3">
                   Du kan ofte påvirke udgiften ved at lade, når spotprisen er lav. Læs mere om <A href="/hvornar-er-strommen-billigst">hvornår strømmen er billigst</A>, og se, hvad du bør sammenligne, når du leder efter <A href="/billigste-elselskab">det billigste elselskab</A>.

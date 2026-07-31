@@ -26,7 +26,7 @@ const INKFADE = 'rgba(26,61,34,0.35)'
 
 const LINES = [
   { name: 'Spotpris', fee: false },
-  { name: 'Transport og afgifter', fee: false },
+  { name: 'Nettariffer og elafgift', fee: false },
   { name: 'Fast abonnement', fee: true },
   { name: 'Gebyrer og tillæg', fee: true },
 ]
@@ -150,7 +150,7 @@ export default function GebyrMockup() {
             Gebyrfrit
           </p>
           <p className="font-bold text-[15px] leading-tight text-white">
-            Gebyrdelen hos Altid Energi: <span style={{ color: SAGE }}>0 kr.</span>
+            Faste gebyrer hos Altid Energi: <span style={{ color: SAGE }}>0 kr.</span>
           </p>
           <p style={{ fontSize: 11, color: ON_FOREST_MUTED, marginTop: 2 }}>
             Ingen faste gebyrer, intet abonnement

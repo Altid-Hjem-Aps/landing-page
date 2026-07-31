@@ -76,6 +76,65 @@ describe('Nav CTA', () => {
   })
 })
 
+describe('Nav active state', () => {
+  const SIGNAL = 'rgb(144, 255, 124)'
+  const MUTED = 'rgb(111, 106, 97)'
+  const WHITE = 'rgb(255, 255, 255)'
+
+  // Hjem is the current site on every altidhjem.dk page. Before this was
+  // fixed it fell through to MUTED off the front page — the same grey as the
+  // unlaunched services, so the site you were on looked disabled.
+  it.each(['/', '/opsig-abonnementer', '/hvad-koster-en-tyverialarm', '/slet-konto'])(
+    'renders Hjem as the selected item on %s',
+    (path) => {
+      stubLocation(path)
+      render(<Nav />)
+      const hjem = screen.getAllByRole('link', { name: 'Hjem' })[0]
+      expect(hjem).toHaveStyle({ color: SIGNAL })
+      // The marker dot is the other half of the active affordance — assert it
+      // renders, so deleting it can't pass silently.
+      const dot = hjem.parentElement?.querySelector('span[aria-hidden]')
+      expect(dot).toBeTruthy()
+      expect(dot).toHaveStyle({ background: SIGNAL })
+    }
+  )
+
+  it('marks Hjem with aria-current: the page itself on /, the section elsewhere', () => {
+    stubLocation('/')
+    const { unmount } = render(<Nav />)
+    expect(screen.getAllByRole('link', { name: 'Hjem' })[0]).toHaveAttribute('aria-current', 'page')
+    unmount()
+
+    stubLocation('/opsig-abonnementer')
+    render(<Nav />)
+    expect(screen.getAllByRole('link', { name: 'Hjem' })[0]).toHaveAttribute('aria-current', 'true')
+  })
+
+  it('keeps the other brands white and the unlaunched services muted off the front page', () => {
+    stubLocation('/opsig-abonnementer')
+    render(<Nav />)
+    expect(screen.getAllByRole('link', { name: 'Mad' })[0]).toHaveStyle({ color: WHITE })
+    expect(screen.getAllByRole('link', { name: 'Energi' })[0]).toHaveStyle({ color: WHITE })
+    // "Kommer snart" services are not links and stay muted.
+    expect(screen.queryAllByRole('link', { name: 'Alarm' })).toHaveLength(0)
+    expect(screen.getAllByText('Alarm')[0]).toHaveStyle({ color: MUTED })
+    expect(screen.getAllByRole('link', { name: 'Hjem' })[0]).not.toHaveAttribute('aria-current', 'page')
+  })
+
+  it('marks Hjem active in the burger menu too', () => {
+    stubLocation('/opsig-abonnementer')
+    render(<Nav />)
+    fireEvent.click(screen.getByRole('button', { name: 'Åbn menu' }))
+    const hjemLinks = screen.getAllByRole('link', { name: 'Hjem' })
+    // desktop menu + open panel both render it; every instance is active
+    expect(hjemLinks.length).toBeGreaterThan(1)
+    for (const link of hjemLinks) {
+      expect(link).toHaveStyle({ color: SIGNAL })
+      expect(link).toHaveAttribute('aria-current', 'true')
+    }
+  })
+})
+
 describe('Spiir banner', () => {
   it('is ABSENT by default — the front page must render without campaign content', () => {
     stubLocation('/')

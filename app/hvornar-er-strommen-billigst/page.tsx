@@ -168,7 +168,7 @@ export default async function HvornarErStrommenBilligst() {
                   <ElprisChart data={data} nowHour={nowHour} netselskaber={netselskaber} />
                 ) : (
                   <p>
-                    Live-priserne kan ikke hentes lige nu — prøv igen om lidt. Mønstret nedenfor
+                    De aktuelle priser kan ikke hentes lige nu. Prøv igen om lidt. Mønstret nedenfor
                     gælder dog de fleste dage: billigst om natten og midt på dagen, dyrest kl. 17-21.
                   </p>
                 )}
@@ -199,7 +199,7 @@ export default async function HvornarErStrommenBilligst() {
                   Hvornår er strømmen billigst i dag?
                 </h2>
                 <p className="mb-3">
-                  Den billigste time afhænger af dagens spotpris, transporttariffer og dit
+                  Den billigste time afhænger af dagens spotpris, nettariffer og dit
                   prisområde.
                 </p>
                 <p className="mb-3">

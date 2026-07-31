@@ -33,11 +33,11 @@ const FAQ: { q: string; a: string[] }[] = [
     q: 'Hvad er det billigste mobilabonnement?',
     a: [
       'Det billigste mobilabonnement fås vejledende fra ca. 19 kr./md.',
-      'Det er typisk en enkel discountløsning, og den bedste pris for dig afhænger af data, tale, roaming og dækning.',
+      'Det er typisk en enkel lavprisløsning, og den bedste pris for dig afhænger af data, tale, roaming og dækning.',
     ],
   },
   {
-    q: 'Er discountselskaberne lige så gode som de store?',
+    q: 'Er lavprisselskaberne lige så gode som de store?',
     a: [
       'Discountselskaber kan bruge samme mobilnet som større selskaber og derfor have tilsvarende dækning.',
       'Roaming, kundeservice, ekstratjenester og vilkår kan dog variere, så sammenlign mere end månedsprisen.',
@@ -53,7 +53,7 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Kan jeg skifte mobilselskab med det samme?',
     a: [
-      'Ofte ja, fordi nul måneders binding er normen i Danmark.',
+      'Ofte ja, fordi ingen binding er normen i Danmark.',
       'Tjek alligevel opsigelsesvarsel og eventuel telefonafbetaling, og lad normalt det nye selskab håndtere nummerflytningen.',
     ],
   },
@@ -130,7 +130,7 @@ export default function BilligsteMobilabonnement() {
               {/* Kort svar — målrettet Googles "fremhævede uddrag". */}
               <section>
                 <p className="mb-3">
-                  Det billigste mobilabonnement fås vejledende fra ca. 19 kr./md. Det er typisk et enkelt taletids- eller discountabonnement, mens fri tale ofte starter ved ca. 29-49 kr./md.
+                  Det billigste mobilabonnement fås vejledende fra ca. 19 kr./md. Det er typisk et enkelt mobilabonnement med begrænset data eller taletid, mens fri tale ofte starter ved ca. 29-49 kr./md.
                 </p>
                 <p>
                   Den laveste pris er dog ikke nødvendigvis billigst for jer. Se på data, dækning og vilkår, men især på hele husstandens mobiludgift, når I sammenligner.
@@ -142,7 +142,7 @@ export default function BilligsteMobilabonnement() {
                   Hvad koster mobilabonnementer i 2026?
                 </h2>
                 <p className="mb-3">
-                  De billigste mobilabonnementer fås vejledende fra ca. 19 kr./md. Prisen gælder typisk en enkel løsning fra et taletids- eller discountselskab, hvor data og øvrige tjenester kan være begrænsede.
+                  De billigste mobilabonnementer fås vejledende fra ca. 19 kr./md. Prisen gælder typisk en enkel løsning fra et taletids- eller lavprisselskab, hvor data og øvrige tjenester kan være begrænsede.
                 </p>
                 <p className="mb-3">
                   Abonnementer med fri tale koster typisk fra ca. 29-49 kr./md. Den konkrete pris varierer blandt andet med datamængde, roaming, netværk og inkluderede tjenester.

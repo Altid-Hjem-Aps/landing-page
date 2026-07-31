@@ -28,7 +28,7 @@ const ROWS = [
   { name: 'Streaming · musik', unused: false },
   { name: 'Fitness', unused: true, flaggedAt: 'scan-3' as Phase, fixedAt: 'fix-1' as Phase },
   { name: 'Nyhedsapp', unused: false },
-  { name: 'Gammel cloud-lagring', unused: true, flaggedAt: 'scan-5' as Phase, fixedAt: 'fix-2' as Phase },
+  { name: 'Gammel lagerplads i skyen', unused: true, flaggedAt: 'scan-5' as Phase, fixedAt: 'fix-2' as Phase },
 ]
 
 export default function AbonnementMockup() {
@@ -46,7 +46,7 @@ export default function AbonnementMockup() {
     <div
       ref={ref}
       role="img"
-      aria-label="Eksempel: husstandens abonnementer gennemgås, og ubrugte aftaler opsiges"
+      aria-label="Eksempel: husstandens abonnementer gennemgås, og ubrugte aftaler markeres"
       className="w-full max-w-[400px] rounded-[24px] px-5 pt-5 pb-4 hjem-motion-scope"
       style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
     >
@@ -110,7 +110,7 @@ export default function AbonnementMockup() {
                   className="shrink-0 font-semibold text-[10px] uppercase px-2 py-1"
                   style={{ borderRadius: 6, backgroundColor: SAGE, color: FOREST, letterSpacing: '0.4px', animation: animate ? `hjem-pop-in ${DUR_POP}ms ${EASE_OVERSHOOT} both` : 'none', animationDelay: staggerDelay(2, animate) }}
                 >
-                  Opsagt
+                  Kan opsiges
                 </span>
               )}
             </div>
@@ -134,7 +134,7 @@ export default function AbonnementMockup() {
             Gennemgangen er færdig <span style={{ color: SAGE }}>✓</span>
           </p>
           <p style={{ fontSize: 11, color: ON_FOREST_MUTED, marginTop: 2 }}>
-            To ubrugte aftaler er opsagt
+            To ubrugte aftaler kan opsiges
           </p>
         </div>
         <span className="shrink-0 font-semibold text-[11px] px-2 py-1" style={{ borderRadius: 8, backgroundColor: SAGE, color: FOREST }}>

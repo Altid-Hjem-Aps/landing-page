@@ -23,7 +23,7 @@ const SEQ: { p: Phase; ms: number }[] = [
 
 
 const COL_A = { label: 'Budget-app', rows: ['Viser tidligere køb', 'Kategoriserer forbrug', 'Finder forbrugsvaner'] }
-const COL_B = { label: 'Samlet overblik', rows: ['Samler faste aftaler', 'Viser leverandører', 'Hjælper jer fremad'] }
+const COL_B = { label: 'Samlet overblik', rows: ['Samler faste aftaler', 'Viser leverandører', 'Viser priser og vilkår'] }
 
 function Column({ col, prefix, at, animate }: { col: typeof COL_A; prefix: 'a' | 'b'; at: (t: Phase) => boolean; animate: boolean }) {
   return (
@@ -82,7 +82,7 @@ export default function BudgetAppSammenligning() {
     <div
       ref={ref}
       role="img"
-      aria-label="Sammenligning: en budget-app viser forbruget bagud, et samlet overblik samler de faste aftaler"
+      aria-label="Sammenligning: en budget-app viser tidligere forbrug, et samlet overblik samler de faste aftaler"
       className="w-full max-w-[440px] rounded-[24px] px-5 pt-5 pb-4 hjem-motion-scope"
       style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
     >

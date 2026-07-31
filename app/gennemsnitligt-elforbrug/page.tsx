@@ -195,7 +195,7 @@ export default function GennemsnitligtElforbrug() {
                   Fra elforbrug til elregning
                 </h2>
                 <p className="mb-3">
-                  Elregningen afhænger ikke kun af antallet af kWh. Den samlede elpris består af spotpris, transport, afgifter samt elselskabets tillæg og eventuelle gebyrer.
+                  Elregningen afhænger ikke kun af antallet af kWh. Den samlede elpris består af spotpris, nettariffer, elafgift samt elselskabets tillæg og eventuelle gebyrer.
                 </p>
                 <p className="mb-3">
                   I grove træk finder I den forbrugsafhængige del ved at gange jeres kWh med den samlede pris pr. kWh. Faste abonnementer og gebyrer kan dog betyde, at to husstande med samme forbrug betaler forskelligt.

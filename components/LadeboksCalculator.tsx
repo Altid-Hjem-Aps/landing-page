@@ -101,7 +101,7 @@ export default function LadeboksCalculator() {
       className="w-full max-w-[440px] rounded-[24px] px-5 pt-5 pb-5 hjem-motion-scope"
       style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
     >
-      <CardHeader eyebrow="Månedligt estimat" title="Beregn din ladepris" icon="/services/icon-opladning.svg" />
+      <CardHeader eyebrow="Månedligt estimat" title="Beregn din ladeudgift" icon="/services/icon-opladning.svg" />
 
       {/* Error text sits OUTSIDE Field: Field wraps its children in <label>,
           and error copy inside the label would pollute the input's accessible
@@ -126,7 +126,7 @@ export default function LadeboksCalculator() {
           {errorText('price')}
         </div>
         <div>
-          <Field label="Evt. refusionspris (kr./kWh)">
+          <Field label="Evt. elpris efter refusion (kr./kWh)">
             <input type="text" inputMode="decimal" placeholder="F.eks. 0,73" className={inputCls} style={inputStyle('refusion')} value={refusion} onChange={(e) => setRefusion(e.target.value)} onBlur={blur('refusion')} {...inputA11y('refusion')} />
           </Field>
           {errorText('refusion')}
@@ -169,14 +169,14 @@ export default function LadeboksCalculator() {
             </p>
             {refusionInvalid && (
               <p style={{ fontSize: 11, color: SAGE, marginTop: 4 }}>
-                Refusionsprisen kunne ikke læses og er ikke regnet med.
+                Elprisen efter refusion kunne ikke læses og er ikke regnet med.
               </p>
             )}
           </div>
         ) : (
           <div className="rounded-2xl px-4 py-3 mb-3" style={{ backgroundColor: SAGE_WASH, border: `1px solid ${CARD_BORDER}` }}>
             <p className="font-bold text-[14px] leading-tight" style={{ color: FOREST }}>
-              Udfyld km, forbrug og elpris med jeres egne tal
+              Udfyld km, forbrug og elpris med dine egne tal
             </p>
           </div>
         )}

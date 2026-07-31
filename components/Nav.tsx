@@ -14,7 +14,8 @@ const BANNER_REVEAL = 8
 const SCROLL_DELTA_DESKTOP = 6
 const SCROLL_DELTA_TOUCH = 30
 
-// The CVI navigation: one active item (Hjem); service links are muted until
+// The CVI navigation: Hjem is the current site, so its item is active on every
+// altidhjem.dk page (not just the front page); service links are muted until
 // their sites launch ('live' renders white). href points at the services
 // section so the link works from every page (homepage + SEO pages).
 type LinkTone = 'home' | 'live' | 'soon'
@@ -131,11 +132,19 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
     window.dispatchEvent(new CustomEvent('expand-waitlist'))
   }
 
-  function linkColor(tone: LinkTone) {
-    if (tone === 'home' && pathname === '/') return SIGNAL
-    if (tone === 'live') return '#fff'
+  function linkColor(tone: LinkTone, active = false) {
+    // The active item matches its marker dot — signal label over the signal dot.
+    if (active) return SIGNAL
+    // 'home' never degrades to MUTED: that grey means "not launched yet", and
+    // the current site must never read as inactive.
+    if (tone === 'home' || tone === 'live') return '#fff'
     return MUTED
   }
+
+  // Marks the current section for assistive tech: the exact page on the front
+  // page, otherwise "current item in this set" (an SEO page is inside Hjem,
+  // but is not itself the Hjem link's target).
+  const homeAriaCurrent = pathname === '/' ? 'page' : 'true'
 
   // Right-aligned desktop menu: links + CTA in ONE flex with a shared gap, so
   // the spacing between the words = the spacing between the last link and the
@@ -144,7 +153,8 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
   const desktopMenu = (
     <div className="hidden xl:flex items-center gap-[clamp(56px,5.5vw,105px)]">
       {NAV_LINKS.map(({ label, href, tone }) => {
-        const active = tone === 'home' && pathname === '/'
+        // Hjem is the current site: its nav item is active on every altidhjem.dk page.
+        const active = tone === 'home'
         const external = href.startsWith('http')
         return (
           <span key={label} className="relative" style={tone === 'soon' ? { opacity: 0.6 } : undefined}>
@@ -158,8 +168,9 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
                 href={href}
                 target={external ? '_blank' : undefined}
                 rel={external ? 'noopener noreferrer' : undefined}
+                aria-current={active ? homeAriaCurrent : undefined}
                 className="text-[16px] font-medium transition-opacity hover:opacity-80 whitespace-nowrap"
-                style={{ color: linkColor(tone) }}
+                style={{ color: linkColor(tone, active) }}
               >
                 {label}
               </a>
@@ -241,7 +252,8 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
     >
       <ul className="flex flex-col px-5 sm:px-8 pt-2">
         {NAV_LINKS.map(({ label, href, tone }) => {
-          const active = tone === 'home' && pathname === '/'
+          // Hjem is the current site: active on every altidhjem.dk page.
+          const active = tone === 'home'
           const external = href.startsWith('http')
           const inner = (
             <>
@@ -255,7 +267,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
             </>
           )
           const rowClass = 'flex items-center gap-2 py-3.5 text-[17px] font-medium'
-          const rowStyle = { color: linkColor(tone), borderBottom: '1px solid rgba(255,255,255,0.06)' }
+          const rowStyle = { color: linkColor(tone, active), borderBottom: '1px solid rgba(255,255,255,0.06)' }
           return (
             <li key={label}>
               {tone === 'soon' ? (
@@ -268,6 +280,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
                   href={href}
                   target={external ? '_blank' : undefined}
                   rel={external ? 'noopener noreferrer' : undefined}
+                  aria-current={active ? homeAriaCurrent : undefined}
                   onClick={() => setMenuOpen(false)}
                   className={rowClass}
                   style={rowStyle}
