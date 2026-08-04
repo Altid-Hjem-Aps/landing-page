@@ -218,59 +218,91 @@ export async function mirrorSignup(
   return (data as { unsub_token?: string } | null)?.unsub_token ?? null
 }
 
-/**
- * Merge newly-given marketing consent into an EXISTING signup row. Only flags
- * the new TRUE consents; never downgrades an existing true to false (a re-signup
- * is not a withdrawal). No-op when no consent object is passed or nothing is
- * affirmatively consented.
- *
- * Deliberately NOT called from the anonymous waitlist form: that caller can't
- * prove it owns the email, so letting it write consent would let anyone flip
- * another person's marketing consent. Retained for the authenticated re-consent
- * path (the preference center), which is the only caller that should reach it.
- */
-export async function mergeConsent(
-  email: string,
-  consent?: { version?: string; mad?: boolean; group?: boolean },
-): Promise<void> {
-  const addr = String(email || '').toLowerCase().trim()
-  if (!addr || !consent) return
-  const patch: Record<string, unknown> = {}
-  if (consent.mad === true) patch.marketing_consent_mad = true
-  if (consent.group === true) patch.marketing_consent_group = true
-  // Nothing affirmatively consented → nothing to merge (don't touch the row).
-  if (Object.keys(patch).length === 0) return
-  if (consent.version) patch.consent_version = consent.version
-  patch.consent_at = new Date().toISOString()
+export type RedeemOutcome = 'applied' | 'already_used' | 'ineligible'
 
-  const OPTIONAL_COLUMNS = ['marketing_consent_mad', 'marketing_consent_group', 'consent_version', 'consent_at']
-  async function apply(p: Record<string, unknown>) {
-    // Keyed on email: it is the shared-list natural key, so this works from
-    // either site's 409 path without a public_id lookup first. .select() returns
-    // the rows touched so we can tell a real update from a silent no-match.
-    return getClient().from('signup').update(p).eq('email', addr).select('public_id')
+/**
+ * Atomically redeem a double opt-in confirmation token via the
+ * redeem_consent_token Postgres function (authored in altid-mad-site
+ * supabase/migrations/20260804…, applied once to the shared database).
+ *
+ * One transaction replaces the previous lookup + evidence insert + flag merge:
+ * a failure between insert and merge could leave consent recorded-but-not-
+ * applied, and a withdrawal racing the merge could be silently overwritten.
+ * The function's row lock and single commit close both holes; its return value
+ * is a typed outcome, so replay detection no longer string-matches on 23505.
+ *
+ * Throws on transport/RPC failure — the caller must surface that as an error,
+ * never as a state screen that could misreport what was written.
+ */
+export async function redeemConsentToken(e: {
+  publicId: string
+  tokenId: string
+  mad: boolean
+  group: boolean
+  version: string
+}): Promise<RedeemOutcome> {
+  const { data, error } = await getClient().rpc('redeem_consent_token', {
+    p_public_id: e.publicId,
+    p_token_id: e.tokenId,
+    p_mad: e.mad,
+    p_group: e.group,
+    p_version: e.version,
+  })
+  if (error) throw new Error(`redeem_consent_token failed: ${error.message}`)
+  if (data !== 'applied' && data !== 'already_used' && data !== 'ineligible') {
+    throw new Error(`redeem_consent_token returned unexpected outcome: ${String(data)}`)
   }
-  let { data, error } = await apply(patch)
-  // Same column-missing fallback as mirrorSignup: a not-yet-migrated column
-  // (PGRST204 / 42703) is stripped and retried; any other error still throws.
-  for (let i = 0; i < OPTIONAL_COLUMNS.length && error; i++) {
-    const code = (error as { code?: string }).code
-    if (code !== 'PGRST204' && code !== '42703') break
-    const msg = error.message ?? ''
-    const missing = OPTIONAL_COLUMNS.find((c) => c in patch && msg.includes(c))
-    if (!missing) break
-    console.error(`mergeConsent: ${missing} column missing, retrying without it`, msg)
-    delete patch[missing]
-    if (Object.keys(patch).length === 0) return
-    ;({ data, error } = await apply(patch))
+  return data
+}
+
+// Ceiling on any single read that gates a page render or a response the user
+// is actively waiting for. Shared by isConfirmTokenRedeemed and getSignupByEmail.
+const DB_READ_TIMEOUT_MS = 2000
+
+/**
+ * Bound a Supabase read: resolves null on timeout, ABORTS the underlying
+ * request (a hung PostgREST connection must not keep consuming pool slots
+ * after the page has already rendered), and always clears the timer.
+ */
+async function boundedRead<T>(query: PromiseLike<T>): Promise<T | null> {
+  const controller = new AbortController()
+  // abortSignal mutates the builder and returns it — attach, then race the
+  // builder itself. Typed as an optional structural member because the
+  // builder's class generics reject intersection param types across
+  // postgrest-js versions; the attach is what matters, not its return.
+  ;(query as { abortSignal?: (signal: AbortSignal) => unknown }).abortSignal?.(controller.signal)
+  let timer: ReturnType<typeof setTimeout> | undefined
+  const timeout = new Promise<null>((resolve) => {
+    timer = setTimeout(() => {
+      controller.abort()
+      resolve(null)
+    }, DB_READ_TIMEOUT_MS)
+  })
+  try {
+    return await Promise.race([query, timeout])
+  } finally {
+    clearTimeout(timer)
   }
+}
+
+/**
+ * Whether a confirmation token has already been redeemed. UX only: the confirm
+ * page uses it to show "already confirmed" instead of a form whose only
+ * possible outcome is "already used". Enforcement lives in the RPC's unique
+ * index, so this check fails OPEN — a timeout reads as "not redeemed", so a
+ * hung connection cannot stall the page for first-time confirmers. A real
+ * query error still throws; the caller logs it and falls open deliberately.
+ */
+export async function isConfirmTokenRedeemed(tokenId: string): Promise<boolean> {
+  const t = String(tokenId || '').trim()
+  if (!t) return false
+  const result = await boundedRead(
+    getClient().from('consent_event').select('id').eq('token_id', t).limit(1).maybeSingle(),
+  )
+  if (!result) return false
+  const { data, error } = result
   if (error) throw new Error(error.message)
-  // A 409 means the email exists upstream, but it may not be mirrored into
-  // Supabase (pre-mirror signups). Log a 0-row merge instead of dropping the
-  // consent silently, so the gap is monitorable rather than invisible.
-  if (!(data as unknown[] | null)?.length) {
-    console.error('mergeConsent: no Supabase signup row matched for re-consent — consent not persisted')
-  }
+  return Boolean(data)
 }
 
 /** Look up a signup's unsubscribe token by public_id (for building email links). */
@@ -379,15 +411,15 @@ export async function getSignupByEmail(email: string): Promise<{
   consentGroup: boolean
 } | null> {
   try {
-    const query = getClient()
-      .from('signup')
-      .select('public_id, first_name, unsub_token, unsubscribed, marketing_consent_mad, marketing_consent_group')
-      .eq('email', String(email).toLowerCase().trim())
-      .order('created_at', { ascending: true })
-      .limit(1)
-      .maybeSingle()
-    const timeout = new Promise<null>((resolve) => setTimeout(() => resolve(null), 2000))
-    const result = await Promise.race([query, timeout])
+    const result = await boundedRead(
+      getClient()
+        .from('signup')
+        .select('public_id, first_name, unsub_token, unsubscribed, marketing_consent_mad, marketing_consent_group')
+        .eq('email', String(email).toLowerCase().trim())
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle(),
+    )
     if (!result) return null
     const { data, error } = result
     if (error || !data) return null
@@ -416,42 +448,6 @@ export async function getSignupByEmail(email: string): Promise<{
 }
 
 /**
- * The row a confirmation token names. Used on the confirm POST to re-check the
- * row still exists and has not left the list before writing consent — a token
- * minted six days ago says nothing about the row's state today. Throws rather
- * than returning null on error: this call gates a consent write, so a hiccup must
- * fail the write, not silently skip the check.
- */
-export async function getSignupByPublicId(publicId: string): Promise<{
-  email: string
-  unsubscribed: boolean
-  consentMad: boolean
-  consentGroup: boolean
-} | null> {
-  const id = String(publicId || '').trim()
-  if (!id) return null
-  const { data, error } = await getClient()
-    .from('signup')
-    .select('email, unsubscribed, marketing_consent_mad, marketing_consent_group')
-    .eq('public_id', id)
-    .maybeSingle()
-  if (error) throw new Error(error.message)
-  const row = data as {
-    email?: string | null
-    unsubscribed?: boolean | null
-    marketing_consent_mad?: boolean | null
-    marketing_consent_group?: boolean | null
-  } | null
-  if (!row?.email) return null
-  return {
-    email: row.email,
-    unsubscribed: row.unsubscribed === true,
-    consentMad: row.marketing_consent_mad === true,
-    consentGroup: row.marketing_consent_group === true,
-  }
-}
-
-/**
  * Append-only record of every consent change: what was granted or withdrawn,
  * under which wording, when, and HOW ownership of the address was proven.
  *
@@ -473,28 +469,18 @@ export async function recordConsentEvent(e: {
   // a delta row would answer it wrong for anyone who holds one flag already.
   mad: boolean
   group: boolean
-  // Present only for the double-opt-in path: the confirmation token's identity.
-  // A unique index makes the confirmation SINGLE-USE — a replayed link (forwarded
-  // mail, scanner log, shared browser, back button) hits the index and throws
-  // instead of re-granting consent the person may have revoked since.
-  tokenId?: string
 }): Promise<void> {
+  // No token_id here: the double opt-in path writes its evidence inside the
+  // redeem_consent_token RPC (where the unique index enforces single use).
+  // This helper serves the unsubscribe/preference-centre writers only.
   const { error } = await getClient().from('consent_event').insert({
     public_id: e.publicId,
     method: e.method,
     consent_version: e.version,
     marketing_consent_mad: e.mad,
     marketing_consent_group: e.group,
-    ...(e.tokenId ? { token_id: e.tokenId } : {}),
   })
   if (error) throw new Error(`consent_event insert failed: ${error.message}`)
-}
-
-/** True when this confirmation token has already been redeemed. */
-export function isTokenAlreadyUsed(err: unknown): boolean {
-  const msg = err instanceof Error ? err.message : String(err)
-  // Postgres unique_violation.
-  return msg.includes('23505') || msg.includes('duplicate key')
 }
 
 /** The row an unsubscribe/preference token names, with its current consent state. */
