@@ -60,6 +60,18 @@ async function confirmAction(formData: FormData) {
   // answers "did you hold this consent" wrong for exactly the people it matters
   // most for.
   const after = { mad: row.consentMad || granted.mad, group: row.consentGroup || granted.group }
+  // The same resulting state at matrix resolution, for the audit event: the
+  // row's current matrix (SMS flags untouched — no double-opt-in wording has
+  // ever mentioned SMS) with the newly confirmed email consents merged in, the
+  // same subdivision mergeConsent writes (mad names Altid Mad; group names the
+  // other three).
+  const afterMatrix = {
+    ...row.matrix,
+    madEmail: row.matrix.madEmail || granted.mad,
+    hjemEmail: row.matrix.hjemEmail || granted.group,
+    forsikringEmail: row.matrix.forsikringEmail || granted.group,
+    mobilEmail: row.matrix.mobilEmail || granted.group,
+  }
 
   // Evidence FIRST, flags second. recordConsentEvent throws on a duplicate
   // token_id, so a replayed link (forwarded mail, scanner log, shared browser,
@@ -74,6 +86,7 @@ async function confirmAction(formData: FormData) {
       version: CONSENT_VERSION,
       mad: after.mad,
       group: after.group,
+      matrix: afterMatrix,
       tokenId: tokenId(raw as string),
     })
   } catch (e) {
