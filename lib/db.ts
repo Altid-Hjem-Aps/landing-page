@@ -120,6 +120,31 @@ export async function getSignupCounts(): Promise<{
   return { today, total, perDay }
 }
 
+/**
+ * One Altid Energi referral event (ALT-286): a friend clicked /r/<code>, or the
+ * customer shared/copied the link in the app. Table energi_referral_event.
+ * Throws on DB error; callers decide whether that may fail the request (the
+ * redirect route never lets it).
+ */
+export async function recordEnergiReferralEvent(row: {
+  code: string
+  kind: 'click' | 'share' | 'copy'
+  valid: boolean
+  ipHash: string | null
+  ua: string | null
+  country: string | null
+}): Promise<void> {
+  const { error } = await getClient().from('energi_referral_event').insert({
+    code: row.code.slice(0, 32),
+    kind: row.kind,
+    valid: row.valid,
+    ip_hash: row.ipHash,
+    ua: row.ua ? row.ua.slice(0, 256) : null,
+    country: row.country ? row.country.slice(0, 8) : null,
+  })
+  if (error) throw new Error(error.message)
+}
+
 /** How many people a given referral code has successfully brought in. */
 export async function getReferralCount(referrerCode: string): Promise<number> {
   const code = String(referrerCode || '').trim().slice(0, 64)
