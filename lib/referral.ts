@@ -88,7 +88,7 @@ export function clientIp(headers: Headers): string | null {
  * unfurl/crawler UA tokens; anything else counts as a person.
  */
 const BOT_UA_RE =
-  /bot|crawler|spider|preview|facebookexternalhit|facebookcatalog|whatsapp|slack|telegram|discord|twitter|linkedin|skype|imessage|snapchat|pinterest|embedly|quora|vkshare|outbrain|w3c_validator|curl\/|wget\/|python-requests|go-http-client|okhttp/i
+  /bot|crawler|spider|preview|headless|facebookexternalhit|facebookcatalog|whatsapp|slack|telegram|discord|twitter|linkedin|skype|imessage|snapchat|pinterest|embedly|quora|vkshare|outbrain|w3c_validator|curl\/|wget\/|python-requests|go-http-client|okhttp/i
 
 export function looksLikeBot(userAgent: string | null): boolean {
   if (!userAgent) return true

@@ -127,6 +127,7 @@ describe('lib/referral', () => {
     expect(looksLikeBot('WhatsApp/2.23.20.0')).toBe(true)
     expect(looksLikeBot('Slackbot-LinkExpanding 1.0')).toBe(true)
     expect(looksLikeBot('curl/8.4.0')).toBe(true)
+    expect(looksLikeBot('Mozilla/5.0 (Macintosh) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0 Safari/537.36')).toBe(true)
     expect(looksLikeBot(null)).toBe(true)
   })
 })
