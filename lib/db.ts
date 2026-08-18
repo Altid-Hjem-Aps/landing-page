@@ -145,6 +145,21 @@ export async function recordEnergiReferralEvent(row: {
   if (error) throw new Error(error.message)
 }
 
+/**
+ * Retention for energi_referral_event: rows older than [days] are deleted
+ * (privacy policy promises 90). Returns how many rows went. Throws on error.
+ */
+export async function purgeEnergiReferralEvents(days: number): Promise<number> {
+  const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString()
+  const { data, error } = await getClient()
+    .from('energi_referral_event')
+    .delete()
+    .lt('created_at', cutoff)
+    .select('id')
+  if (error) throw new Error(error.message)
+  return data?.length ?? 0
+}
+
 /** How many people a given referral code has successfully brought in. */
 export async function getReferralCount(referrerCode: string): Promise<number> {
   const code = String(referrerCode || '').trim().slice(0, 64)
