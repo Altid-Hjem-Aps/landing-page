@@ -6,8 +6,13 @@ import {
   isReferralCode,
   clientIp,
   looksLikeBot,
+  isLinkPreviewBot,
   normalizeReferralCode,
+  referralPreviewHtml,
   ENERGI_REFERRAL_SIGNUP_URL,
+  REFERRAL_OG_TITLE,
+  REFERRAL_OG_DESCRIPTION,
+  REFERRAL_OG_IMAGE_URL,
 } from '@/lib/referral'
 
 const recordEnergiReferralEvent = vi.fn()
@@ -130,6 +135,67 @@ describe('lib/referral', () => {
     expect(looksLikeBot('Mozilla/5.0 (Macintosh) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0 Safari/537.36')).toBe(true)
     expect(looksLikeBot(null)).toBe(true)
   })
+
+  it('tells card-drawing unfurlers apart from the rest of the crawlers', () => {
+    expect(isLinkPreviewBot('facebookexternalhit/1.1')).toBe(true)
+    expect(isLinkPreviewBot('WhatsApp/2.23.20.0')).toBe(true)
+    expect(isLinkPreviewBot('Mozilla/5.0 (compatible; TelegramBot)')).toBe(true)
+    expect(isLinkPreviewBot('Slackbot-LinkExpanding 1.0')).toBe(true)
+    expect(isLinkPreviewBot('LinkedInBot/1.0')).toBe(true)
+    expect(isLinkPreviewBot('Twitterbot/1.0')).toBe(true)
+    expect(isLinkPreviewBot('Discordbot/2.0')).toBe(true)
+    // These are crawlers too, but they draw no card: keep the redirect.
+    expect(isLinkPreviewBot('curl/8.4.0')).toBe(false)
+    expect(isLinkPreviewBot('Mozilla/5.0 (compatible; Googlebot/2.1)')).toBe(false)
+    expect(isLinkPreviewBot(HUMAN_UA)).toBe(false)
+    expect(isLinkPreviewBot(null)).toBe(false)
+  })
+
+  it('never lets an unfurler count as a human, whichever list it is on', () => {
+    const unfurlers = [
+      'facebookexternalhit/1.1',
+      'WhatsApp/2.23.20.0',
+      'Slackbot-LinkExpanding 1.0',
+      'Mozilla/5.0 (compatible; TelegramBot)',
+      'LinkedInBot/1.0',
+      'Twitterbot/1.0',
+      'Discordbot/2.0',
+      'Iframely/1.3.1',
+      'Nuzzel',
+      'Flipboard/Proxy',
+      'Applebot/0.1',
+      'redditbot/1.0',
+    ]
+    for (const ua of unfurlers) {
+      expect(isLinkPreviewBot(ua)).toBe(true)
+      expect(looksLikeBot(ua)).toBe(true)
+    }
+  })
+
+  it('builds a preview page with the Energi offer, a card image and the link back', () => {
+    const html = referralPreviewHtml(VALID)
+    expect(html).toContain(`<meta property="og:title" content="${REFERRAL_OG_TITLE}">`)
+    expect(html).toContain(`<meta property="og:description" content="${REFERRAL_OG_DESCRIPTION}">`)
+    expect(html).toContain(`<meta property="og:image" content="${REFERRAL_OG_IMAGE_URL}">`)
+    expect(html).toContain('<meta property="og:image:width" content="1200">')
+    expect(html).toContain('<meta property="og:image:height" content="630">')
+    expect(html).toContain('<meta name="twitter:card" content="summary_large_image">')
+    expect(html).toContain('<meta name="robots" content="noindex, nofollow">')
+    expect(html).toContain(`<meta property="og:url" content="https://www.altidhjem.dk/r/${VALID}">`)
+    // A human who lands here still reaches Energi, with the ref intact.
+    expect(html).toContain(`0; url=${energiRedirectUrl(VALID).replace(/&/g, '&amp;')}`)
+    expect(REFERRAL_OG_TITLE).not.toContain('\u2014') // house style: no em-dashes in copy
+    expect(REFERRAL_OG_DESCRIPTION).not.toContain('\u2014')
+  })
+
+  it('leaves no unescaped ampersand or code in the preview markup', () => {
+    const html = referralPreviewHtml(null)
+    // No og:url at all: pointing a junk code at the front page would bind this
+    // card to altidhjem.dk in every social cache that saw it.
+    expect(html).not.toContain('og:url')
+    expect(html).not.toMatch(/[?&]ref=/)
+    expect(html.match(/&(?!amp;)/g)).toBeNull()
+  })
 })
 
 describe('GET /r/[code]', () => {
@@ -159,12 +225,44 @@ describe('GET /r/[code]', () => {
     expect(recordEnergiReferralEvent.mock.calls[0][0]).toMatchObject({ code: 'Z'.repeat(32), kind: 'click', valid: false })
   })
 
-  it('redirects bots and unfurlers without logging anything', async () => {
-    const res = await get(VALID, { 'user-agent': 'facebookexternalhit/1.1' })
+  it('redirects crawlers that draw no card, without logging anything', async () => {
+    const res = await get(VALID, { 'user-agent': 'curl/8.4.0' })
     expect(res.status).toBe(302)
     expect(res.headers.get('location')).toBe(energiRedirectUrl(VALID))
     expect(checkRateLimit).not.toHaveBeenCalled()
     expect(recordEnergiReferralEvent).not.toHaveBeenCalled()
+  })
+
+  it('serves the OG card to unfurlers, still without logging anything (ALT-288)', async () => {
+    const res = await get(VALID, { 'user-agent': 'facebookexternalhit/1.1', 'x-forwarded-for': '1.2.3.4' })
+    expect(res.status).toBe(200)
+    expect(res.headers.get('content-type')).toBe('text/html; charset=utf-8')
+    expect(res.headers.get('cache-control')).toBe('no-store')
+    expect(res.headers.get('vary')).toBe('User-Agent')
+    expect(res.headers.get('x-robots-tag')).toBe('noindex, nofollow')
+    expect(await res.text()).toBe(referralPreviewHtml(VALID))
+    expect(checkRateLimit).not.toHaveBeenCalled()
+    expect(recordEnergiReferralEvent).not.toHaveBeenCalled()
+  })
+
+  it('gives an unfurler the card without a ref when the code is junk', async () => {
+    const res = await get('Z'.repeat(100), { 'user-agent': 'WhatsApp/2.23.20.0' })
+    expect(res.status).toBe(200)
+    expect(await res.text()).toBe(referralPreviewHtml(null))
+    expect(recordEnergiReferralEvent).not.toHaveBeenCalled()
+  })
+
+  it('keeps the human redirect cache-safe now that the response varies by UA', async () => {
+    const res = await get(VALID)
+    expect(res.status).toBe(302)
+    expect(res.headers.get('cache-control')).toBe('no-store')
+    expect(res.headers.get('vary')).toBe('User-Agent')
+  })
+
+  it('ships the og:image the card points at', async () => {
+    const { statSync } = await import('node:fs')
+    const path = new URL(REFERRAL_OG_IMAGE_URL).pathname
+    expect(statSync(`${process.cwd()}/public${path}`).size).toBeGreaterThan(0)
   })
 
   it('stops logging (but still redirects) when one IP is over the click cap', async () => {
@@ -191,6 +289,19 @@ describe('GET /r/[code]', () => {
     expect(res.status).toBe(302)
     expect(recordEnergiReferralEvent.mock.calls[0][0]).toMatchObject({ ipHash: null })
     spy.mockRestore()
+  })
+
+  it('HEAD answers an unfurler with the card status and type, body-less, no log', async () => {
+    const req = new NextRequest(`https://altidhjem.dk/r/${VALID}`, {
+      method: 'HEAD',
+      headers: { 'user-agent': 'facebookexternalhit/1.1' },
+    })
+    const res = await HEAD(req, { params: Promise.resolve({ code: VALID }) })
+    await Promise.all(afterTasks.splice(0))
+    expect(res.status).toBe(200)
+    expect(res.headers.get('content-type')).toBe('text/html; charset=utf-8')
+    expect(await res.text()).toBe('')
+    expect(recordEnergiReferralEvent).not.toHaveBeenCalled()
   })
 
   it('HEAD redirects identically and never logs', async () => {

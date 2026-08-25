@@ -92,5 +92,99 @@ const BOT_UA_RE =
 
 export function looksLikeBot(userAgent: string | null): boolean {
   if (!userAgent) return true
-  return BOT_UA_RE.test(userAgent)
+  // Every card-drawing unfurler counts as a bot too, so the two lists can never
+  // drift into a state where an unfurler is logged as a human click.
+  return BOT_UA_RE.test(userAgent) || isLinkPreviewBot(userAgent)
+}
+
+/**
+ * A subset of the crawlers above: the ones that actually draw a link card.
+ * They get an HTML page with OG tags instead of the redirect (ALT-288), so the
+ * receiver sees the offer rather than a naked link. Everything else, including
+ * search crawlers, scripts and a missing UA, keeps the plain 302.
+ */
+const LINK_PREVIEW_UA_RE =
+  /facebookexternalhit|facebookcatalog|whatsapp|slackbot|slack-imgproxy|telegrambot|discordbot|twitterbot|linkedinbot|skypeuripreview|snapchat|pinterest|redditbot|embedly|quora link preview|vkshare|applebot|iframely|nuzzel|bitlybot|flipboard|outbrain|google-safety|developers\.google\.com\/\+\/web\/snippet/i
+
+export function isLinkPreviewBot(userAgent: string | null): boolean {
+  if (!userAgent) return false
+  return LINK_PREVIEW_UA_RE.test(userAgent)
+}
+
+/**
+ * The card the receiver sees. Wording is Altid Energi's own offer, verbatim in
+ * substance (25 Aug 2026: "100% rabat på dit Altid Energi-abonnement de første
+ * 3 måneder"), so the promise on the card is the promise on the signup page.
+ * "Gratis abonnement" was rejected in the Danish copy audit: it reads as free
+ * electricity, and the discount only covers the subscription.
+ */
+export const REFERRAL_OG_TITLE = '100 % rabat på abonnementet i 3 måneder hos Altid Energi'
+export const REFERRAL_OG_DESCRIPTION =
+  'Du er blevet henvist og får derfor 100 % rabat på abonnementet de første 3 måneder. Herefter skifter du automatisk til det billigste abonnement, der matcher dit forbrug.'
+// Versioned filename on purpose: chat apps cache preview images for weeks and
+// ignore the HTML's no-store, so a new card ships under a new name.
+export const REFERRAL_OG_IMAGE_URL = 'https://www.altidhjem.dk/og/referral-altid-energi-v1.png'
+export const REFERRAL_OG_IMAGE_ALT = 'Altid Energi: 100 % rabat på abonnementet i 3 måneder'
+
+/**
+ * Where an unfurler is told the link lives. Only validated codes are echoed, and
+ * a junk code gets no og:url at all: og:url is the object's identity in the
+ * social graph, so pointing it at the front page would attach this referral card
+ * to altidhjem.dk in every cache that saw it.
+ */
+export function referralCanonicalUrl(code: string | null): string | null {
+  return code ? `https://www.altidhjem.dk/r/${code}` : null
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+/**
+ * The preview page. `code` only reaches it after isReferralCode(), i.e. 8 chars
+ * of [23456789BCDFGHJKMNPQRSTVWXZ], and every interpolated value is escaped
+ * anyway, so no caller can inject markup here.
+ *
+ * A human should never see this page (only known unfurl UAs get it), but if one
+ * does, the meta refresh and the link still take them to Energi.
+ */
+export function referralPreviewHtml(code: string | null): string {
+  const target = escapeHtml(energiRedirectUrl(code))
+  const canonical = referralCanonicalUrl(code)
+  const ogUrl = canonical ? `<meta property="og:url" content="${escapeHtml(canonical)}">\n` : ''
+  return `<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>${REFERRAL_OG_TITLE}</title>
+<meta name="description" content="${REFERRAL_OG_DESCRIPTION}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Altid Hjem">
+<meta property="og:locale" content="da_DK">
+${ogUrl}<meta property="og:title" content="${REFERRAL_OG_TITLE}">
+<meta property="og:description" content="${REFERRAL_OG_DESCRIPTION}">
+<meta property="og:image" content="${REFERRAL_OG_IMAGE_URL}">
+<meta property="og:image:secure_url" content="${REFERRAL_OG_IMAGE_URL}">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${REFERRAL_OG_IMAGE_ALT}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${REFERRAL_OG_TITLE}">
+<meta name="twitter:description" content="${REFERRAL_OG_DESCRIPTION}">
+<meta name="twitter:image" content="${REFERRAL_OG_IMAGE_URL}">
+<meta name="twitter:image:alt" content="${REFERRAL_OG_IMAGE_ALT}">
+<meta http-equiv="refresh" content="0; url=${target}">
+</head>
+<body>
+<p><a href="${target}">${REFERRAL_OG_TITLE}</a></p>
+</body>
+</html>
+`
 }
