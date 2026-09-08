@@ -2,15 +2,25 @@ import WaitlistForm from '@/components/WaitlistForm'
 import ComingSoonStores from '@/components/ComingSoonStores'
 import IPhoneMockup from '@/components/IPhoneMockup'
 import { H1, BODY } from '@/lib/typography'
-import LiveSavingsStat from '@/components/LiveSavingsStat'
+// DISABLED 8 Sep 2026: same live "total saved" number as SavingsCounter, hidden
+// for the same reason (Consumer Ombudsman notice to Altid Energi). See the note
+// in app/page.tsx. Restore this import and the STATS entry below to re-enable.
+// import LiveSavingsStat from '@/components/LiveSavingsStat'
 
 // Stats from the CVI frame (node 45:6428) — left column below the CTA.
-const STATS = [
-  // Desktop only — the approved mobile layout shows just the two stats below.
+type Stat = {
+  value: React.ReactNode
+  label: string
+  color: string
+  desktopOnly?: boolean
+  tightLabel?: boolean
+}
+const STATS: Stat[] = [
+  // Desktop only — the approved mobile layout shows only the stat(s) below.
   { value: '0 kr.', label: 'at oprette en konto', color: '#202820', desktopOnly: true },
   { value: '+15.000', label: 'Altid Energi-kunder', color: '#202820' },
   // Live, exact amount — same source + burst behaviour as SavingsCounter.
-  { value: <LiveSavingsStat />, label: 'har Altid Energi-kunder sparet', color: '#163223', tightLabel: true },
+  // { value: <LiveSavingsStat />, label: 'har Altid Energi-kunder sparet', color: '#163223', tightLabel: true },
 ]
 
 export default function Hero() {
@@ -53,8 +63,9 @@ export default function Hero() {
               <ComingSoonStores />
             </div>
 
-            {/* Stats row */}
-            <div className="mt-20 max-lg:mt-10 grid grid-cols-[auto_auto] justify-center gap-x-8 gap-y-6 lg:flex lg:flex-nowrap lg:justify-start lg:gap-x-[clamp(28px,5.2vw,100px)]">
+            {/* Stats row. Centered flex (not a 2-col grid) so it stays centered
+                on phones with one OR two stats — see the LiveSavingsStat note. */}
+            <div className="mt-20 max-lg:mt-10 flex flex-wrap justify-center gap-x-8 gap-y-6 lg:flex-nowrap lg:justify-start lg:gap-x-[clamp(28px,5.2vw,100px)]">
               {STATS.map(s => (
                 <div key={s.label} className={`text-left max-lg:text-center whitespace-nowrap${s.desktopOnly ? ' hidden lg:block' : ''}`}>
                   <div
@@ -63,7 +74,7 @@ export default function Hero() {
                   >
                     {s.value}
                   </div>
-                  {/* 12px below lg so both one-line labels fit side by side down to 360px. */}
+                  {/* 12px below lg so two one-line labels fit side by side down to 360px. */}
                   <div className={`mt-2.5 text-[clamp(13px,0.85vw,16px)] max-lg:text-[12px] leading-snug${s.tightLabel ? ' max-lg:tracking-[-0.01em]' : ''}`} style={{ color: '#6f6a61' }}>
                     {s.label}
                   </div>
