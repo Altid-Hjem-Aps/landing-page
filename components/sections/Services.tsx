@@ -223,18 +223,20 @@ export default function Services() {
   }, [revealed])
 
   return (
-    <section id="tjenester" className="scroll-mt-24" style={{ background: '#193d24' }}>
+    // Cream section (Thor, 9 Sep): the same text colours the site uses on its
+    // white and cream sections (WhatIs, HowItWorks): muted eyebrow and body, ink heading.
+    <section id="tjenester" className="scroll-mt-24" style={{ background: '#f4efe6' }}>
       <div
         className="max-w-[1920px] mx-auto"
         style={{ paddingLeft: fluid(48, 24), paddingRight: fluid(48, 24), paddingTop: fluid(120, 64), paddingBottom: fluid(120, 64) }}
       >
         <p
           className={`${EYEBROW} text-center mb-4`}
-          style={{ color: '#90ff7c' }}
+          style={{ color: '#6f6a61' }}
         >
           Tjenesterne
         </p>
-        <h2 className={`${H2} text-center text-white`}>
+        <h2 className={`${H2} text-center`} style={{ color: '#163223' }}>
           Hvad finder du i appen?
         </h2>
 
@@ -275,8 +277,8 @@ export default function Services() {
         </div>
 
         <p
-          className={`text-center text-white mx-auto ${BODY}`}
-          style={{ maxWidth: fluid(923, 720), marginTop: fluid(48, 36) }}
+          className={`text-center mx-auto ${BODY}`}
+          style={{ color: '#6f6a61', maxWidth: fluid(923, 720), marginTop: fluid(48, 36) }}
         >
           Nøje udvalgte tjenester til hjemmet – valgt på baggrund af kvalitet, pris og gennemsigtighed.
         </p>
