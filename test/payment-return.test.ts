@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { NextRequest } from 'next/server'
 import {
   APP_RETURN_URL,
+  PAGE_TITLE,
   paymentAppReturnUrl,
+  paymentReturnPage,
   paymentReturnRedirect,
 } from '@/lib/payment-return'
 import { GET, HEAD } from '@/app/payment-return/route'
@@ -36,14 +38,31 @@ describe('paymentAppReturnUrl', () => {
   })
 })
 
+describe('paymentReturnPage', () => {
+  it('uses a Danish title, heading and meta', () => {
+    const html = paymentReturnPage(`${APP_RETURN_URL}?method=card&result=accept`)
+    expect(html).toContain(`<title>${PAGE_TITLE}</title>`)
+    expect(html).toContain(`<h1>${PAGE_TITLE}</h1>`)
+    expect(html).toContain('lang="da"')
+    expect(html).toContain('name="description"')
+    expect(html).toContain('noindex')
+    expect(html).not.toMatch(/Payment return/i)
+    expect(html).toContain(
+      'href="altidhjem://payment-return?method=card&amp;result=accept"',
+    )
+  })
+})
+
 describe('paymentReturnRedirect', () => {
-  it('answers 302 with a custom-scheme Location', () => {
+  it('answers 302 with a custom-scheme Location and Danish HTML', async () => {
     const res = paymentReturnRedirect('card', 'accept')
     expect(res.status).toBe(302)
     expect(res.headers.get('Location')).toBe(
       `${APP_RETURN_URL}?method=card&result=accept`,
     )
     expect(res.headers.get('Cache-Control')).toBe('no-store')
+    expect(res.headers.get('Content-Type')).toContain('text/html')
+    expect(await res.text()).toContain(`<title>${PAGE_TITLE}</title>`)
   })
 })
 
