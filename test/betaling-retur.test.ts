@@ -7,10 +7,10 @@ import {
   paymentReturnPage,
   paymentReturnRedirect,
 } from '@/lib/payment-return'
-import { GET, HEAD } from '@/app/payment-return/route'
+import { GET, HEAD } from '@/app/betaling-retur/route'
 
 function request(path: string): NextRequest {
-  return new NextRequest(`https://altidhjem.dk${path}`)
+  return new NextRequest(`https://www.altidhjem.dk${path}`)
 }
 
 describe('paymentAppReturnUrl', () => {
@@ -40,6 +40,7 @@ describe('paymentAppReturnUrl', () => {
 
 describe('paymentReturnPage', () => {
   it('uses a Danish title, heading and meta', () => {
+    expect(PAGE_TITLE).toBe('Tilbage til appen')
     const html = paymentReturnPage(`${APP_RETURN_URL}?method=card&result=accept`)
     expect(html).toContain(`<title>${PAGE_TITLE}</title>`)
     expect(html).toContain(`<h1>${PAGE_TITLE}</h1>`)
@@ -66,11 +67,11 @@ describe('paymentReturnRedirect', () => {
   })
 })
 
-describe('GET /payment-return', () => {
+describe('GET /betaling-retur', () => {
   it('forwards our markers and drops the provider query', async () => {
     const res = GET(
       request(
-        '/payment-return?method=card&result=accept&onpay_uuid=abc&onpay_hmac_sha1=def',
+        '/betaling-retur?method=card&result=accept&onpay_uuid=abc&onpay_hmac_sha1=def',
       ),
     )
     expect(res.status).toBe(302)
@@ -80,21 +81,21 @@ describe('GET /payment-return', () => {
   })
 
   it('carries no result for MobilePay', () => {
-    const res = GET(request('/payment-return?method=mobilepay'))
+    const res = GET(request('/betaling-retur?method=mobilepay'))
     expect(res.headers.get('Location')).toBe(
       'altidhjem://payment-return?method=mobilepay',
     )
   })
 
   it('still lands in the app with no markers', () => {
-    const res = GET(request('/payment-return'))
+    const res = GET(request('/betaling-retur'))
     expect(res.headers.get('Location')).toBe('altidhjem://payment-return')
   })
 })
 
-describe('HEAD /payment-return', () => {
+describe('HEAD /betaling-retur', () => {
   it('matches GET so scanners do not see a different hop', () => {
-    const res = HEAD(request('/payment-return?method=card&result=decline'))
+    const res = HEAD(request('/betaling-retur?method=card&result=decline'))
     expect(res.status).toBe(302)
     expect(res.headers.get('Location')).toBe(
       'altidhjem://payment-return?method=card&result=decline',

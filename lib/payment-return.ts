@@ -1,6 +1,6 @@
 export const APP_RETURN_URL = 'altidhjem://payment-return'
 
-/** Visible document title / heading on the hop (path stays `/payment-return`). */
+/** Visible document title / heading on the hop (`/betaling-retur`). */
 export const PAGE_TITLE = 'Tilbage til appen'
 export const PAGE_DESCRIPTION = 'Du sendes tilbage til Altid Hjem-appen.'
 

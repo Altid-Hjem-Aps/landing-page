@@ -9,7 +9,7 @@ describe('robots.txt', () => {
     expect(result.rules).toEqual({
       userAgent: '*',
       allow: '/',
-      disallow: ['/api/', '/preview/', '/r/', '/payment-return'],
+      disallow: ['/api/', '/preview/', '/r/', '/betaling-retur'],
     })
   })
 
