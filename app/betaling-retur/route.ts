@@ -7,6 +7,7 @@ export const dynamic = 'force-dynamic'
 // therefore sends accept/decline here. We 302 to the app scheme so
 // flutter_web_auth_2 can close the payment window. NextResponse.redirect
 // rejects non-http(s) destinations — a raw Location header does not.
+// Public path is Danish (`/betaling-retur`); the app scheme stays English.
 
 export function GET(req: NextRequest): Response {
   const { searchParams } = req.nextUrl
