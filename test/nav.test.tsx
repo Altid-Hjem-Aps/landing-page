@@ -114,6 +114,7 @@ describe('Nav active state', () => {
     stubLocation('/opsig-abonnementer')
     render(<Nav />)
     expect(screen.getAllByRole('link', { name: 'Mad' })[0]).toHaveStyle({ color: WHITE })
+    expect(screen.getAllByRole('link', { name: 'Forsikring' })[0]).toHaveStyle({ color: WHITE })
     expect(screen.getAllByRole('link', { name: 'Energi' })[0]).toHaveStyle({ color: WHITE })
     // "Kommer snart" services are not links and stay muted.
     expect(screen.queryAllByRole('link', { name: 'Alarm' })).toHaveLength(0)
@@ -153,11 +154,13 @@ describe('Spiir banner', () => {
     fireEvent.click(burger)
     expect(screen.getByRole('button', { name: 'Luk menu' })).toHaveAttribute('aria-expanded', 'true')
     // Panel + desktop menu both render the links; the panel adds a second set.
-    // Mad and Energi are both live now; the remaining services stay inactive text.
+    // Mad, Energi and Forsikring are all live now; the remaining services stay inactive text.
     expect(screen.queryAllByRole('link', { name: 'Alarm' })).toHaveLength(0)
     expect(screen.getAllByRole('link', { name: 'Mad' }).length).toBeGreaterThan(1)
     expect(screen.getAllByRole('link', { name: 'Mad' })[0]).toHaveAttribute('href', 'https://altidmad.dk')
     expect(screen.getAllByRole('link', { name: 'Energi' }).length).toBeGreaterThan(1)
+    expect(screen.getAllByRole("link", { name: "Forsikring" }).length).toBeGreaterThan(1)
+    expect(screen.getAllByRole("link", { name: "Forsikring" })[0]).toHaveAttribute("href", "https://altidforsikring.dk")
     fireEvent.click(screen.getAllByRole('link', { name: 'Energi' })[1])
     expect(screen.getByRole('button', { name: 'Åbn menu' })).toHaveAttribute('aria-expanded', 'false')
   })

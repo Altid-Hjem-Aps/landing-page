@@ -59,7 +59,7 @@ export default function Privatlivspolitik() {
 
       <section className="space-y-4">
         <h2 className={LEGAL_H2}>2. Venteliste (før lancering)</h2>
-        <p>Indtil Altid Hjem-appen er lanceret, kan du tilmelde dig vores venteliste via altidhjem.dk, altidmad.dk eller altidforsikring.dk. Der er tale om én fælles venteliste for Altid Hjem, Altid Mad og Altid Forsikring, som Altid Hjem ApS er dataansvarlig for. Følgende særlige regler gælder for behandlingen af oplysninger fra ventelisten – afsnit 8 (Dine rettigheder) og afsnit 9 (Klage) gælder også for ventelisteoplysninger.</p>
+        <p>Indtil Altid Hjem-appen er lanceret, kan du tilmelde dig ventelisterne via altidhjem.dk, altidmad.dk eller altidforsikring.dk. Ventelisterne for Altid Hjem og Altid Mad er én fælles venteliste, mens Altid Forsikring har sin egen separate venteliste. Altid Hjem ApS er dataansvarlig for alle tre ventelister. Følgende særlige regler gælder for behandlingen af oplysninger fra ventelisterne – afsnit 8 (Dine rettigheder) og afsnit 9 (Klage) gælder også for ventelisteoplysninger.</p>
         <div>
           <p className={LEGAL_LABEL}>Hvilke oplysninger indsamler vi?</p>
           <ul className={`${LEGAL_LIST} mt-2`}>
