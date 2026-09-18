@@ -31,7 +31,11 @@ export function Logo({ className, style, variant = 'default' }: {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 944.2 500.74"
       className={className}
-      style={style}
+      // The artwork fills the viewBox edge to edge (the "m" ends at x=944.2, the
+      // "j" descender at y=500.75), so the default SVG clip shaves the edge of
+      // "hjem" whenever the rendered box lands on a fractional device pixel
+      // (browser zoom, non-integer DPR). Inline so no stylesheet rule can undo it.
+      style={{ overflow: 'visible', ...style }}
     >
       {PATHS_ALTID.map((d, i) => <path key={i} fill={altidColor} d={d} />)}
       {PATHS_HJEM.map((d, i) => <path key={i} fill={hjemColor} d={d} />)}
