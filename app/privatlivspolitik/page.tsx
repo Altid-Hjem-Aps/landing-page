@@ -44,11 +44,11 @@ const energiDatapolitik = (
 
 export default function Privatlivspolitik() {
   return (
-    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated="september 2026">
+    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated="22. september 2026">
 
       <section className="space-y-4">
         <h2 className={LEGAL_H2}>1. Vi er den dataansvarlige</h2>
-        <p>Altid Hjem ApS, CVR 45637476, er dataansvarlig for behandlingen af de personoplysninger, som vi indsamler om dig i forbindelse med din brug af Altid Hjem-appen, vores websteder (herunder altidhjem.dk, altidmad.dk og altidforsikring.dk) og vores tilknyttede tjenester (Altid Mad, Altid Forsikring, Altid Mobil m.fl.). Altid Mad og Altid Forsikring er brands under Altid Hjem ApS, som er dataansvarlig for de personoplysninger, du afgiver via altidmad.dk og altidforsikring.dk.</p>
+        <p>Altid Hjem ApS, CVR 45637476, er dataansvarlig for behandlingen af de personoplysninger, som vi indsamler om dig i forbindelse med din brug af Altid Hjem-appen, vores websteder (herunder altidhjem.dk, altidmad.dk og altidforsikring.dk) og vores tilknyttede tjenester (Altid Mad, Altid Forsikring, Altid Mobil m.fl.). Altid Mad og Altid Forsikring er selvstændige selskaber i Altid-koncernen, som bliver dataansvarlige for de personoplysninger, du afgiver til dem, når du tager tjenesten i brug.</p>
         <p>Når du via appen opretter dig som kunde hos eller tilgår din selvbetjening hos Altid Energi, er det Altid Energi ApS (CVR 44373580), der er selvstændig dataansvarlig for behandlingen af dine personoplysninger som elkunde. Du kan læse om Altid Energis behandling af personoplysninger på {energiDatapolitik}.</p>
         <p>Har du spørgsmål til vores behandling af dine personoplysninger, er du velkommen til at kontakte os:</p>
         <LegalAddress name="Altid Hjem ApS">
@@ -109,8 +109,15 @@ export default function Privatlivspolitik() {
       <section className="space-y-4">
         <h2 className={LEGAL_H2}>5. Deling af oplysninger</h2>
         <div>
-          <p className={LEGAL_LABEL}>Tjenester og datterselskaber i Altid Hjem-koncernen</p>
-          <p>Herunder Altid Mad, Altid Forsikring og Altid Mobil, i det omfang det er nødvendigt for at levere de tjenester, du har tilmeldt dig eller ønsker at tilmelde dig. Altid Hjem ApS er dataansvarlig for de personoplysninger, du afgiver til Altid Hjem, Altid Mad og Altid Forsikring, og deler kun relevante oplysninger med de enkelte tjenester i det omfang, det er nødvendigt for at levere dem til dig. Bemærk at et selvstændigt selskab kan være selvstændig dataansvarlig for den behandling, der sker i forbindelse med dets egne produkter og aftaler.</p>
+          <p className={LEGAL_LABEL}>Dataansvarlige i Altid-koncernen</p>
+          <p>Altid Hjem ApS (CVR 45637476) er dataansvarlig for de personoplysninger, du afgiver i Altid Hjem-appen, på altidhjem.dk og på ventelisten, herunder kontaktoplysninger, adresse, dine samtykker og din brug af appen.</p>
+          <p>Altid Energi ApS (CVR 44373580) er selvstændig dataansvarlig for de oplysninger, der vedrører dit elkundeforhold, fx forbrug, aftale og betaling. Altid Hjem viser disse oplysninger i appen på vegne af Altid Energi og efter dit samtykke.</p>
+          <p>Altid Mad og Altid Forsikring er selvstændige selskaber i Altid-koncernen. Når du tager en af disse tjenester i brug, bliver det pågældende selskab dataansvarligt for de oplysninger, du afgiver til tjenesten, og du får besked om det, når du starter tjenesten.</p>
+          <p>Kommende tjenester, fx Altid Mobil, følger samme princip.</p>
+        </div>
+        <div>
+          <p className={LEGAL_LABEL}>Deling af oplysninger i koncernen</p>
+          <p>Selskaberne i Altid-koncernen deler kun de oplysninger, der er nødvendige for at levere den tjeneste, du bruger, og for intern administration, fx support og drift af de fælles systemer. Grundlaget er vores legitime interesse i at drive koncernen effektivt (databeskyttelsesforordningens artikel 6, stk. 1, litra f, og betragtning 48) og, hvor det kræves, dit samtykke. Markedsføring fra et selskab kræver altid et separat samtykke til netop det selskab. Delingen er reguleret af en koncernintern aftale om datadeling, og adgangen til oplysninger er begrænset til de medarbejdere, der har brug for dem i deres arbejde.</p>
         </div>
         <div className="space-y-2">
           <p className={LEGAL_LABEL}>Datadeling med Altid Energi</p>
