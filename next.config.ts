@@ -12,6 +12,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: "/norlys",
+        destination: "/norlys.html",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
