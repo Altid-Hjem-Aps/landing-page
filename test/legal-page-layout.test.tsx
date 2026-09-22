@@ -87,4 +87,10 @@ describe('/privatlivspolitik', () => {
       expect(screen.getByText(right)).toBeInTheDocument()
     }
   })
+
+  it('identifies Altid Hjem as data controller for Altid Forsikring', () => {
+    render(<Privatlivspolitik />)
+    expect(screen.getByText(/Altid Forsikring er en tjeneste under Altid Hjem ApS og ikke et selvstændigt selskab/)).toBeInTheDocument()
+    expect(screen.queryByText(/Altid Mad og Altid Forsikring er selvstændige selskaber/)).not.toBeInTheDocument()
+  })
 })
