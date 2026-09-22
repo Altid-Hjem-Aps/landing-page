@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 const OPLYSNINGER = [
   { title: 'Kontaktoplysninger', text: 'Navn, e-mailadresse, telefonnummer og bopælsadresse.' },
   { title: 'Boligoplysninger', text: 'Adresse, boligtype og relevante oplysninger om dit hjem, som du angiver i appen.' },
-  { title: 'Produkt- og aftaleoplysninger', text: 'Oplysninger om de produkter og aftaler du har hos os eller vores datterselskaber, herunder el, forsikring og mobil.' },
+  { title: 'Produkt- og aftaleoplysninger', text: 'Oplysninger om de produkter og aftaler du har hos os eller andre selskaber i Altid-koncernen, herunder el, forsikring og mobil.' },
   { title: 'Forbrugsdata', text: 'Data om dit energiforbrug og øvrige forbrug, som vi modtager fra dig eller fra relevante leverandører og offentlige registre.' },
   { title: 'Betalingsoplysninger', text: 'Betalingskortoplysninger og øvrige betalingsdata i forbindelse med køb og tilmelding til produkter via appen. Betalingsoplysninger behandles via godkendte betalingsudbydere og opbevares ikke direkte af Altid Hjem.' },
   { title: 'Tekniske oplysninger', text: 'Oplysninger om din enhed, operativsystem, app-version og brugsadfærd i appen.' },
@@ -19,7 +19,7 @@ const OPLYSNINGER = [
 
 const FORMAAL = [
   { title: 'Levering og administration af appen og vores tjenester', text: 'Retsgrundlag: Opfyldelse af aftale (GDPR artikel 6, stk. 1, litra b).' },
-  { title: 'Tilmelding til og administration af produkter fra Altid Forsikring, Altid Mobil og øvrige datterselskaber', text: 'Retsgrundlag: Opfyldelse af aftale (GDPR artikel 6, stk. 1, litra b).' },
+  { title: 'Tilmelding til og administration af produkter under Altid Forsikring og Altid Mobil samt produkter fra andre selskaber i Altid-koncernen', text: 'Retsgrundlag: Opfyldelse af aftale (GDPR artikel 6, stk. 1, litra b).' },
   { title: 'Modtagelse af kontaktoplysninger fra Altid Energi og videregivelse af kontaktoplysninger til Altid Energi i forbindelse med oprettelse af kundeforhold', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a).' },
   { title: 'Samling og visning af dine bolig- og forbrugsdata i ét overblik', text: 'Retsgrundlag: Opfyldelse af aftale og legitim interesse (GDPR artikel 6, stk. 1, litra b og f).' },
   { title: 'Kommunikation og support', text: 'Retsgrundlag: Legitim interesse (GDPR artikel 6, stk. 1, litra f).' },
@@ -48,7 +48,7 @@ export default function Privatlivspolitik() {
 
       <section className="space-y-4">
         <h2 className={LEGAL_H2}>1. Vi er den dataansvarlige</h2>
-        <p>Altid Hjem ApS, CVR 45637476, er dataansvarlig for behandlingen af de personoplysninger, som vi indsamler om dig i forbindelse med din brug af Altid Hjem-appen, vores websteder (herunder altidhjem.dk, altidmad.dk og altidforsikring.dk) og vores tilknyttede tjenester (Altid Mad, Altid Forsikring, Altid Mobil m.fl.). Altid Mad og Altid Forsikring er selvstændige selskaber i Altid-koncernen, som bliver dataansvarlige for de personoplysninger, du afgiver til dem, når du tager tjenesten i brug.</p>
+        <p>Altid Hjem ApS, CVR 45637476, er dataansvarlig for behandlingen af de personoplysninger, som vi indsamler om dig i forbindelse med din brug af Altid Hjem-appen, vores websteder (herunder altidhjem.dk, altidmad.dk og altidforsikring.dk) og vores tilknyttede tjenester. Altid Mad er et selvstændigt selskab i Altid-koncernen og bliver dataansvarligt for de personoplysninger, du afgiver, når du tager Altid Mad-tjenesten i brug. Altid Forsikring er en tjeneste under Altid Hjem ApS og ikke et selvstændigt selskab; Altid Hjem ApS er derfor dataansvarlig for oplysninger, du afgiver til Altid Forsikring.</p>
         <p>Når du via appen opretter dig som kunde hos eller tilgår din selvbetjening hos Altid Energi, er det Altid Energi ApS (CVR 44373580), der er selvstændig dataansvarlig for behandlingen af dine personoplysninger som elkunde. Du kan læse om Altid Energis behandling af personoplysninger på {energiDatapolitik}.</p>
         <p>Har du spørgsmål til vores behandling af dine personoplysninger, er du velkommen til at kontakte os:</p>
         <LegalAddress name="Altid Hjem ApS">
@@ -110,10 +110,11 @@ export default function Privatlivspolitik() {
         <h2 className={LEGAL_H2}>5. Deling af oplysninger</h2>
         <div>
           <p className={LEGAL_LABEL}>Dataansvarlige i Altid-koncernen</p>
-          <p>Altid Hjem ApS (CVR 45637476) er dataansvarlig for de personoplysninger, du afgiver i Altid Hjem-appen, på altidhjem.dk og på ventelisten, herunder kontaktoplysninger, adresse, dine samtykker og din brug af appen.</p>
+          <p>Altid Hjem ApS (CVR 45637476) er dataansvarlig for de personoplysninger, du afgiver i Altid Hjem-appen, på vores websteder og ventelister samt til tjenesten Altid Forsikring, herunder kontaktoplysninger, adresse, dine samtykker og din brug af tjenesterne.</p>
           <p>Altid Energi ApS (CVR 44373580) er selvstændig dataansvarlig for de oplysninger, der vedrører dit elkundeforhold, fx forbrug, aftale og betaling. Altid Hjem viser disse oplysninger i appen på vegne af Altid Energi og efter dit samtykke.</p>
-          <p>Altid Mad og Altid Forsikring er selvstændige selskaber i Altid-koncernen. Når du tager en af disse tjenester i brug, bliver det pågældende selskab dataansvarligt for de oplysninger, du afgiver til tjenesten, og du får besked om det, når du starter tjenesten.</p>
-          <p>Kommende tjenester, fx Altid Mobil, følger samme princip.</p>
+          <p>Altid Mad er et selvstændigt selskab i Altid-koncernen. Når du tager Altid Mad-tjenesten i brug, bliver Altid Mad-selskabet dataansvarligt for de oplysninger, du afgiver til tjenesten, og du får besked om det, når du starter tjenesten.</p>
+          <p>Altid Forsikring er på nuværende tidspunkt en tjeneste under Altid Hjem ApS og ikke et selvstændigt selskab. Hvis tjenesten senere overgår til et andet selskab, opdaterer vi denne privatlivspolitik og informerer dig, før selskabet behandler dine oplysninger.</p>
+          <p>For kommende tjenester, fx Altid Mobil, oplyser vi den dataansvarlige, før tjenesten lanceres.</p>
         </div>
         <div>
           <p className={LEGAL_LABEL}>Deling af oplysninger i koncernen</p>
