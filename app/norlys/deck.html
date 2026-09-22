@@ -93,13 +93,16 @@ h2{font-size:46px;line-height:1.12;font-weight:700;letter-spacing:-.025em;color:
 .find-btn:hover{background:var(--forest-mid);}
 .progress-track{position:fixed;top:0;left:0;width:100%;height:3px;background:rgba(244,239,230,.08);z-index:50;}
 .progress-fill{height:100%;background:var(--sage);width:0;transition:width .4s ease;}
-.dot-nav{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:9px;}
-.dot-nav button{width:8px;height:8px;border-radius:50%;background:rgba(22,50,35,.32);border:none;cursor:pointer;padding:0;position:relative;transition:background .3s,transform .3s;}
-.dot-nav button.active{background:var(--sage);transform:scale(1.7);box-shadow:0 0 0 2px var(--forest);}
-body.on-dark .dot-nav button{background:rgba(244,239,230,.38);}
-body.on-dark .dot-nav button.active{box-shadow:0 0 0 2px rgba(244,239,230,.6);}
-.dot-nav .tip{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--cream);background:rgba(17,40,24,.9);padding:4px 9px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;}
+.dot-nav{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:2px;padding:8px 5px;background:rgba(17,40,24,.72);border:1px solid rgba(244,239,230,.18);border-radius:999px;backdrop-filter:blur(6px);}
+.dot-nav button{width:18px;height:18px;padding:5px;border-radius:50%;background:rgba(244,239,230,.55);background-clip:content-box;border:none;cursor:pointer;position:relative;transition:background-color .3s,transform .3s;-webkit-tap-highlight-color:transparent;}
+.dot-nav button:hover{background-color:rgba(244,239,230,.85);}
+.dot-nav button.active{background-color:var(--sage);transform:scale(1.35);}
+.dot-nav .tip{position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--cream);background:rgba(17,40,24,.9);padding:4px 9px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;}
 .dot-nav button:hover .tip{opacity:1;}
+@media (max-width:640px){
+  .dot-nav{right:auto;top:auto;left:50%;bottom:16px;transform:translateX(-50%);flex-direction:row;padding:5px 8px;}
+  .dot-nav .tip{display:none;}
+}
 
 /* finder */
 .finder{position:fixed;top:64px;left:50%;transform:translateX(-50%) translateY(-8px);width:min(640px,calc(100vw - 40px));z-index:60;background:rgba(17,40,24,.97);color:var(--cream);border:1px solid rgba(244,239,230,.14);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.45);backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .15s,transform .15s;}
@@ -335,7 +338,7 @@ mark.find-hit.cur{background:var(--sage);color:var(--forest);}
 /* vision */
 .vision{display:grid;grid-template-columns:470px 1fr;gap:36px;align-items:center;margin-top:0;}
 .phones{display:flex;justify-content:center;align-items:center;animation:float 7s ease-in-out infinite;}
-.phones img{width:100%;max-height:690px;object-fit:contain;-webkit-mask-image:linear-gradient(to bottom,#000 89%,transparent 99%);mask-image:linear-gradient(to bottom,#000 89%,transparent 99%);}
+.phones img{width:100%;max-height:690px;object-fit:contain;-webkit-mask-image:linear-gradient(to bottom,#000 78%,transparent 100%);mask-image:linear-gradient(to bottom,#000 78%,transparent 100%);}
 .vision-text{display:flex;flex-direction:column;gap:14px;}
 .vpill{display:flex;align-items:center;gap:16px;background:#fff;border-radius:18px;padding:18px 22px;}
 .vpill i{width:46px;height:46px;border-radius:50%;background:var(--forest);color:var(--sage);display:flex;align-items:center;justify-content:center;flex:none;}
@@ -385,7 +388,6 @@ mark.find-hit.cur{background:var(--sage);color:var(--forest);}
 .slide.energi .tile .num,.slide.energi .stack-card h3{color:var(--energi);}
 .slide.energi .tile.accent{background:var(--energi);}
 .slide.energi .tile.accent .num{color:var(--energi-light);}
-.slide.energi .stamp{color:var(--energi);background:var(--energi-tint);border-color:var(--energi);}
 .slide.energi .corner-logo{display:none;}
 .slide.energi .corner-energi{position:absolute;right:104px;bottom:26px;width:100px;height:54px;background:url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGFnXzIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDEyMCA2NCI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwMzNiOGM7fS5jbHMtMntmaWxsOiM3M2QwZTc7fTwvc3R5bGU+PC9kZWZzPjxnIGlkPSJMYWdfMS0yIj48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik01OC45Myw1NC43MmMuMjUuOTUuNzIsMS43LDEuNDEsMi4yNy42OS41NiwxLjQ4Ljg1LDIuMzYuODUuNjgsMCwxLjMxLS4xNywxLjktLjUuNTktLjM0LDEuMDUtLjgxLDEuMzgtMS40MWgyLjE2Yy0uNDQsMS4xOC0xLjE2LDIuMTItMi4xNywyLjgyLTEsLjctMi4xMiwxLjA1LTMuMzUsMS4wNS0xLjU5LDAtMi45Ni0uNTktNC4xMi0xLjc4LTEuMTUtMS4xOS0xLjczLTIuNTYtMS43My00LjExLDAtMS43Ni41Ny0zLjIyLDEuNzItNC4zOCwxLjE1LTEuMTYsMi41LTEuNzQsNC4wNi0xLjc0LDEuNjksMCwzLjEuNTcsNC4yNCwxLjcsMS4xNCwxLjEzLDEuNzEsMi41MywxLjcxLDQuMTcsMCwuNDUtLjAyLjgxLS4wNiwxLjA3aC05LjUyWk02Ni4zNSw1My4wOGMtLjA4LS45NS0uNDktMS43NC0xLjIyLTIuMzgtLjczLS42NC0xLjU3LS45Ni0yLjUxLS45NnMtMS43My4zMi0yLjQ3Ljk2Yy0uNzMuNjQtMS4xNCwxLjQzLTEuMjIsMi4zOGg3LjQyWiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTc4LjY5LDU5LjUxdi02LjIyYzAtMi4zNi0uOTUtMy41NC0yLjg2LTMuNTQtLjk0LDAtMS42OC4zMi0yLjIyLjk2LS41NC42NC0uODEsMS40OS0uODEsMi41N3Y2LjI1aC0yLjE2di0xMS40MmgyLjAxdjEuMjJoLjA0Yy43OS0xLjAyLDEuOTEtMS41MywzLjM2LTEuNTNzMi41OC40MywzLjQ2LDEuMjljLjg5Ljg2LDEuMzMsMi4wNiwxLjMzLDMuNnY2Ljg0aC0yLjE2WiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTg1LjE4LDU0LjcyYy4yNS45NS43MiwxLjcsMS40MSwyLjI3LjY5LjU2LDEuNDguODUsMi4zNi44NS42OCwwLDEuMzEtLjE3LDEuOS0uNS41OS0uMzQsMS4wNS0uODEsMS4zOC0xLjQxaDIuMTZjLS40NCwxLjE4LTEuMTYsMi4xMi0yLjE3LDIuODItMSwuNy0yLjEyLDEuMDUtMy4zNSwxLjA1LTEuNTksMC0yLjk2LS41OS00LjEyLTEuNzgtMS4xNS0xLjE5LTEuNzMtMi41Ni0xLjczLTQuMTEsMC0xLjc2LjU3LTMuMjIsMS43Mi00LjM4LDEuMTUtMS4xNiwyLjUtMS43NCw0LjA2LTEuNzQsMS42OSwwLDMuMS41Nyw0LjI0LDEuNywxLjE0LDEuMTMsMS43MSwyLjUzLDEuNzEsNC4xNywwLC40NS0uMDIuODEtLjA2LDEuMDdoLTkuNTJaTTkyLjYxLDUzLjA4Yy0uMDgtLjk1LS40OS0xLjc0LTEuMjItMi4zOC0uNzMtLjY0LTEuNTctLjk2LTIuNTEtLjk2cy0xLjczLjMyLTIuNDcuOTZjLS43My42NC0xLjE0LDEuNDMtMS4yMiwyLjM4aDcuNDJaIi8+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNOTYuOTIsNTkuNTF2LTExLjQyaDIuMDF2MS4wM2guMDRjLjU1LS44MSwxLjUzLTEuMjYsMi45Mi0xLjM0djIuMjFjLS45My4wMy0xLjYzLjMxLTIuMS44Ni0uNDguNTQtLjcyLDEuMy0uNzIsMi4yNnY2LjQxaC0yLjE2WiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTExMi44OSw1OGMtLjksMS4yLTIuMjIsMS43OS0zLjk2LDEuNzktMS42NCwwLTMuMDgtLjYtNC4zLTEuNzktMS4yMi0xLjItMS44My0yLjU3LTEuODMtNC4xMiwwLTEuNzIuNTktMy4xNiwxLjc4LTQuMzQsMS4xOS0xLjE4LDIuNjUtMS43Niw0LjM4LTEuNzYuNzYsMCwxLjUuMTUsMi4yMi40NC43Mi4zLDEuMzEuNjksMS43NiwxLjE4di0xLjMyaDIuMTZ2OS45MWMwLDEuODctLjU1LDMuMzQtMS42NSw0LjQtMS4xLDEuMDYtMi42MiwxLjYtNC41NSwxLjYtMS4zLDAtMi40NS0uMzItMy40NC0uOTYtMS0uNjQtMS43NC0xLjUyLTIuMjQtMi42NWgyLjRjLjc5LDEuMSwxLjg5LDEuNjUsMy4zLDEuNjUsMS4zMSwwLDIuMzEtLjM1LDMtMS4wNC42OC0uNjksMS4wMy0xLjY5LDEuMDMtM2gtLjA0Wk0xMTEuODEsNTYuNTdjLjc1LS44NSwxLjEyLTEuNzcsMS4xMi0yLjc3LDAtMS4yNi0uNC0yLjI2LTEuMjEtMi45OC0uODEtLjcyLTEuNzUtMS4wOC0yLjgzLTEuMDhzLTEuOTkuNC0yLjc3LDEuMmMtLjc4LjgtMS4xNywxLjc1LTEuMTcsMi44NnMuMzksMi4wMywxLjE4LDIuODNjLjc5LjgsMS43MiwxLjIxLDIuNzgsMS4yMSwxLjE5LDAsMi4xNi0uNDIsMi45LTEuMjdoMFoiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0xMTcuODQsNDYuNzd2LTIuNTFoMi4xNnYyLjUxaC0yLjE2Wk0xMTcuODQsNTkuNTF2LTExLjQyaDIuMTZ2MTEuNDJoLTIuMTZaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMjMuNzUsMzkuNDN2LTMuMmgtLjExYy0xLjI5LDIuNjEtNC44Miw0LjIxLTguNzQsNC4yMS04Ljc5LDAtMTQuOS02Ljg3LTE0LjktMTUuODJzNi4zOC0xNS43NywxNC45LTE1Ljc3YzMuNjQsMCw3LjAyLDEuNDQsOC43NCw0LjE2aC4xMXYtMy4xNGg4Ljl2MjkuNTdoLTguOVpNMjMuNzUsMjQuNjFjMC00LjE2LTMuMzgtNy41MS03LjU2LTcuNTFzLTcuMjksMy4zNi03LjI5LDcuNjIsMy4yNyw3LjQ2LDcuNCw3LjQ2LDcuNDUtMy4zLDcuNDUtNy41N1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0zOS40LDM5LjQzVjBoOC45djM5LjQzaC04LjlaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTYuNSwzOS40M3YtMjIuODZoLTQuNHYtNi43MWg0LjRWMGg4Ljl2OS44Nmg0LjI5djYuNzFoLTQuMjl2MjIuODZoLTguOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03My41NCw2LjcxVjBoOC45djYuNzFoLTguOVpNNzMuNTQsMzkuNDNWOS44Nmg4Ljl2MjkuNTdoLTguOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMTEuMzksMzkuNDN2LTMuMmgtLjExYy0xLjY2LDIuNzItNC42Niw0LjE1LTguOSw0LjE1LTkuMDEsMC0xNC45LTYuODctMTQuOS0xNS44MnM2LjA2LTE1LjcyLDE0Ljc0LTE1LjcyYzMuNDMsMCw2LjIyLDEuMDEsOC43NCwzLjUyVjBoOC45djM5LjQzaC04LjQ3LDBaTTExMS40NCwyNC41MWMwLTQuMS0zLjE2LTcuNDEtNy41Ni03LjQxcy03LjUxLDMuMDktNy41MSw3LjQxLDMuMTYsNy42Miw3LjQ1LDcuNjIsNy42MS0zLjI1LDcuNjEtNy42MloiLz48L2c+PC9zdmc+) right center/contain no-repeat;pointer-events:none;}
 .egrid{display:grid;grid-template-columns:600px 1fr;gap:22px;flex:0 0 auto;}
@@ -657,7 +659,7 @@ mark.find-hit.cur{background:var(--sage);color:var(--forest);}
           <div class="tile accent rev"><div class="num"><span data-count="120">0</span> <small>mio. kr.</small></div><div class="txt">i bruttoomsætning ekskl. moms siden marts 2024, heraf cirka 5 mio. kr. i abonnement.</div></div>
           <div class="tile rev"><div class="num-row"><div class="num" data-count="790">0</div><svg class="trend" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 17 8.5 10.5 13.5 15.5 22 7"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></div><div class="txt">nye målepunkter netto pr. måned de seneste seks måneder, mod 616 over de seneste tolv. Væksten accelererer.</div></div>
           <div class="tile rev"><div class="num">4,5 <small>Trustpilot</small></div><div class="txt">og "Fremragende". Knap hver femte nye kunde kommer via anbefaling fra en, de kender.</div></div>
-          <div class="tile rev"><span class="stamp">Kun 3 i teamet</span><div class="num" data-count="5600">0</div><div class="txt">målepunkter pr. medarbejder i kundeservice. Kodeautomatisering og AI gør, at basen vokser uden at teamet gør. Teamet kunne bære en langt større kundebase, hvis vi skruede op i morgen.</div></div>
+          <div class="tile rev"><div class="num" data-count="5600">0</div><div class="txt">målepunkter pr. medarbejder i kundeservice. Kodeautomatisering og AI gør, at basen vokser uden at teamet gør.</div></div>
         </div>
       </div>
     </div>
@@ -1352,7 +1354,6 @@ l17 -73 53 -2 c28 -1 59 -2 69 -2 25 -1 58 118 43 161 -9 27 -8 39 11 75 12
     if (i < 0 || i >= total || i === current) return;
     slides.forEach(function(s){ s.classList.remove('active'); });
     slides[i].classList.add('active');
-    document.body.classList.toggle('on-dark', slides[i].classList.contains('dark'));
     current = i;
     updateDots(); updateProgress(); triggerEntrance(slides[i]);
     history.replaceState(null, '', '#slide-' + (i + 1));
@@ -1371,7 +1372,6 @@ l17 -73 53 -2 c28 -1 59 -2 69 -2 25 -1 58 118 43 161 -9 27 -8 39 11 75 12
   slides.forEach(function(s){ var l = document.createElement('div'); l.className = 'corner-logo'; s.appendChild(l); });
 
   slides[0].classList.add('active');
-  document.body.classList.toggle('on-dark', slides[0].classList.contains('dark'));
   updateDots(); updateProgress(); triggerEntrance(slides[0]);
 
   var wheelLock = false;
@@ -1382,13 +1382,17 @@ l17 -73 53 -2 c28 -1 59 -2 69 -2 25 -1 58 118 43 161 -9 27 -8 39 11 75 12
     if (e.deltaY > 0) goTo(current + 1); else goTo(current - 1);
     setTimeout(function(){ wheelLock = false; }, 350);
   }, {passive:true});
-  var touchStartY = null;
-  window.addEventListener('touchstart', function(e){ touchStartY = e.touches[0].clientY; }, {passive:true});
+  var touchStart = null;
+  window.addEventListener('touchstart', function(e){ touchStart = {x: e.touches[0].clientX, y: e.touches[0].clientY}; }, {passive:true});
   window.addEventListener('touchend', function(e){
-    if (touchStartY === null) return;
-    var dy = touchStartY - e.changedTouches[0].clientY;
-    if (Math.abs(dy) > 50) { if (dy > 0) goTo(current + 1); else goTo(current - 1); }
-    touchStartY = null;
+    if (touchStart === null) return;
+    var dx = touchStart.x - e.changedTouches[0].clientX;
+    var dy = touchStart.y - e.changedTouches[0].clientY;
+    touchStart = null;
+    if (finderOpen) return;
+    if (Math.abs(dy) > 50) { if (dy > 0) goTo(current + 1); else goTo(current - 1); return; }
+    // tap (ikke swipe) på selve siden = næste slide; nav, søg og finder håndterer selv deres tap
+    if (Math.abs(dx) < 10 && Math.abs(dy) < 10 && !e.target.closest('.dot-nav,.find-btn,.finder')) goTo(current + 1);
   }, {passive:true});
 
   // finder: tekstsøgning + hop til slide
