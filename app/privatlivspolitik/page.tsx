@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import LegalPageLayout, { LegalAddress, LEGAL_H2, LEGAL_LABEL, LEGAL_LINK, LEGAL_LIST } from '@/components/LegalPageLayout'
+import CookieSettingsLink from '@/components/CookieSettingsLink'
 
 export const metadata: Metadata = {
   title: 'Privatlivspolitik – Altid Hjem',
@@ -13,7 +14,7 @@ const OPLYSNINGER = [
   { title: 'Forbrugsdata', text: 'Data om dit energiforbrug og øvrige forbrug, som vi modtager fra dig eller fra relevante leverandører og offentlige registre.' },
   { title: 'Betalingsoplysninger', text: 'Betalingskortoplysninger og øvrige betalingsdata i forbindelse med køb og tilmelding til produkter via appen. Betalingsoplysninger behandles via godkendte betalingsudbydere og opbevares ikke direkte af Altid Hjem.' },
   { title: 'Tekniske oplysninger', text: 'Oplysninger om din enhed, operativsystem, app-version og brugsadfærd i appen.' },
-  { title: 'Henvisningsoplysninger', text: 'Når du deler eller kopierer dit personlige henvisningslink i appen, og når nogen klikker på det, registrerer vi hændelsen. For hver hændelse gemmer vi tidspunkt, land, browsertype og en hashværdi af IP-adressen med et dagligt skiftende tilfældigt tillæg, men aldrig selve IP-adressen. Det personlige link viser, hvilken kunde et klik hører til. Oplysningerne bruges til at tælle henvisninger på grundlag af vores legitime interesse i at drive henvisningsordningen og slettes efter 90 dage. Vi bruger ikke cookies.' },
+  { title: 'Henvisningsoplysninger', text: 'Når du deler eller kopierer dit personlige henvisningslink i appen, og når nogen klikker på det, registrerer vi hændelsen. For hver hændelse gemmer vi tidspunkt, land, browsertype og en hashværdi af IP-adressen med et dagligt skiftende tilfældigt tillæg, men aldrig selve IP-adressen. Det personlige link viser, hvilken kunde et klik hører til. Oplysningerne bruges til at tælle henvisninger på grundlag af vores legitime interesse i at drive henvisningsordningen og slettes efter 90 dage. Henvisningsoptællingen bruger ikke cookies.' },
   { title: 'Kommunikationsoplysninger', text: 'Korrespondance du har haft med os via e-mail, chat eller support.' },
 ]
 
@@ -26,6 +27,14 @@ const FORMAAL = [
   { title: 'Analyse af, hvordan appen bliver brugt, så vi kan gøre den bedre', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi indsamler intet, før du har sagt ja, og du kan til enhver tid trække samtykket tilbage under Profil › Samtykker i appen.' },
   { title: 'Markedsføring og personaliserede tilbud fra Altid Hjem og datterselskaber', text: 'Retsgrundlag: Samtykke (GDPR artikel 6, stk. 1, litra a). Du kan til enhver tid trække dit samtykke tilbage.' },
   { title: 'Opfyldelse af lovkrav', text: 'Retsgrundlag: Retlig forpligtelse (GDPR artikel 6, stk. 1, litra c).' },
+]
+
+const NOEDVENDIGE_COOKIES = [
+  { name: 'ah-cookie-consent', text: 'Husker dit cookievalg. Gemmes i 12 måneder.' },
+  { name: 'am_confirm', text: 'Bruges et kort øjeblik, når du bekræfter din tilmelding til ventelisten via linket i vores e-mail. Slettes efter 30 minutter.' },
+  { name: 'ah-waitlist-joined', text: 'Husker, at du er skrevet op på ventelisten, så vi ikke spørger dig igen. Gemmes, indtil du rydder din browser.' },
+  { name: 'ah-exit-intent-shown', text: 'Husker, at vi har vist dig invitationen til ventelisten, så den kun vises én gang. Gemmes, indtil du rydder din browser.' },
+  { name: 'norlys_auth', text: 'Giver adgang til en lukket side for en samarbejdspartner. Sættes kun, når man logger ind på siden. Gemmes i 30 dage.' },
 ]
 
 const RETTIGHEDER = [
@@ -135,8 +144,9 @@ export default function Privatlivspolitik() {
           <p>Som behandler oplysninger på vores vegne, herunder udbydere af hosting, betalingsinfrastruktur, kundesupport, analyseværktøjer og e-mailudsendelse. Alle databehandlere er underlagt en databehandleraftale og må kun behandle dine oplysninger efter vores instruks.</p>
         </div>
         <div>
-          <p className={LEGAL_LABEL}>Amplitude (analyse af brugen af appen)</p>
+          <p className={LEGAL_LABEL}>Amplitude (analyse af brugen af appen og vores websteder)</p>
           <p>Har du givet samtykke til det, bruger vi Amplitude, Inc. som databehandler til at se, hvordan appen bliver brugt. Amplitude modtager hvilke skærme der åbnes, hvilke knapper der trykkes på, din telefonmodel, dit styresystem og din appversion, samt et id for din telefon og et id for din husstand. Amplitude modtager ikke dit navn, din e-mail, din adresse, dit kundenummer eller hvor du befinder dig. Oplysningerne opbevares på Amplitudes servere i EU (Frankfurt, Tyskland).</p>
+          <p>På vores websteder bruger vi kun Amplitude i din browser, hvis du har accepteret statistikcookies, se afsnit 10. Når du skriver dig op på ventelisten, registrerer vi tilmeldingen i Amplitude under et tilfældigt id sammen med, hvilken side du tilmeldte dig fra. Amplitude får ikke dit navn eller din e-mail.</p>
         </div>
         <div>
           <p className={LEGAL_LABEL}>Offentlige myndigheder</p>
@@ -185,8 +195,31 @@ export default function Privatlivspolitik() {
         </LegalAddress>
       </section>
 
+      <section id="cookies" className="space-y-4 scroll-mt-24">
+        <h2 className={LEGAL_H2}>10. Cookies</h2>
+        <p>Vi bruger cookies og lignende lagring i din browser (localStorage) til to ting: det, siden skal bruge for at virke, og statistik, hvis du siger ja. Første gang du besøger siden, spørger vi dig. Dit valg gemmes i 12 måneder, og derefter spørger vi igen. Du kan til enhver tid ændre dit valg: <CookieSettingsLink className={LEGAL_LINK} /></p>
+        <div className="space-y-2">
+          <p className={LEGAL_LABEL}>Nødvendige (kræver ikke samtykke)</p>
+          <ul className={LEGAL_LIST}>
+            {NOEDVENDIGE_COOKIES.map(({ name, text }) => (
+              <li key={name}>
+                <span className={LEGAL_LABEL}>{name}:</span> {text}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="space-y-2">
+          <p className={LEGAL_LABEL}>Statistik (kun hvis du siger ja)</p>
+          <ul className={LEGAL_LIST}>
+            <li>
+              <span className={LEGAL_LABEL}>AMP_* (Amplitude):</span> Et tilfældigt id for din browser, så vi kan se, hvordan siden bliver brugt på tværs af besøg: hvilke sider du ser, hvad du klikker på, og hvor du kom fra. Oplysningerne behandles af vores databehandler Amplitude i EU, se afsnit 5. Gemmes i op til 12 måneder. Siger du nej, eller trækker du dit ja tilbage, stopper vi statistikken og sletter disse cookies fra din browser.
+            </li>
+          </ul>
+        </div>
+      </section>
+
       <section className="space-y-4">
-        <h2 className={LEGAL_H2}>10. Ændringer</h2>
+        <h2 className={LEGAL_H2}>11. Ændringer</h2>
         <p>Vi opdaterer løbende denne privatlivspolitik. Den gældende version er altid tilgængelig i appen og på vores hjemmeside. Væsentlige ændringer vil blive kommunikeret til dig via appen eller e-mail.</p>
       </section>
 
