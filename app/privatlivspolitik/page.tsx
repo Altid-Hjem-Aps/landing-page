@@ -23,6 +23,7 @@ const FORMAAL = [
   { title: 'Modtagelse af kontaktoplysninger fra Altid Energi og videregivelse af kontaktoplysninger til Altid Energi i forbindelse med oprettelse af kundeforhold', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a).' },
   { title: 'Samling og visning af dine bolig- og forbrugsdata i ét overblik', text: 'Retsgrundlag: Opfyldelse af aftale og legitim interesse (GDPR artikel 6, stk. 1, litra b og f).' },
   { title: 'Kommunikation og support', text: 'Retsgrundlag: Legitim interesse (GDPR artikel 6, stk. 1, litra f).' },
+  { title: 'Analyse af, hvordan appen bliver brugt, så vi kan gøre den bedre', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi indsamler intet, før du har sagt ja, og du kan til enhver tid trække samtykket tilbage under Profil › Samtykker i appen.' },
   { title: 'Markedsføring og personaliserede tilbud fra Altid Hjem og datterselskaber', text: 'Retsgrundlag: Samtykke (GDPR artikel 6, stk. 1, litra a). Du kan til enhver tid trække dit samtykke tilbage.' },
   { title: 'Opfyldelse af lovkrav', text: 'Retsgrundlag: Retlig forpligtelse (GDPR artikel 6, stk. 1, litra c).' },
 ]
@@ -44,7 +45,7 @@ const energiDatapolitik = (
 
 export default function Privatlivspolitik() {
   return (
-    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated="22. september 2026">
+    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated="28. september 2026">
 
       <section className="space-y-4">
         <h2 className={LEGAL_H2}>1. Vi er den dataansvarlige</h2>
@@ -134,6 +135,10 @@ export default function Privatlivspolitik() {
           <p>Som behandler oplysninger på vores vegne, herunder udbydere af hosting, betalingsinfrastruktur, kundesupport, analyseværktøjer og e-mailudsendelse. Alle databehandlere er underlagt en databehandleraftale og må kun behandle dine oplysninger efter vores instruks.</p>
         </div>
         <div>
+          <p className={LEGAL_LABEL}>Amplitude (analyse af brugen af appen)</p>
+          <p>Har du givet samtykke til det, bruger vi Amplitude, Inc. som databehandler til at se, hvordan appen bliver brugt. Amplitude modtager hvilke skærme der åbnes, hvilke knapper der trykkes på, din telefonmodel, dit styresystem og din appversion, samt et id for din telefon og et id for din husstand. Amplitude modtager ikke dit navn, din e-mail, din adresse, dit kundenummer eller hvor du befinder dig. Oplysningerne opbevares på Amplitudes servere i EU (Frankfurt, Tyskland).</p>
+        </div>
+        <div>
           <p className={LEGAL_LABEL}>Offentlige myndigheder</p>
           <p>Hvis vi er retligt forpligtet hertil.</p>
         </div>
@@ -143,6 +148,7 @@ export default function Privatlivspolitik() {
       <section className="space-y-4">
         <h2 className={LEGAL_H2}>6. Overførsler til tredjelande</h2>
         <p>Hvis vi overfører dine oplysninger til lande uden for EU/EØS, sker det udelukkende på grundlag af et lovligt overførselsgrundlag, herunder EU-Kommissionens standardkontraktbestemmelser. Du kan få nærmere oplysninger ved at kontakte os.</p>
+        <p>Amplitude, Inc. er en amerikansk virksomhed. Oplysningerne opbevares i EU, men hvis Amplitude tilgår dem fra USA, sker det på grundlag af EU-US Data Privacy Framework, som Amplitude er certificeret under, og EU-Kommissionens standardkontraktbestemmelser.</p>
       </section>
 
       <section className="space-y-4">
@@ -150,8 +156,9 @@ export default function Privatlivspolitik() {
         <p>Vi opbevarer dine personoplysninger så længe det er nødvendigt til de formål, de er indsamlet til, eller så længe vi er forpligtet til det efter lovgivningen. Generelt gælder:</p>
         <ul className={LEGAL_LIST}>
           <li>Kundedata opbevares i op til 5 år efter aftalens ophør af hensyn til bogføringsloven.</li>
-          <li>Tekniske logs og brugsdata slettes løbende og typisk inden for 12 måneder.</li>
+          <li>Tekniske logs slettes løbende og typisk inden for 12 måneder.</li>
           <li>Oplysninger indsamlet på baggrund af samtykke slettes, når samtykket trækkes tilbage, medmindre andet retsgrundlag gælder.</li>
+          <li>Brugsdata i Amplitude opbevarer vi, så længe du har givet samtykke. Trækker du samtykket tilbage under Profil › Samtykker, eller sletter du din konto, stopper indsamlingen med det samme, og vi beder automatisk Amplitude om at slette oplysningerne om dig. Sletningen er gennemført inden for 30 dage.</li>
         </ul>
       </section>
 
