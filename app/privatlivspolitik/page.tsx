@@ -45,7 +45,7 @@ const energiDatapolitik = (
 
 export default function Privatlivspolitik() {
   return (
-    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated="8. oktober 2026">
+    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated="28. september 2026">
 
       <section className="space-y-4">
         <h2 className={LEGAL_H2}>1. Vi er den dataansvarlige</h2>
