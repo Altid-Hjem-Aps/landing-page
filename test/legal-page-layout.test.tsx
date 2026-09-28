@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import LegalPageLayout, { LegalAddress } from '@/components/LegalPageLayout'
 import Kontakt from '@/app/kontakt/page'
 import Privatlivspolitik from '@/app/privatlivspolitik/page'
@@ -72,13 +72,24 @@ describe('/kontakt', () => {
 })
 
 describe('/privatlivspolitik', () => {
-  it('renders all ten numbered sections and the Datatilsynet complaint block', () => {
+  it('renders all eleven numbered sections and the Datatilsynet complaint block', () => {
     render(<Privatlivspolitik />)
     const h2s = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
-    expect(h2s).toHaveLength(10)
+    expect(h2s).toHaveLength(11)
     expect(h2s[0]).toBe('1. Vi er den dataansvarlige')
-    expect(h2s[9]).toBe('10. Ændringer')
+    expect(h2s[9]).toBe('10. Cookies')
+    expect(h2s[10]).toBe('11. Ændringer')
     expect(screen.getByRole('link', { name: 'dt@datatilsynet.dk' })).toHaveAttribute('href', 'mailto:dt@datatilsynet.dk')
+  })
+
+  it('lists every cookie and storage key the site sets, and lets the visitor change the choice', () => {
+    render(<Privatlivspolitik />)
+    const section = document.getElementById('cookies')
+    expect(section).not.toBeNull()
+    for (const name of ['ah-cookie-consent:', 'am_confirm:', 'ah-waitlist-joined:', 'ah-exit-intent-shown:', 'norlys_auth:', 'AMP_* (Amplitude):']) {
+      expect(section).toHaveTextContent(name)
+    }
+    expect(within(section as HTMLElement).getByRole('button', { name: 'Cookieindstillinger' })).toBeInTheDocument()
   })
 
   it('lists every GDPR right as a run-in label', () => {
