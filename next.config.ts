@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      { source: "/ever", destination: "https://ever-preview.vercel.app/ever" },
+      { source: "/ever/:path*", destination: "https://ever-preview.vercel.app/:path*" },
+    ];
+  },
 };
 
 export default nextConfig;
