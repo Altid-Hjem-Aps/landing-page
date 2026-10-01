@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
     return [
       // Ever-decket bor i sit eget Vercel-projekt (athorup/ever-vc-deck) bag
       // sin egen adgangskode; /ever er bare en pænere adresse til det.
-      { source: "/ever", destination: "https://ever-vc-deck.vercel.app/" },
+      { source: "/ever", destination: "https://ever-vc-deck.vercel.app/ever" },
       { source: "/ever/:path*", destination: "https://ever-vc-deck.vercel.app/:path*" },
     ];
   },
