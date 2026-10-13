@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import InviterShare from '@/components/InviterShare'
+import InviterExperience from '@/components/InviterExperience'
 
 export const metadata: Metadata = {
   title: 'Inviter venner – Altid Hjem',
@@ -64,7 +64,7 @@ export default async function InviterPage({
       </header>
 
       <div className="px-6 py-12 sm:py-16">
-        <InviterShare code={ref ?? ''} />
+        <InviterExperience code={ref ?? ''} />
       </div>
     </main>
   )

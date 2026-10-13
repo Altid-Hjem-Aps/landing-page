@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "dk.altidhjem.app",
+      "sha256_cert_fingerprints": [
+        "7E:E3:5D:71:12:4F:AF:66:14:E0:F1:3B:22:8A:9C:A0:8B:CA:FE:30:2B:0D:95:A5:73:5A:92:83:99:E0:4A:18"
+      ]
+    }
+  }
+]

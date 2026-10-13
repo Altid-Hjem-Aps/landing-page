@@ -10,6 +10,20 @@ const nextConfig: NextConfig = {
         destination: "/hvornar-er-strommen-billigst",
         permanent: true,
       },
+      // Keep the canonical www host while serving app-association files on
+      // the apex host without a redirect.
+      {
+        source: "/:path((?!\\.well-known).+)",
+        has: [{ type: "host", value: "altidhjem.dk" }],
+        destination: "https://www.altidhjem.dk/:path",
+        permanent: false,
+      },
+      {
+        source: "/",
+        has: [{ type: "host", value: "altidhjem.dk" }],
+        destination: "https://www.altidhjem.dk/",
+        permanent: false,
+      },
     ];
   },
   async rewrites() {
