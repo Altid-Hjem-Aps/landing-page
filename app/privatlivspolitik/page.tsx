@@ -15,6 +15,7 @@ const OPLYSNINGER = [
   { title: 'Betalingsoplysninger', text: 'Betalingskortoplysninger og øvrige betalingsdata i forbindelse med køb og tilmelding til produkter via appen. Betalingsoplysninger behandles via godkendte betalingsudbydere og opbevares ikke direkte af Altid Hjem.' },
   { title: 'Tekniske oplysninger', text: 'Oplysninger om din enhed, operativsystem, app-version og brugsadfærd i appen.' },
   { title: 'Henvisningsoplysninger', text: 'Når du deler eller kopierer dit personlige henvisningslink i appen, og når nogen klikker på det, registrerer vi hændelsen. For hver hændelse gemmer vi tidspunkt, land, browsertype og en hashværdi af IP-adressen med et dagligt skiftende tilfældigt tillæg, men aldrig selve IP-adressen. Det personlige link viser, hvilken kunde et klik hører til. Oplysningerne bruges til at tælle henvisninger på grundlag af vores legitime interesse i at drive henvisningsordningen og slettes efter 90 dage. Henvisningsoptællingen bruger ikke cookies.' },
+  { title: 'Profilbillede', text: 'Hvis du selv lægger et billede af dig ind i appen, gemmer vi det, så de andre voksne i din husstand kan se det. Kun medlemmer af din husstand, der er logget ind, kan se billedet. Før vi gemmer det, fjerner vi oplysninger om, hvor og med hvilket kamera det er taget. Det er frivilligt at lægge et billede ind.' },
   { title: 'Kommunikationsoplysninger', text: 'Korrespondance du har haft med os via e-mail, chat eller support.' },
 ]
 
@@ -54,7 +55,7 @@ const energiDatapolitik = (
 
 export default function Privatlivspolitik() {
   return (
-    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated="28. september 2026">
+    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated="14. oktober 2026">
 
       <section className="space-y-4">
         <h2 className={LEGAL_H2}>1. Vi er den dataansvarlige</h2>
@@ -168,6 +169,7 @@ export default function Privatlivspolitik() {
           <li>Kundedata opbevares i op til 5 år efter aftalens ophør af hensyn til bogføringsloven.</li>
           <li>Tekniske logs slettes løbende og typisk inden for 12 måneder.</li>
           <li>Oplysninger indsamlet på baggrund af samtykke slettes, når samtykket trækkes tilbage, medmindre andet retsgrundlag gælder.</li>
+          <li>Dit profilbillede gemmer vi, indtil du fjerner det i appen eller sletter din konto. Derefter findes det kun i vores sikkerhedskopier, som slettes løbende inden for 8 uger.</li>
           <li>Brugsdata i Amplitude opbevarer vi, så længe du har givet samtykke. Trækker du samtykket tilbage under Profil › Samtykker, eller sletter du din konto, stopper indsamlingen med det samme, og vi beder automatisk Amplitude om at slette oplysningerne om dig. Sletningen er gennemført inden for 30 dage.</li>
         </ul>
       </section>
