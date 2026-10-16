@@ -1,70 +1,42 @@
 'use client'
 
-import { useState, useEffect, useId } from 'react'
+import { useState, useEffect } from 'react'
 import * as amplitude from '@amplitude/analytics-browser'
 import { DEFAULT_SIGNUP_SOURCE } from '@/lib/signup-source'
 import { markWaitlistJoined } from '@/lib/waitlist-joined'
 import { BUTTON_PRIMARY, FINE_PRINT } from '@/lib/typography'
-import { SIGNUP_CONSENT_ALL, SIGNUP_CONSENT_WITHDRAW, SIGNUP_CONSENT_SENDERS_LINK, SIGNUP_CONSENT_SENDERS, SIGNUP_LAUNCH_NOTICE, CONSENT_VERSION } from '@/lib/copy'
+import { SIGNUP_LAUNCH_NOTICE, CONSENT_VERSION } from '@/lib/copy'
+import { INITIAL_CONSENT, consentFlags, type ConsentState } from 'altid-consent'
+import { ConsentBlock } from 'altid-consent/react'
 
 type View = 'form' | 'questions' | 'success'
 
-// The launch notice (basis: the signup itself is the §10 consent to the Altid
-// Hjem launch mail) plus a single active, non-pre-checked, OPTIONAL marketing box.
-// The notice frames the box as extra ongoing marketing: signing up already covers
-// the launch, so consent is never a condition for joining. One tick opts into the
-// whole Altid group. Rendered on both the dark and the light signup surface.
-function ConsentCheckbox({ dark, checked, onChange }: {
+// The site's own launch notice (basis: the signup itself is the §10 consent to
+// the Altid Hjem launch mail) sits above the consent box, which comes from
+// altid-consent. The notice frames the box as extra ongoing marketing: signing
+// up already covers the launch, so consent is never a condition for joining. One
+// tick opts into the whole Altid group. This wrapper owns the spacing around
+// both, so the block gets none of its own. Rendered on both the dark and the
+// light signup surface.
+const CONSENT_COLORS_DARK = { text: 'rgba(255,255,255,0.62)', muted: 'rgba(255,255,255,0.62)', accent: '#90ff7c' }
+const CONSENT_COLORS_LIGHT = { accent: '#163223' }
+
+function LaunchNoticeAndConsent({ dark, value, onChange }: {
   dark: boolean
-  checked: boolean
-  onChange: (v: boolean) => void
+  value: ConsentState
+  onChange: (next: ConsentState) => void
 }) {
-  const textColor = dark ? 'rgba(255,255,255,0.62)' : '#6f6a61'
-  const boxId = useId()
-  const withdrawId = useId()
-  const sendersId = useId()
-  const [sendersOpen, setSendersOpen] = useState(false)
   return (
     <div className="flex flex-col gap-2.5 mt-4 mb-1 text-left">
-      <p className={FINE_PRINT} style={{ color: textColor, lineHeight: 1.45 }}>{SIGNUP_LAUNCH_NOTICE}</p>
-      <div className="flex flex-col gap-1">
-        <div className="flex gap-2.5 items-start">
-          <input
-            id={boxId}
-            type="checkbox"
-            checked={checked}
-            onChange={e => onChange(e.target.checked)}
-            aria-describedby={withdrawId}
-            style={{ width: 17, height: 17, marginTop: 2, flexShrink: 0, accentColor: dark ? '#90ff7c' : '#163223', cursor: 'pointer' }}
-          />
-          {/* htmlFor rather than wrapping: the "Hvem står bag?" button below
-              must not sit inside the label. */}
-          <label htmlFor={boxId} className={`${FINE_PRINT} cursor-pointer`} style={{ color: textColor, lineHeight: 1.45 }}>
-            {SIGNUP_CONSENT_ALL}
-          </label>
-        </div>
-        <p id={withdrawId} className="text-[11px] font-normal leading-relaxed" style={{ color: textColor, opacity: 0.85, marginLeft: 27 }}>
-          {SIGNUP_CONSENT_WITHDRAW}<span aria-hidden="true" style={{ margin: '0 8px' }}>·</span><button
-            type="button"
-            onClick={() => setSendersOpen(o => !o)}
-            aria-expanded={sendersOpen}
-            aria-controls={sendersId}
-            className="underline underline-offset-2"
-            style={{ color: textColor, background: 'transparent', border: 0, padding: 0, font: 'inherit', cursor: 'pointer' }}
-          >
-            {SIGNUP_CONSENT_SENDERS_LINK}
-          </button>
-        </p>
-        {sendersOpen && (
-          <ul
-            id={sendersId}
-            className="text-[11px] font-normal leading-relaxed rounded-lg px-3 py-2"
-            style={{ color: textColor, marginLeft: 27, border: `1px solid ${dark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)'}` }}
-          >
-            {SIGNUP_CONSENT_SENDERS.map(line => <li key={line}>{line}</li>)}
-          </ul>
-        )}
-      </div>
+      <p className={FINE_PRINT} style={{ color: dark ? 'rgba(255,255,255,0.62)' : '#6f6a61', lineHeight: 1.45 }}>{SIGNUP_LAUNCH_NOTICE}</p>
+      <ConsentBlock
+        brand="hjem"
+        dark={dark}
+        colors={dark ? CONSENT_COLORS_DARK : CONSENT_COLORS_LIGHT}
+        spacing={{ marginTop: 0, marginBottom: 0 }}
+        value={value}
+        onChange={onChange}
+      />
     </div>
   )
 }
@@ -143,8 +115,10 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
   }
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  // Marketing consent: starts UNCHECKED, optional (never blocks submit).
-  const [consentAll, setConsentAll] = useState(false)
+  // Marketing consent: starts UNCHECKED, optional (never blocks submit). The box
+  // and its rules come from altid-consent; this form only holds the state it
+  // needs at submit.
+  const [consentState, setConsentState] = useState(INITIAL_CONSENT)
 
   const [age, setAge] = useState('')
   const [household, setHousehold] = useState('')
@@ -192,8 +166,10 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           phone, name, email, referredBy, source, step: 1,
-          // One combined opt-in → both brand flags carry the same choice.
-          consent: { version: CONSENT_VERSION, mad: consentAll, group: consentAll },
+          // One combined opt-in: consentFlags(state, 'hjem') gives both flags the
+          // same value. `mad` is the Altid Mad flag on the waitlist this site
+          // shares with altidmad.dk (the package's `own`), `group` is the rest.
+          consent: { version: CONSENT_VERSION, mad: consentFlags(consentState, 'hjem').own, group: consentFlags(consentState, 'hjem').group },
         }),
       })
     } catch {
@@ -362,7 +338,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
         </div>
         {/* Consent sits just above the button, and only appears once the visitor
             has started filling in the form (name, email or phone). */}
-        {(name || email || phone) && <ConsentCheckbox dark checked={consentAll} onChange={setConsentAll} />}
+        {(name || email || phone) && <LaunchNoticeAndConsent dark value={consentState} onChange={setConsentState} />}
         {error && <p className="text-sm mb-3 text-center" style={{ color: '#ff8080' }}>{error}</p>}
         <button type="submit" disabled={loading} className={`w-full disabled:opacity-60 ${BUTTON_PRIMARY}`} style={{ background: '#90ff7c', color: '#003c16' }}>
           {loading ? 'Sender...' : 'Skriv mig på ventelisten'}
@@ -493,7 +469,7 @@ export default function WaitlistForm({ variant = 'light', id, defaultView = 'for
       {/* Single button — always visible, drops down as fields expand above it */}
       {/* Consent sits just above the button, and only appears once the visitor
           has started filling in the form (name, email or phone). */}
-      {(name || email || phone) && <ConsentCheckbox dark={false} checked={consentAll} onChange={setConsentAll} />}
+      {(name || email || phone) && <LaunchNoticeAndConsent dark={false} value={consentState} onChange={setConsentState} />}
       {error && <p className="text-sm mb-2 text-center" style={{ color: '#c6000f' }}>{error}</p>}
       <button
         type={expanded ? 'submit' : 'button'}

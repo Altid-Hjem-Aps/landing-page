@@ -1,45 +1,32 @@
+import { consentSentences, consentVersion } from 'altid-consent'
+
 // Legal/compliance copy that MUST stay identical everywhere it appears.
 // Rendered under the Ét hjem animation in both the WhatIs section and the
 // exit-intent dialog — an edit to one must never strand the other.
 export const SAVINGS_DISCLAIMER =
   'Eksempelberegning. Besparelsen er vejledende og baseret på antagelser. Den faktiske besparelse afhænger af husstandens forbrug, adresse, aftaler, dækning og gældende priser.'
 
-// Marketing-consent copy for the signup form. Active (not pre-checked),
-// OPTIONAL (never blocks submit), names every brand under Altid Hjem, and says
-// it is marketing — per the Forbrugerombudsmanden/GDPR fact-check. Altid Hjem
-// is the umbrella brand, so a single opt-in covers the whole group; one tick
-// records consent to all subbrands. Sender is Altid Hjem ApS (CVR 45637476).
-// CONSENT_VERSION is stored with each signup. The site suffix ('-hjem', vs the
-// altidmad.dk '-mad') makes it self-documenting on the SHARED waitlist: because
-// the two sites use different wording, the exact text accepted is identifiable
-// from the version alone, not only by joining on signup_source. altidmad.dk has
-// a granular two-box variant of this consent.
-// 2026-07-14 (legal fact-check): the Altid Hjem launch email is markedsføringslov
-// §10 direct marketing, but the waitlist signup itself is the specific prior
-// consent to that launch notice (SIGNUP_LAUNCH_NOTICE states the purpose above the
-// button). "lanceringer" is dropped from the box: unlike the altidmad.dk group
-// box, here the person signs up for the whole Altid Hjem platform that bundles the
-// subbrands, so the platform launch is what they signed up for, not separate
-// unrequested launches. The box is therefore purely ongoing marketing.
+// Marketing consent. The wording, the family of brands and the version are
+// decided at Altid Hjem level and live in the altid-consent package: its
+// DECISIONS.md says why the box works the way it does, and its CHANGELOG.md
+// holds the exact text of every version. Change them there, never here.
 //
-// 2026-10-16 (Alex): the box sentence now matches altidforsikring.dk: every
-// brand is named as a sender, together with what each one mails about. The
-// withdraw line moved to a small second line under the box, next to a
-// "Hvem står bag?" link that lists the company behind each brand
-// (SIGNUP_CONSENT_SENDERS).
-export const CONSENT_VERSION = '2026-10-16.1-hjem'
+// Hjem-specific, so still here:
+// - Sender is Altid Hjem ApS (CVR 45637476). Altid Hjem is the umbrella brand,
+//   not a family brand, so the signup is ONE combined box: one tick stores both
+//   flags (consentFlags(state, 'hjem')).
+// - CONSENT_VERSION is stored with each signup. The package derives it
+//   ('<template>-hjem'), so the exact text accepted is identifiable from the
+//   version alone on the waitlist shared with altidmad.dk.
+// - 2026-07-14 (legal fact-check): the Altid Hjem launch email is
+//   markedsføringslov §10 direct marketing, but the waitlist signup itself is
+//   the specific prior consent to that launch notice (SIGNUP_LAUNCH_NOTICE
+//   states the purpose above the button). The box is therefore purely ongoing
+//   marketing. The launch notice is this site's own text and is not versioned
+//   by the package.
+export const CONSENT_VERSION = consentVersion('hjem')
 export const SIGNUP_LAUNCH_NOTICE =
   'Når du skriver dig op, giver Altid Hjem ApS dig besked på e-mail, når Altid Hjem lanceres. Du kan til enhver tid forlade ventelisten.'
-export const SIGNUP_CONSENT_ALL =
-  'Ja tak til nyheder og gode tilbud på mail om forsikring, el, mobil og madvarer fra Altid Hjem, Altid Forsikring, Altid Energi, Altid Mobil og Altid Mad.'
-export const SIGNUP_CONSENT_WITHDRAW = 'Afmeld når som helst'
-export const SIGNUP_CONSENT_SENDERS_LINK = 'Hvem står bag?'
-export const SIGNUP_CONSENT_SENDERS = [
-  'Altid Hjem ApS (CVR 45637476): Altid Hjem og Altid Forsikring',
-  'Altid Mobil ApS (CVR 46169093): Altid Mobil',
-  'Altid Energi ApS (CVR 44373580): Altid Energi',
-  'Spari ApS (CVR 44307170): Altid Mad',
-]
 
 // Double-opt-in copy for an already-listed person who ticks the consent box.
 //
@@ -105,18 +92,20 @@ export const ALREADY_CONSENTED_HEADING = 'Du er allerede med'
 export const ALREADY_CONSENTED_BODY =
   'Du står på ventelisten og vil modtage nyt fra Altid Hjem. Du behøver ikke gøre mere.'
 
-// Per-brand wording for the preference centre.
+// Per-brand wording for the preference centre and the confirmation mail.
 //
-// The Hjem signup uses ONE combined box (SIGNUP_CONSENT_ALL) that sets both
-// flags, so it has no per-brand text of its own. But the preference centre edits
-// the flags SEPARATELY, and it serves altidmad.dk's audience too — so it must
-// name each brand on its own. These are altidmad.dk's exact strings, reused
-// verbatim: the same flag must never be described in two different ways
-// depending on which site the person happens to be looking at.
-export const PREF_CONSENT_MAD =
-  'Ja tak. Jeg vil gerne modtage e-mails med nyheder, tilbud og anden markedsføring om Altid Mad fra Altid Hjem ApS. Jeg kan til enhver tid trække mit samtykke tilbage.'
-export const PREF_CONSENT_GROUP =
-  'Ja tak. Jeg vil gerne modtage e-mails med nyheder, lanceringer, tilbud og anden markedsføring om Altid Hjem, Altid Forsikring og Altid Mobil fra Altid Hjem ApS. Jeg kan til enhver tid trække mit samtykke tilbage.'
+// The Hjem signup uses ONE combined box that sets both flags, so it has no
+// per-brand text of its own. But the preference centre edits the flags
+// SEPARATELY, and it serves altidmad.dk's audience too. On the shared waitlist
+// the `mad` column is Altid Mad's own flag (the package's `own` for the `mad`
+// brand) and `group` is Altid Hjem and the rest of the family (`group`), so
+// both are the package's `mad` sentences: the same flag must never be described
+// in two different ways depending on which site the person is looking at.
+// Whole sentences on purpose: emails/consent-confirm.ts quotes one as the
+// consent itself, since clicking the link in that mail IS the act of consenting.
+const MAD = consentSentences('mad')
+export const PREF_CONSENT_MAD = MAD.own
+export const PREF_CONSENT_GROUP = MAD.group
 
 
 // Shown when the lookup that decides the 409 path could not run (Supabase raced

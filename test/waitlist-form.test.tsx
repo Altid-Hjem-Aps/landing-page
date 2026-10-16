@@ -1,7 +1,15 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import WaitlistForm from '@/components/WaitlistForm'
-import { CONSENT_VERSION, SIGNUP_CONSENT_ALL, SIGNUP_CONSENT_SENDERS, SIGNUP_CONSENT_SENDERS_LINK, SIGNUP_CONSENT_WITHDRAW, SIGNUP_LAUNCH_NOTICE } from '@/lib/copy'
+import { CONSENT_SENDERS, consentSentences } from 'altid-consent'
+import { CONSENT_VERSION, SIGNUP_LAUNCH_NOTICE } from '@/lib/copy'
+
+// The form's consent text comes from altid-consent, not from lib/copy.ts.
+const HJEM = consentSentences('hjem')
+const SIGNUP_CONSENT_ALL = HJEM.all
+const SIGNUP_CONSENT_WITHDRAW = HJEM.withdraw
+const SIGNUP_CONSENT_SENDERS_LINK = HJEM.sendersLink
+const SIGNUP_CONSENT_SENDERS = CONSENT_SENDERS
 
 // Amplitude is a browser SDK with network side effects — mock it.
 vi.mock('@amplitude/analytics-browser', () => ({ track: vi.fn() }))
@@ -140,7 +148,7 @@ describe('WaitlistForm marketing consent', () => {
   })
 
   it('describes the box with the withdraw line, and versions the new wording', () => {
-    expect(CONSENT_VERSION).toBe('2026-10-16.1-hjem')
+    expect(CONSENT_VERSION).toBe('2026-10-16.2-hjem')
     render(<WaitlistForm variant="dark" />)
     fireEvent.change(screen.getByPlaceholderText('Dit fulde navn'), { target: { value: 'A' } })
     const describedById = screen.getByRole('checkbox').getAttribute('aria-describedby')
