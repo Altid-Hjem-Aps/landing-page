@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import WaitlistForm from '@/components/WaitlistForm'
-import { SIGNUP_CONSENT_ALL, SIGNUP_LAUNCH_NOTICE } from '@/lib/copy'
+import { CONSENT_VERSION, SIGNUP_CONSENT_ALL, SIGNUP_CONSENT_SENDERS, SIGNUP_CONSENT_SENDERS_LINK, SIGNUP_CONSENT_WITHDRAW, SIGNUP_LAUNCH_NOTICE } from '@/lib/copy'
 
 // Amplitude is a browser SDK with network side effects — mock it.
 vi.mock('@amplitude/analytics-browser', () => ({ track: vi.fn() }))
@@ -89,7 +89,7 @@ describe('WaitlistForm marketing consent', () => {
     expect(screen.queryByRole('checkbox')).toBeNull()
     // Typing into any field (here: name) reveals the consent box above the button.
     fireEvent.change(screen.getByPlaceholderText('Dit fulde navn'), { target: { value: 'A' } })
-    expect(screen.getByText(/Altid Mad, Altid Forsikring og Altid Mobil/)).toBeInTheDocument()
+    expect(screen.getByText(SIGNUP_CONSENT_ALL)).toBeInTheDocument()
     expect(screen.getByRole('checkbox')).not.toBeChecked()
   })
 
@@ -131,6 +131,36 @@ describe('WaitlistForm marketing consent', () => {
     render(<WaitlistForm variant="dark" />)
     fireEvent.change(screen.getByPlaceholderText('Dit fulde navn'), { target: { value: 'A' } })
     expect(screen.getByText(SIGNUP_LAUNCH_NOTICE)).toBeInTheDocument()
+  })
+
+  it('names every brand as a sender in the box sentence', () => {
+    for (const brand of ['Altid Hjem', 'Altid Forsikring', 'Altid Energi', 'Altid Mobil', 'Altid Mad']) {
+      expect(SIGNUP_CONSENT_ALL).toContain(brand)
+    }
+  })
+
+  it('describes the box with the withdraw line, and versions the new wording', () => {
+    expect(CONSENT_VERSION).toBe('2026-10-16.1-hjem')
+    render(<WaitlistForm variant="dark" />)
+    fireEvent.change(screen.getByPlaceholderText('Dit fulde navn'), { target: { value: 'A' } })
+    const describedById = screen.getByRole('checkbox').getAttribute('aria-describedby')
+    expect(document.getElementById(describedById!)).toHaveTextContent(SIGNUP_CONSENT_WITHDRAW)
+  })
+
+  it('opens the list of companies behind the senders from "Hvem står bag?", and closes it again', () => {
+    render(<WaitlistForm variant="dark" />)
+    fireEvent.change(screen.getByPlaceholderText('Dit fulde navn'), { target: { value: 'A' } })
+    const link = screen.getByRole('button', { name: SIGNUP_CONSENT_SENDERS_LINK })
+    expect(link).toHaveAttribute('aria-expanded', 'false')
+    expect(screen.queryByText(SIGNUP_CONSENT_SENDERS[0])).toBeNull()
+
+    fireEvent.click(link)
+    expect(link).toHaveAttribute('aria-expanded', 'true')
+    for (const line of SIGNUP_CONSENT_SENDERS) expect(screen.getByText(line)).toBeVisible()
+    expect(screen.getByRole('checkbox')).not.toBeChecked()
+
+    fireEvent.click(link)
+    expect(screen.queryByText(SIGNUP_CONSENT_SENDERS[0])).toBeNull()
   })
 
   it('sends both brand flags true when the combined box is ticked', async () => {

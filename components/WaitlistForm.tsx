@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useId } from 'react'
 import * as amplitude from '@amplitude/analytics-browser'
 import { DEFAULT_SIGNUP_SOURCE } from '@/lib/signup-source'
 import { markWaitlistJoined } from '@/lib/waitlist-joined'
 import { BUTTON_PRIMARY, FINE_PRINT } from '@/lib/typography'
-import { SIGNUP_CONSENT_ALL, SIGNUP_LAUNCH_NOTICE, CONSENT_VERSION } from '@/lib/copy'
+import { SIGNUP_CONSENT_ALL, SIGNUP_CONSENT_WITHDRAW, SIGNUP_CONSENT_SENDERS_LINK, SIGNUP_CONSENT_SENDERS, SIGNUP_LAUNCH_NOTICE, CONSENT_VERSION } from '@/lib/copy'
 
 type View = 'form' | 'questions' | 'success'
 
@@ -20,21 +20,51 @@ function ConsentCheckbox({ dark, checked, onChange }: {
   onChange: (v: boolean) => void
 }) {
   const textColor = dark ? 'rgba(255,255,255,0.62)' : '#6f6a61'
+  const boxId = useId()
+  const withdrawId = useId()
+  const sendersId = useId()
+  const [sendersOpen, setSendersOpen] = useState(false)
   return (
     <div className="flex flex-col gap-2.5 mt-4 mb-1 text-left">
       <p className={FINE_PRINT} style={{ color: textColor, lineHeight: 1.45 }}>{SIGNUP_LAUNCH_NOTICE}</p>
-      <label
-        className={`flex gap-2.5 items-start ${FINE_PRINT} cursor-pointer`}
-        style={{ color: textColor, lineHeight: 1.45 }}
-      >
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={e => onChange(e.target.checked)}
-          style={{ width: 17, height: 17, marginTop: 2, flexShrink: 0, accentColor: dark ? '#90ff7c' : '#163223', cursor: 'pointer' }}
-        />
-        <span>{SIGNUP_CONSENT_ALL}</span>
-      </label>
+      <div className="flex flex-col gap-1">
+        <div className="flex gap-2.5 items-start">
+          <input
+            id={boxId}
+            type="checkbox"
+            checked={checked}
+            onChange={e => onChange(e.target.checked)}
+            aria-describedby={withdrawId}
+            style={{ width: 17, height: 17, marginTop: 2, flexShrink: 0, accentColor: dark ? '#90ff7c' : '#163223', cursor: 'pointer' }}
+          />
+          {/* htmlFor rather than wrapping: the "Hvem står bag?" button below
+              must not sit inside the label. */}
+          <label htmlFor={boxId} className={`${FINE_PRINT} cursor-pointer`} style={{ color: textColor, lineHeight: 1.45 }}>
+            {SIGNUP_CONSENT_ALL}
+          </label>
+        </div>
+        <p id={withdrawId} className="text-[11px] font-normal leading-relaxed" style={{ color: textColor, opacity: 0.85, marginLeft: 27 }}>
+          {SIGNUP_CONSENT_WITHDRAW}<span aria-hidden="true" style={{ margin: '0 8px' }}>·</span><button
+            type="button"
+            onClick={() => setSendersOpen(o => !o)}
+            aria-expanded={sendersOpen}
+            aria-controls={sendersId}
+            className="underline underline-offset-2"
+            style={{ color: textColor, background: 'transparent', border: 0, padding: 0, font: 'inherit', cursor: 'pointer' }}
+          >
+            {SIGNUP_CONSENT_SENDERS_LINK}
+          </button>
+        </p>
+        {sendersOpen && (
+          <ul
+            id={sendersId}
+            className="text-[11px] font-normal leading-relaxed rounded-lg px-3 py-2"
+            style={{ color: textColor, marginLeft: 27, border: `1px solid ${dark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)'}` }}
+          >
+            {SIGNUP_CONSENT_SENDERS.map(line => <li key={line}>{line}</li>)}
+          </ul>
+        )}
+      </div>
     </div>
   )
 }

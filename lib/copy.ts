@@ -21,11 +21,25 @@ export const SAVINGS_DISCLAIMER =
 // box, here the person signs up for the whole Altid Hjem platform that bundles the
 // subbrands, so the platform launch is what they signed up for, not separate
 // unrequested launches. The box is therefore purely ongoing marketing.
-export const CONSENT_VERSION = '2026-07-14.2-hjem'
+//
+// 2026-10-16 (Alex): the box sentence now matches altidforsikring.dk: every
+// brand is named as a sender, together with what each one mails about. The
+// withdraw line moved to a small second line under the box, next to a
+// "Hvem står bag?" link that lists the company behind each brand
+// (SIGNUP_CONSENT_SENDERS).
+export const CONSENT_VERSION = '2026-10-16.1-hjem'
 export const SIGNUP_LAUNCH_NOTICE =
   'Når du skriver dig op, giver Altid Hjem ApS dig besked på e-mail, når Altid Hjem lanceres. Du kan til enhver tid forlade ventelisten.'
 export const SIGNUP_CONSENT_ALL =
-  'Ja tak. Jeg vil gerne modtage e-mails med nyheder, tilbud og anden markedsføring om Altid Hjem og brands under Altid Hjem (Altid Mad, Altid Forsikring og Altid Mobil) fra Altid Hjem ApS. Jeg kan til enhver tid trække mit samtykke tilbage.'
+  'Ja tak til nyheder og gode tilbud på mail om forsikring, el, mobil og madvarer fra Altid Hjem, Altid Forsikring, Altid Energi, Altid Mobil og Altid Mad.'
+export const SIGNUP_CONSENT_WITHDRAW = 'Afmeld når som helst'
+export const SIGNUP_CONSENT_SENDERS_LINK = 'Hvem står bag?'
+export const SIGNUP_CONSENT_SENDERS = [
+  'Altid Hjem ApS (CVR 45637476): Altid Hjem og Altid Forsikring',
+  'Altid Mobil ApS (CVR 46169093): Altid Mobil',
+  'Altid Energi ApS (CVR 44373580): Altid Energi',
+  'Spari ApS (CVR 44307170): Altid Mad',
+]
 
 // Double-opt-in copy for an already-listed person who ticks the consent box.
 //
