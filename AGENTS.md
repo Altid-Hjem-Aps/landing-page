@@ -11,7 +11,7 @@ These rules are the same in every Altid repo. Only "In this repo" below differs.
 The suite is a cost: every test runs on every PR and has to be read and kept. A test earns its place by catching a wrong behaviour nothing else catches. Coverage is not a goal.
 
 - Testing Trophy. Most tests are behaviour tests through the public entry point, with only the outer boundary faked. Unit tests only for pure logic with real branching. A few end-to-end tests for critical journeys.
-- Fake the boundary (external services, the network, the clock), never a layer between our own classes. A mocking library is fine at the boundary.
+- Fake only at the boundary: the thin adapter of ours that talks to something outside the process (an HTTP or SDK client, database access), and the clock. Never fake our own logic to test other logic. A mocking library is fine at the boundary.
 - Every new test maps to an acceptance criterion or a named risk: one concrete wrong behaviour a plausible change would cause, in one line. A test that maps to nothing is not added. A bug fix gets a test that fails on the old code.
 - Would a wrong implementation pass? Before handing off, break each behaviour you changed on purpose (flip a condition, drop a branch, return the old value), run the targeted tests, then undo it. A break no test catches is a missing assertion; add it.
 - Test shared code once: one table test of the shared thing, one check per caller that it goes through it. No matrices over shared code (every endpoint times every error, every flag times every state).
@@ -22,5 +22,5 @@ The suite is a cost: every test runs on every PR and has to be read and kept. A 
 ### In this repo
 
 - Entry points: route handlers called with a real `NextRequest` (`test/bekraeft-route.test.ts`); pages and components rendered with Testing Library (`test/slet-konto.test.tsx`).
-- Boundary fakes: `fetch` and browser APIs via `vi.stubGlobal`, `@supabase/supabase-js` (`test/db-consent.test.ts`), the Amplitude SDK, env vars via `vi.stubEnv`, the clock via `vi.useFakeTimers`. Several route tests mock our own `@/lib/db` instead; don't copy that.
+- Boundary fakes: `fetch` and browser APIs via `vi.stubGlobal`, `@supabase/supabase-js` (`test/db-consent.test.ts`), the Amplitude SDK, env vars via `vi.stubEnv`, the clock via `vi.useFakeTimers`.
 - Run: `npx vitest run test/<subject>.test.ts`; CI (`.github/workflows/test.yml`) runs `npm ci`, `npm test`, `npm run build` on every PR and push to `main`.
