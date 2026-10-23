@@ -55,7 +55,7 @@ const energiDatapolitik = (
 
 export default function Privatlivspolitik() {
   return (
-    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated="14. oktober 2026">
+    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated="23. oktober 2026">
 
       <section className="space-y-4">
         <h2 className={LEGAL_H2}>1. Vi er den dataansvarlige</h2>
@@ -143,6 +143,10 @@ export default function Privatlivspolitik() {
         <div>
           <p className={LEGAL_LABEL}>Databehandlere</p>
           <p>Som behandler oplysninger på vores vegne, herunder udbydere af hosting, betalingsinfrastruktur, kundesupport, analyseværktøjer og e-mailudsendelse. Alle databehandlere er underlagt en databehandleraftale og må kun behandle dine oplysninger efter vores instruks.</p>
+        </div>
+        <div>
+          <p className={LEGAL_LABEL}>Mails til hej@altidhjem.dk</p>
+          <p>Når du skriver til {mail}, behandles din mail i Google Workspace. Google er vores databehandler, og vi bruger Gemini i Google Workspace til at finde og foreslå svar. Google bruger ikke indholdet af vores mails til at træne sine modeller.</p>
         </div>
         <div>
           <p className={LEGAL_LABEL}>Amplitude (analyse af brugen af appen og vores websteder)</p>
