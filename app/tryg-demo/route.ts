@@ -7,7 +7,7 @@ import path from "path";
 // it is only reachable through this handler.
 export const runtime = "nodejs";
 
-const PASSWORD = "tryg";
+const PASSWORD = "tryg2026";
 const COOKIE_NAME = "tryg_demo_auth";
 // Not a static "granted": a cookie typed by hand must not open the deck.
 const COOKIE_VALUE = createHash("sha256").update(`tryg-demo:${PASSWORD}`).digest("hex");

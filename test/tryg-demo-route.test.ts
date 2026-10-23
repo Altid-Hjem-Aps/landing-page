@@ -32,7 +32,7 @@ describe('/tryg-demo gate', () => {
   })
 
   it('right password sets the cookie, and that cookie opens the deck', async () => {
-    const res = await login('tryg')
+    const res = await login('tryg2026')
     expect(res.status).toBe(303)
     const setCookie = res.headers.getSetCookie()[0]
     expect(setCookie).toContain('HttpOnly')
