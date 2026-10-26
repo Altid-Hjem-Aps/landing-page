@@ -9,7 +9,8 @@ declare global {
 
 // Invitation tokens arrive in the URL fragment. Keep only the fact that this
 // was an invitation, then remove the fragment before analytics can capture it.
-if (window.location.pathname === '/inviter' && window.location.hash.length > 1) {
+const INVITATION_PATHS = ['/inviter', '/invitation']
+if (INVITATION_PATHS.includes(window.location.pathname) && window.location.hash.length > 1) {
   window.__altiPartnerInviteFallback = true
   window.history.replaceState(
     window.history.state,
