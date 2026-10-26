@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { Logo } from '@/components/Logo'
 import PartnerInvitation from '@/components/PartnerInvitation'
 import { PARTNER_INVITATION } from '@/lib/partner-invitation'
 
@@ -32,16 +34,11 @@ export default function InvitationPage() {
         fontFamily: 'var(--font-onest), "Helvetica Neue", Arial, sans-serif',
       }}
     >
-      <header style={{ background: '#163223' }}>
-        <div className="mx-auto flex max-w-xl items-center px-6 py-5">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://www.altidhjem.dk/altid-hjem-logo-white.svg"
-            alt="Altid Hjem"
-            width={88}
-            height={47}
-            style={{ display: 'block' }}
-          />
+      <header className="px-6" style={{ background: '#163223' }}>
+        <div className="mx-auto flex max-w-md items-center py-5">
+          <Link href="/" aria-label="Altid Hjem" className="shrink-0">
+            <Logo className="h-11 w-auto" variant="forest" />
+          </Link>
         </div>
       </header>
 

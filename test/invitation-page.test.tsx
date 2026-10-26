@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import InvitationPage, { metadata } from '@/app/invitation/page'
 import { GET as getAppSiteAssociation } from '@/app/.well-known/apple-app-site-association/route'
 
@@ -13,13 +13,20 @@ describe('partner invitation page', () => {
         'Din partner har inviteret dig til jeres fælles hjem i Altid Hjem. Hent appen, og tryk på linket i beskeden igen, så bliver I forbundet.',
       ),
     ).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Hent i App Store' })).toHaveAttribute(
-      'href',
-      'https://apps.apple.com/dk/app/altid-hjem/id6794330094',
+    const appStore = screen.getByRole('link', { name: 'Hent i App Store' })
+    expect(appStore).toHaveAttribute('href', 'https://apps.apple.com/dk/app/altid-hjem/id6794330094')
+    expect(within(appStore).getByRole('img', { name: 'Hent i App Store' })).toHaveAttribute(
+      'src',
+      '/store-badges/app-store-da.svg',
     )
-    expect(screen.getByRole('link', { name: 'Hent i Google Play' })).toHaveAttribute(
+    const googlePlay = screen.getByRole('link', { name: 'Hent den på Google Play' })
+    expect(googlePlay).toHaveAttribute(
       'href',
       'https://play.google.com/store/apps/details?id=dk.altidhjem.app',
+    )
+    expect(within(googlePlay).getByRole('img', { name: 'Hent den på Google Play' })).toHaveAttribute(
+      'src',
+      '/store-badges/google-play-da.png',
     )
   })
 
