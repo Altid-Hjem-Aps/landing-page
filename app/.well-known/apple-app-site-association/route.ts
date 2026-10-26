@@ -7,7 +7,7 @@ export function GET() {
         details: [
           {
             appIDs: ["4W5RBP3T94.dk.altidhjem.app"],
-            components: [{ "/": "/inviter" }],
+            components: [{ "/": "/inviter" }, { "/": "/invitation" }],
           },
         ],
       },

@@ -37,7 +37,7 @@ describe('InviterExperience', () => {
       'href',
       'https://apps.apple.com/dk/app/altid-hjem/id6794330094',
     )
-    expect(screen.getByRole('link', { name: 'Hent i Google Play' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Hent den på Google Play' })).toHaveAttribute(
       'href',
       'https://play.google.com/store/apps/details?id=dk.altidhjem.app',
     )

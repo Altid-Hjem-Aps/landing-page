@@ -36,6 +36,19 @@ describe('partner invitation token privacy', () => {
     expect(window.__altiPartnerInviteFallback).toBe(true)
   })
 
+  it('removes the fragment on the dedicated invitation page too', async () => {
+    let urlAtAnalyticsStart = ''
+    analytics.startAnalytics.mockImplementation(() => {
+      urlAtAnalyticsStart = window.location.href
+    })
+    window.history.replaceState(null, '', '/invitation#private-invite-token')
+
+    await import('@/instrumentation-client')
+
+    expect(urlAtAnalyticsStart).toBe(`${window.location.origin}/invitation`)
+    expect(window.location.hash).toBe('')
+  })
+
   it('leaves unrelated page fragments alone', async () => {
     let urlAtAnalyticsStart = ''
     analytics.startAnalytics.mockImplementation(() => {
