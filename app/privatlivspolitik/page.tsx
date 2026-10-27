@@ -12,6 +12,7 @@ const OPLYSNINGER = [
   { title: 'Boligoplysninger', text: 'Adresse, boligtype og relevante oplysninger om dit hjem, som du angiver i appen.' },
   { title: 'Produkt- og aftaleoplysninger', text: 'Oplysninger om de produkter og aftaler du har hos os eller andre selskaber i Altid-koncernen, herunder el, forsikring og mobil.' },
   { title: 'Forbrugsdata', text: 'Data om dit energiforbrug og øvrige forbrug, som vi modtager fra dig eller fra relevante leverandører og offentlige registre.' },
+  { title: 'Bankoplysninger', text: 'Hvis du forbinder din bank i appen, henter Subaio ApS (Subaio) oplysninger fra din bank og giver os dem: dine konti, saldi og posteringer med forhandlernes navne samt Subaios kategorier og overblik over tilbagevendende betalinger og abonnementer. Du giver samtykket i Subaios eget flow, og det er frivilligt: resten af appen virker uden. Posteringer, saldi og forhandlernavne går gennem vores server på vej til din telefon, men vi gemmer dem ikke. Vi gemmer kun det, du selv vælger i appen: hvilken rolle en konto har (min, fælles eller opsparing), din egen kategori til en postering, hvilke abonnementer du har skjult, dine svar på MobilePay-afregninger og udlæg (id, dato og dit valg, og ved udlæg din egen andel i kroner) og, for en drøm der følger en konto, dato og beløb på de posteringer, der er regnet med til drømmen. De senest hentede bank-tal ligger desuden krypteret på din egen telefon, uden for telefonens sikkerhedskopi, i højst 7 dage eller til næste lønningsdag, så appen åbner hurtigt.' },
   { title: 'Betalingsoplysninger', text: 'Betalingskortoplysninger og øvrige betalingsdata i forbindelse med køb og tilmelding til produkter via appen. Betalingsoplysninger behandles via godkendte betalingsudbydere og opbevares ikke direkte af Altid Hjem.' },
   { title: 'Tekniske oplysninger', text: 'Oplysninger om din enhed, operativsystem, app-version og brugsadfærd i appen.' },
   { title: 'Henvisningsoplysninger', text: 'Når du deler eller kopierer dit personlige henvisningslink i appen, og når nogen klikker på det, registrerer vi hændelsen. For hver hændelse gemmer vi tidspunkt, land, browsertype og en hashværdi af IP-adressen med et dagligt skiftende tilfældigt tillæg, men aldrig selve IP-adressen. Det personlige link viser, hvilken kunde et klik hører til. Oplysningerne bruges til at tælle henvisninger på grundlag af vores legitime interesse i at drive henvisningsordningen og slettes efter 90 dage. Henvisningsoptællingen bruger ikke cookies.' },
@@ -24,6 +25,7 @@ const FORMAAL = [
   { title: 'Tilmelding til og administration af produkter under Altid Forsikring og Altid Mobil samt produkter fra andre selskaber i Altid-koncernen', text: 'Retsgrundlag: Opfyldelse af aftale (GDPR artikel 6, stk. 1, litra b).' },
   { title: 'Modtagelse af kontaktoplysninger fra Altid Energi og videregivelse af kontaktoplysninger til Altid Energi i forbindelse med oprettelse af kundeforhold', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a).' },
   { title: 'Samling og visning af dine bolig- og forbrugsdata i ét overblik', text: 'Retsgrundlag: Opfyldelse af aftale og legitim interesse (GDPR artikel 6, stk. 1, litra b og f).' },
+  { title: 'Personligt overblik over din og husstandens økonomi, og beskeder og forslag til at forbedre den, ud fra dine bankoplysninger', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi bruger ikke bankoplysningerne til kreditvurdering, individuel prisfastsættelse eller markedsføring, træner ingen modeller på dem og sælger dem ikke. Du kan trække samtykket tilbage ved at slette din konto i appen, og så beder vi Subaio om at slette dig hos dem.' },
   { title: 'Kommunikation og support', text: 'Retsgrundlag: Legitim interesse (GDPR artikel 6, stk. 1, litra f).' },
   { title: 'Analyse af, hvordan appen bliver brugt, så vi kan gøre den bedre', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi indsamler intet, før du har sagt ja, og du kan til enhver tid trække samtykket tilbage under Profil › Samtykker i appen.' },
   { title: 'Markedsføring og personaliserede tilbud fra Altid Hjem og datterselskaber', text: 'Retsgrundlag: Samtykke (GDPR artikel 6, stk. 1, litra a). Du kan til enhver tid trække dit samtykke tilbage.' },
@@ -55,7 +57,7 @@ const energiDatapolitik = (
 
 export default function Privatlivspolitik() {
   return (
-    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated="23. oktober 2026">
+    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated="27. oktober 2026">
 
       <section className="space-y-4">
         <h2 className={LEGAL_H2}>1. Vi er den dataansvarlige</h2>
@@ -141,6 +143,14 @@ export default function Privatlivspolitik() {
           <p>Samtykket er engangs – det udløser én konkret overførsel og er forbrugt i samme handling. Dine efterfølgende rettigheder (sletning, indsigt, berigtigelse) reguleres af de almindelige GDPR-regler hos den modtagende dataansvarlige. Altid Energis datapolitik kan læses på {energiDatapolitik}.</p>
         </div>
         <div>
+          <p className={LEGAL_LABEL}>Subaio (bankoplysninger)</p>
+          <p>Subaio ApS henter dine bankoplysninger, når du har givet samtykke i Subaios flow, og leverer dem til os. Subaio og Altid Hjem er hver især selvstændigt dataansvarlige: Subaio er ansvarlig for sin egen indsamling fra din bank, og vi er ansvarlige for det, vi gør med oplysningerne, efter at vi har modtaget dem. Vi giver ikke bankoplysningerne videre til andre end vores databehandlere, som kun må behandle dem efter vores instruks.</p>
+        </div>
+        <div>
+          <p className={LEGAL_LABEL}>Din partner i husstanden</p>
+          <p>Din partner ser aldrig dine konti, saldi eller posteringer. Partneren ser kun to ting: en fælles drøm på en konto, du selv har markeret som husstandens, med drømmens andel og de posteringer (dato og beløb), der er regnet med til den, og fælles regler for forhandlere (forhandlernavn og kategori). En fælles konto ser I hver især gennem jeres egen bankforbindelse.</p>
+        </div>
+        <div>
           <p className={LEGAL_LABEL}>Databehandlere</p>
           <p>Som behandler oplysninger på vores vegne, herunder udbydere af hosting, betalingsinfrastruktur, kundesupport, analyseværktøjer og e-mailudsendelse. Alle databehandlere er underlagt en databehandleraftale og må kun behandle dine oplysninger efter vores instruks.</p>
         </div>
@@ -174,6 +184,9 @@ export default function Privatlivspolitik() {
           <li>Tekniske logs slettes løbende og typisk inden for 12 måneder.</li>
           <li>Oplysninger indsamlet på baggrund af samtykke slettes, når samtykket trækkes tilbage, medmindre andet retsgrundlag gælder.</li>
           <li>Dit profilbillede gemmer vi, indtil du fjerner det i appen eller sletter din konto. Derefter findes det kun i vores sikkerhedskopier, som slettes løbende inden for 8 uger.</li>
+          <li>Bankoplysninger fra Subaio gemmer vi ikke hos os: de hentes, når du åbner appen, og går videre til din telefon. På din telefon ligger de senest hentede tal krypteret i højst 7 dage eller til næste lønningsdag, og de slettes, når du logger ud eller sletter din konto.</li>
+          <li>De valg, du selv har truffet om dine bankoplysninger (kontoroller, egne kategorier, skjulte abonnementer, svar på afregninger og udlæg), gemmer vi, indtil du fjerner dem eller sletter din konto. Sletter du din konto, beder vi samtidig Subaio om at slette dig hos dem. Beskeden sendes efter sletningen og forsøges igen, indtil Subaio har bekræftet.</li>
+          <li>Fælles drømme og fælles regler hører til husstanden. Sletter du din konto eller forlader husstanden, mens din partner bliver, bliver det, partneren allerede kunne se, i husstanden uden dit navn og din konto på. Er du alene i husstanden, slettes det sammen med husstanden.</li>
           <li>Brugsdata i Amplitude opbevarer vi, så længe du har givet samtykke. Trækker du samtykket tilbage under Profil › Samtykker, eller sletter du din konto, stopper indsamlingen med det samme, og vi beder automatisk Amplitude om at slette oplysningerne om dig. Sletningen er gennemført inden for 30 dage.</li>
         </ul>
       </section>
