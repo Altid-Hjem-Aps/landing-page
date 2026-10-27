@@ -72,13 +72,14 @@ describe('/kontakt', () => {
 })
 
 describe('/privatlivspolitik', () => {
-  it('renders all eleven numbered sections and the Datatilsynet complaint block', () => {
+  it('renders all twelve numbered sections and the Datatilsynet complaint block', () => {
     render(<Privatlivspolitik />)
     const h2s = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
-    expect(h2s).toHaveLength(11)
+    expect(h2s).toHaveLength(12)
     expect(h2s[0]).toBe('1. Vi er den dataansvarlige')
-    expect(h2s[9]).toBe('10. Cookies')
-    expect(h2s[10]).toBe('11. Ændringer')
+    expect(h2s[7]).toBe('8. Datasikkerhed')
+    expect(h2s[10]).toBe('11. Cookies')
+    expect(h2s[11]).toBe('12. Ændringer')
     expect(screen.getByRole('link', { name: 'dt@datatilsynet.dk' })).toHaveAttribute('href', 'mailto:dt@datatilsynet.dk')
   })
 

@@ -12,7 +12,8 @@ const OPLYSNINGER = [
   { title: 'Boligoplysninger', text: 'Adresse, boligtype og relevante oplysninger om dit hjem, som du angiver i appen.' },
   { title: 'Produkt- og aftaleoplysninger', text: 'Oplysninger om de produkter og aftaler du har hos os eller andre selskaber i Altid-koncernen, herunder el, forsikring og mobil.' },
   { title: 'Forbrugsdata', text: 'Data om dit energiforbrug og øvrige forbrug, som vi modtager fra dig eller fra relevante leverandører og offentlige registre.' },
-  { title: 'Bankoplysninger', text: 'Hvis du forbinder din bank i appen, henter Subaio ApS (Subaio) oplysninger fra din bank og giver os dem: dine konti, saldi og posteringer med forhandlernes navne samt Subaios kategorier og overblik over tilbagevendende betalinger og abonnementer. Du giver samtykket i Subaios eget flow, og det er frivilligt: resten af appen virker uden. Posteringer, saldi og forhandlernavne går gennem vores server på vej til din telefon, men vi gemmer dem ikke. Vi gemmer kun det, du selv vælger i appen: hvilken rolle en konto har (min, fælles eller opsparing), din egen kategori til en postering, hvilke abonnementer du har skjult, dine svar på MobilePay-afregninger og udlæg (id, dato og dit valg, og ved udlæg din egen andel i kroner) og, for en drøm der følger en konto, dato og beløb på de posteringer, der er regnet med til drømmen. Du og din partner kan også lave fælles regler, der gemmer et forhandlernavn og en kategori (se afsnit 5). De senest hentede bank-tal ligger desuden krypteret på din egen telefon, uden for telefonens sikkerhedskopi, i højst 7 dage eller til næste lønningsdag, så appen åbner hurtigt.' },
+  { title: 'Bankoplysninger', text: 'Hvis du forbinder din bank i appen, henter Subaio ApS (Subaio) oplysninger fra din bank og giver os dem: dine konti, saldi og posteringer med forhandlernes navne samt Subaios kategorier og overblik over tilbagevendende betalinger og abonnementer. Du giver samtykket i Subaios eget flow, og det er frivilligt: resten af appen virker uden. Forbindelsen til din bank er kun til at læse: hverken vi eller Subaio kan flytte penge eller foretage betalinger fra dine konti. Posteringer, saldi og forhandlernavne går gennem vores server på vej til din telefon, men vi gemmer dem ikke. Vi gemmer kun det, du selv vælger i appen: hvilken rolle en konto har (min, fælles eller opsparing), din egen kategori til en postering, hvilke abonnementer du har skjult, dine svar på MobilePay-afregninger og udlæg (id, dato og dit valg, og ved udlæg din egen andel i kroner) og, for en drøm der følger en konto, dato og beløb på de posteringer, der er regnet med til drømmen. Du og din partner kan også lave fælles regler, der gemmer et forhandlernavn og en kategori (se afsnit 5). De senest hentede bank-tal ligger desuden krypteret på din egen telefon, uden for telefonens sikkerhedskopi, i højst 7 dage eller til næste lønningsdag, så appen åbner hurtigt.' },
+  { title: 'Følsomme oplysninger', text: 'Vi beder ikke om følsomme oplysninger. Men posteringer kan røbe dem, fx betalinger til en fagforening, et apotek, en kirke eller et politisk parti. Vi bruger ikke sådanne posteringer til markedsføring eller til at målrette tilbud, og vi giver dem ikke videre. De vises i dit eget overblik, og din partner ser kun det, afsnit 5 beskriver. Den ene undtagelse er forsikringssammenligningen i afsnit 4, som aldrig omfatter betalinger til fagforening, a-kasse, pension og Sygeforsikring Danmark.' },
   { title: 'Betalingsoplysninger', text: 'Betalingskortoplysninger og øvrige betalingsdata i forbindelse med køb og tilmelding til produkter via appen. Betalingsoplysninger behandles via godkendte betalingsudbydere og opbevares ikke direkte af Altid Hjem.' },
   { title: 'Tekniske oplysninger', text: 'Oplysninger om din enhed, operativsystem, app-version og brugsadfærd i appen.' },
   { title: 'Henvisningsoplysninger', text: 'Når du deler eller kopierer dit personlige henvisningslink i appen, og når nogen klikker på det, registrerer vi hændelsen. For hver hændelse gemmer vi tidspunkt, land, browsertype og en hashværdi af IP-adressen med et dagligt skiftende tilfældigt tillæg, men aldrig selve IP-adressen. Det personlige link viser, hvilken kunde et klik hører til. Oplysningerne bruges til at tælle henvisninger på grundlag af vores legitime interesse i at drive henvisningsordningen og slettes efter 90 dage. Henvisningsoptællingen bruger ikke cookies.' },
@@ -25,7 +26,7 @@ const FORMAAL = [
   { title: 'Tilmelding til og administration af produkter under Altid Forsikring og Altid Mobil samt produkter fra andre selskaber i Altid-koncernen', text: 'Retsgrundlag: Opfyldelse af aftale (GDPR artikel 6, stk. 1, litra b).' },
   { title: 'Modtagelse af kontaktoplysninger fra Altid Energi og videregivelse af kontaktoplysninger til Altid Energi i forbindelse med oprettelse af kundeforhold', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a).' },
   { title: 'Samling og visning af dine bolig- og forbrugsdata i ét overblik', text: 'Retsgrundlag: Opfyldelse af aftale og legitim interesse (GDPR artikel 6, stk. 1, litra b og f).' },
-  { title: 'Personligt overblik over din og husstandens økonomi, og beskeder og forslag til at forbedre den, ud fra dine bankoplysninger', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi bruger ikke bankoplysningerne til kreditvurdering, individuel prisfastsættelse eller markedsføring, træner ingen modeller på dem og sælger dem ikke. Du kan trække samtykket tilbage ved at slette din konto i appen, og så beder vi Subaio om at slette dig hos dem.' },
+  { title: 'Personligt overblik over din og husstandens økonomi, og beskeder og forslag til at forbedre den, ud fra dine bankoplysninger', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi bruger ikke bankoplysningerne til kreditvurdering, individuel prisfastsættelse eller markedsføring, træner ingen modeller på dem og sælger dem ikke. Den ene undtagelse er, at appen kan vise en sammenligning hos Altid Forsikring, hvis du betaler en forsikring. Du kan trække samtykket tilbage ved at slette din konto i appen, og så beder vi Subaio om at slette dig hos dem.' },
   { title: 'Kommunikation og support', text: 'Retsgrundlag: Legitim interesse (GDPR artikel 6, stk. 1, litra f).' },
   { title: 'Analyse af, hvordan appen bliver brugt, så vi kan gøre den bedre', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi indsamler intet, før du har sagt ja, og du kan til enhver tid trække samtykket tilbage under Profil › Samtykker i appen.' },
   { title: 'Markedsføring og personaliserede tilbud fra Altid Hjem og datterselskaber', text: 'Retsgrundlag: Samtykke (GDPR artikel 6, stk. 1, litra a). Du kan til enhver tid trække dit samtykke tilbage.' },
@@ -72,7 +73,7 @@ export default function Privatlivspolitik() {
 
       <section className="space-y-4">
         <h2 className={LEGAL_H2}>2. Venteliste (før lancering)</h2>
-        <p>Indtil Altid Hjem-appen er lanceret, kan du tilmelde dig ventelisterne via altidhjem.dk, altidmad.dk eller altidforsikring.dk. Ventelisterne for Altid Hjem og Altid Mad er én fælles venteliste, mens Altid Forsikring har sin egen separate venteliste. Altid Hjem ApS er dataansvarlig for alle tre ventelister. Følgende særlige regler gælder for behandlingen af oplysninger fra ventelisterne – afsnit 8 (Dine rettigheder) og afsnit 9 (Klage) gælder også for ventelisteoplysninger.</p>
+        <p>Indtil Altid Hjem-appen er lanceret, kan du tilmelde dig ventelisterne via altidhjem.dk, altidmad.dk eller altidforsikring.dk. Ventelisterne for Altid Hjem og Altid Mad er én fælles venteliste, mens Altid Forsikring har sin egen separate venteliste. Altid Hjem ApS er dataansvarlig for alle tre ventelister. Følgende særlige regler gælder for behandlingen af oplysninger fra ventelisterne – afsnit 9 (Dine rettigheder) og afsnit 10 (Klage) gælder også for ventelisteoplysninger.</p>
         <div>
           <p className={LEGAL_LABEL}>Hvilke oplysninger indsamler vi?</p>
           <ul className={`${LEGAL_LIST} mt-2`}>
@@ -117,6 +118,10 @@ export default function Privatlivspolitik() {
             <p>{text}</p>
           </div>
         ))}
+        <div>
+          <p className={LEGAL_LABEL}>Automatiske afgørelser</p>
+          <p>Vi træffer ingen afgørelser, der udelukkende bygger på automatisk behandling og har retsvirkning for dig eller på tilsvarende måde betydeligt påvirker dig (GDPR artikel 22). Kategorier og overblik i appen er vejledende, og du kan selv flytte en postering til en anden kategori.</p>
+        </div>
       </section>
 
       <section className="space-y-4">
@@ -161,7 +166,7 @@ export default function Privatlivspolitik() {
         <div>
           <p className={LEGAL_LABEL}>Amplitude (analyse af brugen af appen og vores websteder)</p>
           <p>Har du givet samtykke til det, bruger vi Amplitude, Inc. som databehandler til at se, hvordan appen bliver brugt. Amplitude modtager hvilke skærme der åbnes, hvilke knapper der trykkes på, din telefonmodel, dit styresystem og din appversion, samt et id for din telefon og et id for din husstand. Amplitude modtager ikke dit navn, din e-mail, din adresse, dit kundenummer eller hvor du befinder dig. Oplysningerne opbevares på Amplitudes servere i EU (Frankfurt, Tyskland).</p>
-          <p>På vores websteder bruger vi kun Amplitude i din browser, hvis du har accepteret statistikcookies, se afsnit 10. Når du skriver dig op på ventelisten, registrerer vi tilmeldingen i Amplitude under et tilfældigt id sammen med, hvilken side du tilmeldte dig fra. Amplitude får ikke dit navn eller din e-mail.</p>
+          <p>På vores websteder bruger vi kun Amplitude i din browser, hvis du har accepteret statistikcookies, se afsnit 11. Når du skriver dig op på ventelisten, registrerer vi tilmeldingen i Amplitude under et tilfældigt id sammen med, hvilken side du tilmeldte dig fra. Amplitude får ikke dit navn eller din e-mail.</p>
         </div>
         <div>
           <p className={LEGAL_LABEL}>Offentlige myndigheder</p>
@@ -192,7 +197,12 @@ export default function Privatlivspolitik() {
       </section>
 
       <section className="space-y-4">
-        <h2 className={LEGAL_H2}>8. Dine rettigheder</h2>
+        <h2 className={LEGAL_H2}>8. Datasikkerhed</h2>
+        <p>Forbindelsen mellem appen og vores server er krypteret (HTTPS). Hver forespørgsel om bankoplysninger kræver et gyldigt login, og du kan kun hente dine egne. De senest hentede bank-tal på din telefon er krypteret med AES-GCM, nøglen ligger i telefonens nøglering, og filen er ikke med i telefonens sikkerhedskopi. Vores servere kan kun nås med personlige nøgler, ikke med adgangskode.</p>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className={LEGAL_H2}>9. Dine rettigheder</h2>
         <p>Du har følgende rettigheder i henhold til databeskyttelsesforordningen:</p>
         <ul className="space-y-2">
           {RETTIGHEDER.map(({ right, desc }) => (
@@ -205,7 +215,7 @@ export default function Privatlivspolitik() {
       </section>
 
       <section className="space-y-4">
-        <h2 className={LEGAL_H2}>9. Klage</h2>
+        <h2 className={LEGAL_H2}>10. Klage</h2>
         <p>Hvis du er utilfreds med vores behandling af dine personoplysninger, har du ret til at indgive en klage til Datatilsynet:</p>
         <LegalAddress name="Datatilsynet">
           <p>Carl Jacobsens Vej 35, 2500 Valby</p>
@@ -215,7 +225,7 @@ export default function Privatlivspolitik() {
       </section>
 
       <section id="cookies" className="space-y-4 scroll-mt-24">
-        <h2 className={LEGAL_H2}>10. Cookies</h2>
+        <h2 className={LEGAL_H2}>11. Cookies</h2>
         <p>Vi bruger cookies og lignende lagring i din browser (localStorage) til to ting: det, siden skal bruge for at virke, og statistik, hvis du siger ja. Første gang du besøger siden, spørger vi dig. Dit valg gemmes i 12 måneder, og derefter spørger vi igen. Du kan til enhver tid ændre dit valg: <CookieSettingsLink className={LEGAL_LINK} /></p>
         <div className="space-y-2">
           <p className={LEGAL_LABEL}>Nødvendige (kræver ikke samtykke)</p>
@@ -238,7 +248,7 @@ export default function Privatlivspolitik() {
       </section>
 
       <section className="space-y-4">
-        <h2 className={LEGAL_H2}>11. Ændringer</h2>
+        <h2 className={LEGAL_H2}>12. Ændringer</h2>
         <p>Vi opdaterer løbende denne privatlivspolitik. Den gældende version er altid tilgængelig i appen og på vores hjemmeside. Væsentlige ændringer vil blive kommunikeret til dig via appen eller e-mail.</p>
       </section>
 
