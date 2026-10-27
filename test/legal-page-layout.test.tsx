@@ -3,6 +3,7 @@ import { render, screen, within } from '@testing-library/react'
 import LegalPageLayout, { LegalAddress } from '@/components/LegalPageLayout'
 import Kontakt from '@/app/kontakt/page'
 import Privatlivspolitik from '@/app/privatlivspolitik/page'
+import { privacyPolicy } from '@/lib/privacyPolicy'
 
 // Nav is a client component with scroll listeners and Amplitude — irrelevant here.
 vi.mock('@/components/Nav', () => ({ default: () => null }))
@@ -81,6 +82,13 @@ describe('/privatlivspolitik', () => {
     expect(h2s[10]).toBe('11. Cookies')
     expect(h2s[11]).toBe('12. Ændringer')
     expect(screen.getByRole('link', { name: 'dt@datatilsynet.dk' })).toHaveAttribute('href', 'mailto:dt@datatilsynet.dk')
+  })
+
+  it('renders every section title and the update date from the policy data', () => {
+    render(<Privatlivspolitik />)
+    const h2s = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
+    expect(h2s).toEqual(privacyPolicy.sections.map((s) => s.title))
+    expect(screen.getByText('Senest opdateret: 27. oktober 2026')).toBeInTheDocument()
   })
 
   it('lists every cookie and storage key the site sets, and lets the visitor change the choice', () => {
