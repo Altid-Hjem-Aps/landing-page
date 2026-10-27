@@ -44,4 +44,10 @@ describe('apple-app-site-association', () => {
       expect.arrayContaining([{ '/': '/inviter' }, { '/': '/invitation' }]),
     )
   })
+
+  it('lets iOS AutoFill use altidhjem.dk logins in the app', async () => {
+    const body = await getAppSiteAssociation().json()
+
+    expect(body.webcredentials.apps).toEqual(['4W5RBP3T94.dk.altidhjem.app'])
+  })
 })

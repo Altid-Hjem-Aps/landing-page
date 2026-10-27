@@ -11,6 +11,9 @@ export function GET() {
           },
         ],
       },
+      webcredentials: {
+        apps: ["4W5RBP3T94.dk.altidhjem.app"],
+      },
     },
     {
       headers: {
