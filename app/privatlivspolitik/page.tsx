@@ -1,234 +1,97 @@
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import LegalPageLayout, { LegalAddress, LEGAL_H2, LEGAL_LABEL, LEGAL_LINK, LEGAL_LIST } from '@/components/LegalPageLayout'
 import CookieSettingsLink from '@/components/CookieSettingsLink'
+import { COOKIE_SETTINGS_URL, parseInline, privacyPolicy, type PolicyBlock } from '@/lib/privacyPolicy'
 
 export const metadata: Metadata = {
   title: 'Privatlivspolitik – Altid Hjem',
   description: 'Læs om hvordan Altid Hjem ApS behandler dine personoplysninger.',
 }
 
-const OPLYSNINGER = [
-  { title: 'Kontaktoplysninger', text: 'Navn, e-mailadresse, telefonnummer og bopælsadresse.' },
-  { title: 'Boligoplysninger', text: 'Adresse, boligtype og relevante oplysninger om dit hjem, som du angiver i appen.' },
-  { title: 'Produkt- og aftaleoplysninger', text: 'Oplysninger om de produkter og aftaler du har hos os eller andre selskaber i Altid-koncernen, herunder el, forsikring og mobil.' },
-  { title: 'Forbrugsdata', text: 'Data om dit energiforbrug og øvrige forbrug, som vi modtager fra dig eller fra relevante leverandører og offentlige registre.' },
-  { title: 'Betalingsoplysninger', text: 'Betalingskortoplysninger og øvrige betalingsdata i forbindelse med køb og tilmelding til produkter via appen. Betalingsoplysninger behandles via godkendte betalingsudbydere og opbevares ikke direkte af Altid Hjem.' },
-  { title: 'Tekniske oplysninger', text: 'Oplysninger om din enhed, operativsystem, app-version og brugsadfærd i appen.' },
-  { title: 'Henvisningsoplysninger', text: 'Når du deler eller kopierer dit personlige henvisningslink i appen, og når nogen klikker på det, registrerer vi hændelsen. For hver hændelse gemmer vi tidspunkt, land, browsertype og en hashværdi af IP-adressen med et dagligt skiftende tilfældigt tillæg, men aldrig selve IP-adressen. Det personlige link viser, hvilken kunde et klik hører til. Oplysningerne bruges til at tælle henvisninger på grundlag af vores legitime interesse i at drive henvisningsordningen og slettes efter 90 dage. Henvisningsoptællingen bruger ikke cookies.' },
-  { title: 'Profilbillede', text: 'Hvis du selv lægger et billede af dig ind i appen, gemmer vi det, så de andre voksne i din husstand kan se det. Kun medlemmer af din husstand, der er logget ind, kan se billedet. Før vi gemmer det, fjerner vi oplysninger om, hvor og med hvilket kamera det er taget. Det er frivilligt at lægge et billede ind.' },
-  { title: 'Kommunikationsoplysninger', text: 'Korrespondance du har haft med os via e-mail, chat eller support.' },
-]
+// Anchors other pages link to (the cookie banner links to #cookies).
+const SECTION_ANCHORS: Record<string, string> = { '11. Cookies': 'cookies' }
 
-const FORMAAL = [
-  { title: 'Levering og administration af appen og vores tjenester', text: 'Retsgrundlag: Opfyldelse af aftale (GDPR artikel 6, stk. 1, litra b).' },
-  { title: 'Tilmelding til og administration af produkter under Altid Forsikring og Altid Mobil samt produkter fra andre selskaber i Altid-koncernen', text: 'Retsgrundlag: Opfyldelse af aftale (GDPR artikel 6, stk. 1, litra b).' },
-  { title: 'Modtagelse af kontaktoplysninger fra Altid Energi og videregivelse af kontaktoplysninger til Altid Energi i forbindelse med oprettelse af kundeforhold', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a).' },
-  { title: 'Samling og visning af dine bolig- og forbrugsdata i ét overblik', text: 'Retsgrundlag: Opfyldelse af aftale og legitim interesse (GDPR artikel 6, stk. 1, litra b og f).' },
-  { title: 'Kommunikation og support', text: 'Retsgrundlag: Legitim interesse (GDPR artikel 6, stk. 1, litra f).' },
-  { title: 'Analyse af, hvordan appen bliver brugt, så vi kan gøre den bedre', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi indsamler intet, før du har sagt ja, og du kan til enhver tid trække samtykket tilbage under Profil › Samtykker i appen.' },
-  { title: 'Markedsføring og personaliserede tilbud fra Altid Hjem og datterselskaber', text: 'Retsgrundlag: Samtykke (GDPR artikel 6, stk. 1, litra a). Du kan til enhver tid trække dit samtykke tilbage.' },
-  { title: 'Opfyldelse af lovkrav', text: 'Retsgrundlag: Retlig forpligtelse (GDPR artikel 6, stk. 1, litra c).' },
-]
+function formatUpdated(iso: string): string {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+}
 
-const NOEDVENDIGE_COOKIES = [
-  { name: 'ah-cookie-consent', text: 'Husker dit cookievalg. Gemmes i 12 måneder.' },
-  { name: 'am_confirm', text: 'Bruges et kort øjeblik, når du bekræfter din tilmelding til ventelisten via linket i vores e-mail. Slettes efter 30 minutter.' },
-  { name: 'ah-waitlist-joined', text: 'Husker, at du er skrevet op på ventelisten, så vi ikke spørger dig igen. Gemmes, indtil du rydder din browser.' },
-  { name: 'ah-exit-intent-shown', text: 'Husker, at vi har vist dig invitationen til ventelisten, så den kun vises én gang. Gemmes, indtil du rydder din browser.' },
-  { name: 'norlys_auth', text: 'Giver adgang til en lukket side for en samarbejdspartner. Sættes kun, når man logger ind på siden. Gemmes i 30 dage.' },
-]
-
-const RETTIGHEDER = [
-  { right: 'Indsigt', desc: 'Du kan anmode om at se de oplysninger, vi behandler om dig.' },
-  { right: 'Berigtigelse', desc: 'Du kan bede os om at rette unøjagtige oplysninger.' },
-  { right: 'Sletning', desc: 'Du kan i visse tilfælde bede os om at slette dine oplysninger.' },
-  { right: 'Begrænsning', desc: 'Du kan bede os om at begrænse behandlingen af dine oplysninger.' },
-  { right: 'Dataportabilitet', desc: 'Du kan i visse tilfælde anmode om at modtage dine oplysninger i et struktureret, maskinlæsbart format.' },
-  { right: 'Indsigelse', desc: 'Du kan gøre indsigelse mod vores behandling, herunder mod direkte markedsføring.' },
-  { right: 'Tilbagetrækning af samtykke', desc: 'Du kan til enhver tid trække et samtykke tilbage, uden at dette berører lovligheden af behandlingen forud for tilbagetrækningen.' },
-]
-
-const mail = <a href="mailto:hej@altidhjem.dk" className={LEGAL_LINK}>hej@altidhjem.dk</a>
-const energiDatapolitik = (
-  <a href="https://altidenergi.dk/datapolitik/" target="_blank" rel="noopener noreferrer" className={LEGAL_LINK}>altidenergi.dk/datapolitik</a>
-)
-
-export default function Privatlivspolitik() {
+function Inline({ text }: { text: string }) {
   return (
-    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated="23. oktober 2026">
+    <>
+      {parseInline(text).map((segment, i) => {
+        if (!('url' in segment)) return segment.text
+        if (segment.url === COOKIE_SETTINGS_URL) return <CookieSettingsLink key={i} className={LEGAL_LINK} />
+        if (segment.url.startsWith('mailto:')) return <a key={i} href={segment.url} className={LEGAL_LINK}>{segment.text}</a>
+        if (segment.url.startsWith('https://')) {
+          return <a key={i} href={segment.url} target="_blank" rel="noopener noreferrer" className={LEGAL_LINK}>{segment.text}</a>
+        }
+        throw new Error(`Unsupported privacy policy link: ${segment.url}`)
+      })}
+    </>
+  )
+}
 
-      <section className="space-y-4">
-        <h2 className={LEGAL_H2}>1. Vi er den dataansvarlige</h2>
-        <p>Altid Hjem ApS, CVR 45637476, er dataansvarlig for behandlingen af de personoplysninger, som vi indsamler om dig i forbindelse med din brug af Altid Hjem-appen, vores websteder (herunder altidhjem.dk, altidmad.dk og altidforsikring.dk) og vores tilknyttede tjenester. Altid Mad er et selvstændigt selskab i Altid-koncernen og bliver dataansvarligt for de personoplysninger, du afgiver, når du tager Altid Mad-tjenesten i brug. Altid Forsikring er en tjeneste under Altid Hjem ApS og ikke et selvstændigt selskab; Altid Hjem ApS er derfor dataansvarlig for oplysninger, du afgiver til Altid Forsikring.</p>
-        <p>Når du via appen opretter dig som kunde hos eller tilgår din selvbetjening hos Altid Energi, er det Altid Energi ApS (CVR 44373580), der er selvstændig dataansvarlig for behandlingen af dine personoplysninger som elkunde. Du kan læse om Altid Energis behandling af personoplysninger på {energiDatapolitik}.</p>
-        <p>Har du spørgsmål til vores behandling af dine personoplysninger, er du velkommen til at kontakte os:</p>
-        <LegalAddress name="Altid Hjem ApS">
-          <p>Helsinkigade 29, 2150 Nordhavn</p>
-          <p>{mail}</p>
-        </LegalAddress>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className={LEGAL_H2}>2. Venteliste (før lancering)</h2>
-        <p>Indtil Altid Hjem-appen er lanceret, kan du tilmelde dig ventelisterne via altidhjem.dk, altidmad.dk eller altidforsikring.dk. Ventelisterne for Altid Hjem og Altid Mad er én fælles venteliste, mens Altid Forsikring har sin egen separate venteliste. Altid Hjem ApS er dataansvarlig for alle tre ventelister. Følgende særlige regler gælder for behandlingen af oplysninger fra ventelisterne – afsnit 8 (Dine rettigheder) og afsnit 9 (Klage) gælder også for ventelisteoplysninger.</p>
-        <div>
-          <p className={LEGAL_LABEL}>Hvilke oplysninger indsamler vi?</p>
-          <ul className={`${LEGAL_LIST} mt-2`}>
-            <li>Navn</li>
-            <li>E-mailadresse</li>
-            <li>Mobilnummer (valgfrit)</li>
-            <li>Valgfrie svar på spørgsmål om din husstand og energiforbrug</li>
-            <li>Hvilken side du tilmeldte dig fra, og dermed hvilken af vores tjenester (fx Altid Forsikring) du har vist interesse for</li>
-            <li>Om du er tilmeldt via en invitation fra en anden person på ventelisten</li>
-            <li>Oplysninger om din interaktion med vores e-mails (om en e-mail åbnes, og hvilke links der klikkes på)</li>
-          </ul>
-        </div>
-        <div>
-          <p className={LEGAL_LABEL}>Formål og retsgrundlag</p>
-          <p>Vi behandler oplysningerne for at kunne give dig besked, når Altid Hjem og de tilknyttede tjenester – herunder Altid Mad og Altid Forsikring – lanceres, og for at forstå, hvem vores tidlige brugere er. Retsgrundlaget er dit samtykke (GDPR artikel 6, stk. 1, litra a), som du til enhver tid kan trække tilbage via afmeldingslinket i vores e-mails eller ved at skrive til {mail}. Selve lanceringsbeskeden er markedsføring efter markedsføringslovens § 10, men sendes på grundlag af din tilmelding til ventelisten, som udgør dit forudgående, specifikke samtykke til netop den besked; den indeholder kun information om lancering og adgang.</p>
-        </div>
-        <div>
-          <p className={LEGAL_LABEL}>E-mailstatistik</p>
-          <p>Vores e-mails kan indeholde en lille sporingspixel og sporbare links, der fortæller os, om en e-mail bliver åbnet, og hvilke links der klikkes på. Vi bruger oplysningerne til at måle og forbedre vores kommunikation. Behandlingen sker på grundlag af dit samtykke og ophører fremadrettet, hvis du afmelder dig via afmeldingslinket i vores e-mails — allerede indsamlede oplysninger slettes efter opbevaringsreglerne nedenfor. I de fleste e-mailprogrammer kan du desuden undgå åbningsregistrering ved at slå automatisk billedvisning fra. Vores e-mails udsendes via vores databehandler Resend; eventuelle overførsler til lande uden for EU/EØS sker som beskrevet i afsnit 6.</p>
-        </div>
-        <div>
-          <p className={LEGAL_LABEL}>Opbevaring</p>
-          <p>Dine ventelisteoplysninger opbevares sikkert hos vores databehandlere i EU/EØS og slettes senest 12 måneder efter lanceringen af den tjeneste, du har skrevet dig op til, eller tidligere hvis du anmoder om det.</p>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className={LEGAL_H2}>3. Hvilke oplysninger behandler vi?</h2>
-        {OPLYSNINGER.map(({ title, text }) => (
-          <div key={title}>
-            <p className={LEGAL_LABEL}>{title}</p>
-            <p>{text}</p>
-          </div>
-        ))}
-      </section>
-
-      <section className="space-y-4">
-        <h2 className={LEGAL_H2}>4. Formål og retsgrundlag</h2>
-        {FORMAAL.map(({ title, text }) => (
-          <div key={title}>
-            <p className={LEGAL_LABEL}>{title}</p>
-            <p>{text}</p>
-          </div>
-        ))}
-      </section>
-
-      <section className="space-y-4">
-        <h2 className={LEGAL_H2}>5. Deling af oplysninger</h2>
-        <div>
-          <p className={LEGAL_LABEL}>Dataansvarlige i Altid-koncernen</p>
-          <p>Altid Hjem ApS (CVR 45637476) er dataansvarlig for de personoplysninger, du afgiver i Altid Hjem-appen, på vores websteder og ventelister samt til tjenesten Altid Forsikring, herunder kontaktoplysninger, adresse, dine samtykker og din brug af tjenesterne.</p>
-          <p>Altid Energi ApS (CVR 44373580) er selvstændig dataansvarlig for de oplysninger, der vedrører dit elkundeforhold, fx forbrug, aftale og betaling. Altid Hjem viser disse oplysninger i appen på vegne af Altid Energi og efter dit samtykke.</p>
-          <p>Altid Mad er et selvstændigt selskab i Altid-koncernen. Når du tager Altid Mad-tjenesten i brug, bliver Altid Mad-selskabet dataansvarligt for de oplysninger, du afgiver til tjenesten, og du får besked om det, når du starter tjenesten.</p>
-          <p>Altid Forsikring er på nuværende tidspunkt en tjeneste under Altid Hjem ApS og ikke et selvstændigt selskab. Hvis tjenesten senere overgår til et andet selskab, opdaterer vi denne privatlivspolitik og informerer dig, før selskabet behandler dine oplysninger.</p>
-          <p>For kommende tjenester, fx Altid Mobil, oplyser vi den dataansvarlige, før tjenesten lanceres.</p>
-        </div>
-        <div>
-          <p className={LEGAL_LABEL}>Deling af oplysninger i koncernen</p>
-          <p>Selskaberne i Altid-koncernen deler kun de oplysninger, der er nødvendige for at levere den tjeneste, du bruger, og for intern administration, fx support og drift af de fælles systemer. Grundlaget er vores legitime interesse i at drive koncernen effektivt (databeskyttelsesforordningens artikel 6, stk. 1, litra f, og betragtning 48) og, hvor det kræves, dit samtykke. Markedsføring fra et selskab kræver altid et separat samtykke til netop det selskab. Delingen er reguleret af en koncernintern aftale om datadeling, og adgangen til oplysninger er begrænset til de medarbejdere, der har brug for dem i deres arbejde.</p>
-        </div>
-        <div className="space-y-2">
-          <p className={LEGAL_LABEL}>Datadeling med Altid Energi</p>
-          <p>Datadeling mellem Altid Hjem og Altid Energi forudsætter altid dit aktive samtykke i appen og kan gå begge veje:</p>
-          <ul className={LEGAL_LIST}>
-            <li><span className={LEGAL_LABEL}>Modtagelse af data fra Altid Energi:</span> Hvis du er elkunde hos Altid Energi og samtykker til at oprette en konto hos Altid Hjem, modtager vi følgende oplysninger fra Altid Energi: navn, e-mailadresse, telefonnummer og adresse.</li>
-            <li><span className={LEGAL_LABEL}>Videregivelse af data til Altid Energi:</span> Hvis du som Altid Hjem-kunde samtykker til at oprette dig som elkunde hos Altid Energi, videregiver vi de til enhver tid gældende oplysninger, der er nødvendige for oprettelse af et elkundeforhold.</li>
-          </ul>
-          <p>Samtykket er engangs – det udløser én konkret overførsel og er forbrugt i samme handling. Dine efterfølgende rettigheder (sletning, indsigt, berigtigelse) reguleres af de almindelige GDPR-regler hos den modtagende dataansvarlige. Altid Energis datapolitik kan læses på {energiDatapolitik}.</p>
-        </div>
-        <div>
-          <p className={LEGAL_LABEL}>Databehandlere</p>
-          <p>Som behandler oplysninger på vores vegne, herunder udbydere af hosting, betalingsinfrastruktur, kundesupport, analyseværktøjer og e-mailudsendelse. Alle databehandlere er underlagt en databehandleraftale og må kun behandle dine oplysninger efter vores instruks.</p>
-        </div>
-        <div>
-          <p className={LEGAL_LABEL}>Mails til hej@altidhjem.dk</p>
-          <p>Når du skriver til {mail}, behandles din mail i Google Workspace. Google er vores databehandler, og vi bruger Gemini i Google Workspace til at finde og foreslå svar. Google bruger ikke indholdet af vores mails til at træne sine modeller.</p>
-        </div>
-        <div>
-          <p className={LEGAL_LABEL}>Amplitude (analyse af brugen af appen og vores websteder)</p>
-          <p>Har du givet samtykke til det, bruger vi Amplitude, Inc. som databehandler til at se, hvordan appen bliver brugt. Amplitude modtager hvilke skærme der åbnes, hvilke knapper der trykkes på, din telefonmodel, dit styresystem og din appversion, samt et id for din telefon og et id for din husstand. Amplitude modtager ikke dit navn, din e-mail, din adresse, dit kundenummer eller hvor du befinder dig. Oplysningerne opbevares på Amplitudes servere i EU (Frankfurt, Tyskland).</p>
-          <p>På vores websteder bruger vi kun Amplitude i din browser, hvis du har accepteret statistikcookies, se afsnit 10. Når du skriver dig op på ventelisten, registrerer vi tilmeldingen i Amplitude under et tilfældigt id sammen med, hvilken side du tilmeldte dig fra. Amplitude får ikke dit navn eller din e-mail.</p>
-        </div>
-        <div>
-          <p className={LEGAL_LABEL}>Offentlige myndigheder</p>
-          <p>Hvis vi er retligt forpligtet hertil.</p>
-        </div>
-        <p>Vi sælger ikke dine personoplysninger til tredjeparter.</p>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className={LEGAL_H2}>6. Overførsler til tredjelande</h2>
-        <p>Hvis vi overfører dine oplysninger til lande uden for EU/EØS, sker det udelukkende på grundlag af et lovligt overførselsgrundlag, herunder EU-Kommissionens standardkontraktbestemmelser. Du kan få nærmere oplysninger ved at kontakte os.</p>
-        <p>Amplitude, Inc. er en amerikansk virksomhed. Oplysningerne opbevares i EU, men hvis Amplitude tilgår dem fra USA, sker det på grundlag af EU-US Data Privacy Framework, som Amplitude er certificeret under, og EU-Kommissionens standardkontraktbestemmelser.</p>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className={LEGAL_H2}>7. Opbevaring</h2>
-        <p>Vi opbevarer dine personoplysninger så længe det er nødvendigt til de formål, de er indsamlet til, eller så længe vi er forpligtet til det efter lovgivningen. Generelt gælder:</p>
-        <ul className={LEGAL_LIST}>
-          <li>Kundedata opbevares i op til 5 år efter aftalens ophør af hensyn til bogføringsloven.</li>
-          <li>Tekniske logs slettes løbende og typisk inden for 12 måneder.</li>
-          <li>Oplysninger indsamlet på baggrund af samtykke slettes, når samtykket trækkes tilbage, medmindre andet retsgrundlag gælder.</li>
-          <li>Dit profilbillede gemmer vi, indtil du fjerner det i appen eller sletter din konto. Derefter findes det kun i vores sikkerhedskopier, som slettes løbende inden for 8 uger.</li>
-          <li>Brugsdata i Amplitude opbevarer vi, så længe du har givet samtykke. Trækker du samtykket tilbage under Profil › Samtykker, eller sletter du din konto, stopper indsamlingen med det samme, og vi beder automatisk Amplitude om at slette oplysningerne om dig. Sletningen er gennemført inden for 30 dage.</li>
-        </ul>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className={LEGAL_H2}>8. Dine rettigheder</h2>
-        <p>Du har følgende rettigheder i henhold til databeskyttelsesforordningen:</p>
-        <ul className="space-y-2">
-          {RETTIGHEDER.map(({ right, desc }) => (
-            <li key={right}>
-              <span className={LEGAL_LABEL}>{right}:</span> {desc}
+function Block({ block, afterLabel }: { block: Exclude<PolicyBlock, { type: 'label' }>; afterLabel: boolean }) {
+  switch (block.type) {
+    case 'paragraph':
+      return <p><Inline text={block.text} /></p>
+    case 'list':
+      return (
+        <ul className={afterLabel ? `${LEGAL_LIST} mt-2` : LEGAL_LIST}>
+          {block.items.map((item, i) => (
+            <li key={i}>
+              {item.label && <><span className={LEGAL_LABEL}>{item.label}:</span>{' '}</>}
+              <Inline text={item.text} />
             </li>
           ))}
         </ul>
-        <p>Du udøver dine rettigheder ved at kontakte os på {mail}. Vi besvarer din henvendelse inden for 30 dage.</p>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className={LEGAL_H2}>9. Klage</h2>
-        <p>Hvis du er utilfreds med vores behandling af dine personoplysninger, har du ret til at indgive en klage til Datatilsynet:</p>
-        <LegalAddress name="Datatilsynet">
-          <p>Carl Jacobsens Vej 35, 2500 Valby</p>
-          <p><a href="mailto:dt@datatilsynet.dk" className={LEGAL_LINK}>dt@datatilsynet.dk</a></p>
-          <p><a href="https://www.datatilsynet.dk" target="_blank" rel="noopener noreferrer" className={LEGAL_LINK}>datatilsynet.dk</a></p>
+      )
+    case 'address': {
+      const [name, ...lines] = block.lines
+      return (
+        <LegalAddress name={name}>
+          {lines.map((line, i) => <p key={i}><Inline text={line} /></p>)}
         </LegalAddress>
-      </section>
+      )
+    }
+  }
+}
 
-      <section id="cookies" className="space-y-4 scroll-mt-24">
-        <h2 className={LEGAL_H2}>10. Cookies</h2>
-        <p>Vi bruger cookies og lignende lagring i din browser (localStorage) til to ting: det, siden skal bruge for at virke, og statistik, hvis du siger ja. Første gang du besøger siden, spørger vi dig. Dit valg gemmes i 12 måneder, og derefter spørger vi igen. Du kan til enhver tid ændre dit valg: <CookieSettingsLink className={LEGAL_LINK} /></p>
-        <div className="space-y-2">
-          <p className={LEGAL_LABEL}>Nødvendige (kræver ikke samtykke)</p>
-          <ul className={LEGAL_LIST}>
-            {NOEDVENDIGE_COOKIES.map(({ name, text }) => (
-              <li key={name}>
-                <span className={LEGAL_LABEL}>{name}:</span> {text}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="space-y-2">
-          <p className={LEGAL_LABEL}>Statistik (kun hvis du siger ja)</p>
-          <ul className={LEGAL_LIST}>
-            <li>
-              <span className={LEGAL_LABEL}>AMP_* (Amplitude):</span> Et tilfældigt id for din browser, så vi kan se, hvordan siden bliver brugt på tværs af besøg: hvilke sider du ser, hvad du klikker på, og hvor du kom fra. Oplysningerne behandles af vores databehandler Amplitude i EU, se afsnit 5. Gemmes i op til 12 måneder. Siger du nej, eller trækker du dit ja tilbage, stopper vi statistikken og sletter disse cookies fra din browser.
-            </li>
-          </ul>
-        </div>
-      </section>
+/** A label sticks to the block right after it; every other block stands alone. */
+function renderBlocks(blocks: PolicyBlock[]): ReactNode[] {
+  const out: ReactNode[] = []
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i]
+    if (block.type !== 'label') {
+      out.push(<Block key={i} block={block} afterLabel={false} />)
+      continue
+    }
+    const next = blocks[i + 1]
+    if (!next || next.type === 'label') throw new Error(`Privacy policy label without content: ${block.text}`)
+    out.push(
+      <div key={i}>
+        <p className={LEGAL_LABEL}>{block.text}</p>
+        <Block block={next} afterLabel />
+      </div>,
+    )
+    i++
+  }
+  return out
+}
 
-      <section className="space-y-4">
-        <h2 className={LEGAL_H2}>11. Ændringer</h2>
-        <p>Vi opdaterer løbende denne privatlivspolitik. Den gældende version er altid tilgængelig i appen og på vores hjemmeside. Væsentlige ændringer vil blive kommunikeret til dig via appen eller e-mail.</p>
-      </section>
-
+export default function Privatlivspolitik() {
+  return (
+    <LegalPageLayout title="Privatlivspolitik" meta="Altid Hjem ApS · CVR 45637476" updated={formatUpdated(privacyPolicy.updated)}>
+      {privacyPolicy.sections.map((section) => {
+        const anchor = SECTION_ANCHORS[section.title]
+        return (
+          <section key={section.title} id={anchor} className={anchor ? 'space-y-4 scroll-mt-24' : 'space-y-4'}>
+            <h2 className={LEGAL_H2}>{section.title}</h2>
+            {renderBlocks(section.blocks)}
+          </section>
+        )
+      })}
     </LegalPageLayout>
   )
 }
