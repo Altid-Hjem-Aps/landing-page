@@ -1,3 +1,5 @@
+import { createHmac } from 'node:crypto'
+
 // Tracked store links in the Altid Hjem launch mails (ALT-605).
 //
 // Every App Store and Google Play link in the launch mails points at
@@ -94,4 +96,16 @@ export function resolveMailLink(rawMail: string, rawLink: string, userAgent: str
   const valid = mail !== UNKNOWN && link !== UNKNOWN
   const store = storeOfLink(link) ?? storeForDevice(userAgent)
   return { mail, link, valid, store, location: storeUrl(store, mail, link) }
+}
+
+/**
+ * The rate-limit key for one IP: an HMAC-SHA256 of the IP under a server-only
+ * secret (REFERRAL_IP_SALT, set on Preview and Production), cut to 32 hex
+ * characters. The raw IP is never stored, and without the secret the key
+ * cannot be brute-forced back to an IPv4 address. Throws without a secret:
+ * an unkeyed hash of an IP is no protection.
+ */
+export function mailLinkRateKey(ip: string | null, secret: string | undefined): string {
+  if (!secret) throw new Error('REFERRAL_IP_SALT is not set: will not rate-limit on an unkeyed IP')
+  return `mail-link:${createHmac('sha256', secret).update(ip ?? 'unknown').digest('hex').slice(0, 32)}`
 }

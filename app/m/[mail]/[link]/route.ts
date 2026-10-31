@@ -1,6 +1,6 @@
 import { after, NextRequest, NextResponse } from 'next/server'
 import { trackAnonymousServer } from '@/lib/amplitude.server'
-import { MAIL_LINK_EVENT, resolveMailLink, type MailLink } from '@/lib/mail-links'
+import { MAIL_LINK_EVENT, mailLinkRateKey, resolveMailLink, type MailLink } from '@/lib/mail-links'
 import { checkRateLimitStrict } from '@/lib/db'
 import { clientIp, looksLikeBot } from '@/lib/referral'
 
@@ -19,9 +19,30 @@ export const dynamic = 'force-dynamic'
 
 /** Counted taps per IP and hour. Past it the person still gets the redirect;
  * the tap is just not counted. Generous, because a whole office or a mobile
- * network can share one IP. The IP is only used for this check and never
- * leaves the server. */
+ * network can share one IP. The rate-limit table only ever sees a keyed hash
+ * of the IP (mailLinkRateKey), never the IP, and Amplitude sees neither. */
 const MAIL_LINK_TAPS_PER_IP_PER_HOUR = 120
+
+/** How long the rate-limit check may take before the tap is given up
+ * uncounted, so a hung Supabase call cannot hold after() to maxDuration. */
+const RATE_LIMIT_TIMEOUT_MS = 3000
+
+async function overLimit(key: string): Promise<boolean> {
+  let timer: ReturnType<typeof setTimeout> | undefined
+  try {
+    return await Promise.race([
+      checkRateLimitStrict(key, MAIL_LINK_TAPS_PER_IP_PER_HOUR, 3600),
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(
+          () => reject(new Error(`rate limit check did not answer within ${RATE_LIMIT_TIMEOUT_MS} ms`)),
+          RATE_LIMIT_TIMEOUT_MS,
+        )
+      }),
+    ])
+  } finally {
+    clearTimeout(timer)
+  }
+}
 
 /** A browser fetching the page ahead of a tap (Chrome, Safari) says so. */
 function isPrefetch(headers: Headers): boolean {
@@ -55,7 +76,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ mail: strin
     const ip = clientIp(req.headers)
     after(async () => {
       try {
-        if (await checkRateLimitStrict(`mail-link:${ip ?? 'unknown'}`, MAIL_LINK_TAPS_PER_IP_PER_HOUR, 3600)) {
+        if (await overLimit(mailLinkRateKey(ip, process.env.REFERRAL_IP_SALT))) {
           console.warn('mail link tap not counted: over the per-IP limit')
           return
         }

@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { NextRequest } from 'next/server'
 import { LINK_CODES, MAIL_CODES } from '@/lib/mail-links'
@@ -71,6 +72,7 @@ async function get(
 }
 
 beforeEach(() => {
+  vi.stubEnv('REFERRAL_IP_SALT', 'test-only-salt')
   tracked.length = 0
   trackMock.mockClear()
   rateLimit.mockClear()
@@ -187,13 +189,23 @@ describe('/m/<mail>/<link>', () => {
 
   it('counts a tap per IP up to the hourly limit, and still redirects past it', async () => {
     await get('a1a', 'intro-appstore', IPHONE)
-    expect(rateLimit).toHaveBeenCalledWith('mail-link:203.0.113.7', 120, 3600)
+    const [key, max, windowSeconds] = rateLimit.mock.calls[0]
+    expect([max, windowSeconds]).toEqual([120, 3600])
     expect(trackMock).toHaveBeenCalledTimes(1)
+    // A keyed hash, the same for the same IP, never the IP itself.
+    expect(key).toMatch(/^mail-link:[0-9a-f]{32}$/)
+    expect(key).not.toContain('203.0.113.7')
+    expect(key).not.toBe(`mail-link:${createHash('sha256').update('203.0.113.7').digest('hex').slice(0, 32)}`)
+    await get('a1c', 'qr-play', IPHONE)
+    expect(rateLimit.mock.calls[1][0]).toBe(key)
+    await get('a1c', 'qr-play', IPHONE, 'GET', { 'x-forwarded-for': '198.51.100.9' })
+    expect(rateLimit.mock.calls[2][0]).not.toBe(key)
+    trackMock.mockClear()
     limited = true
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const res = await get('a1a', 'intro-appstore', IPHONE)
     expect(res.status).toBe(302)
-    expect(trackMock).toHaveBeenCalledTimes(1)
+    expect(trackMock).not.toHaveBeenCalled()
     warn.mockRestore()
   })
 
@@ -205,6 +217,38 @@ describe('/m/<mail>/<link>', () => {
     expect(trackMock).not.toHaveBeenCalled()
     expect(error).toHaveBeenCalledWith('mail link click not recorded', 'rate limit unavailable: boom')
     error.mockRestore()
+  })
+
+  it('does not count a tap without the IP secret, rather than store an unkeyed IP hash', async () => {
+    vi.stubEnv('REFERRAL_IP_SALT', '')
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const res = await get('a1a', 'intro-appstore', IPHONE)
+    expect(res.status).toBe(302)
+    expect(rateLimit).not.toHaveBeenCalled()
+    expect(trackMock).not.toHaveBeenCalled()
+    expect(error).toHaveBeenCalledWith(
+      'mail link click not recorded',
+      'REFERRAL_IP_SALT is not set: will not rate-limit on an unkeyed IP',
+    )
+    error.mockRestore()
+  })
+
+  it('gives a hung rate-limit check up after 3 s and counts nothing', async () => {
+    vi.useFakeTimers()
+    rateLimit.mockImplementationOnce(() => new Promise(() => {}))
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const req = new NextRequest('https://www.altidhjem.dk/m/a1a/intro-appstore', {
+      headers: { 'user-agent': IPHONE, 'x-forwarded-for': '203.0.113.7' },
+    })
+    const res = await GET(req, { params: Promise.resolve({ mail: 'a1a', link: 'intro-appstore' }) })
+    expect(res.status).toBe(302)
+    const done = Promise.all(afterTasks.splice(0))
+    await vi.advanceTimersByTimeAsync(3000)
+    await done
+    expect(trackMock).not.toHaveBeenCalled()
+    expect(error).toHaveBeenCalledWith('mail link click not recorded', 'rate limit check did not answer within 3000 ms')
+    error.mockRestore()
+    vi.useRealTimers()
   })
 
   it('does not count a browser prefetch', async () => {
