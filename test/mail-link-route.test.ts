@@ -12,6 +12,20 @@ vi.mock('@/lib/amplitude.server', () => ({
   trackAnonymousServer: (event: string, props: Record<string, unknown>) => trackMock(event, props),
 }))
 
+// The rate limit lives in Supabase (our adapter is the boundary).
+let limited = false
+let limitError: Error | null = null
+const rateLimit = vi.fn(async (key: string, max: number, windowSeconds: number) => {
+  void key
+  void max
+  void windowSeconds
+  if (limitError) throw limitError
+  return limited
+})
+vi.mock('@/lib/db', () => ({
+  checkRateLimitStrict: (key: string, max: number, windowSeconds: number) => rateLimit(key, max, windowSeconds),
+}))
+
 // next/server's after() needs a request context we do not have in unit tests.
 const afterTasks: Array<Promise<unknown>> = []
 vi.mock('next/server', async () => {
@@ -41,8 +55,14 @@ function play(mail: string, link: string) {
   return `${PLAY}&referrer=${encodeURIComponent(referrer)}`
 }
 
-async function get(mail: string, link: string, ua: string | null = IPHONE, method: 'GET' | 'HEAD' = 'GET') {
-  const headers: Record<string, string> = ua ? { 'user-agent': ua } : {}
+async function get(
+  mail: string,
+  link: string,
+  ua: string | null = IPHONE,
+  method: 'GET' | 'HEAD' = 'GET',
+  extra: Record<string, string> = {},
+) {
+  const headers: Record<string, string> = { 'x-forwarded-for': '203.0.113.7', ...extra, ...(ua ? { 'user-agent': ua } : {}) }
   const req = new NextRequest(`https://www.altidhjem.dk/m/${mail}/${link}`, { method, headers })
   const ctx = { params: Promise.resolve({ mail, link }) }
   const res = method === 'GET' ? await GET(req, ctx) : await HEAD(req, ctx)
@@ -53,6 +73,9 @@ async function get(mail: string, link: string, ua: string | null = IPHONE, metho
 beforeEach(() => {
   tracked.length = 0
   trackMock.mockClear()
+  rateLimit.mockClear()
+  limited = false
+  limitError = null
   vi.stubEnv('VERCEL_ENV', 'production')
 })
 
@@ -160,6 +183,41 @@ describe('/m/<mail>/<link>', () => {
     expect(res.headers.get('location')).toBe(appStore('a1d'))
     expect(error).toHaveBeenCalledWith('mail link click not recorded', 'Amplitude answered 400')
     error.mockRestore()
+  })
+
+  it('counts a tap per IP up to the hourly limit, and still redirects past it', async () => {
+    await get('a1a', 'intro-appstore', IPHONE)
+    expect(rateLimit).toHaveBeenCalledWith('mail-link:203.0.113.7', 120, 3600)
+    expect(trackMock).toHaveBeenCalledTimes(1)
+    limited = true
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const res = await get('a1a', 'intro-appstore', IPHONE)
+    expect(res.status).toBe(302)
+    expect(trackMock).toHaveBeenCalledTimes(1)
+    warn.mockRestore()
+  })
+
+  it('does not count a tap when the rate limit cannot be checked, and says so', async () => {
+    limitError = new Error('rate limit unavailable: boom')
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const res = await get('a1a', 'intro-appstore', IPHONE)
+    expect(res.status).toBe(302)
+    expect(trackMock).not.toHaveBeenCalled()
+    expect(error).toHaveBeenCalledWith('mail link click not recorded', 'rate limit unavailable: boom')
+    error.mockRestore()
+  })
+
+  it('does not count a browser prefetch', async () => {
+    await get('a1a', 'intro-appstore', IPHONE, 'GET', { 'sec-purpose': 'prefetch' })
+    await get('a1a', 'intro-appstore', IPHONE, 'GET', { purpose: 'prefetch' })
+    expect(trackMock).not.toHaveBeenCalled()
+  })
+
+  it('reads a code that a mail program capitalised or glued a full stop onto', async () => {
+    const res = await get('A1A', 'qr-play).', IPHONE)
+    expect(res.headers.get('x-altid-mail-link')).toBe('valid')
+    expect(res.headers.get('location')).toBe(play('a1a', 'qr-play'))
+    expect(tracked[0].props.mail_link).toBe('a1a/qr-play')
   })
 
   it('is never cached, so every tap reaches the counter', async () => {

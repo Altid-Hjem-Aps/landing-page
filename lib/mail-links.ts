@@ -79,11 +79,18 @@ export function storeUrl(store: Store, mail: string, link: string): string {
   return `${PLAY_BASE}&referrer=${encodeURIComponent(referrer)}`
 }
 
+/** A code as typed, or `unknown`. Mail programs that show plain text can
+ * capitalise a link or glue a full stop or bracket onto it; both still count. */
+function normalizeCode(raw: string, known: Set<string>): string {
+  const code = raw.trim().toLowerCase().replace(/[^a-z0-9-]+$/, '')
+  return known.has(code) ? code : UNKNOWN
+}
+
 /** Where a tap on /m/<mail>/<link> goes, and what it is counted as. Always a
  * store: a broken link in a sent mail must still get the person to the app. */
 export function resolveMailLink(rawMail: string, rawLink: string, userAgent: string | null): MailLink {
-  const mail = MAIL_SET.has(rawMail) ? rawMail : UNKNOWN
-  const link = LINK_SET.has(rawLink) ? rawLink : UNKNOWN
+  const mail = normalizeCode(rawMail, MAIL_SET)
+  const link = normalizeCode(rawLink, LINK_SET)
   const valid = mail !== UNKNOWN && link !== UNKNOWN
   const store = storeOfLink(link) ?? storeForDevice(userAgent)
   return { mail, link, valid, store, location: storeUrl(store, mail, link) }

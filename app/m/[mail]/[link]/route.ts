@@ -1,7 +1,8 @@
 import { after, NextRequest, NextResponse } from 'next/server'
 import { trackAnonymousServer } from '@/lib/amplitude.server'
 import { MAIL_LINK_EVENT, resolveMailLink, type MailLink } from '@/lib/mail-links'
-import { looksLikeBot } from '@/lib/referral'
+import { checkRateLimitStrict } from '@/lib/db'
+import { clientIp, looksLikeBot } from '@/lib/referral'
 
 // Store links in the launch mails (ALT-605):
 // https://www.altidhjem.dk/m/<mail>/<link> → App Store or Google Play, with
@@ -15,6 +16,18 @@ import { looksLikeBot } from '@/lib/referral'
 // These URLs sit in sent mails for years. Do not remove or rename the route.
 
 export const dynamic = 'force-dynamic'
+
+/** Counted taps per IP and hour. Past it the person still gets the redirect;
+ * the tap is just not counted. Generous, because a whole office or a mobile
+ * network can share one IP. The IP is only used for this check and never
+ * leaves the server. */
+const MAIL_LINK_TAPS_PER_IP_PER_HOUR = 120
+
+/** A browser fetching the page ahead of a tap (Chrome, Safari) says so. */
+function isPrefetch(headers: Headers): boolean {
+  const purpose = `${headers.get('sec-purpose') ?? ''} ${headers.get('purpose') ?? ''}`.toLowerCase()
+  return purpose.includes('prefetch') || purpose.includes('prerender')
+}
 
 function redirectFor(target: MailLink): NextResponse {
   const res = NextResponse.redirect(target.location, 302)
@@ -36,10 +49,16 @@ async function resolve(req: NextRequest, ctx: { params: Promise<{ mail: string; 
 export async function GET(req: NextRequest, ctx: { params: Promise<{ mail: string; link: string }> }) {
   const target = await resolve(req, ctx)
 
-  // Crawlers, link unfurlers and scripts (curl included) are not people.
-  if (!looksLikeBot(req.headers.get('user-agent'))) {
+  // Crawlers, link unfurlers, scripts (curl included) and prefetches are not
+  // people tapping.
+  if (!looksLikeBot(req.headers.get('user-agent')) && !isPrefetch(req.headers)) {
+    const ip = clientIp(req.headers)
     after(async () => {
       try {
+        if (await checkRateLimitStrict(`mail-link:${ip ?? 'unknown'}`, MAIL_LINK_TAPS_PER_IP_PER_HOUR, 3600)) {
+          console.warn('mail link tap not counted: over the per-IP limit')
+          return
+        }
         await trackAnonymousServer(MAIL_LINK_EVENT, {
           campaign: 'alt605',
           mail: target.mail,
