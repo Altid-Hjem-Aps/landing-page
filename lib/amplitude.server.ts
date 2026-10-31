@@ -69,10 +69,13 @@ export async function trackAnonymousServer(eventName: string, eventProperties: R
   }
   let timer: ReturnType<typeof setTimeout> | undefined
   const timeout = new Promise<never>((_, reject) => {
-    timer = setTimeout(
-      () => reject(new Error(`Amplitude did not answer within ${ANONYMOUS_SEND_TIMEOUT_MS} ms`)),
-      ANONYMOUS_SEND_TIMEOUT_MS,
-    )
+    timer = setTimeout(() => {
+      // The SDK keeps a stalled request's flush lock, so the next event on the
+      // same client would wait behind it. Start the next tap on a new client.
+      anonymous = null
+      anonymousReady = null
+      reject(new Error(`Amplitude did not answer within ${ANONYMOUS_SEND_TIMEOUT_MS} ms`))
+    }, ANONYMOUS_SEND_TIMEOUT_MS)
   })
   try {
     const result = await Promise.race([

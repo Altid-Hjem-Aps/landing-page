@@ -9,13 +9,14 @@ let answer: Promise<{ code: number; message: string }>
 const flush = vi.fn(() => ({ promise: Promise.resolve() }))
 const init = vi.fn(() => ({ promise: Promise.resolve() }))
 const sharedTrack = vi.fn()
+let instances = 0
 vi.mock('@amplitude/analytics-node', () => ({
   init: vi.fn(),
   track: (...args: unknown[]) => sharedTrack(...args),
   flush: vi.fn(),
   identify: vi.fn(),
   Identify: class {},
-  createInstance: () => ({
+  createInstance: () => (instances++, {
     init,
     track: (event: string, props: unknown, options: Record<string, unknown>) => {
       calls.push({ event, props, options })
@@ -66,6 +67,11 @@ describe('trackAnonymousServer', () => {
     const settled = expect(sent).rejects.toThrow(`Amplitude did not answer within ${ANONYMOUS_SEND_TIMEOUT_MS} ms`)
     await vi.advanceTimersByTimeAsync(ANONYMOUS_SEND_TIMEOUT_MS)
     await settled
+    // The next tap does not queue behind the stalled request.
+    const before = instances
+    answer = Promise.resolve({ code: 200, message: 'Event tracked successfully' })
+    await trackAnonymousServer('Launch Mail Link Clicked', {})
+    expect(instances).toBe(before + 1)
   })
 
   it('rejects without an API key instead of sending nowhere', async () => {
