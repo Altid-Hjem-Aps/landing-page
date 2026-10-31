@@ -98,6 +98,17 @@ describe('/m/<mail>/<link>', () => {
     }
   })
 
+  it('gives the Altid Forsikring mail its own App Store campaign, and keeps the dropped notice codes working', async () => {
+    expect((await get('a1f', 'intro-appstore')).headers.get('location')).toBe(
+      'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_mail_a1f&mt=8',
+    )
+    for (const old of ['a1b', 'a1d']) {
+      const res = await get(old, 'qr-play', ANDROID)
+      expect(res.headers.get('x-altid-mail-link')).toBe('valid')
+      expect(res.headers.get('location')).toBe(play(old, 'qr-play'))
+    }
+  })
+
   it('encodes the Play referrer once, so the store reads utm_content back', async () => {
     const res = await get('a1c', 'intro-play-wide', ANDROID)
     const location = new URL(res.headers.get('location')!)

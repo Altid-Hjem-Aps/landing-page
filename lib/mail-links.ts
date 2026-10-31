@@ -17,7 +17,10 @@ import { createHmac } from 'node:crypto'
 /** The Amplitude event (website project) the admin reads. */
 export const MAIL_LINK_EVENT = 'Launch Mail Link Clicked'
 
-export const MAIL_CODES = ['a1a', 'a1c', 'a1b', 'a1d', 'm0', 'm2h', 'm2m', 'm3'] as const
+// a1b and a1d (the short notices) are no longer sent since 31 Oct 2026: people
+// without consent get a1a or a1c. They stay valid so any old link still
+// counts. a1f is the Altid Forsikring waitlist's mail 1.
+export const MAIL_CODES = ['a1a', 'a1c', 'a1b', 'a1d', 'a1f', 'm0', 'm2h', 'm2m', 'm3'] as const
 export type MailCode = (typeof MAIL_CODES)[number]
 
 export type Store = 'appstore' | 'play'
