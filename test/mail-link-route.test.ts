@@ -1,0 +1,170 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { NextRequest } from 'next/server'
+import { LINK_CODES, MAIL_CODES } from '@/lib/mail-links'
+
+// The Amplitude client is the boundary: the route must hand it exactly the
+// allowlisted values, and it must not matter to the person when it fails.
+const tracked: Array<{ event: string; props: Record<string, unknown> }> = []
+const trackMock = vi.fn(async (event: string, props: Record<string, unknown>) => {
+  tracked.push({ event, props })
+})
+vi.mock('@/lib/amplitude.server', () => ({
+  trackAnonymousServer: (event: string, props: Record<string, unknown>) => trackMock(event, props),
+}))
+
+// next/server's after() needs a request context we do not have in unit tests.
+const afterTasks: Array<Promise<unknown>> = []
+vi.mock('next/server', async () => {
+  const actual = await vi.importActual<typeof import('next/server')>('next/server')
+  return {
+    ...actual,
+    after: (task: () => Promise<unknown> | unknown) => {
+      afterTasks.push(Promise.resolve().then(task))
+    },
+  }
+})
+
+const { GET, HEAD } = await import('@/app/m/[mail]/[link]/route')
+
+const IPHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'
+const ANDROID = 'Mozilla/5.0 (Linux; Android 15; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36'
+const IPAD = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15'
+
+const APP_STORE = 'https://apps.apple.com/dk/app/altid-hjem/id6794330094'
+const PLAY = 'https://play.google.com/store/apps/details?id=dk.altidhjem.app'
+
+function appStore(mail: string) {
+  return `${APP_STORE}?pt=129212732&ct=ah_1_mail_${mail}&mt=8`
+}
+function play(mail: string, link: string) {
+  const referrer = `utm_source=mail_${mail}&utm_medium=email&utm_campaign=ah_1_mail_${mail}&utm_content=${link}`
+  return `${PLAY}&referrer=${encodeURIComponent(referrer)}`
+}
+
+async function get(mail: string, link: string, ua: string | null = IPHONE, method: 'GET' | 'HEAD' = 'GET') {
+  const headers: Record<string, string> = ua ? { 'user-agent': ua } : {}
+  const req = new NextRequest(`https://www.altidhjem.dk/m/${mail}/${link}`, { method, headers })
+  const ctx = { params: Promise.resolve({ mail, link }) }
+  const res = method === 'GET' ? await GET(req, ctx) : await HEAD(req, ctx)
+  await Promise.all(afterTasks.splice(0))
+  return res
+}
+
+beforeEach(() => {
+  tracked.length = 0
+  trackMock.mockClear()
+  vi.stubEnv('VERCEL_ENV', 'production')
+})
+
+afterEach(() => {
+  vi.unstubAllEnvs()
+})
+
+describe('/m/<mail>/<link>', () => {
+  it('sends every known code to its store with that mail campaign', async () => {
+    for (const mail of MAIL_CODES) {
+      for (const link of LINK_CODES) {
+        const res = await get(mail, link, IPHONE)
+        expect(res.status).toBe(302)
+        expect(res.headers.get('x-altid-mail-link')).toBe('valid')
+        const expected = link.includes('play') ? play(mail, link) : appStore(mail)
+        expect(res.headers.get('location'), `${mail}/${link}`).toBe(expected)
+      }
+    }
+  })
+
+  it('encodes the Play referrer once, so the store reads utm_content back', async () => {
+    const res = await get('a1c', 'intro-play-wide', ANDROID)
+    const location = new URL(res.headers.get('location')!)
+    const referrer = new URLSearchParams(location.searchParams.get('referrer')!)
+    expect(Object.fromEntries(referrer)).toEqual({
+      utm_source: 'mail_a1c',
+      utm_medium: 'email',
+      utm_campaign: 'ah_1_mail_a1c',
+      utm_content: 'intro-play-wide',
+    })
+  })
+
+  it('sends the header image to the store of the phone', async () => {
+    expect((await get('a1a', 'header', ANDROID)).headers.get('location')).toBe(play('a1a', 'header'))
+    expect((await get('a1a', 'header', IPHONE)).headers.get('location')).toBe(appStore('a1a'))
+    expect((await get('a1a', 'header', IPAD)).headers.get('location')).toBe(appStore('a1a'))
+  })
+
+  it('still sends a person to a store on an unknown code, and counts it as invalid with no raw text', async () => {
+    const res = await get('peter@example.com', 'intro-appstor', ANDROID)
+    expect(res.status).toBe(302)
+    expect(res.headers.get('x-altid-mail-link')).toBe('invalid')
+    expect(res.headers.get('location')).toBe(play('unknown', 'unknown'))
+    expect(tracked).toEqual([
+      {
+        event: 'Launch Mail Link Clicked',
+        props: {
+          campaign: 'alt605',
+          mail: 'unknown',
+          link: 'unknown',
+          mail_link: 'unknown/unknown',
+          store: 'play',
+          valid: false,
+          env: 'production',
+        },
+      },
+    ])
+  })
+
+  it('counts a tap by a person with exactly the allowlisted values', async () => {
+    await get('m2h', 'qr-play', IPHONE)
+    expect(tracked).toEqual([
+      {
+        event: 'Launch Mail Link Clicked',
+        props: {
+          campaign: 'alt605',
+          mail: 'm2h',
+          link: 'qr-play',
+          mail_link: 'm2h/qr-play',
+          store: 'play',
+          valid: true,
+          env: 'production',
+        },
+      },
+    ])
+  })
+
+  it('tells preview clicks apart from production ones', async () => {
+    vi.stubEnv('VERCEL_ENV', 'preview')
+    await get('a1a', 'intro-appstore', IPHONE)
+    expect(tracked[0].props.env).toBe('preview')
+  })
+
+  it('does not count bots, scripts or a missing user agent, and still redirects them', async () => {
+    for (const ua of ['Slackbot-LinkExpanding 1.0', 'curl/8.7.1', null]) {
+      const res = await get('a1a', 'intro-appstore', ua)
+      expect(res.status).toBe(302)
+    }
+    expect(trackMock).not.toHaveBeenCalled()
+  })
+
+  it('never counts a HEAD request, and answers it like the GET', async () => {
+    const res = await get('a1b', 'end-play', IPHONE, 'HEAD')
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toBe(play('a1b', 'end-play'))
+    expect(res.headers.get('x-altid-mail-link')).toBe('valid')
+    expect(trackMock).not.toHaveBeenCalled()
+  })
+
+  it('redirects even when Amplitude fails', async () => {
+    trackMock.mockRejectedValueOnce(new Error('Amplitude answered 400'))
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const res = await get('a1d', 'qr-appstore', IPHONE)
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toBe(appStore('a1d'))
+    expect(error).toHaveBeenCalledWith('mail link click not recorded', 'Amplitude answered 400')
+    error.mockRestore()
+  })
+
+  it('is never cached, so every tap reaches the counter', async () => {
+    const res = await get('a1a', 'intro-appstore', IPHONE)
+    expect(res.headers.get('cache-control')).toBe('no-store')
+    expect(res.headers.get('vary')).toBe('User-Agent')
+  })
+})

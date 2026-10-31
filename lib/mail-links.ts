@@ -1,0 +1,90 @@
+// Tracked store links in the Altid Hjem launch mails (ALT-605).
+//
+// Every App Store and Google Play link in the launch mails points at
+// https://www.altidhjem.dk/m/<mail>/<link>. The route answers 302 to the store
+// with the store's own campaign data (App Store `ct`, Google Play `referrer`),
+// and counts the tap in Amplitude. The scheme is ALT-894's (`ah_1_<site>`), with
+// the site being `mail_<mail>`.
+//
+// These URLs are permanent: they sit in inboxes for years. Never remove a code
+// below, and never roll production back to a deployment without the route.
+//
+// Only the codes below ever leave the route. A code that is not on the list is
+// reported as `unknown`, so nothing typed into a URL reaches analytics.
+
+/** The Amplitude event (website project) the admin reads. */
+export const MAIL_LINK_EVENT = 'Launch Mail Link Clicked'
+
+export const MAIL_CODES = ['a1a', 'a1c', 'a1b', 'a1d', 'm0', 'm2h', 'm2m', 'm3'] as const
+export type MailCode = (typeof MAIL_CODES)[number]
+
+export type Store = 'appstore' | 'play'
+
+const STORES: readonly Store[] = ['appstore', 'play']
+const BLOCKS = ['mad', 'indkob', 'energi', 'forsikring', 'drom'] as const
+
+function allLinkCodes(): string[] {
+  const codes = ['header', 'intro-play-link']
+  for (const store of STORES) {
+    for (const place of ['intro', 'breaker', 'end']) {
+      codes.push(`${place}-${store}`)
+    }
+    codes.push(`intro-${store}-wide`, `end-${store}-wide`, `qr-${store}`, `text-${store}`)
+    for (const block of BLOCKS) codes.push(`block-${block}-${store}`)
+  }
+  return codes
+}
+
+/** Every link position a launch mail may use. */
+export const LINK_CODES: readonly string[] = allLinkCodes()
+
+const MAIL_SET = new Set<string>(MAIL_CODES)
+const LINK_SET = new Set<string>(LINK_CODES)
+
+export const UNKNOWN = 'unknown'
+
+export const APP_STORE_PROVIDER_TOKEN = '129212732'
+const APP_STORE_BASE = 'https://apps.apple.com/dk/app/altid-hjem/id6794330094'
+const PLAY_BASE = 'https://play.google.com/store/apps/details?id=dk.altidhjem.app'
+
+export interface MailLink {
+  /** A known mail code, or `unknown`. */
+  mail: string
+  /** A known link code, or `unknown`. */
+  link: string
+  valid: boolean
+  store: Store
+  location: string
+}
+
+/** The store a link code names, or null for a link that names none (the
+ * header image, an unknown code): those follow the phone. */
+export function storeOfLink(link: string): Store | null {
+  if (!LINK_SET.has(link)) return null
+  if (link.includes('appstore')) return 'appstore'
+  if (link.includes('play')) return 'play'
+  return null
+}
+
+function storeForDevice(userAgent: string | null): Store {
+  return userAgent && /android/i.test(userAgent) ? 'play' : 'appstore'
+}
+
+export function storeUrl(store: Store, mail: string, link: string): string {
+  const campaign = `ah_1_mail_${mail}`
+  if (store === 'appstore') {
+    return `${APP_STORE_BASE}?pt=${APP_STORE_PROVIDER_TOKEN}&ct=${campaign}&mt=8`
+  }
+  const referrer = `utm_source=mail_${mail}&utm_medium=email&utm_campaign=${campaign}&utm_content=${link}`
+  return `${PLAY_BASE}&referrer=${encodeURIComponent(referrer)}`
+}
+
+/** Where a tap on /m/<mail>/<link> goes, and what it is counted as. Always a
+ * store: a broken link in a sent mail must still get the person to the app. */
+export function resolveMailLink(rawMail: string, rawLink: string, userAgent: string | null): MailLink {
+  const mail = MAIL_SET.has(rawMail) ? rawMail : UNKNOWN
+  const link = LINK_SET.has(rawLink) ? rawLink : UNKNOWN
+  const valid = mail !== UNKNOWN && link !== UNKNOWN
+  const store = storeOfLink(link) ?? storeForDevice(userAgent)
+  return { mail, link, valid, store, location: storeUrl(store, mail, link) }
+}
