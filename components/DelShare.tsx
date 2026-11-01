@@ -3,7 +3,7 @@
 import * as amplitude from '@amplitude/analytics-browser'
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { BUTTON_PRIMARY } from '@/lib/typography'
-import { SHARE_TEXT, SHARE_TITLE, isAndroid, shareChannelLinks, shareUrl } from '@/lib/share-page'
+import { SHARE_TEXT, SHARE_TITLE, SHARE_URL, SHARE_URL_SHORT, isAndroid, shareChannelLinks } from '@/lib/share-page'
 
 type Method = 'native' | 'copy' | 'whatsapp' | 'sms' | 'mail'
 
@@ -42,10 +42,10 @@ function cookieBannerHeight(): number {
 
 export default function DelShare({ via }: { via: string }) {
   const bannerHeight = useSyncExternalStore(subscribeCookieBanner, cookieBannerHeight, () => 0)
-  const url = shareUrl(via)
+  const url = SHARE_URL
   const canNativeShare = useBrowserValue(() => typeof navigator.share === 'function')
   const android = useBrowserValue(() => isAndroid(navigator.userAgent))
-  const links = shareChannelLinks(via, { android: android === true })
+  const links = shareChannelLinks({ android: android === true })
 
   const [copied, setCopied] = useState(false)
   const [notice, setNotice] = useState('')
@@ -149,7 +149,7 @@ export default function DelShare({ via }: { via: string }) {
           id="del-link"
           ref={inputRef}
           readOnly
-          value={url}
+          value={SHARE_URL_SHORT}
           onClick={(e) => selectAll(e.currentTarget)}
           style={{ background: '#ffffff', borderColor: '#e6e2d8', color: FOREST }}
           className={`block min-h-[44px] w-full truncate rounded-2xl border px-4 text-sm ${FOCUS}`}

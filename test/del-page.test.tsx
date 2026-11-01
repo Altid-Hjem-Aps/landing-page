@@ -6,7 +6,7 @@ import { SHARE_TEXT } from '@/lib/share-page'
 
 vi.mock('@amplitude/analytics-browser', () => ({ track: vi.fn() }))
 
-const URL_HJEM = 'https://www.altidhjem.dk/?utm_source=invite&utm_medium=share&utm_campaign=hjem-welcome'
+const SHARED = 'https://www.altidhjem.dk/app'
 
 // navigator.share / clipboard / userAgent are browser APIs: set them on the real
 // jsdom navigator and remove them again after each test.
@@ -27,21 +27,21 @@ async function renderPage(via?: string) {
 }
 
 describe('/del', () => {
-  it('without navigator.share shows only the fallbacks, with links for the sanitised via', async () => {
+  it('without navigator.share shows only the fallbacks, sharing the /app link', async () => {
     await renderPage('hjem-welcome')
     expect(screen.queryByRole('button', { name: 'Del' })).toBeNull()
     expect(screen.getByRole('button', { name: 'Kopiér link' })).toBeInTheDocument()
     const wa = screen.getByRole('link', { name: 'WhatsApp' }).getAttribute('href')!
-    expect(decodeURIComponent(wa.replace('https://wa.me/?text=', ''))).toBe(`${SHARE_TEXT} ${URL_HJEM}`)
+    expect(decodeURIComponent(wa.replace('https://wa.me/?text=', ''))).toBe(`${SHARE_TEXT} ${SHARED}`)
     expect(screen.getByRole('link', { name: 'SMS' }).getAttribute('href')).toMatch(/^sms:\?&body=/)
     expect(screen.getByRole('link', { name: 'Mail' }).getAttribute('href')).toMatch(/^mailto:\?subject=Pr%C3%B8v%20Altid%20Hjem&body=/)
   })
 
-  it('falls back to via=del for an invalid ?via=', async () => {
+  it('shows the short link in the box and tracks an invalid ?via= as del', async () => {
     await renderPage('NOT valid')
-    expect(screen.getByLabelText('Link til Altid Hjem')).toHaveValue(
-      'https://www.altidhjem.dk/?utm_source=invite&utm_medium=share&utm_campaign=del',
-    )
+    expect(screen.getByLabelText('Link til Altid Hjem')).toHaveValue('altidhjem.dk/app')
+    fireEvent.click(screen.getByRole('link', { name: 'SMS' }))
+    expect(amplitude.track).toHaveBeenCalledWith('Share Page Shared', { method: 'sms', via: 'del' })
   })
 
   it('uses the Android sms: form on Android', async () => {
@@ -55,7 +55,7 @@ describe('/del', () => {
     setNavigator('share', share)
     await renderPage('hjem-welcome')
     await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Del' })))
-    expect(share).toHaveBeenCalledWith({ title: 'Altid Hjem', text: SHARE_TEXT, url: URL_HJEM })
+    expect(share).toHaveBeenCalledWith({ title: 'Altid Hjem', text: SHARE_TEXT, url: SHARED })
     expect(amplitude.track).toHaveBeenCalledWith('Share Page Shared', { method: 'native', via: 'hjem-welcome' })
   })
 
@@ -94,7 +94,7 @@ describe('/del', () => {
     setNavigator('clipboard', { writeText })
     await renderPage('hjem-welcome')
     await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Kopiér link' })))
-    expect(writeText).toHaveBeenCalledWith(URL_HJEM)
+    expect(writeText).toHaveBeenCalledWith(SHARED)
     expect(screen.getByRole('button', { name: 'Kopieret' })).toBeInTheDocument()
     expect(amplitude.track).toHaveBeenCalledWith('Share Page Shared', { method: 'copy', via: 'hjem-welcome' })
     act(() => vi.advanceTimersByTime(2000))

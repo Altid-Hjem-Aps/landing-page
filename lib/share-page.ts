@@ -11,8 +11,8 @@ export const SHARE_TEXT =
 export const MAIL_SUBJECT = 'Prøv Altid Hjem'
 
 // `via` says where the share started (the mail, the app, the page itself). It
-// ends up in utm_campaign, so only a short slug gets through; anything else
-// falls back to the page's own value instead of reaching Amplitude.
+// goes into the page's Amplitude event, so only a short slug gets through;
+// anything else falls back to the page's own value.
 export const DEFAULT_VIA = 'del'
 const VIA = /^[a-z0-9-]{1,32}$/
 
@@ -20,9 +20,11 @@ export function sanitizeVia(raw: unknown): string {
   return typeof raw === 'string' && VIA.test(raw) ? raw : DEFAULT_VIA
 }
 
-export function shareUrl(via: string): string {
-  return `https://www.altidhjem.dk/?utm_source=invite&utm_medium=share&utm_campaign=${via}`
-}
+// What a friend receives. /app redirects to /m/invite/header, which sends the
+// phone to its store with the invite campaign (lib/mail-links.ts), so the link
+// itself carries no UTM. `via` stays on the page's own Amplitude event only.
+export const SHARE_URL = 'https://www.altidhjem.dk/app'
+export const SHARE_URL_SHORT = 'altidhjem.dk/app'
 
 // Android's Messages app reads `sms:?body=`; iOS needs the `&` form.
 export function isAndroid(userAgent: string): boolean {
@@ -35,8 +37,8 @@ export interface ShareChannelLinks {
   mail: string
 }
 
-export function shareChannelLinks(via: string, { android = false } = {}): ShareChannelLinks {
-  const message = encodeURIComponent(`${SHARE_TEXT} ${shareUrl(via)}`)
+export function shareChannelLinks({ android = false } = {}): ShareChannelLinks {
+  const message = encodeURIComponent(`${SHARE_TEXT} ${SHARE_URL}`)
   return {
     whatsapp: `https://wa.me/?text=${message}`,
     sms: android ? `sms:?body=${message}` : `sms:?&body=${message}`,

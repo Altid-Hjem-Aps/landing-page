@@ -109,6 +109,14 @@ describe('/m/<mail>/<link>', () => {
     }
   })
 
+  it('sends a shared invite (/app -> invite/header) to the store of the phone with the invite campaign', async () => {
+    const iphone = await get('invite', 'header', IPHONE)
+    expect(iphone.headers.get('location')).toBe(`${APP_STORE}?pt=129212732&ct=ah_1_mail_invite&mt=8`)
+    expect(iphone.headers.get('x-altid-mail-link')).toBe('valid')
+    const android = await get('invite', 'header', ANDROID)
+    expect(android.headers.get('location')).toBe(play('invite', 'header'))
+  })
+
   it('encodes the Play referrer once, so the store reads utm_content back', async () => {
     const res = await get('a1c', 'intro-play-wide', ANDROID)
     const location = new URL(res.headers.get('location')!)

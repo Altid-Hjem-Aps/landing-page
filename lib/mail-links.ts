@@ -19,8 +19,11 @@ export const MAIL_LINK_EVENT = 'Launch Mail Link Clicked'
 
 // a1b and a1d (the short notices) are no longer sent since 31 Oct 2026: people
 // without consent get a1a or a1c. They stay valid so any old link still
-// counts. a1f is the Altid Forsikring waitlist's mail 1.
-export const MAIL_CODES = ['a1a', 'a1c', 'a1b', 'a1d', 'a1f', 'm0', 'm2h', 'm2m', 'm3'] as const
+// counts. a1f is the Altid Forsikring waitlist's mail 1. invite is not a mail:
+// it is the link people share from /del and the welcome mail's share row
+// (www.altidhjem.dk/app redirects to /m/invite/header), so a friend lands in
+// the store with campaign ah_1_mail_invite.
+export const MAIL_CODES = ['a1a', 'a1c', 'a1b', 'a1d', 'a1f', 'm0', 'm2h', 'm2m', 'm3', 'invite'] as const
 export type MailCode = (typeof MAIL_CODES)[number]
 
 export type Store = 'appstore' | 'play'
