@@ -1,6 +1,5 @@
 'use client'
 
-import * as amplitude from '@amplitude/analytics-browser'
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { BUTTON_PRIMARY } from '@/lib/typography'
 import { SHARE_TEXT, SHARE_TITLE, SHARE_URL, SHARE_URL_SHORT } from '@/lib/share-page'
@@ -80,8 +79,21 @@ export default function DelShare({ via }: { via: string }) {
   const copiedTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   useEffect(() => () => clearTimeout(copiedTimer.current), [])
 
+  // Counted by our server (app/api/del/share/route.ts), not the browser SDK:
+  // the SDK only sends after cookie consent, so shares without it were lost.
+  // Fire and forget: the share or copy never waits for the count.
   function track(method: Method) {
-    amplitude.track('Share Page Shared', { method, via })
+    const report = (problem: unknown) => {
+      if (process.env.NODE_ENV === 'development') console.error('del share not counted', problem)
+    }
+    fetch('/api/del/share', {
+      method: 'POST',
+      body: JSON.stringify({ method, via }),
+      keepalive: true,
+      headers: { 'content-type': 'application/json' },
+    }).then((res) => {
+      if (!res.ok) report(`HTTP ${res.status}`)
+    }, report)
   }
 
   // Must run straight from the tap: browsers only open the share sheet on a

@@ -150,13 +150,19 @@ export function resolveMailLink(rawMail: string, rawLink: string, userAgent: str
 }
 
 /**
- * The rate-limit key for one IP: an HMAC-SHA256 of the IP under a server-only
- * secret (REFERRAL_IP_SALT, set on Preview and Production), cut to 32 hex
+ * The rate-limit key for one IP under a route's own prefix: an HMAC-SHA256
+ * of the IP under a server-only secret (REFERRAL_IP_SALT, set on Preview and
+ * Production), cut to 32 hex
  * characters. The raw IP is never stored, and without the secret the key
  * cannot be brute-forced back to an IPv4 address. Throws without a secret:
  * an unkeyed hash of an IP is no protection.
  */
-export function mailLinkRateKey(ip: string | null, secret: string | undefined): string {
+export function ipRateKey(prefix: string, ip: string | null, secret: string | undefined): string {
   if (!secret) throw new Error('REFERRAL_IP_SALT is not set: will not rate-limit on an unkeyed IP')
-  return `mail-link:${createHmac('sha256', secret).update(ip ?? 'unknown').digest('hex').slice(0, 32)}`
+  return `${prefix}:${createHmac('sha256', secret).update(ip ?? 'unknown').digest('hex').slice(0, 32)}`
+}
+
+/** The mail-link taps' key (app/m/[mail]/[link]/route.ts). */
+export function mailLinkRateKey(ip: string | null, secret: string | undefined): string {
+  return ipRateKey('mail-link', ip, secret)
 }
