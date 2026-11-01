@@ -83,7 +83,11 @@ export function storeUrl(store: Store, mail: string, link: string): string {
   if (store === 'appstore') {
     return `${APP_STORE_BASE}?pt=${APP_STORE_PROVIDER_TOKEN}&ct=${campaign}&mt=8`
   }
-  const referrer = `utm_source=mail_${mail}&utm_medium=email&utm_campaign=${campaign}&utm_content=${link}`
+  // A shared invite is not an email: Play reports it as its own share source.
+  const referrer =
+    mail === 'invite'
+      ? `utm_source=invite&utm_medium=share&utm_campaign=invite&utm_content=${link}`
+      : `utm_source=mail_${mail}&utm_medium=email&utm_campaign=${campaign}&utm_content=${link}`
   return `${PLAY_BASE}&referrer=${encodeURIComponent(referrer)}`
 }
 

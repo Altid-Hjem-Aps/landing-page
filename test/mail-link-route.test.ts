@@ -52,7 +52,10 @@ function appStore(mail: string) {
   return `${APP_STORE}?pt=129212732&ct=ah_1_mail_${mail}&mt=8`
 }
 function play(mail: string, link: string) {
-  const referrer = `utm_source=mail_${mail}&utm_medium=email&utm_campaign=ah_1_mail_${mail}&utm_content=${link}`
+  const referrer =
+    mail === 'invite'
+      ? `utm_source=invite&utm_medium=share&utm_campaign=invite&utm_content=${link}`
+      : `utm_source=mail_${mail}&utm_medium=email&utm_campaign=ah_1_mail_${mail}&utm_content=${link}`
   return `${PLAY}&referrer=${encodeURIComponent(referrer)}`
 }
 
@@ -114,7 +117,10 @@ describe('/m/<mail>/<link>', () => {
     expect(iphone.headers.get('location')).toBe(`${APP_STORE}?pt=129212732&ct=ah_1_mail_invite&mt=8`)
     expect(iphone.headers.get('x-altid-mail-link')).toBe('valid')
     const android = await get('invite', 'header', ANDROID)
-    expect(android.headers.get('location')).toBe(play('invite', 'header'))
+    // A share, not an email: Play must not file it under utm_medium=email.
+    expect(android.headers.get('location')).toBe(
+      `${PLAY}&referrer=${encodeURIComponent('utm_source=invite&utm_medium=share&utm_campaign=invite&utm_content=header')}`,
+    )
   })
 
   it('encodes the Play referrer once, so the store reads utm_content back', async () => {
