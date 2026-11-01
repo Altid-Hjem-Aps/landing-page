@@ -166,14 +166,18 @@ export default function DelShare({ via }: { via: string }) {
         </button>
       )}
       {canNativeShare === false && (
-        <p style={{ color: FOREST }} className="mt-8 text-base">
+        // Same 66px box as the button and its placeholder, so the field does not
+        // jump when hydration finds no navigator.share.
+        <p style={{ color: FOREST }} className="mt-8 flex min-h-[66px] items-end text-base">
           Kopiér linket, og send det videre.
         </p>
       )}
 
       {/* The link with its copy button at the right end, like a share field. */}
       <div
-        className={`${canNativeShare === false ? 'mt-3' : 'mt-4'} flex min-h-[52px] items-center gap-2 rounded-2xl border bg-white py-1 pl-4 pr-1`}
+        // The ring goes on the whole field when the link has keyboard focus
+        // (outline-none on the input would swallow its own focus-visible ring).
+        className="mt-4 flex min-h-[52px] items-center gap-2 rounded-2xl border bg-white py-1 pl-4 pr-1 has-[input:focus-visible]:outline has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-[#163223]"
         style={{ borderColor: SAND }}
       >
         <label htmlFor="del-link" className="sr-only">
@@ -186,12 +190,13 @@ export default function DelShare({ via }: { via: string }) {
           value={SHARE_URL_SHORT}
           onClick={(e) => selectAll(e.currentTarget)}
           style={{ color: FOREST }}
-          className={`min-w-0 flex-1 truncate bg-transparent text-base outline-none ${FOCUS}`}
+          className="min-w-0 flex-1 truncate bg-transparent text-base outline-none"
         />
         <button
           type="button"
           onClick={copyLink}
-          aria-label={copied ? 'Kopieret' : 'Kopiér link'}
+          // Static name; the state change is announced once, by the live region.
+          aria-label="Kopiér link"
           style={copied ? { background: SIGNAL, color: FOREST } : { background: FOREST, color: '#ffffff' }}
           className={`flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center gap-1.5 rounded-xl px-3 text-sm font-medium transition-colors ${FOCUS}`}
         >

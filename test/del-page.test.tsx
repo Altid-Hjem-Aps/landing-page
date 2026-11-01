@@ -90,21 +90,32 @@ describe('/del', () => {
     await renderPage('hjem-welcome')
     await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Kopiér link' })))
     expect(writeText).toHaveBeenCalledWith(SHARED)
-    const done = screen.getByRole('button', { name: 'Kopieret' })
-    expect(done.querySelector('svg[data-icon="check"]')).not.toBeNull()
+    const button = screen.getByRole('button', { name: 'Kopiér link' })
+    expect(button).toHaveTextContent('Kopieret')
+    expect(button.querySelector('svg[data-icon="check"]')).not.toBeNull()
+    expect(document.querySelector('[aria-live="polite"]')).toHaveTextContent('Kopieret')
     expect(amplitude.track).toHaveBeenCalledWith('Share Page Shared', { method: 'copy', via: 'hjem-welcome' })
     act(() => vi.advanceTimersByTime(2000))
-    expect(screen.getByRole('button', { name: 'Kopiér link' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Kopiér link' })).toHaveTextContent('Kopiér')
+    expect(screen.getByRole('button', { name: 'Kopiér link' })).not.toHaveTextContent('Kopieret')
+    expect(document.querySelector('[aria-live="polite"]')).toBeEmptyDOMElement()
   })
 
-  it('without a clipboard API selects the link instead and does not claim it was copied', async () => {
-    setNavigator('clipboard', undefined)
+  it.each([
+    ['without a clipboard API', undefined],
+    ['when the clipboard refuses', { writeText: vi.fn().mockRejectedValue(new Error('denied')) }],
+  ])('%s selects the whole link instead and does not claim it was copied', async (_, clipboard) => {
+    setNavigator('clipboard', clipboard)
     await renderPage('hjem-welcome')
     await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Kopiér link' })))
-    expect(document.activeElement).toBe(screen.getByLabelText('Link til Altid Hjem'))
-    expect(screen.queryByRole('button', { name: 'Kopieret' })).toBeNull()
+    const input = screen.getByLabelText('Link til Altid Hjem') as HTMLInputElement
+    expect(document.activeElement).toBe(input)
+    expect([input.selectionStart, input.selectionEnd]).toEqual([0, 'altidhjem.dk/app'.length])
+    expect(screen.getByRole('status')).toHaveTextContent('Linket er markeret')
+    expect(screen.getByRole('button', { name: 'Kopiér link' })).not.toHaveTextContent('Kopieret')
     expect(amplitude.track).not.toHaveBeenCalled()
   })
+
 
   it('tracks an invalid ?via= as del', async () => {
     setNavigator('clipboard', { writeText: vi.fn().mockResolvedValue(undefined) })
