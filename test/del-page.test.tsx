@@ -27,27 +27,22 @@ async function renderPage(via?: string) {
 }
 
 describe('/del', () => {
-  it('without navigator.share shows only the fallbacks, sharing the /app link', async () => {
+  it('without navigator.share shows only the link field with copy and one line', async () => {
     await renderPage('hjem-welcome')
     expect(screen.queryByRole('button', { name: 'Del' })).toBeNull()
-    expect(screen.getByRole('button', { name: 'Kopiér link' })).toBeInTheDocument()
-    const wa = screen.getByRole('link', { name: 'WhatsApp' }).getAttribute('href')!
-    expect(decodeURIComponent(wa.replace('https://wa.me/?text=', ''))).toBe(`${SHARE_TEXT} ${SHARED}`)
-    expect(screen.getByRole('link', { name: 'SMS' }).getAttribute('href')).toMatch(/^sms:\?&body=/)
-    expect(screen.getByRole('link', { name: 'Mail' }).getAttribute('href')).toMatch(/^mailto:\?subject=Pr%C3%B8v%20Altid%20Hjem&body=/)
-  })
-
-  it('shows the short link in the box and tracks an invalid ?via= as del', async () => {
-    await renderPage('NOT valid')
+    expect(screen.getByText('Kopiér linket, og send det videre.')).toBeInTheDocument()
     expect(screen.getByLabelText('Link til Altid Hjem')).toHaveValue('altidhjem.dk/app')
-    fireEvent.click(screen.getByRole('link', { name: 'SMS' }))
-    expect(amplitude.track).toHaveBeenCalledWith('Share Page Shared', { method: 'sms', via: 'del' })
+    expect(screen.getByRole('button', { name: 'Kopiér link' })).toBeInTheDocument()
+    // The share sheet covers the channels: no WhatsApp/SMS/Mail buttons on the page.
+    expect(screen.queryByRole('link', { name: /WhatsApp|SMS|Mail/ })).toBeNull()
   })
 
-  it('uses the Android sms: form on Android', async () => {
-    setNavigator('userAgent', 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/130 Mobile')
+  it('shows the Del button with the share icon when the browser can share', async () => {
+    setNavigator('share', vi.fn().mockResolvedValue(undefined))
     await renderPage('hjem-welcome')
-    expect(screen.getByRole('link', { name: 'SMS' }).getAttribute('href')).toMatch(/^sms:\?body=/)
+    const del = screen.getByRole('button', { name: 'Del' })
+    expect(del.querySelector('svg[data-icon="share"]')).not.toBeNull()
+    expect(screen.queryByText('Kopiér linket, og send det videre.')).toBeNull()
   })
 
   it('with navigator.share opens the sheet with title, text and url, and tracks only after it resolves', async () => {
@@ -95,7 +90,8 @@ describe('/del', () => {
     await renderPage('hjem-welcome')
     await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Kopiér link' })))
     expect(writeText).toHaveBeenCalledWith(SHARED)
-    expect(screen.getByRole('button', { name: 'Kopieret' })).toBeInTheDocument()
+    const done = screen.getByRole('button', { name: 'Kopieret' })
+    expect(done.querySelector('svg[data-icon="check"]')).not.toBeNull()
     expect(amplitude.track).toHaveBeenCalledWith('Share Page Shared', { method: 'copy', via: 'hjem-welcome' })
     act(() => vi.advanceTimersByTime(2000))
     expect(screen.getByRole('button', { name: 'Kopiér link' })).toBeInTheDocument()
@@ -110,9 +106,10 @@ describe('/del', () => {
     expect(amplitude.track).not.toHaveBeenCalled()
   })
 
-  it('tracks the channel a person picks', async () => {
-    await renderPage('hjem-welcome')
-    fireEvent.click(screen.getByRole('link', { name: 'Mail' }))
-    expect(amplitude.track).toHaveBeenCalledWith('Share Page Shared', { method: 'mail', via: 'hjem-welcome' })
+  it('tracks an invalid ?via= as del', async () => {
+    setNavigator('clipboard', { writeText: vi.fn().mockResolvedValue(undefined) })
+    await renderPage('NOT valid')
+    await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Kopiér link' })))
+    expect(amplitude.track).toHaveBeenCalledWith('Share Page Shared', { method: 'copy', via: 'del' })
   })
 })
