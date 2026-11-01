@@ -101,6 +101,13 @@ describe('/m/<mail>/<link>', () => {
     }
   })
 
+  it('gives the Altid Forsikring follow-up (m2f) its own campaign on both stores', async () => {
+    const iphone = await get('m2f', 'intro-appstore')
+    expect(iphone.headers.get('location')).toBe('https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_mail_m2f&mt=8')
+    expect(iphone.headers.get('x-altid-mail-link')).toBe('valid')
+    expect((await get('m2f', 'qr-play')).headers.get('location')).toBe(play('m2f', 'qr-play'))
+  })
+
   it('gives the Altid Forsikring mail its own App Store campaign, and keeps the dropped notice codes working', async () => {
     expect((await get('a1f', 'intro-appstore')).headers.get('location')).toBe(
       'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_mail_a1f&mt=8',
