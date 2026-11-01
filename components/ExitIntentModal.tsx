@@ -20,7 +20,7 @@ const ExitIntentDialog = dynamic(() => import('@/components/ExitIntentDialog'), 
 // Utility pages where a signup pitch would be wrong (account deletion, legal,
 // the referral share page). New SEO pages get the dialog automatically.
 // Matched on exact path or path segment, so /kontakt-os would NOT be excluded.
-const EXCLUDED_PATHS = ['/slet-konto', '/privatlivspolitik', '/inviter', '/kontakt', '/preview']
+const EXCLUDED_PATHS = ['/slet-konto', '/privatlivspolitik', '/inviter', '/kontakt', '/preview', '/del']
 
 // Ignore exit intent right after load: a cursor passing through the viewport
 // while the page is still settling is navigation noise, not an exit.
