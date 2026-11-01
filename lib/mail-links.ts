@@ -23,7 +23,8 @@ export const MAIL_LINK_EVENT = 'Launch Mail Link Clicked'
 // it is the link people share from /del and the welcome mail's share row
 // (www.altidhjem.dk/app redirects to /m/invite/header), so a friend lands in
 // the store with campaign ah_1_mail_invite.
-export const MAIL_CODES = ['a1a', 'a1c', 'a1b', 'a1d', 'a1f', 'm0', 'm2h', 'm2m', 'm3', 'invite'] as const
+// m2f (4 Nov 2026) is mail 2 to the Altid Forsikring waitlist: A1f recipients who did not open it.
+export const MAIL_CODES = ['a1a', 'a1c', 'a1b', 'a1d', 'a1f', 'm0', 'm2h', 'm2m', 'm3', 'invite', 'm2f'] as const
 export type MailCode = (typeof MAIL_CODES)[number]
 
 export type Store = 'appstore' | 'play'
