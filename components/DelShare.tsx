@@ -20,7 +20,28 @@ function useBrowserValue(read: () => boolean): boolean | null {
   return useSyncExternalStore<boolean | null>(noSubscribe, read, () => null)
 }
 
+// The cookie banner (components/CookieBanner.tsx) is fixed to the bottom of the
+// screen and, on a phone, about as tall as half of it. /del is short, so with
+// the banner open the share buttons sit under it and the page cannot scroll.
+// While the banner is in the DOM, reserve its height below the content so the
+// buttons can be scrolled up above it. Consent stays as it is.
+const COOKIE_BANNER = '[aria-labelledby="cookie-banner-title"]'
+function subscribeCookieBanner(onChange: () => void) {
+  const mo = new MutationObserver(onChange)
+  mo.observe(document.body, { childList: true, subtree: true })
+  window.addEventListener('resize', onChange)
+  return () => {
+    mo.disconnect()
+    window.removeEventListener('resize', onChange)
+  }
+}
+function cookieBannerHeight(): number {
+  const el = document.querySelector(COOKIE_BANNER)
+  return el ? Math.ceil(el.getBoundingClientRect().height) : 0
+}
+
 export default function DelShare({ via }: { via: string }) {
+  const bannerHeight = useSyncExternalStore(subscribeCookieBanner, cookieBannerHeight, () => 0)
   const url = shareUrl(via)
   const canNativeShare = useBrowserValue(() => typeof navigator.share === 'function')
   const android = useBrowserValue(() => isAndroid(navigator.userAgent))
@@ -93,7 +114,11 @@ export default function DelShare({ via }: { via: string }) {
   const channel = `flex min-h-[44px] items-center justify-center rounded-2xl px-3 text-sm font-medium transition-opacity hover:opacity-80 ${FOCUS}`
 
   return (
-    <div className="mx-auto w-full max-w-md">
+    <div
+      className="mx-auto w-full max-w-md"
+      // Banner height + its 12px offset (bottom-3) + 16px air + the safe area.
+      style={bannerHeight ? { paddingBottom: `calc(${bannerHeight + 28}px + env(safe-area-inset-bottom))` } : undefined}
+    >
       <h1 style={{ color: FOREST }} className="text-[32px] font-medium leading-tight sm:text-[40px]">
         Del Altid Hjem
       </h1>
