@@ -6,7 +6,8 @@ import { clientIp, looksLikeBot } from '@/lib/referral'
 
 // Store links in the launch mails (ALT-605):
 // https://www.altidhjem.dk/m/<mail>/<link> → App Store or Google Play, with
-// the store's campaign data for that mail.
+// the store's campaign data for that mail, or a fixed page on the site for the
+// few links listed in MAIL_LINK_OVERRIDES (lib/mail-links.ts), e.g. m0/del.
 //
 // The redirect is the product; the count is a side effect (the same rule as
 // /r/<code>). The 302 is built before anything else and the Amplitude event is
@@ -53,7 +54,7 @@ function isPrefetch(headers: Headers): boolean {
 function redirectFor(target: MailLink): NextResponse {
   const res = NextResponse.redirect(target.location, 302)
   res.headers.set('Cache-Control', 'no-store')
-  // The header image and unknown codes go to the store of the phone.
+  // The header image, m0/open and unknown codes go to the store of the phone.
   res.headers.set('Vary', 'User-Agent')
   res.headers.set('X-Robots-Tag', 'noindex, nofollow')
   // Read by the send script's preflight: a misspelt code still reaches a
