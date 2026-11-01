@@ -63,8 +63,21 @@ describe('/del', () => {
     setNavigator('share', vi.fn().mockRejectedValue(Object.assign(new Error('closed'), { name: 'AbortError' })))
     await renderPage('hjem-welcome')
     await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Del' })))
-    expect(screen.queryByRole('status')).toBeNull()
+    expect(screen.getByRole('status')).toBeEmptyDOMElement()
     expect(amplitude.track).not.toHaveBeenCalled()
+  })
+
+  it('ignores a second tap while the share sheet is still open', async () => {
+    let close: () => void = () => {}
+    const share = vi.fn(() => new Promise<void>((resolve) => (close = resolve)))
+    setNavigator('share', share)
+    await renderPage('hjem-welcome')
+    const del = screen.getByRole('button', { name: 'Del' })
+    fireEvent.click(del)
+    fireEvent.click(del)
+    expect(share).toHaveBeenCalledTimes(1)
+    await act(async () => close())
+    expect(screen.getByRole('status')).toBeEmptyDOMElement()
   })
 
   it('shows a short Danish line when sharing really fails', async () => {
