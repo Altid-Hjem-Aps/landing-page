@@ -97,7 +97,7 @@ export default function DelShare({ via }: { via: string }) {
     } catch (err) {
       // AbortError: the person closed the sheet. Not a failure, nothing to say.
       if ((err as Error)?.name === 'AbortError') return
-      setNotice('Delingen virkede ikke. Kopiér linket i stedet.')
+      setNotice('Delingen virkede ikke. Kopier linket i stedet.')
       return
     } finally {
       sharing.current = false
@@ -169,7 +169,7 @@ export default function DelShare({ via }: { via: string }) {
         // Same 66px box as the button and its placeholder, so the field does not
         // jump when hydration finds no navigator.share.
         <p style={{ color: FOREST }} className="mt-8 flex min-h-[66px] items-end text-base">
-          Kopiér linket, og send det videre.
+          Kopier linket, og send det videre.
         </p>
       )}
 
@@ -195,13 +195,16 @@ export default function DelShare({ via }: { via: string }) {
         <button
           type="button"
           onClick={copyLink}
-          // Static name; the state change is announced once, by the live region.
-          aria-label="Kopiér link"
+          // Static name (the visible label at rest); the state change is
+          // announced once, by the live region.
+          aria-label="Kopier link"
           style={copied ? { background: SIGNAL, color: FOREST } : { background: FOREST, color: '#ffffff' }}
-          className={`flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center gap-1.5 rounded-xl px-3 text-sm font-medium transition-colors ${FOCUS}`}
+          className={`flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl px-3 text-sm font-medium transition-colors ${FOCUS}`}
         >
           {copied ? <CheckIcon /> : <CopyIcon />}
-          <span className="hidden sm:inline">{copied ? 'Kopieret' : 'Kopiér'}</span>
+          {/* The label shows at every width: an icon alone did not read as copy
+              on a phone. At 375 px the field keeps ~190 px for the link. */}
+          <span>{copied ? 'Kopieret' : 'Kopier link'}</span>
         </button>
       </div>
       <span aria-live="polite" className="sr-only">

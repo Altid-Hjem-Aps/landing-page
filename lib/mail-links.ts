@@ -1,12 +1,13 @@
 import { createHmac } from 'node:crypto'
 
-// Tracked store links in the Altid Hjem launch mails (ALT-605).
+// Tracked links in the Altid Hjem launch mails (ALT-605).
 //
 // Every App Store and Google Play link in the launch mails points at
 // https://www.altidhjem.dk/m/<mail>/<link>. The route answers 302 to the store
 // with the store's own campaign data (App Store `ct`, Google Play `referrer`),
 // and counts the tap in Amplitude. The scheme is ALT-894's (`ah_1_<site>`), with
-// the site being `mail_<mail>`.
+// the site being `mail_<mail>`. A few links of one mail go somewhere else, or
+// follow the phone under a name of their own: those are in MAIL_LINK_OVERRIDES.
 //
 // These URLs are permanent: they sit in inboxes for years. Never remove a code
 // below, and never roll production back to a deployment without the route.
@@ -28,6 +29,8 @@ export const MAIL_CODES = ['a1a', 'a1c', 'a1b', 'a1d', 'a1f', 'm0', 'm2h', 'm2m'
 export type MailCode = (typeof MAIL_CODES)[number]
 
 export type Store = 'appstore' | 'play'
+/** Where a tap lands: a store, or `web` for a page on the site. */
+export type Target = Store | 'web'
 
 const STORES: readonly Store[] = ['appstore', 'play']
 const BLOCKS = ['mad', 'indkob', 'energi', 'forsikring', 'drom'] as const
@@ -50,6 +53,36 @@ export const LINK_CODES: readonly string[] = allLinkCodes()
 const MAIL_SET = new Set<string>(MAIL_CODES)
 const LINK_SET = new Set<string>(LINK_CODES)
 
+/** A link that only one mail has. `phone`: the store of the phone, with that
+ * mail's campaign, like the header image. `web`: a fixed page on the site. */
+export type LinkOverride = { kind: 'phone' } | { kind: 'web'; url: string }
+
+/**
+ * Links that exist for one mail only, keyed by mail code, then link code.
+ *
+ * m0 (the welcome mail) opens the app and the share page from buttons that
+ * used to link straight to the site, so their taps were never counted:
+ * - m0/open: the "open the app" button, to the store of the phone (m0 campaign).
+ * - m0/del: the share button, to /del with via=hjem-welcome (the /del page
+ *   counts the share itself in "Share Page Shared").
+ *
+ * Destinations are fixed here, never read from the request: the route is not
+ * an open redirect. A web destination is an absolute production URL, so a
+ * preview deployment hands m0/del over to production /del. Same rule as the
+ * codes above: never remove an entry.
+ */
+export const MAIL_LINK_OVERRIDES: Readonly<Partial<Record<MailCode, Readonly<Record<string, LinkOverride>>>>> = {
+  m0: {
+    open: { kind: 'phone' },
+    del: { kind: 'web', url: 'https://www.altidhjem.dk/del?via=hjem-welcome' },
+  },
+}
+
+function overrideFor(mail: string, link: string): LinkOverride | undefined {
+  const links = MAIL_LINK_OVERRIDES[mail as MailCode]
+  return links && Object.hasOwn(links, link) ? links[link] : undefined
+}
+
 export const UNKNOWN = 'unknown'
 
 export const APP_STORE_PROVIDER_TOKEN = '129212732'
@@ -62,7 +95,8 @@ export interface MailLink {
   /** A known link code, or `unknown`. */
   link: string
   valid: boolean
-  store: Store
+  /** The store the tap goes to, or `web` for a page on the site. */
+  store: Target
   location: string
 }
 
@@ -92,19 +126,25 @@ export function storeUrl(store: Store, mail: string, link: string): string {
   return `${PLAY_BASE}&referrer=${encodeURIComponent(referrer)}`
 }
 
-/** A code as typed, or `unknown`. Mail programs that show plain text can
- * capitalise a link or glue a full stop or bracket onto it; both still count. */
-function normalizeCode(raw: string, known: Set<string>): string {
-  const code = raw.trim().toLowerCase().replace(/[^a-z0-9-]+$/, '')
-  return known.has(code) ? code : UNKNOWN
+/** A code as typed. Mail programs that show plain text can capitalise a link
+ * or glue a full stop or bracket onto it; both still count. */
+function cleanCode(raw: string): string {
+  return raw.trim().toLowerCase().replace(/[^a-z0-9-]+$/, '')
 }
 
-/** Where a tap on /m/<mail>/<link> goes, and what it is counted as. Always a
- * store: a broken link in a sent mail must still get the person to the app. */
+/** Where a tap on /m/<mail>/<link> goes, and what it is counted as. A store,
+ * unless the mail has its own destination for that link (MAIL_LINK_OVERRIDES):
+ * a broken link in a sent mail must still get the person to the app. */
 export function resolveMailLink(rawMail: string, rawLink: string, userAgent: string | null): MailLink {
-  const mail = normalizeCode(rawMail, MAIL_SET)
-  const link = normalizeCode(rawLink, LINK_SET)
+  const cleanMail = cleanCode(rawMail)
+  const cleanLink = cleanCode(rawLink)
+  const mail = MAIL_SET.has(cleanMail) ? cleanMail : UNKNOWN
+  const override = mail === UNKNOWN ? undefined : overrideFor(mail, cleanLink)
+  const link = (override || LINK_SET.has(cleanLink)) ? cleanLink : UNKNOWN
   const valid = mail !== UNKNOWN && link !== UNKNOWN
+  if (override?.kind === 'web') {
+    return { mail, link, valid, store: 'web', location: override.url }
+  }
   const store = storeOfLink(link) ?? storeForDevice(userAgent)
   return { mail, link, valid, store, location: storeUrl(store, mail, link) }
 }

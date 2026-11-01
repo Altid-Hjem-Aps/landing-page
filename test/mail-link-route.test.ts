@@ -130,6 +130,73 @@ describe('/m/<mail>/<link>', () => {
     )
   })
 
+  it('sends the welcome mail open button (m0/open) to the store of the phone with the m0 campaign, and counts it', async () => {
+    const iphone = await get('m0', 'open', IPHONE)
+    expect(iphone.status).toBe(302)
+    expect(iphone.headers.get('x-altid-mail-link')).toBe('valid')
+    expect(iphone.headers.get('location')).toBe(`${APP_STORE}?pt=129212732&ct=ah_1_mail_m0&mt=8`)
+    const android = await get('m0', 'open', ANDROID)
+    expect(android.headers.get('location')).toBe(
+      `${PLAY}&referrer=${encodeURIComponent('utm_source=mail_m0&utm_medium=email&utm_campaign=ah_1_mail_m0&utm_content=open')}`,
+    )
+    expect(tracked).toEqual([
+      {
+        event: 'Launch Mail Link Clicked',
+        props: { campaign: 'alt605', mail: 'm0', link: 'open', mail_link: 'm0/open', store: 'appstore', valid: true, env: 'production' },
+      },
+      {
+        event: 'Launch Mail Link Clicked',
+        props: { campaign: 'alt605', mail: 'm0', link: 'open', mail_link: 'm0/open', store: 'play', valid: true, env: 'production' },
+      },
+    ])
+  })
+
+  it('sends the welcome mail share button (m0/del) to /del with via=hjem-welcome on every phone, and counts it', async () => {
+    for (const ua of [IPHONE, ANDROID, IPAD]) {
+      const res = await get('m0', 'del', ua)
+      expect(res.status).toBe(302)
+      expect(res.headers.get('x-altid-mail-link')).toBe('valid')
+      expect(res.headers.get('location')).toBe('https://www.altidhjem.dk/del?via=hjem-welcome')
+      expect(res.headers.get('cache-control')).toBe('no-store')
+    }
+    expect(tracked).toHaveLength(3)
+    expect(tracked[0]).toEqual({
+      event: 'Launch Mail Link Clicked',
+      props: { campaign: 'alt605', mail: 'm0', link: 'del', mail_link: 'm0/del', store: 'web', valid: true, env: 'production' },
+    })
+  })
+
+  it('reads m0/del as typed with capitals or a full stop, and answers HEAD without counting', async () => {
+    const typed = await get('M0', 'Del.', IPHONE)
+    expect(typed.headers.get('location')).toBe('https://www.altidhjem.dk/del?via=hjem-welcome')
+    expect(tracked[0].props.mail_link).toBe('m0/del')
+    trackMock.mockClear()
+    const head = await get('m0', 'del', IPHONE, 'HEAD')
+    expect(head.status).toBe(302)
+    expect(head.headers.get('location')).toBe('https://www.altidhjem.dk/del?via=hjem-welcome')
+    expect(trackMock).not.toHaveBeenCalled()
+  })
+
+  it('keeps open and del to the welcome mail: on another mail they are unknown links that go to a store', async () => {
+    for (const link of ['open', 'del']) {
+      const res = await get('a1a', link, ANDROID)
+      expect(res.headers.get('x-altid-mail-link')).toBe('invalid')
+      expect(res.headers.get('location')).toBe(play('a1a', 'unknown'))
+    }
+    // An unknown mail never reaches the override, even with a known override link.
+    const res = await get('m9', 'del', IPHONE)
+    expect(res.headers.get('location')).toBe(appStore('unknown'))
+    expect(tracked.map((t) => t.props.mail_link)).toEqual(['a1a/unknown', 'a1a/unknown', 'unknown/unknown'])
+  })
+
+  it('never resolves an inherited object key as an override', async () => {
+    for (const link of ['constructor', 'tostring', '__proto__']) {
+      const res = await get('m0', link, IPHONE)
+      expect(res.headers.get('x-altid-mail-link')).toBe('invalid')
+      expect(res.headers.get('location')).toBe(appStore('m0'))
+    }
+  })
+
   it('encodes the Play referrer once, so the store reads utm_content back', async () => {
     const res = await get('a1c', 'intro-play-wide', ANDROID)
     const location = new URL(res.headers.get('location')!)
