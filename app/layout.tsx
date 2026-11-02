@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import { Onest, Afacad } from 'next/font/google'
 import './globals.css'
 import ResetScrollOnLoad from '@/components/ResetScrollOnLoad'
-import ExitIntentModal from '@/components/ExitIntentModal'
 import CookieBanner from '@/components/CookieBanner'
+import { PLATFORM_SCRIPT } from '@/lib/platform'
+import { METADATA } from '@/lib/forside-copy'
 
 const onest = Onest({
   subsets: ['latin'],
@@ -22,11 +23,11 @@ const afacad = Afacad({
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.altidhjem.dk'),
   alternates: { canonical: './' },
-  title: 'Altid Hjem – Skriv dig på ventelisten',
-  description: 'Altid Hjem samler hjemmets faste udgifter i én app – ét overblik og ét login.',
+  title: METADATA.title,
+  description: METADATA.description,
   openGraph: {
-    title: 'Altid Hjem – Skriv dig på ventelisten',
-    description: 'Altid Hjem samler hjemmets faste udgifter i én app – ét overblik og ét login.',
+    title: METADATA.title,
+    description: METADATA.description,
     url: 'https://www.altidhjem.dk',
     siteName: 'Altid Hjem',
     locale: 'da_DK',
@@ -46,11 +47,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // data-scroll-behavior: opt-in so Next keeps smooth scrolling for anchor
     // jumps but disables it during route transitions (silences the Next 15+
     // console warning).
-    <html lang="da" data-scroll-behavior="smooth" className={`${onest.variable} ${afacad.variable}`}>
+    // suppressHydrationWarning: the head script below sets data-platform on
+    // <html> before React hydrates.
+    <html
+      lang="da"
+      data-scroll-behavior="smooth"
+      className={`${onest.variable} ${afacad.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        {/* A raw script, not next/script: it must run before first paint so
+            the store badges are in platform order from the start. */}
+        <script dangerouslySetInnerHTML={{ __html: PLATFORM_SCRIPT }} />
+      </head>
       <body>
         <ResetScrollOnLoad />
         {children}
-        <ExitIntentModal />
         <CookieBanner />
       </body>
     </html>

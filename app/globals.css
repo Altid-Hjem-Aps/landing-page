@@ -17,6 +17,26 @@
   --accent-lilac: #ffbbf8;
 }
 
+/* The Altid Hjem app palette (app_colors.dart), used by the front page.
+   The --forest/--cream tokens above stay for the other pages. */
+:root {
+  --app-forest: #163223;
+  --app-brand-green: #003C16;
+  --app-paper: #FDFAF4;
+  --app-white: #FFFFFF;
+  --app-beige: #F1ECE0;
+  --app-border: #EAE6DE;
+  --app-ink: #2C2A26;
+  /* Muted text on paper and white only: it fails contrast on the tints. */
+  --app-ink-muted: #6B675F;
+  --app-signal: #90FF7C;
+  --app-sage: #A8E063;
+  --tint-okonomi: #FFC56B;
+  --tint-mad: #CDC2FB;
+  --tint-energi: #A3D5FF;
+  --tint-forsikring: #FFBAB8;
+}
+
 @theme inline {
   --color-forest: var(--forest);
   --color-forest-dark: var(--forest-dark);
@@ -32,6 +52,11 @@
 
 html {
   scroll-behavior: smooth;
+  /* Anchor jumps (/#altid-mad, #hent-appen) land right under the fixed nav:
+     its measured height, 85px below xl (20px padding, 44px logo, 1px border)
+     and 107px from xl (the taller CTA button). A larger value shows a strip
+     of the band above the section. */
+  scroll-padding-top: 85px;
   /* Belt-and-suspenders horizontal lock: html overflow-x:clip + body
      overflow-x:hidden + overscroll-behavior-x:none. iOS Safari sometimes
      ignores overflow-x:hidden on body alone and lets the user rubber-band
@@ -274,3 +299,25 @@ body {
     transform: none !important;
   }
 }
+
+@media (min-width: 80rem) {
+  html { scroll-padding-top: 107px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* Store badge order: App Store first by default (no JS, desktop, iOS); the
+   head script in app/layout.tsx marks Android so Google Play comes first. */
+html[data-platform="android"] .store-badge-play { order: -1; }
+
+/* Focus rings (front page and nav): forest on light surfaces, signal on forest. */
+/* :where() keeps these at low specificity, so a component's own ring (the
+   inset .carousel-dot ring in the Blog) still wins. */
+.focus-ring-light :where(:focus-visible) { outline: 2px solid var(--app-forest); outline-offset: 3px; }
+.focus-ring-dark :where(:focus-visible) { outline: 2px solid var(--app-signal); outline-offset: 3px; }
+
+/* FAQ chevron turns when the native <details> is open. */
+.forside-faq summary::-webkit-details-marker { display: none; }
+.forside-faq details[open] .forside-faq-chevron { transform: rotate(180deg); }

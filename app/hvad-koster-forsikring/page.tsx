@@ -8,7 +8,7 @@ import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
 export const metadata: Metadata = {
   title: 'Hvad koster forsikring i 2026? Se priser – Altid Hjem',
   description:
-    'Hvad koster forsikring i Danmark? Se vejledende priser på indbo, hus, bil, ulykke og rejse. Find ud af, om du betaler for meget. Skriv dig gratis på ventelisten til Altid Hjem.',
+    'Hvad koster forsikring i Danmark? Se vejledende priser på indbo, hus, bil, ulykke og rejse. Find ud af, om du betaler for meget. Hent Altid Hjem gratis, og saml dine forsikringer ét sted.',
   alternates: { canonical: 'https://altidhjem.dk/hvad-koster-forsikring' },
   openGraph: {
     title: 'Hvad koster forsikring i Danmark?',
@@ -72,21 +72,21 @@ const FAQ: { q: string; a: string[] }[] = [
     q: 'Hvordan ved jeg, om jeg er dobbeltforsikret?',
     a: [
       'Du kan være dobbeltforsikret, hvis flere i husstanden betaler for den samme dækning hver for sig.',
-      'Det kan fx være indbo, rejse eller en dækning, der allerede indgår i en anden police. Altid Hjem skal kunne samle overblikket og markere mulige overlap.',
+      'Det kan fx være indbo, rejse eller en dækning, der allerede indgår i en anden police. Skriver I jeres forsikringer ind i Altid Hjem, har I dem samlet ét sted, så det er lettere selv at se overlap.',
     ],
   },
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem er en kommende app, der skal samle hjemmets faste udgifter i ét overblik, ét login.',
-      'Målet er at gøre det nemmere at se, hvad du betaler, finde unødvendige udgifter og få mere kontrol over økonomien i hjemmet.',
+      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så du får ét overblik, ét login.',
+      'Du kan hente den gratis i App Store og Google Play.',
     ],
   },
   {
-    q: 'Koster det noget at skrive sig på ventelisten?',
+    q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej. Det er gratis at skrive sig på ventelisten.',
-      'Du får besked, når Altid Hjem åbner, så du kan få et samlet overblik over hjemmets forsikringer ét sted.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
+      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
     ],
   },
 ]
@@ -265,25 +265,24 @@ export default function HvadKosterForsikring() {
                   <ForsikringHusstandMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Altid Hjem skal kunne gennemgå husstandens forsikringer, finde mulige dobbeltdækninger og vise,
-                  hvad I kan rydde op i. Den personlige ulykkesforsikring beholdes. Illustration, ikke et skærmbillede fra appen.
+                  Et samlet overblik gør det lettere at se mulige dobbeltdækninger, og hvad I kan rydde op i.
+                  Den personlige ulykkesforsikring beholdes. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
 
               <section>
                 <h2 className="font-semibold text-base mb-3" style={{ color: 'var(--forest)' }}>
-                  Sådan får du en fair forsikringspris med Altid Hjem
+                  Sådan får du overblik over forsikringerne med Altid Hjem
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem samler hjemmets faste udgifter i én app. El, mobil, forsikring, internet og
-                  flere services er på vej. Du får{' '}
+                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app. Du får{' '}
                   <span className="font-medium" style={{ color: 'var(--forest)' }}>ét overblik, ét login</span>{' '}
-                  og et klart overblik over, hvad hjemmet koster hver måned.
+                  og kan se, hvad hjemmet koster hver måned.
                 </p>
                 <p className="mb-3">
-                  I stedet for at logge ind hos flere selskaber og holde styr på forskellige regninger, får
-                  du alt samlet ét sted. Det gør det lettere at se, hvad du betaler for hver måned, og opdage,
-                  hvis du betaler for meget.
+                  Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted. Vil I
+                  have et tilbud, kan I bede om det i appen, og I bliver ringet op, når det er klart. Det er gratis
+                  og uforpligtende.
                 </p>
                 <p>
                   Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 15.000 danskere allerede får
@@ -331,9 +330,9 @@ export default function HvadKosterForsikring() {
         </div>
 
         <BottomCta
-          eyebrow="Betaler du for meget for din forsikring?"
-          subtitle="Skriv dig gratis på ventelisten og få tidlig adgang, når Altid Hjem lanceres"
-          source="forsikring"
+          eyebrow='Alle jeres forsikringer ét sted'
+          heading='Hent Altid Hjem, og saml jeres forsikringer'
+          subtitle='Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted.'
         />
       </main>
       <Footer />

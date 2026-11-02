@@ -8,12 +8,12 @@ import GebyrMockup from '@/components/GebyrMockup'
 export const metadata: Metadata = {
   title: 'Billigste elselskab, sådan sammenligner du – Altid Hjem',
   description:
-    'Find det billigste elselskab ved at sammenligne spotpris, tillæg og gebyrer for dit forbrug. Få en enkel guide, og skriv dig på ventelisten.',
+    'Find det billigste elselskab ved at sammenligne spotpris, tillæg og gebyrer for dit forbrug. Få en enkel guide, og hent Altid Hjem gratis.',
   alternates: { canonical: 'https://altidhjem.dk/billigste-elselskab' },
   openGraph: {
     title: 'Hvilket elselskab er billigst?',
     description:
-      'Find det billigste elselskab ved at sammenligne spotpris, tillæg og gebyrer for dit forbrug. Få en enkel guide, og skriv dig på ventelisten.',
+      'Find det billigste elselskab ved at sammenligne spotpris, tillæg og gebyrer for dit forbrug. Få en enkel guide, og hent Altid Hjem gratis.',
     url: 'https://altidhjem.dk/billigste-elselskab',
     type: 'article',
   },
@@ -67,15 +67,15 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem er en kommende dansk app, der skal kunne samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad.',
+      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted.',
       'Den er bygget omkring idéen om ét overblik, ét login.',
     ],
   },
   {
-    q: 'Koster det noget at skrive sig på ventelisten?',
+    q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej, det koster ikke noget at skrive sig på ventelisten til Altid Hjem.',
-      'Ventelisten er åben på altidhjem.dk.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
+      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
     ],
   },
 ]
@@ -214,16 +214,16 @@ export default function BilligsteElselskab() {
               </section>
               <section>
                 <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvad Altid Hjem skal kunne
+                  Hvad Altid Hjem kan i dag
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem er en kommende dansk app, der er bygget til at samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad. Målet er ét overblik, ét login, så du lettere skal kunne forstå priser og holde styr på aftaler.
+                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så du får ét overblik, ét login.
                 </p>
                 <p className="mb-3">
-                  Altid Energi er tilgængeligt i dag og har allerede mere end 15.000 danske kunder. Mobil, opladning, alarm og forsikring er på vej og skal kunne indgå i Altid Hjem, når de enkelte tjenester bliver tilgængelige.
+                  Altid Energi har mere end 15.000 danske kunder. I appen ser du elprisen time for time, og du kan blive kunde direkte, hvis du ikke allerede er det.
                 </p>
                 <p>
-                  Ventelisten til Altid Hjem er åben på altidhjem.dk. Du kan skrive dig op, hvis du vil følge med.
+                  Du kan hente appen gratis i App Store og Google Play.
                 </p>
               </section>
 
@@ -265,13 +265,11 @@ export default function BilligsteElselskab() {
           </div>
         </div>
 
-        <div id="venteliste">
-          <BottomCta
-            eyebrow='Strøm uden gebyrer findes allerede'
-            subtitle='Skriv dig gratis på ventelisten og få tidlig adgang, når Altid Hjem lanceres'
-            source='billigste-elselskab'
-          />
-        </div>
+        <BottomCta
+          eyebrow='Strøm og overblik i samme app'
+          heading='Hent Altid Hjem, og følg din strøm time for time'
+          subtitle='I appen ser du elprisen time for time og kan blive kunde hos Altid Energi, hvis du ikke allerede er det.'
+        />
       </main>
       <Footer />
     </>

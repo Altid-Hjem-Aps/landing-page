@@ -1,38 +1,30 @@
 import Nav from '@/components/Nav'
-import Hero from '@/components/Hero'
-import Testimonials from '@/components/sections/Testimonials'
-import FounderVideo from '@/components/sections/FounderVideo'
-// DISABLED 8 Sep 2026: Altid Energi received a formal notice from the Danish
-// Consumer Ombudsman (Forbrugerombudsmanden) about the running "total saved"
-// counter, and asked Altid Hjem to hide it too while they work on an
-// alternative. The component, ticker and tests are kept intact — re-enable by
-// restoring this import and the <SavingsCounter /> below.
-// import SavingsCounter from '@/components/sections/SavingsCounter'
-import Services from '@/components/sections/Services'
-import HowItWorks from '@/components/sections/HowItWorks'
-// The "one home, too many bills" story — the bills→app-icon→phone animation.
-import WhatIs from '@/components/sections/WhatIs'
-import Trust from '@/components/sections/Trust'
-import Faq from '@/components/sections/Faq'
-import Blog from '@/components/sections/Blog'
-import BottomCta from '@/components/sections/BottomCta'
+import Hero from '@/components/forside/Hero'
+import Services from '@/components/forside/Services'
+import Reassurance from '@/components/forside/Reassurance'
+import Faq from '@/components/forside/Faq'
+import BottomCta from '@/components/forside/BottomCta'
+import Blog, { type BlogCategory } from '@/components/sections/Blog'
 import Footer from '@/components/Footer'
 
+// Blog posts on the front page: only the categories of services that are in
+// the app (plus the general overview posts). Mobil, Opladning and Alarm posts
+// stay on the SEO side.
+const LIVE_BLOG_CATEGORIES: readonly BlogCategory[] = ['Energi', 'Forsikring', 'Overblik']
+
+// The launch front page (2 Nov 2026): the Altid Hjem app and the four
+// services live in app release 1.0, with the store badges as the only primary
+// call to action. All copy is in lib/forside-copy.ts.
 export default function Home() {
   return (
     <>
       <Nav />
       <main>
         <Hero />
-        <Testimonials />
-        <FounderVideo />
-        {/* <SavingsCounter /> — see note at the import above. */}
         <Services />
-        <WhatIs />
-        <HowItWorks />
-        <Trust />
+        <Reassurance />
         <Faq />
-        <Blog />
+        <Blog categories={LIVE_BLOG_CATEGORIES} />
         <BottomCta />
       </main>
       <Footer />
