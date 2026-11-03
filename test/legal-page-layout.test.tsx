@@ -88,7 +88,7 @@ describe('/privatlivspolitik', () => {
     render(<Privatlivspolitik />)
     const h2s = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
     expect(h2s).toEqual(privacyPolicy.sections.map((s) => s.title))
-    expect(screen.getByText('Senest opdateret: 27. oktober 2026')).toBeInTheDocument()
+    expect(screen.getByText('Senest opdateret: 3. november 2026')).toBeInTheDocument()
   })
 
   it('lists every cookie and storage key the site sets, and lets the visitor change the choice', () => {
@@ -106,6 +106,12 @@ describe('/privatlivspolitik', () => {
     for (const right of ['Indsigt:', 'Berigtigelse:', 'Sletning:', 'Begrænsning:', 'Dataportabilitet:', 'Indsigelse:', 'Tilbagetrækning af samtykke:']) {
       expect(screen.getByText(right)).toBeInTheDocument()
     }
+  })
+
+  it('says push messages are service messages and how to turn them off', () => {
+    render(<Privatlivspolitik />)
+    expect(screen.getByText(/De er ikke reklame/)).toBeInTheDocument()
+    expect(screen.getByText(/Du slår notifikationer fra under Profil › Notifikationer i appen eller i din telefons indstillinger/)).toBeInTheDocument()
   })
 
   it('identifies Altid Hjem as data controller for Altid Forsikring', () => {
