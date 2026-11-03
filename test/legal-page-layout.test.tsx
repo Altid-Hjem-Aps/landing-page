@@ -110,8 +110,8 @@ describe('/privatlivspolitik', () => {
 
   it('says push messages are service messages and how to turn them off', () => {
     render(<Privatlivspolitik />)
-    expect(screen.getByText(/Det er servicebeskeder, ikke reklame/)).toBeInTheDocument()
-    expect(screen.getByText(/slå push-beskeder fra under Profil › Notifikationer i appen eller i din telefons indstillinger/)).toBeInTheDocument()
+    expect(screen.getByText(/De er ikke reklame/)).toBeInTheDocument()
+    expect(screen.getByText(/Du slår notifikationer fra under Profil › Notifikationer i appen eller i din telefons indstillinger/)).toBeInTheDocument()
   })
 
   it('identifies Altid Hjem as data controller for Altid Forsikring', () => {
