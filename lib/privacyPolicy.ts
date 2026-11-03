@@ -51,7 +51,7 @@ export function parseInline(text: string): InlineSegment[] {
 }
 
 export const privacyPolicy: PrivacyPolicy = {
-  updated: '2026-10-27',
+  updated: '2026-11-03',
   sections: [
     {
       title: '1. Vi er den dataansvarlige',
@@ -106,6 +106,8 @@ export const privacyPolicy: PrivacyPolicy = {
         { type: 'paragraph', text: 'Betalingskortoplysninger og øvrige betalingsdata i forbindelse med køb og tilmelding til produkter via appen. Betalingsoplysninger behandles via godkendte betalingsudbydere og opbevares ikke direkte af Altid Hjem.' },
         { type: 'label', text: 'Tekniske oplysninger' },
         { type: 'paragraph', text: 'Oplysninger om din enhed, operativsystem, app-version og brugsadfærd i appen.' },
+        { type: 'label', text: 'Push-beskeder' },
+        { type: 'paragraph', text: 'Tillader du notifikationer på din telefon, gemmer vi telefonens push-adresse (et token fra Google Firebase Cloud Messaging), et id for app-installationen, om telefonen er en iPhone eller en Android, appversionen, og om notifikationer er slået til. For hver besked gemmer vi, hvilken slags besked det var, hvornår den blev sendt, og om du åbnede den. Selve teksten sletter vi, når beskeden er sendt. Slår du beskederne fra, gemmer vi også hvornår.' },
         { type: 'label', text: 'Henvisningsoplysninger' },
         { type: 'paragraph', text: 'Når du deler eller kopierer dit personlige henvisningslink i appen, og når nogen klikker på det, registrerer vi hændelsen. For hver hændelse gemmer vi tidspunkt, land, browsertype og en hashværdi af IP-adressen med et dagligt skiftende tilfældigt tillæg, men aldrig selve IP-adressen. Det personlige link viser, hvilken kunde et klik hører til. Oplysningerne bruges til at tælle henvisninger på grundlag af vores legitime interesse i at drive henvisningsordningen og slettes efter 90 dage. Henvisningsoptællingen bruger ikke cookies.' },
         { type: 'label', text: 'Profilbillede' },
@@ -129,6 +131,9 @@ export const privacyPolicy: PrivacyPolicy = {
         { type: 'paragraph', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi bruger ikke bankoplysningerne til kreditvurdering, individuel prisfastsættelse eller markedsføring, træner ingen modeller på dem og sælger dem ikke. Betaler du en forsikring, kan appen tilbyde dig at blive skrevet op til et forsikringstjek. Vi sender ingen bankoplysninger videre. Du kan trække samtykket tilbage ved at slette din konto i appen, og så beder vi Subaio om at slette dig hos dem.' },
         { type: 'label', text: 'Kommunikation og support' },
         { type: 'paragraph', text: 'Retsgrundlag: Legitim interesse (GDPR artikel 6, stk. 1, litra f).' },
+        { type: 'label', text: 'Servicebeskeder som push-beskeder' },
+        { type: 'paragraph', text: 'Vi sender push-beskeder om de tjenester, du bruger: at strømmen er billig i dag (kun til kunder hos Altid Energi og højst tre om ugen), påmindelser fra Altid Mad om madplan og indkøbsliste på de dage og tidspunkter, du selv vælger, og besked, når madplanen for næste uge er klar. Vi sender højst fem push-beskeder om ugen i alt. Det er servicebeskeder, ikke reklame: nyheder og tilbud som push-besked sender vi kun, hvis du særskilt har sagt ja til markedsføring. Retsgrundlag: Opfyldelse af aftale og legitim interesse (GDPR artikel 6, stk. 1, litra b og f).' },
+        { type: 'paragraph', text: 'Du kan til enhver tid slå push-beskeder fra under Profil › Notifikationer i appen eller i din telefons indstillinger. Påmindelserne fra Altid Mad kan du også slå fra en ad gangen under Påmindelser i Altid Mads indstillinger. Når du logger ud, sletter vi telefonens push-adresse.' },
         { type: 'label', text: 'Analyse af, hvordan appen bliver brugt, så vi kan gøre den bedre' },
         { type: 'paragraph', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi indsamler intet, før du har sagt ja, og du kan til enhver tid trække samtykket tilbage under Profil › Samtykker i appen.' },
         { type: 'label', text: 'Markedsføring og personaliserede tilbud fra Altid Hjem og datterselskaber' },
@@ -193,6 +198,7 @@ export const privacyPolicy: PrivacyPolicy = {
             { text: 'Kundedata opbevares i op til 5 år efter aftalens ophør af hensyn til bogføringsloven.' },
             { text: 'Tekniske logs slettes løbende og typisk inden for 12 måneder.' },
             { text: 'Oplysninger indsamlet på baggrund af samtykke slettes, når samtykket trækkes tilbage, medmindre andet retsgrundlag gælder.' },
+            { text: 'Telefonens push-adresse gemmer vi, indtil du logger ud eller sletter din konto. Oplysningerne om de enkelte push-beskeder, og om hvornår du har slået dem fra, sletter vi efter 90 dage.' },
             { text: 'Dit profilbillede gemmer vi, indtil du fjerner det i appen eller sletter din konto. Derefter findes det kun i vores sikkerhedskopier, som slettes løbende inden for 8 uger.' },
             { text: 'Bankoplysninger fra Subaio gemmer vi ikke hos os: de hentes, når du åbner appen, og går videre til din telefon. På din telefon ligger de senest hentede tal krypteret i højst 7 dage eller til næste lønningsdag, og de slettes, når du logger ud eller sletter din konto.' },
             { text: 'De valg, du selv har truffet om dine bankoplysninger (kontoroller, egne kategorier, skjulte abonnementer, svar på afregninger og udlæg), gemmer vi, indtil du fjerner dem eller sletter din konto. Sletter du din konto, beder vi samtidig Subaio om at slette dig hos dem. Beskeden sendes efter sletningen og forsøges igen, indtil Subaio har bekræftet.' },
