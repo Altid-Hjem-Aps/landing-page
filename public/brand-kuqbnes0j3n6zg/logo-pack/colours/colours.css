@@ -1,0 +1,14 @@
+/* Altid Hjem colours, from the brand book (November 2026, version 1). */
+:root {
+  --altid-deep-forest: #003C16; /* Deep forest, RGB 0 60 22. App, header, breaker */
+  --altid-dark-forest: #163223; /* Dark forest, RGB 22 50 35. Text and footer */
+  --altid-cream: #FDFAF4; /* Cream, RGB 253 250 244. Background in mails and the app */
+  --altid-signal-green: #90FF7C; /* Signal green, RGB 144 255 124. Buttons, for action only */
+  --altid-stone: #6F6A61; /* Stone, RGB 111 106 97. Secondary text */
+  --altid-mint: #B7F2A7; /* Mint, RGB 183 242 167. Bills */
+  --altid-honey: #FFD27A; /* Honey, RGB 255 210 122. Takeaway and dreams */
+  --altid-lavender: #BDB0F9; /* Lavender, RGB 189 176 249. Meal plan */
+  --altid-sand: #F5EFE3; /* Sand, RGB 245 239 227. Shopping */
+  --altid-sky: #A3D5FF; /* Sky, RGB 163 213 255. Altid Energi */
+  --altid-rose: #FFBAB8; /* Rose, RGB 255 186 184. Altid Forsikring */
+}

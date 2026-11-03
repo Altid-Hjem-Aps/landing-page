@@ -1,0 +1,137 @@
+{
+  "source": "Altid Hjem brand book, November 2026, version 1",
+  "colours": [
+    {
+      "id": "deep-forest",
+      "name": "Deep forest",
+      "hex": "#003C16",
+      "rgb": [
+        0,
+        60,
+        22
+      ],
+      "group": "primary",
+      "use": "App, header, breaker"
+    },
+    {
+      "id": "dark-forest",
+      "name": "Dark forest",
+      "hex": "#163223",
+      "rgb": [
+        22,
+        50,
+        35
+      ],
+      "group": "primary",
+      "use": "Text and footer"
+    },
+    {
+      "id": "cream",
+      "name": "Cream",
+      "hex": "#FDFAF4",
+      "rgb": [
+        253,
+        250,
+        244
+      ],
+      "group": "primary",
+      "use": "Background in mails and the app"
+    },
+    {
+      "id": "signal-green",
+      "name": "Signal green",
+      "hex": "#90FF7C",
+      "rgb": [
+        144,
+        255,
+        124
+      ],
+      "group": "primary",
+      "use": "Buttons, for action only"
+    },
+    {
+      "id": "stone",
+      "name": "Stone",
+      "hex": "#6F6A61",
+      "rgb": [
+        111,
+        106,
+        97
+      ],
+      "group": "primary",
+      "use": "Secondary text"
+    },
+    {
+      "id": "mint",
+      "name": "Mint",
+      "hex": "#B7F2A7",
+      "rgb": [
+        183,
+        242,
+        167
+      ],
+      "group": "pastel",
+      "use": "Bills"
+    },
+    {
+      "id": "honey",
+      "name": "Honey",
+      "hex": "#FFD27A",
+      "rgb": [
+        255,
+        210,
+        122
+      ],
+      "group": "pastel",
+      "use": "Takeaway and dreams"
+    },
+    {
+      "id": "lavender",
+      "name": "Lavender",
+      "hex": "#BDB0F9",
+      "rgb": [
+        189,
+        176,
+        249
+      ],
+      "group": "pastel",
+      "use": "Meal plan"
+    },
+    {
+      "id": "sand",
+      "name": "Sand",
+      "hex": "#F5EFE3",
+      "rgb": [
+        245,
+        239,
+        227
+      ],
+      "group": "pastel",
+      "use": "Shopping"
+    },
+    {
+      "id": "sky",
+      "name": "Sky",
+      "hex": "#A3D5FF",
+      "rgb": [
+        163,
+        213,
+        255
+      ],
+      "group": "pastel",
+      "use": "Altid Energi"
+    },
+    {
+      "id": "rose",
+      "name": "Rose",
+      "hex": "#FFBAB8",
+      "rgb": [
+        255,
+        186,
+        184
+      ],
+      "group": "pastel",
+      "use": "Altid Forsikring"
+    }
+  ]
+}

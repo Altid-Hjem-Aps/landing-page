@@ -10,6 +10,15 @@ const nextConfig: NextConfig = {
         destination: "/hvornar-er-strommen-billigst",
         permanent: true,
       },
+      // The brand book is a static folder under public/brand-<token>. The
+      // token keeps the URL private: it is shared by link only and never
+      // listed. Next does not serve a folder index, so the folder path opens
+      // the page itself; the page's relative asset paths need the prefix.
+      {
+        source: "/brand-kuqbnes0j3n6zg",
+        destination: "/brand-kuqbnes0j3n6zg/index.html",
+        permanent: false,
+      },
       // Keep the canonical www host while serving app-association files on
       // the apex host without a redirect.
       {
@@ -23,6 +32,15 @@ const nextConfig: NextConfig = {
         has: [{ type: "host", value: "altidhjem.dk" }],
         destination: "https://www.altidhjem.dk/",
         permanent: false,
+      },
+    ];
+  },
+  async headers() {
+    return [
+      // Keep the brand book out of search engines; it is reachable by link only.
+      {
+        source: "/brand-kuqbnes0j3n6zg/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }],
       },
     ];
   },
