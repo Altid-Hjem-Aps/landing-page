@@ -1,0 +1,1805 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Altid Hjem Brand Book</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="The Altid Hjem brand book: logo, colour, type, graphic elements, imagery and tone of voice, built from the launch mail of 2 November 2026 and the app.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,700;9..40,800&family=Onest:wght@400;500&display=swap">
+<style>
+:root {
+  color-scheme: light;
+  --groen: #003C16;
+  --groen-tekst: #163223;
+  --creme: #FDFAF4;
+  --signal: #90FF7C;
+  --graa: #6F6A61;
+  --lysegroen: #B7F2A7;
+  --gul: #FFD27A;
+  --lilla: #BDB0F9;
+  --sand: #F5EFE3;
+  --blaa: #A3D5FF;
+  --rosa: #FFBAB8;
+  --hvid: #FFFFFF;
+  --hairline: color-mix(in srgb, var(--graa) 22%, transparent);
+  --hairline-lys: color-mix(in srgb, var(--creme) 22%, transparent);
+  --pad: 64px;
+  --r-kort: 32px;
+  --r-lille: 20px;
+  --display: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+  --tekst: "Onest", "Helvetica Neue", Arial, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--creme);
+  color: var(--groen-tekst);
+  font-family: var(--tekst);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+img { max-width: 100%; height: auto; display: block; }
+h1, h2, h3, p, ol, ul, figure, table { margin: 0; padding: 0; }
+ol, ul { list-style: none; }
+a { color: inherit; text-decoration: none; }
+
+main { display: flex; flex-direction: column; gap: 24px; padding: 24px; }
+
+/* sheet: no fixed height on screen */
+.ark {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  min-height: min(62.5vw, 800px);
+  padding: var(--pad);
+  background: var(--creme);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-kort);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.ark * { min-width: 0; }
+.ark--moerk { background: var(--groen); color: var(--creme); border-color: var(--groen); }
+.ark__krop { flex: 1 1 auto; display: flex; flex-direction: column; gap: 32px; }
+
+/* running header */
+.rh { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.rh__wm { height: 30px; width: auto; aspect-ratio: 944.2 / 500.74; fill: var(--groen); display: block; flex: none; }
+.ark--moerk .rh__wm { fill: var(--hvid); }
+.rh__lockup { display: flex; align-items: center; gap: 12px; }
+.rh__badge { width: 40px; height: 40px; flex: none; }
+.rh__lockup .rh__wm { height: 34px; }
+.rh__meta { display: flex; gap: 10px; }
+.rh__meta .tal { font-variant-numeric: normal; letter-spacing: 0.02em; }
+.label {
+  font-family: var(--tekst);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--graa);
+}
+.ark--moerk .label { color: var(--creme); }
+.tal { font-variant-numeric: tabular-nums; }
+
+/* type */
+.kicker { display: flex; flex-direction: column; gap: 12px; }
+.h2 { font-family: var(--display); font-weight: 700; font-size: 48px; line-height: 1.05; letter-spacing: -0.01em; color: var(--groen-tekst); }
+.lead { font-size: 19px; line-height: 1.5; max-width: 48ch; }
+.graa { color: var(--graa); }
+.dansk { color: var(--graa); font-weight: 400; }
+.gloss { color: var(--graa); font-family: var(--tekst); font-weight: 400; font-size: 0.62em; letter-spacing: 0; }
+.billedtekst { font-family: var(--tekst); font-weight: 500; font-size: 13px; line-height: 1.4; color: var(--graa); }
+.hang { text-indent: -0.42em; }
+
+/* 1 cover */
+.ark--cover { position: relative; overflow: hidden; display: block; aspect-ratio: 16 / 10; min-height: 0; }
+.ark--cover .rh { justify-content: flex-end; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.cover__art { position: absolute; bottom: 0; left: 10%; width: 80%; aspect-ratio: 2637 / 1520; }
+.cover__flat { display: block; width: 100%; height: auto; }
+.cover__fod { position: absolute; left: 40px; bottom: 32px; margin: 0; width: 180px; font-family: var(--tekst); font-weight: 500; font-size: 13px; line-height: 1.4; color: var(--creme); }
+.cover__fod span { display: block; white-space: nowrap; }
+@media screen and (max-width: 1179px) { .cover__fod { top: var(--pad); bottom: auto; left: var(--pad); } }
+@media screen and (max-width: 759px) {
+  .ark--cover { aspect-ratio: auto; display: flex; flex-direction: column; gap: 16px; padding-bottom: 0; }
+  .cover__fod { position: static; width: auto; }
+  .cover__art { position: relative; bottom: auto; left: 0; width: 100%; margin-top: 8px; }
+}
+
+/* dividers */
+.ark--div { background: var(--bg); color: var(--fg); border-color: var(--bg); }
+.ark--div .rh__wm { fill: var(--wm); }
+.ark--div .label { color: var(--fg); }
+.div__krop { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: space-between; gap: 48px; }
+.div__range { align-self: flex-end; text-align: right; display: flex; flex-direction: column; gap: 4px; }
+.div__range span:last-child { font-family: var(--tekst); font-size: 15px; line-height: 1.4; max-width: 30ch; }
+.div__krop--slut { justify-content: flex-end; }
+.div__under { font-family: var(--tekst); font-weight: 400; font-size: clamp(16px, 1.72vw, 22px); line-height: 1.45; color: var(--fg); max-width: 30em; margin-top: 24px; }
+.div__satz + .div__under { max-width: 36em; }
+.div__satz { font-family: var(--display); font-weight: 700; font-size: clamp(36px, 7.5vw, 96px); line-height: 1.02; letter-spacing: -0.025em; color: var(--fg); max-width: 15em; text-wrap: balance; }
+.div__ord { font-family: var(--display); font-weight: 700; font-size: clamp(56px, 11.7vw, 144px); line-height: 0.92; letter-spacing: -0.03em; color: var(--fg); }
+
+/* 2 contents */
+.indhold { flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 32px; }
+.indhold__titel { font-family: var(--display); font-weight: 700; font-size: 72px; line-height: 1; letter-spacing: -0.02em; }
+.grupper { columns: 4; column-gap: 40px; align-self: end; }
+.gruppe { break-inside: avoid; display: flex; flex-direction: column; padding-bottom: 24px; }
+.gruppe__navn { display: flex; gap: 10px; padding-bottom: 8px; }
+.gruppe li a { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: baseline; gap: 6px; padding: 9px 0; border-top: 1px solid var(--hairline); }
+.indhold__nr { font-family: var(--display); font-weight: 700; font-size: 16px; color: var(--graa); font-variant-numeric: tabular-nums; }
+.indhold__navn { font-family: var(--display); font-weight: 700; font-size: 21px; line-height: 1.15; color: var(--groen-tekst); }
+
+/* 3 what is */
+.tjenester { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; flex: 1 1 auto; }
+.tjeneste { border-radius: var(--r-kort); padding: 28px; display: flex; flex-direction: column; gap: 14px; }
+.tjeneste__ikon { width: 64px; height: 64px; border-radius: 50%; border: 4px solid var(--hvid); flex: none; }
+.tjeneste__ikon svg, .tjeneste__ikon img { width: 56px; height: 56px; display: block; }
+.tjeneste__app { width: 56px; height: 56px; border-radius: 22.5%; margin: 4px; flex: none; }
+.tjeneste__luft { flex: 1 1 auto; min-height: 24px; }
+.tjeneste h3 { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.1; }
+.tjeneste p { font-size: 16px; line-height: 1.5; min-height: 6em; }
+
+/* 4 principle */
+.princip { display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; align-items: start; }
+.princip__venstre { display: flex; flex-direction: column; gap: 28px; }
+.princip__kort { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.princip__kort > * { min-height: 380px; }
+@media (max-width: 759px) { .princip__kort > * { min-height: 0; } }
+.pk { border-radius: var(--r-kort); padding: 24px 28px; display: flex; flex-direction: column; gap: 12px; }
+.pk--lys { background: var(--creme); border: 1px solid var(--hairline); }
+.pk--moerk { background: var(--groen); color: var(--creme); }
+.pk h3 { font-family: var(--display); font-weight: 700; font-size: 24px; line-height: 1.1; }
+.pk li { font-size: 16px; line-height: 1.4; padding: 7px 0; border-top: 1px solid var(--hairline); }
+.pk--moerk li { border-top-color: var(--hairline-lys); }
+
+/* 6 logo */
+.logo { flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.6fr); gap: 48px; align-items: start; }
+.logo__tekst { display: flex; flex-direction: column; gap: 24px; }
+.logo__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.flise { border-radius: var(--r-kort); display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 16px; padding: 48px 24px 18px; min-height: 240px; }
+.flise--creme { background: var(--creme); border: 1px solid var(--hairline); }
+.flise--moerk { background: var(--groen); }
+.flise__wm { width: 52%; height: auto; aspect-ratio: 944.2 / 500.74; }
+.flise__ikon { width: 104px; height: 104px; border-radius: 22.5%; }
+.flise__tekst { align-self: flex-start; }
+.flise--moerk .flise__tekst { color: var(--creme); }
+
+/* 7 logo rules */
+.regler { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; align-items: stretch; }
+.regler__felt { border: 1px solid var(--hairline); border-radius: var(--r-kort); padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+.fri { display: block; width: 100%; max-width: 380px; height: auto; aspect-ratio: 1604 / 1100; margin-inline: auto; }
+.mini { display: flex; flex-direction: column; gap: 16px; }
+.mini__raekke { display: flex; align-items: center; gap: 20px; }
+.mini__wm { width: 96px; height: auto; aspect-ratio: 944.2 / 500.74; fill: var(--groen); flex: none; }
+.mini__ikon { width: 24px; height: 24px; border-radius: 22.5%; flex: none; }
+.mini__maal { font-family: var(--display); font-weight: 700; font-size: 22px; line-height: 1.1; }
+.ikonregler { display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.45; border-top: 1px solid var(--hairline); padding-top: 14px; }
+.dodont { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 14px; }
+.dd { display: flex; flex-direction: column; gap: 10px; }
+.dd__flise { aspect-ratio: 16 / 10; border-radius: var(--r-lille); display: grid; place-items: center; overflow: hidden; }
+.dd__flise > * { grid-area: 1 / 1; }
+.dd__flise .wm { width: 56%; height: auto; aspect-ratio: 944.2 / 500.74; }
+.dd__flise .wm--strakt { width: 84%; height: 30%; aspect-ratio: auto; }
+.dd__flise .wm--kun { aspect-ratio: 944.2 / 320; }
+.dd__flise .wm--skygge { filter: drop-shadow(5px 7px 5px rgba(0, 0, 0, 0.45)); }
+.dd__streg { width: 100%; height: auto; aspect-ratio: 16 / 10; align-self: stretch; justify-self: stretch; }
+.dd__tekst { font-size: 14px; line-height: 1.35; }
+.dd__tekst b { font-weight: 500; display: block; }
+
+/* 9 primary colours */
+.primaer { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; flex: 1 1 auto; }
+.primaer .farve { min-height: 260px; padding: 22px 20px; }
+.primaer .farve h3 { font-size: 22px; white-space: nowrap; }
+.primaer__stak { display: grid; grid-template-rows: minmax(0, 3fr) auto; gap: 16px; }
+.farve { border-radius: var(--r-kort); padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; min-height: 150px; }
+.farve--lille { border-radius: var(--r-lille); padding: 18px 24px; min-height: 0; }
+.farve h3 { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.1; }
+.farve--lille h3 { font-size: 18px; }
+.farve p { font-size: 15px; line-height: 1.4; }
+.farve__brug { font-family: var(--tekst); font-weight: 500; font-size: 13px; line-height: 1.4; color: var(--graa); }
+.paa-moerk, .paa-moerk .farve__brug { color: var(--creme); }
+.vaerdi { font-family: var(--tekst); font-weight: 500; font-size: 13px; letter-spacing: 0.04em; font-variant-numeric: tabular-nums; }
+.vaerdi span { display: block; white-space: nowrap; }
+.farve__regel { font-size: 16px; line-height: 1.5; color: var(--groen-tekst); }
+
+/* 10 pastels */
+.pastel { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 40px; flex: 1 1 auto; }
+.pastel__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.pastel__grid .farve { min-height: 200px; }
+.pastel__side { display: flex; flex-direction: column; gap: 20px; justify-content: space-between; }
+.pastel__regel { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.15; }
+.pastel__regel span { display: block; font-family: var(--tekst); font-weight: 400; font-size: 17px; line-height: 1.5; color: var(--graa); }
+.pastel__eks { display: flex; flex-direction: column; gap: 10px; }
+
+/* 12 typography */
+.typo { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 48px; flex: 1 1 auto; }
+.typo__venstre { display: flex; flex-direction: column; gap: 22px; }
+.specimen { font-family: var(--display); font-weight: 700; font-size: 48px; line-height: 1.08; letter-spacing: -0.01em; }
+.skala { display: flex; flex-direction: column; }
+.skala li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 16px; align-items: baseline; padding: 7px 0; border-top: 1px solid var(--hairline); }
+.skala__spec { font-weight: 500; font-size: 13px; color: var(--graa); font-variant-numeric: tabular-nums; }
+.s-overskrift { font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1.15; }
+.s-afslutning { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.15; }
+.s-broed { font-family: var(--tekst); font-weight: 400; font-size: 16px; line-height: 1.6; }
+.s-signatur { font-family: var(--tekst); font-weight: 500; font-size: 16px; line-height: 1.6; }
+.s-billed { font-family: var(--tekst); font-weight: 400; font-size: 13px; line-height: 1.4; color: var(--graa); }
+.typo__note { font-size: 15px; line-height: 1.5; color: var(--graa); max-width: 52ch; }
+.typo__hoejre { width: 100%; max-width: 440px; justify-self: center; display: flex; flex-direction: column; gap: 24px; }
+.tal-blok { display: flex; flex-direction: column; gap: 10px; }
+.tal-raekke { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.tal-hero { font-family: var(--display); font-weight: 800; font-size: 72px; line-height: 0.9; letter-spacing: -0.02em; color: var(--groen-tekst); }
+.tal-enhed { font-family: var(--tekst); font-weight: 400; font-size: 20px; line-height: 1; color: var(--groen-tekst); }
+.mail { width: 100%; border: 1px solid var(--hairline); border-radius: var(--r-kort); overflow: hidden; background: var(--creme); display: flex; flex-direction: column; }
+.mail__header { width: 100%; aspect-ratio: 780 / 300; object-fit: cover; object-position: top; border-radius: 0 0 37px 37px; }
+.mail__krop { padding: 24px 24px 28px; display: flex; flex-direction: column; gap: 16px; font-family: var(--tekst); font-size: 16px; line-height: 1.6; color: var(--groen-tekst); }
+
+/* 13 cards */
+.par { display: grid; grid-template-columns: minmax(0, 1576fr) minmax(0, 768fr); gap: 32px; max-width: 980px; align-items: end; }
+.noter { display: flex; flex-direction: column; }
+.noter li { padding: 14px 0; border-top: 1px solid var(--hairline); font-size: 16px; line-height: 1.45; }
+.noter--raekke { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 32px; }
+
+/* 14 breaker, buttons and footer */
+.resten-top { display: grid; grid-template-columns: minmax(0, 1fr) 260px 232px; gap: 32px; align-items: start; }
+.resten-bund { display: grid; grid-template-columns: minmax(0, 1fr) 301px; gap: 32px; align-items: end; }
+.resten__kol { display: flex; flex-direction: column; gap: 12px; }
+.resten__breaker img { width: 100%; max-width: 660px; }
+.knapper { display: flex; flex-direction: column; gap: 12px; }
+.knapper img { width: 100%; max-width: 260px; }
+.qr { display: flex; gap: 12px; }
+.qr img { width: 110px; }
+.footer { background: var(--groen-tekst); border-radius: 32px 32px 0 0; padding: 32px; display: flex; flex-direction: column; align-items: center; width: 301px; max-width: 100%; }
+.footer img { flex: none; }
+.footer .f-badge { width: 48px; height: 48px; }
+.footer .f-tagline { width: 202px; }
+.footer .f-company { width: 237px; }
+.footer .f-linkedin { width: 116px; }
+.footer .f-afmeld { width: 43px; }
+.luft-16 { height: 16px; flex: none; }
+.luft-8 { height: 8px; flex: none; }
+
+/* 15 imagery */
+.billeder { flex: 1 1 auto; display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 40px; }
+.billeder__tekst { display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
+.billeder__tekst .lead { font-size: 17px; }
+.billeder__raekke { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto auto; column-gap: 32px; row-gap: 12px; align-items: end; align-self: end; }
+.billeder__raekke figure { display: grid; grid-row: span 2; grid-template-rows: subgrid; align-items: end; }
+.billeder__raekke img { width: 100%; height: auto; }
+.billeder__raekke figcaption { align-self: start; }
+
+/* 16 checks */
+.tjek { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 40px; row-gap: 12px; }
+.tjek li { border-top: 1px solid var(--hairline); padding: 20px 0 16px; display: flex; flex-direction: column; gap: 10px; }
+.tjek__nr { font-family: var(--display); font-weight: 700; font-size: 40px; line-height: 1; color: var(--graa); font-variant-numeric: tabular-nums; }
+.tjek h3 { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.1; }
+.tjek p { font-size: 17px; line-height: 1.5; max-width: 34ch; }
+
+/* 18 tone */
+.tone { display: flex; flex-direction: column; gap: 44px; }
+.citater { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
+.citat { display: flex; flex-direction: column; gap: 14px; }
+.citat__tekst { text-wrap: balance; font-family: var(--display); font-weight: 700; font-size: 34px; line-height: 1.1; letter-spacing: -0.01em; }
+.foerefter { display: flex; flex-direction: column; gap: 16px; }
+.fe { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.fe th { text-align: left; font-family: var(--tekst); font-size: 15px; padding: 0 24px 10px 0; }
+.fe__ikke { font-weight: 400; color: var(--graa); }
+.fe__saadan { font-weight: 500; color: var(--groen-tekst); }
+.fe td { padding: 9px 24px 9px 0; border-top: 1px solid var(--hairline); font-size: 16px; line-height: 1.4; vertical-align: top; overflow-wrap: anywhere; }
+.fe td:first-child { color: var(--graa); }
+.fe td:last-child { font-weight: 500; color: var(--groen-tekst); }
+.fe__regler { font-size: 16px; line-height: 1.5; color: var(--groen-tekst); }
+
+/* 20 applications */
+.brug { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 32px 48px; }
+.brug figure { display: flex; flex-direction: column; gap: 12px; max-width: 100%; }
+.ramme { border: 1px solid var(--hairline); border-radius: var(--r-lille); overflow-y: auto; overflow-x: hidden; background: var(--creme); scrollbar-width: thin; }
+.ramme img { width: 100%; }
+.ramme--desk { width: 400px; max-width: 100%; height: 450px; }
+.ramme--mob { width: 260px; max-width: 100%; height: 462px; }
+.ramme--store { width: 220px; max-width: 100%; overflow: hidden; }
+
+/* 21 back cover */
+.bagside { flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; text-align: center; }
+.bagside__ikon { width: 120px; height: 120px; }
+.bagside__tagline { font-family: var(--display); font-weight: 700; font-size: 44px; line-height: 1.1; color: var(--creme); }
+.bagside__kontakt { font-size: 20px; color: var(--creme); }
+.bagside__firma { font-weight: 500; font-size: 14px; color: var(--creme); }
+
+/* motion: screen only, content is complete without it */
+.cover__lag { display: none; }
+@media screen {
+  html.cover-on .cover__lag { display: block; position: absolute; inset: 0; }
+  html.cover-on .cover__flat { visibility: hidden; }
+  .cover__lag img { position: absolute; left: 0; top: 0; width: 100%; height: auto; }
+  html.cover-on .lag--headline { animation: cv-fade 400ms ease-out 0ms both; }
+  html.cover-on .lag--lockup { animation: cv-fade 400ms ease-out 150ms both; }
+  html.cover-on .lag--pc { animation: cv-rise-40 500ms ease-out 350ms both; }
+  html.cover-on .lag--pl, html.cover-on .lag--pr { animation: cv-rise-30 450ms ease-out 600ms both; }
+  html.cover-on .lag--card { animation: cv-card 350ms ease-out both; }
+  html.cover-on .lag--c1 { animation-delay: 950ms; transform-origin: 43.14% 68.36%; }
+  html.cover-on .lag--c2 { animation-delay: 1070ms; transform-origin: 58.02% 69.18%; }
+  html.cover-on .lag--c3 { animation-delay: 1190ms; transform-origin: 41.73% 82.50%; }
+  html.cover-on .lag--c4 { animation-delay: 1310ms; transform-origin: 56.64% 83.29%; }
+  html.cover-on .lag--i1 { transform-origin: 18.37% 17.96%; animation: cv-move-1 520ms cubic-bezier(0.22, 1, 0.36, 1) 1580ms both, cv-in 312ms ease-out 1580ms both, cv-grow 520ms cubic-bezier(0.22, 1, 0.36, 1) 1580ms both, cv-float 6s ease-in-out 2800ms infinite; }
+  html.cover-on .lag--i2 { transform-origin: 86.14% 12.27%; animation: cv-move-2 520ms cubic-bezier(0.22, 1, 0.36, 1) 1580ms both, cv-in 312ms ease-out 1580ms both, cv-grow 520ms cubic-bezier(0.22, 1, 0.36, 1) 1580ms both, cv-float 6s ease-in-out 2800ms infinite; }
+  html.cover-on .lag--i3 { transform-origin: 11.24% 74.44%; animation: cv-move-3 520ms cubic-bezier(0.22, 1, 0.36, 1) 2130ms both, cv-in 312ms ease-out 2130ms both, cv-grow 520ms cubic-bezier(0.22, 1, 0.36, 1) 2130ms both, cv-float 6s ease-in-out 3350ms infinite; }
+  html.cover-on .lag--i4 { transform-origin: 87.62% 70.20%; animation: cv-move-4 520ms cubic-bezier(0.22, 1, 0.36, 1) 2130ms both, cv-in 312ms ease-out 2130ms both, cv-grow 520ms cubic-bezier(0.22, 1, 0.36, 1) 2130ms both, cv-float 6s ease-in-out 3350ms infinite; }
+  html.cover-on .lag--b1 { animation: cv-wipe-1 550ms cubic-bezier(0.22, 1, 0.36, 1) 1500ms both, cv-float 6s ease-in-out 2800ms infinite; }
+  html.cover-on .lag--b2 { animation: cv-wipe-2 550ms cubic-bezier(0.22, 1, 0.36, 1) 1500ms both, cv-float 6s ease-in-out 2800ms infinite; }
+  html.cover-on .lag--b3 { animation: cv-wipe-3 550ms cubic-bezier(0.22, 1, 0.36, 1) 2050ms both, cv-float 6s ease-in-out 3350ms infinite; }
+  html.cover-on .lag--b4 { animation: cv-wipe-4 550ms cubic-bezier(0.22, 1, 0.36, 1) 2050ms both, cv-float 6s ease-in-out 3350ms infinite; }
+}
+@keyframes cv-fade { from { opacity: 0; } }
+@keyframes cv-rise-40 { from { opacity: 0; translate: 0 40px; } }
+@keyframes cv-rise-30 { from { opacity: 0; translate: 0 30px; } }
+@keyframes cv-card { from { opacity: 0; scale: 0.96; } }
+@keyframes cv-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cv-grow { 0% { scale: 0.7; } 77% { scale: 1.03; animation-timing-function: ease-in-out; } 100% { scale: 1; } }
+@keyframes cv-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes cv-wipe-1 { from { clip-path: polygon(45.09% -174.99%, 21.42% 217.60%, 134.26% 238.08%, 157.94% -154.51%); } to { clip-path: polygon(28.87% -177.94%, 5.20% 214.66%, 134.26% 238.08%, 157.94% -154.51%); } }
+@keyframes cv-move-1 { from { translate: 14.58% 3.29%; } to { translate: 0 0; } }
+@keyframes cv-wipe-2 { from { clip-path: polygon(99.22% 212.44%, 29.97% -163.57%, -78.11% -103.66%, -8.86% 272.35%); } to { clip-path: polygon(121.76% 199.95%, 52.50% -176.06%, -78.11% -103.66%, -8.86% 272.35%); } }
+@keyframes cv-move-2 { from { translate: -21.26% 12.01%; } to { translate: 0 0; } }
+@keyframes cv-wipe-3 { from { clip-path: polygon(-16.69% -119.45%, 69.65% 245.76%, 174.63% 171.07%, 88.29% -194.15%); } to { clip-path: polygon(-33.72% -107.33%, 52.62% 257.88%, 174.63% 171.07%, 88.29% -194.15%); } }
+@keyframes cv-move-3 { from { translate: 14.96% -11.09%; } to { translate: 0 0; } }
+@keyframes cv-wipe-4 { from { clip-path: polygon(24.35% 237.22%, 117.84% -122.66%, 14.39% -203.53%, -79.09% 156.35%); } to { clip-path: polygon(41.82% 250.88%, 135.31% -109.00%, 14.39% -203.53%, -79.09% 156.35%); } }
+@keyframes cv-move-4 { from { translate: -16.25% -12.70%; } to { translate: 0 0; } }
+@media screen and (prefers-reduced-motion: no-preference) {
+  html.js .rv { opacity: 0; translate: 0 20px; transition: opacity 600ms ease, translate 600ms ease, scale 450ms ease; transition-delay: calc(var(--i, 0) * 150ms); }
+  html.js .rv--bild { scale: 0.96; }
+  html.js .rv--big { translate: 0 40px; transition-duration: 800ms; }
+  html.js .is-in .rv { opacity: 1; translate: none; scale: none; }
+  html.js .ark--snap.snap-go { animation: snap-sheet 1200ms ease both; }
+  html.js .ark--snap.snap-go::after { animation: snap-flash 220ms ease; }
+}
+@keyframes snap-flash { 0% { opacity: 0; } 45% { opacity: 0.85; } 100% { opacity: 0; } }
+@keyframes snap-sheet {
+  0%, 18% { scale: 1; outline: 8px solid transparent; border-radius: var(--r-kort); }
+  33% { scale: 0.94; outline: 8px solid var(--groen); outline-offset: 0; border-radius: 18px; }
+  62% { scale: 0.94; outline: 8px solid var(--groen); border-radius: 18px; animation-timing-function: cubic-bezier(.3, 1.4, .5, 1); }
+  100% { scale: 1; outline: 8px solid transparent; border-radius: var(--r-kort); }
+}
+@media screen and (prefers-reduced-motion: reduce) {
+  html.cover-on .cover__lag img { animation: none !important; }
+}
+
+/* v2 devices: channel pill, examples, callouts, colour dots, glosses */
+.pill { display: inline-block; align-self: flex-start; background: var(--groen); color: var(--creme); border-radius: 999px; padding: 5px 10px 4px; font-family: var(--tekst); font-weight: 500; font-size: 12px; line-height: 1.2; letter-spacing: 0.06em; text-transform: uppercase; }
+.en { display: block; font-family: var(--tekst); font-weight: 400; font-size: 13px; line-height: 1.4; letter-spacing: 0; color: var(--graa); margin-top: 4px; }
+.eks { display: flex; flex-direction: column; gap: 10px; }
+.eks img { width: 100%; height: auto; }
+.eks__crop { width: 100%; height: auto; object-fit: cover; object-position: 50% 0; border-radius: var(--r-lille); }
+.eks__ramme { border: 1px solid var(--hairline); border-radius: var(--r-lille); background: var(--creme); }
+.regel { font-size: 19px; line-height: 1.5; max-width: 56ch; }
+.raekke { display: grid; gap: 32px; align-items: end; }
+.raekke--kort { grid-template-columns: minmax(0, 1576fr) minmax(0, 646fr) minmax(0, 460fr); max-width: 950px; }
+.raekke--moerk { grid-template-columns: minmax(0, 490fr) minmax(0, 308fr) minmax(0, 253fr); }
+.raekke--farver { grid-template-columns: minmax(0, 646fr) minmax(0, 1576fr) minmax(0, 460fr); max-width: 760px; align-items: start; }
+.raekke--knapper { grid-template-columns: minmax(0, 240fr) minmax(0, 220fr) minmax(280px, 301fr) minmax(0, 240fr); align-items: start; }
+.raekke--brug { grid-template-columns: minmax(0, 297fr) minmax(0, 206fr) minmax(0, 166fr) minmax(0, 320fr); align-items: start; }
+.raekke--brug .eks__ramme { aspect-ratio: 330 / 400; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; }
+.web-thumb { width: 100%; height: auto; aspect-ratio: 1440 / 460; object-fit: contain; border: 1px solid var(--hairline); border-radius: var(--r-lille); background: var(--creme); }
+.prikker { display: flex; flex-direction: column; gap: 6px; }
+.prikker li { display: flex; align-items: center; gap: 8px; font-family: var(--tekst); font-weight: 500; font-size: 13px; line-height: 1.3; }
+.prik { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--hairline); flex: none; }
+.laes { flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 48px; }
+.laes__tekst { display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
+.laes__fod { font-size: 15px; line-height: 1.5; color: var(--graa); max-width: 44ch; }
+.laes__tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-content: start; }
+.laes__tile { display: flex; flex-direction: column; gap: 8px; }
+.laes__bild { display: block; width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--hairline); border-radius: var(--r-lille); background: var(--creme); overflow: hidden; }
+.laes__bild img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.laes__bild img.top { object-fit: cover; object-position: 50% 0; }
+.anat { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 48px; align-items: start; }
+.anat__bild { position: relative; }
+.anat__bild > img { display: block; width: 100%; height: auto; }
+.anat--skaerm .anat__bild { width: 300px; }
+.anat--mail .anat__bild { width: 640px; }
+.anat__linjer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.co { position: absolute; width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%; background: var(--groen); color: var(--creme); display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 14px; line-height: 1; }
+.anat__legende { display: flex; flex-direction: column; gap: 14px; counter-reset: none; }
+.anat__legende li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start; font-size: 16px; line-height: 1.45; }
+.anat__legende .co { position: static; margin: 0; }
+.ord { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; }
+.ord > div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-top: 1px solid var(--hairline); align-items: baseline; }
+.ord dt { font-family: var(--display); font-weight: 700; font-size: 19px; line-height: 1.2; }
+.ord dd { margin: 0; font-size: 16px; line-height: 1.45; }
+.footer--fuld { width: 100%; }
+.bagside .en { color: var(--graa); font-size: 13px; margin-top: -14px; }
+
+/* sheet 13 and 28 in Figma's layout (frames 9645:22 and 9601:252, scaled 0.889) */
+.ark__krop--midt { justify-content: center; }
+.pill--paa { position: absolute; left: 12px; top: 12px; z-index: 1; box-shadow: 0 0 0 1.5px var(--creme); }
+.pill--naer { left: 9px; top: 9px; }
+.ftiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.ftile__eks { display: flex; flex-direction: column; gap: 14px; }
+.ftile { position: relative; aspect-ratio: 408 / 440; background: var(--sand); border-radius: 22px; overflow: hidden; }
+.ftile img { position: absolute; display: block; max-width: none; }
+.ftile__app { left: 5.88%; top: 4.55%; width: 88.24%; height: auto; }
+.ftile__mail { left: 3.43%; top: 22.5%; width: 93.14%; height: auto; }
+.ftile__store { left: 25.25%; top: 0; width: 49.51%; height: 100%; object-fit: cover; }
+.prikker--raekke { flex-direction: row; flex-wrap: wrap; gap: 6px 14px; }
+.regel--fod { font-size: 16px; max-width: none; }
+.regel--bred { max-width: 889px; }
+.brug2 { display: grid; grid-template-columns: minmax(0, 744fr) minmax(0, 516fr); gap: 32px; align-items: end; }
+.brug2__v { display: flex; flex-direction: column; gap: 16px; }
+.brug2__h { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: end; }
+.brug2__fig { position: relative; display: flex; flex-direction: column; gap: 9px; }
+.brug2__web { position: relative; }
+.brug2__webimg { display: block; width: 100%; height: auto; }
+.brug2__mail { position: relative; aspect-ratio: 744 / 255; background: var(--creme); border: 1px solid var(--hairline); border-radius: 22px; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; }
+.brug2__mailimg { display: block; width: 100%; height: auto; }
+.brug2__mailpill { top: 12px; left: 12px; }
+.brug2__tall { position: relative; aspect-ratio: 249 / 542; }
+.brug2__tall img { display: block; width: 100%; height: 100%; }
+.brug2__contain { object-fit: contain; }
+.brug2__cover { object-fit: cover; }
+.brug2 .billedtekst { font-size: 13px; }
+
+/* contents as rows, read left to right */
+.irader { display: flex; flex-direction: column; justify-content: space-evenly; flex: 1 1 auto; }
+.irad { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 24px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--hairline); }
+.irad__navn { display: flex; gap: 8px; }
+.irad__liste { display: flex; flex-wrap: wrap; gap: 8px 32px; }
+.irad__liste a { display: inline-flex; align-items: baseline; gap: 10px; }
+.irad .indhold__nr { font-size: 15px; }
+.irad .indhold__navn { font-size: 22px; line-height: 1.2; }
+/* sheet 03: text above, three tiles in one row */
+.laes--rader { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+.laes__tiles--tre { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.laes__tiles--tre .laes__bild { position: relative; aspect-ratio: 420 / 425; }
+.laes__tiles--tre .laes__bild img { padding: 44px 16px 0; }
+.laes__tiles--tre .laes__bild img.top { padding: 44px 0 0; object-position: 50% 0; }
+.laes--rader { align-content: start; }
+/* sheet 28: Mail left and taller, App and App Store beside it, equal heights */
+.brug3 { display: grid; grid-template-columns: minmax(0, 560fr) minmax(0, 249fr) minmax(0, 249fr); gap: 24px; align-items: end; }
+.brug3 .brug2__mail { aspect-ratio: 560 / 542; }
+/* screenshot capture on sheet 06 */
+.ark--snap { position: relative; }
+.ark--snap::after { content: ""; position: absolute; inset: 0; background: var(--creme); opacity: 0; pointer-events: none; border-radius: inherit; }
+
+/* screen chrome: outline panel, sheet arrows, downloads (never printed, not part of the Figma master) */
+/* downloads card: Contact sheet and the outline */
+.dlk { background: var(--creme); color: var(--groen-tekst); border: 1px solid var(--hairline); border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 4px; text-align: left; }
+.dlk--ark { width: 100%; max-width: 560px; margin-top: 8px; }
+.dlk__titel { font-family: var(--display); font-weight: 700; font-size: 18px; line-height: 1.2; margin: 0 0 8px; }
+.dlk__rad { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--hairline); color: var(--groen-tekst); text-decoration: none; }
+.dlk__ikon { color: var(--groen); flex: none; }
+.dlk__navn { font-family: var(--tekst); font-weight: 500; font-size: 15px; line-height: 1.3; }
+.dlk__meta { font-family: var(--tekst); font-weight: 400; font-size: 13px; color: var(--graa); white-space: nowrap; }
+.dlk__rad:hover .dlk__navn { text-decoration: underline; }
+.dlk__rad:focus-visible { outline: 2px solid var(--groen); outline-offset: 2px; border-radius: 6px; }
+@media screen and (max-width: 759px) {
+  .dlk__rad { grid-template-columns: 20px minmax(0, 1fr); row-gap: 0; }
+  .dlk__ikon { grid-row: span 2; }
+  .dlk__meta { grid-column: 2; }
+}
+.chrome[hidden] { display: none !important; }
+/* back to top: bottom right corner, after sheet 06 */
+.til-top { position: fixed; right: 24px; bottom: 24px; z-index: 30; width: 56px; height: 56px; border-radius: 22.5%; border: 0; background: var(--groen-tekst); color: var(--creme);
+  display: grid; place-items: center; cursor: pointer; padding: 0; opacity: 0; visibility: hidden; transition: opacity 300ms ease, visibility 0s linear 300ms; }
+.til-top svg { width: 26px; height: 26px; }
+.chrome.top-on .til-top { opacity: 1; visibility: visible; transition: opacity 300ms ease, visibility 0s; }
+/* downloads: its own card in the bottom left corner, minimises into a pill */
+.dlk--fix { position: fixed; left: 16px; bottom: 24px; z-index: 35; width: 260px; padding: 0; overflow: hidden; border-radius: 18px; box-sizing: border-box; }
+.dlk--fix .dlk__inner { padding: 14px 14px 10px; display: flex; flex-direction: column; }
+.dlk__kopf { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.dlk--fix .dlk__titel { font-size: 15px; margin: 0; }
+.dlk__min { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--hairline); padding: 0; background: color-mix(in srgb, var(--creme) 80%, transparent); color: var(--groen);
+  display: grid; place-items: center; cursor: pointer; flex: none; }
+.dlk--fix .dlk__rad { grid-template-columns: 18px minmax(0, 1fr); column-gap: 10px; row-gap: 0; padding: 7px 0; }
+.dlk--fix .dlk__ikon { width: 18px; height: 18px; grid-row: span 2; }
+.dlk--fix .dlk__navn { font-size: 13px; }
+.dlk--fix .dlk__meta { font-size: 12px; grid-column: 2; }
+.dlk__pill { position: absolute; inset: 0; display: flex; align-items: center; gap: 8px; padding: 0 16px; border: 0; background: none; color: var(--groen); cursor: pointer;
+  font-family: var(--tekst); font-weight: 500; font-size: 14px; white-space: nowrap; opacity: 0; pointer-events: none; transition: color 150ms ease; }
+.dlk--fix.is-min { width: 140px; height: 44px; border-radius: 22px; background: var(--creme); border: 1.5px solid var(--groen); transition: background-color 150ms ease; }
+.dlk--fix.is-min:hover { background: var(--groen); }
+.dlk--fix.is-min:hover .dlk__pill { color: var(--creme); }
+.dlk--fix.is-min .dlk__inner { visibility: hidden; opacity: 0; }
+.dlk--fix.is-min .dlk__pill { opacity: 1; pointer-events: auto; }
+.dlk__min:focus-visible, .dlk__pill:focus-visible, .til-top:focus-visible { outline: 2px solid var(--groen); outline-offset: 2px; }
+.dlk__pill:focus-visible { outline-color: var(--groen); outline-offset: 2px; border-radius: 22px; }
+@media screen and (max-width: 1099px) {
+  .chrome .ol__vis { bottom: calc(var(--dlk-h, 44px) + 24px + 12px); }
+  .til-top { right: 16px; bottom: 16px; width: 44px; height: 44px; }
+  .til-top svg { width: 22px; height: 22px; }
+  .chrome .pil { bottom: calc(16px + 44px + 12px); }
+}
+@media screen and (max-width: 399px) {
+  .dlk--fix { width: calc(100vw - 32px - 56px); }
+}
+/* outline: a free-floating list that scrolls itself and shrinks toward its edges like a picker wheel */
+.ol { position: fixed; z-index: 30; display: flex; flex-direction: column; gap: 8px; }
+.ol[hidden] { display: none; }
+.ol__scroll { position: relative; flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); }
+.ol__scroll::-webkit-scrollbar { display: none; }
+.ol__list { display: flex; flex-direction: column; gap: 10px; padding-block: 27vh; }
+.chrome.ol-over .ol__list { padding-block: 44vh; }
+.ol__grp { display: flex; flex-direction: column; gap: 1px; }
+.ol__list a, .ol__list .ol__navn, .ol__dl > * { transform-origin: left center; }
+.ol__navn { font-family: var(--tekst); font-weight: 500; font-size: 11px; line-height: 1.3; letter-spacing: 0.08em; text-transform: uppercase; color: var(--graa); margin: 0; padding: 3px 0 3px 13px; }
+.ol a { display: block; font-family: var(--tekst); font-size: 14px; line-height: 1.3; color: var(--groen); text-decoration: none; padding: 3px 0 3px 10px; border-left: 3px solid transparent; }
+.ol a.ol__navn { padding-left: 10px; color: var(--graa); font-size: 11px; }
+.ol a:hover { text-decoration: underline; }
+.ol a[aria-current="true"] { font-family: var(--display); font-weight: 700; color: var(--groen); border-left-color: var(--groen); }
+.ol__dl { display: flex; flex-direction: column; gap: 1px; padding-top: 8px; }
+.ol__min { flex: none; align-self: flex-start; width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--hairline); padding: 0;
+  background: color-mix(in srgb, var(--creme) 80%, transparent); color: var(--groen); display: grid; place-items: center; cursor: pointer; }
+.ol__vis { position: fixed; z-index: 31; left: 16px; top: 50%; translate: 0 -50%; width: 36px; height: 36px; border-radius: 50%; border: 0; padding: 0;
+  background: var(--signal); color: var(--groen); display: grid; place-items: center; cursor: pointer; }
+.ol__vis[hidden] { display: none; }
+/* docked, from 1808 px: the list floats in the cream margin, 60vh tall, vertically centred */
+.chrome.ol-dock .ol { left: 16px; top: 56px; translate: none; width: 232px; height: calc(100vh - 56px - 24px - var(--dlk-h, 205px) - 24px); }
+.chrome.ol-dock .ol__min { display: none; }
+.chrome.ol-dock .ol__list { padding-block: calc((100vh - 56px - 48px - var(--dlk-h, 205px)) / 2 - 12px); }
+/* overlay, below 1808 px: solid Cream from the left, full height */
+.chrome.ol-over .ol { z-index: 40; left: 0; top: 0; bottom: 0; width: 280px; max-width: 100%; background: var(--creme); border-right: 1px solid var(--hairline); padding: 16px 16px 16px 12px; }
+.chrome.ol-over .ol__min { align-self: flex-end; }
+.pil { position: fixed; right: 24px; top: 50%; translate: 0 -50%; z-index: 30; display: flex; flex-direction: column; gap: 12px; }
+.pil__knap { width: 56px; height: 56px; border-radius: 50%; border: 0; background: var(--signal); color: var(--groen); display: grid; place-items: center; cursor: pointer; padding: 0; box-shadow: 0 0 0 1px var(--hairline); }
+.pil__knap svg { width: 26px; height: 26px; }
+.pil__knap:disabled { opacity: 0.4; cursor: default; }
+
+.ol__min:focus-visible, .ol__vis:focus-visible, .pil__knap:focus-visible, .ol a:focus-visible, .dl__pill:focus-visible { outline: 2px solid var(--groen); outline-offset: 2px; }
+@media screen and (max-width: 1099px) {
+  .ol__vis { top: auto; bottom: 16px; translate: none; }
+  .pil { top: auto; bottom: 16px; right: 16px; translate: none; }
+  .pil__knap { width: 44px; height: 44px; }
+  .pil__knap svg { width: 22px; height: 22px; }
+}
+@media screen and (max-width: 399px) {
+  .chrome.ol-over .ol { width: 100%; border-right: 0; }
+}
+
+/* 760 to 1279 px: two columns at most */
+@media screen and (max-width: 1279px) {
+  .irad { grid-template-columns: 150px minmax(0, 1fr); }
+  .brug3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .brug3__mailfig { grid-column: 1 / -1; }
+  .brug3 .brug2__mail { aspect-ratio: 744 / 400; }
+  .brug2 { grid-template-columns: minmax(0, 1fr); align-items: start; }
+  .brug2__h { max-width: 520px; }
+  .laes { grid-template-columns: minmax(0, 1fr); }
+  .anat { grid-template-columns: minmax(0, 1fr); }
+  .anat--mail .anat__bild { width: 100%; max-width: 640px; }
+  .raekke--knapper { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .raekke--brug { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .raekke--brug .eks:last-child { grid-column: 1 / -1; max-width: 480px; }
+  .ord { grid-template-columns: minmax(0, 1fr); }
+  :root { --pad: 48px; }
+  .indhold { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .grupper { columns: 2; align-self: start; }
+  .tjenester { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tjeneste p { min-height: 0; }
+  .princip { grid-template-columns: minmax(0, 1fr); }
+  .logo { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .regler { grid-template-columns: minmax(0, 1fr); }
+  .dodont { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 20px; }
+  .primaer { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .primaer__stak { grid-column: 1 / -1; grid-template-rows: none; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pastel { grid-template-columns: minmax(0, 1fr); }
+  .pastel__side { max-width: 560px; }
+  .typo { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .typo__hoejre { justify-self: start; }
+  .noter--raekke { grid-template-columns: minmax(0, 1fr); }
+  .resten-top { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .resten-top > .kicker { grid-column: 1 / -1; }
+  .resten-bund { grid-template-columns: minmax(0, 1fr); align-items: start; }
+  .billeder { grid-template-columns: minmax(0, 1fr); }
+  .billeder__raekke { max-width: 760px; }
+  .tjek { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .citater { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .citat__tekst { font-size: 30px; }
+  .brug { display: grid; grid-template-columns: minmax(0, 400fr) minmax(0, 260fr) minmax(0, 220fr); gap: 24px; }
+  .ramme--desk, .ramme--mob, .ramme--store { width: 100%; }
+}
+
+/* under 760 px: one column */
+@media screen and (max-width: 759px) {
+  .irad { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .irad__liste { flex-direction: column; gap: 8px; }
+  .irad .indhold__navn { font-size: 19px; }
+  .laes__tiles--tre { grid-template-columns: minmax(0, 1fr); max-width: 360px; }
+  .brug3 { grid-template-columns: minmax(0, 1fr); max-width: 300px; }
+  .brug3 .brug2__mail { aspect-ratio: auto; height: 420px; }
+  .brug3 .pill--paa { position: static; align-self: flex-start; box-shadow: none; }
+  .brug3 .brug2__tall { display: flex; flex-direction: column; gap: 8px; aspect-ratio: auto; }
+  .brug3 .brug2__tall .pill { order: -1; }
+  .brug3 .brug2__tall img { height: auto; }
+  .ftiles { grid-template-columns: minmax(0, 1fr); }
+  .ftile__eks { max-width: 360px; }
+  .brug2__h { grid-template-columns: minmax(0, 1fr); max-width: 260px; }
+  .brug2 .pill--paa { position: static; align-self: flex-start; box-shadow: none; }
+  .brug2__web, .brug2__tall { display: flex; flex-direction: column; gap: 8px; }
+  .brug2__web .pill, .brug2__tall .pill { order: -1; }
+  .brug2__tall { aspect-ratio: auto; }
+  .brug2__tall img { height: auto; }
+  .ark__krop--midt { justify-content: flex-start; }
+  .laes__tiles { grid-template-columns: minmax(0, 1fr); }
+  .anat--skaerm .anat__bild { width: 100%; max-width: 300px; }
+  .anat__linjer { display: none; }
+  .raekke, .raekke--kort, .raekke--moerk, .raekke--farver, .raekke--knapper, .raekke--brug { grid-template-columns: minmax(0, 1fr); max-width: none; }
+  .raekke--brug .eks:last-child { grid-column: auto; max-width: none; }
+  .ord > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  :root { --pad: 24px; }
+  main { padding: 16px; gap: 16px; }
+  .ark { min-height: 0; gap: 24px; border-radius: 24px; }
+  .ark__krop { gap: 24px; }
+  .rh__wm { height: 22px; }
+  .rh__lockup .rh__wm { height: 28px; }
+  .rh__badge { width: 32px; height: 32px; }
+  .h2 { font-size: 34px; }
+  .lead { font-size: 17px; }
+  .div__krop { min-height: 300px; }
+  .indhold__titel { font-size: 52px; }
+  .grupper { columns: 1; }
+  .indhold__navn { font-size: 19px; }
+  .tjenester, .princip__kort, .logo__grid, .primaer, .primaer__stak, .pastel__grid, .tjek, .par, .resten-top { grid-template-columns: minmax(0, 1fr); }
+  .tjeneste { gap: 10px; }
+  .tjeneste__luft { display: none; }
+  .flise { min-height: 200px; }
+  .dodont { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pastel__grid .farve { min-height: 0; }
+  .primaer { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .primaer .farve { min-height: 170px; padding: 18px 16px; }
+  .primaer .farve h3 { font-size: 18px; }
+  .primaer .vaerdi { letter-spacing: 0; }
+  .specimen { font-size: 34px; }
+  .skala li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .tal-hero { font-size: 56px; }
+  .footer { width: 100%; max-width: 301px; }
+  .billeder__raekke { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; max-width: 300px; justify-self: center; row-gap: 28px; }
+  .billeder__raekke figure { grid-row: auto; grid-template-rows: auto auto; row-gap: 12px; }
+  .tjek h3 { font-size: 22px; }
+  .citat__tekst { font-size: 26px; }
+  .fe td, .fe th { padding-right: 12px; font-size: 15px; }
+  .brug { display: flex; flex-direction: column; align-items: stretch; }
+  .brug figure { align-items: center; }
+  .ramme--desk { width: 100%; }
+  .ramme--desk, .ramme--mob { height: 420px; }
+  .bagside { padding: 48px 0; }
+  .bagside__tagline { font-size: 30px; }
+  .bagside__kontakt { font-size: 17px; }
+}
+
+/* print: one sheet per A4 landscape page */
+@page { size: A4 landscape; margin: 0; }
+@media print {
+  html, body { background: var(--creme); }
+  main { display: block; padding: 0; }
+  .ark {
+    width: 297mm;
+    height: 210mm;
+    min-height: 0;
+    max-width: none;
+    margin: 0;
+    padding: 40px 48px 44px;
+    border: 0;
+    border-radius: 0;
+    gap: 28px;
+    break-after: page;
+    page-break-after: always;
+    break-inside: avoid;
+  }
+  .ark:last-child { break-after: auto; page-break-after: auto; }
+  .ark__krop { gap: 28px; }
+  .ark--cover { display: block; position: relative; overflow: hidden; height: 210mm; aspect-ratio: auto; }
+  .cover__art { bottom: 0; left: 8%; width: 84%; }
+  .cover__fod { top: 40px; bottom: auto; left: 48px; }
+  .div__ord { font-size: 144px; }
+  .div__satz { font-size: 92px; }
+  .ramme { overflow: hidden; }
+  .chrome { display: none !important; }
+  .dlk--ark { background: none; border: 0; padding: 0; color: var(--creme); max-width: 560px; }
+  .dlk--ark .dlk__rad { border-top-color: var(--hairline-lys); color: var(--creme); padding: 4px 0; }
+  .dlk--ark .dlk__ikon, .dlk--ark .dlk__meta { color: var(--creme); }
+  .dlk--ark .dlk__titel { margin-bottom: 2px; }
+  .irader { justify-content: space-evenly; }
+  .irad { padding: 10px 0; }
+  html.pdf-web .brug3 { max-width: 760px; }
+  .ark--snap::after { display: none; }
+  .brug2__mail { overflow: hidden; }
+  .brug2__mailimg { position: absolute; left: 0; top: 0; }
+  html.pdf-web .brug2 { max-width: 1000px; }
+  .raekke--brug .eks__ramme { overflow: hidden; aspect-ratio: auto; height: 300px; }
+  .raekke--brug .eks__ramme img { height: 100%; object-fit: cover; object-position: 50% 0; }
+  .ark, .ark * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  [aria-label="How we talk"] .ark__krop { gap: 20px; }
+  [aria-label="How we talk"] .tone { gap: 22px; }
+  [aria-label="How we talk"] .citater { gap: 32px; }
+  [aria-label="How we talk"] .citat { gap: 8px; }
+  [aria-label="How we talk"] .citat__tekst { font-size: 28px; }
+  [aria-label="How we talk"] .foerefter { gap: 10px; }
+  [aria-label="How we talk"] .fe td { padding: 6px 24px 6px 0; }
+  [aria-label="How we talk"] .en { margin-top: 1px; }
+  html.pdf-web [aria-label="How we talk"] .h2 { font-size: 40px; }
+  html.pdf-web [aria-label="How we talk"] .citat__tekst { font-size: 24px; }
+  html.pdf-web [aria-label="How we talk"] .tone { gap: 16px; }
+  html.pdf-web [aria-label="How we talk"] .fe td { padding: 4px 20px 4px 0; font-size: 14px; line-height: 1.3; }
+  html.pdf-web [aria-label="How we talk"] .fe th { padding-bottom: 6px; }
+  html.pdf-web [aria-label="How we talk"] .fe__regler { font-size: 14px; line-height: 1.4; }
+  html.pdf-web [aria-label="Applications"] .raekke--brug { max-width: 1060px; }
+  .cover__lag { display: none !important; }
+  .cover__flat { visibility: visible !important; }
+  html.pdf-web .ark { page: web; width: 1280px; height: 720px; zoom: 1.5; padding: 40px 56px 40px; }
+  html.pdf-web .ark--cover { height: 720px; }
+  html.pdf-web .laes__tiles--tre { max-width: 1060px; }
+  html.pdf-web [aria-label="Logo rules"] .ark__krop { gap: 20px; }
+  html.pdf-web [aria-label="Logo rules"] .fri { max-width: 320px; }
+  html.pdf-web [aria-label="Logo rules"] .regler__felt { gap: 10px; padding: 20px 24px; }
+  html.pdf-web .cover__art { bottom: 0; left: 10%; width: 80%; }
+  html.pdf-web .cover__fod { top: auto; bottom: 28px; left: 32px; }
+}
+@page web { size: 1920px 1080px; margin: 0; }
+</style>
+<script>if ("IntersectionObserver" in window) document.documentElement.classList.add("js");</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="wm" viewBox="0 0 944.2 500.74"><path d="M186.61,311.72v-25.28h-.84c-10.11,20.64-37.91,33.28-68.66,33.28C48.02,319.73,0,265.38,0,194.61s50.13-124.69,117.11-124.69c28.64,0,55.18,11.37,68.66,32.86h.84v-24.85h69.93v233.79h-69.93ZM186.61,194.61c0-32.86-26.54-59.39-59.4-59.39s-57.29,26.54-57.29,60.24,25.7,58.98,58.13,58.98,58.55-26.12,58.55-59.82Z"/><path d="M309.6,311.72V0h69.93v311.72h-69.93Z"/><path d="M443.98,311.72v-180.71h-34.54v-53.08h34.54V0h69.93v77.93h33.7v53.08h-33.7v180.71h-69.93Z"/><path d="M577.93,53.08V0h69.93v53.08h-69.93ZM577.93,311.72V77.93h69.93v233.79h-69.93Z"/><path d="M875.33,311.72v-25.28h-.84c-13.06,21.48-36.65,32.86-69.93,32.86-70.77,0-117.11-54.34-117.11-125.11s47.6-124.27,115.84-124.27c26.96,0,48.86,8,68.66,27.8V0h69.93v311.72h-66.56ZM875.75,193.77c0-32.44-24.85-58.55-59.4-58.55s-58.98,24.43-58.98,58.55,24.85,60.24,58.55,60.24,59.82-25.7,59.82-60.24Z"/><path d="M628.59,465.71v-48.37c0-19.12-7.39-27.8-22.18-27.8s-23.46,10.61-23.46,27.96v48.21h-16.71v-118.92h16.71v39.37h.32c5.3-7.88,13.82-11.89,24.91-11.89,21.21,0,37.12,13.5,37.12,37.93v53.51h-16.71Z"/><path d="M657.35,483.23c6.59-.64,11.09-2.57,11.09-16.23v-90.31h16.71v94.81c0,19.29-16.87,29.25-27.8,29.25v-17.51ZM668.44,366.4v-19.6h16.71v19.6h-16.71Z"/><path d="M718.58,428.43c3.86,14.79,15.59,24.27,29.25,24.27,10.44,0,20.25-5.46,25.39-14.94h16.71c-6.91,18.32-23.62,30.21-42.75,30.21-25.07,0-45.32-22.18-45.32-45.96,0-28.12,21.21-47.73,44.84-47.73,26.19,0,46.12,20.25,46.12,45.8,0,2.73,0,5.3-.48,8.36h-73.76ZM776.11,415.57c-1.28-15.11-14.62-26.03-28.93-26.03s-27.32,10.77-28.6,26.03h57.53Z"/><path d="M927.48,465.71v-49.82c0-16.88-7.07-26.36-21.05-26.36-14.78,0-21.21,8.2-21.21,26.03v50.14h-16.71v-51.74c0-17.52-8.2-24.43-20.25-24.43-14.78,0-22.02,8.68-22.02,26.19v49.98h-16.71v-89.03h15.43v9.64h.32c7.23-8.52,13.98-12.05,25.55-12.05s23.14,5.63,27.64,14.94c6.43-10.12,15.27-14.94,29.41-14.94,23.14,0,36.32,14.46,36.32,37.44v53.99h-16.71Z"/></symbol>
+</svg>
+<main>
+<!-- 1 Cover -->
+<section class="ark ark--moerk ark--cover" id="ark-1" aria-label="Cover">
+  <h1 class="sr-only">Altid Hjem brand book</h1>
+  <header class="rh">
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">01</span></div>
+  </header>
+  <div class="cover__art"><img class="cover__flat" src="brandbook-img/cover-art.webp" alt="Brand book: the Altid Hjem wordmark, three phones and the floating service icons" width="2637" height="1520"><div class="cover__lag" aria-hidden="true"><img class="lag--beam lag--b1" data-src="brandbook-img/cover-layers/beam-1.webp" alt="" width="2637" height="1520"><img class="lag--icon lag--i1" data-src="brandbook-img/cover-layers/icon-1.webp" alt="" width="2637" height="1520"><img class="lag--phone lag--pl" data-src="brandbook-img/cover-layers/phone-left.webp" alt="" width="2637" height="1520"><img class="lag--phone lag--pr" data-src="brandbook-img/cover-layers/phone-right.webp" alt="" width="2637" height="1520"><img class="lag--phone lag--pc" data-src="brandbook-img/cover-layers/phone-centre-base.webp" alt="" width="2637" height="1520"><img class="lag--headline" data-src="brandbook-img/cover-layers/headline.webp" alt="" width="2637" height="1520"><img class="lag--card lag--c1" data-src="brandbook-img/cover-layers/card-1.webp" alt="" width="2637" height="1520"><img class="lag--card lag--c2" data-src="brandbook-img/cover-layers/card-2.webp" alt="" width="2637" height="1520"><img class="lag--card lag--c3" data-src="brandbook-img/cover-layers/card-3.webp" alt="" width="2637" height="1520"><img class="lag--card lag--c4" data-src="brandbook-img/cover-layers/card-4.webp" alt="" width="2637" height="1520"><img class="lag--lockup" data-src="brandbook-img/cover-layers/lockup.webp" alt="" width="2637" height="1520"><img class="lag--beam lag--b2" data-src="brandbook-img/cover-layers/beam-2.webp" alt="" width="2637" height="1520"><img class="lag--icon lag--i2" data-src="brandbook-img/cover-layers/icon-2.webp" alt="" width="2637" height="1520"><img class="lag--beam lag--b3" data-src="brandbook-img/cover-layers/beam-3.webp" alt="" width="2637" height="1520"><img class="lag--icon lag--i3" data-src="brandbook-img/cover-layers/icon-3.webp" alt="" width="2637" height="1520"><img class="lag--beam lag--b4" data-src="brandbook-img/cover-layers/beam-4.webp" alt="" width="2637" height="1520"><img class="lag--icon lag--i4" data-src="brandbook-img/cover-layers/icon-4.webp" alt="" width="2637" height="1520"></div></div>
+</section>
+
+<!-- 2 Contents -->
+<section class="ark" id="ark-2" aria-label="Contents">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">02</span></div>
+  </header>
+  <div class="indhold">
+    <h2 class="indhold__titel">Contents</h2>
+    <div class="irader">
+      <div class="irad">
+        <p class="irad__navn label"><span>Introduction</span></p>
+        <ol class="irad__liste">
+          <li><a href="#ark-3"><span class="indhold__nr">03</span><span class="indhold__navn">How to read this book</span></a></li>
+          <li><a href="#ark-4"><span class="indhold__nr">04</span><span class="indhold__navn">What is Altid Hjem?</span></a></li>
+          <li><a href="#ark-5"><span class="indhold__nr">05</span><span class="indhold__navn">How Altid Hjem looks</span></a></li>
+          <li><a href="#ark-6"><span class="indhold__nr">06</span><span class="indhold__navn">Design philosophy</span></a></li>
+        </ol>
+      </div>
+      <div class="irad">
+        <p class="irad__navn label"><span>Brand design</span><span class="tal">07</span></p>
+        <ol class="irad__liste">
+          <li><a href="#ark-8"><span class="indhold__nr">08</span><span class="indhold__navn">Logo</span></a></li>
+          <li><a href="#ark-9"><span class="indhold__nr">09</span><span class="indhold__navn">Logo rules</span></a></li>
+        </ol>
+      </div>
+      <div class="irad">
+        <p class="irad__navn label"><span>Colours</span><span class="tal">10</span></p>
+        <ol class="irad__liste">
+          <li><a href="#ark-11"><span class="indhold__nr">11</span><span class="indhold__navn">Primary colours</span></a></li>
+          <li><a href="#ark-12"><span class="indhold__nr">12</span><span class="indhold__navn">Pastels</span></a></li>
+          <li><a href="#ark-13"><span class="indhold__nr">13</span><span class="indhold__navn">Colours in use</span></a></li>
+        </ol>
+      </div>
+      <div class="irad">
+        <p class="irad__navn label"><span>Type</span><span class="tal">14</span></p>
+        <ol class="irad__liste">
+          <li><a href="#ark-15"><span class="indhold__nr">15</span><span class="indhold__navn">Typography</span></a></li>
+          <li><a href="#ark-16"><span class="indhold__nr">16</span><span class="indhold__navn">Anatomy of a screen</span></a></li>
+          <li><a href="#ark-17"><span class="indhold__nr">17</span><span class="indhold__navn">Anatomy of a mail</span></a></li>
+        </ol>
+      </div>
+      <div class="irad">
+        <p class="irad__navn label"><span>Elements</span><span class="tal">18</span></p>
+        <ol class="irad__liste">
+          <li><a href="#ark-19"><span class="indhold__nr">19</span><span class="indhold__navn">Cards</span></a></li>
+          <li><a href="#ark-20"><span class="indhold__nr">20</span><span class="indhold__navn">The block</span></a></li>
+          <li><a href="#ark-21"><span class="indhold__nr">21</span><span class="indhold__navn">Buttons, QR and footer</span></a></li>
+          <li><a href="#ark-22"><span class="indhold__nr">22</span><span class="indhold__navn">Imagery</span></a></li>
+          <li><a href="#ark-23"><span class="indhold__nr">23</span><span class="indhold__navn">Six checks</span></a></li>
+        </ol>
+      </div>
+      <div class="irad">
+        <p class="irad__navn label"><span>Voice</span><span class="tal">24</span></p>
+        <ol class="irad__liste">
+          <li><a href="#ark-25"><span class="indhold__nr">25</span><span class="indhold__navn">How we talk</span></a></li>
+          <li><a href="#ark-26"><span class="indhold__nr">26</span><span class="indhold__navn">Words we use</span></a></li>
+        </ol>
+      </div>
+      <div class="irad">
+        <p class="irad__navn label"><span>In use</span><span class="tal">27</span></p>
+        <ol class="irad__liste">
+          <li><a href="#ark-28"><span class="indhold__nr">28</span><span class="indhold__navn">Applications</span></a></li>
+          <li><a href="#ark-29"><span class="indhold__nr">29</span><span class="indhold__navn">Contact</span></a></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 How to read this book -->
+<section class="ark" id="ark-3" aria-label="How to read this book">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">03</span></div>
+  </header>
+  <div class="laes laes--rader">
+    <div class="laes__tekst">
+      <div class="kicker">
+        <h2 class="h2">A calm base. One highlight</h2>
+        <p class="lead">Altid Hjem looks the same everywhere: Cream and Deep forest, two typefaces, rounded corners, warm Danish. On every screen and in every mail one element is allowed to stand out.</p>
+      </div>
+    </div>
+    <div class="laes__tiles laes__tiles--tre">
+      <figure class="laes__tile"><div class="laes__bild"><img src="brandbook-img/app-01-hjem.webp" alt="The home screen of the app" width="904" height="1400" loading="lazy" decoding="async"><span class="pill pill--paa">App</span></div></figure>
+      <figure class="laes__tile"><div class="laes__bild"><img src="brandbook-img/store-01-altid-hjem.webp" alt="The first App Store slide" width="506" height="1100" loading="lazy" decoding="async"><span class="pill pill--paa">App Store</span></div></figure>
+      <figure class="laes__tile"><div class="laes__bild"><img class="top" src="brandbook-img/figma-mail-mobile.webp" alt="The top of the welcome mail on a phone" width="390" height="5213" loading="lazy" decoding="async"><span class="pill pill--paa">Mail</span></div></figure>
+    </div>
+    <p class="laes__fod">Each sheet shows the rule first, then real examples. The pill on an example tells you where it comes from.</p>
+  </div>
+</section>
+
+<!-- 4 What is Altid Hjem? -->
+<section class="ark" id="ark-4" aria-label="What is Altid Hjem?">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">04</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="kicker">
+      <h2 class="h2">The whole household's finances in one app</h2>
+      <p class="lead">Altid Hjem brings the household's fixed costs together in one place: food, electricity, insurance and economy. One overview, one login.</p>
+    </div>
+    <div class="tjenester">
+      <article class="tjeneste" style="background: var(--lilla)">
+        <span class="tjeneste__ikon"><svg viewBox="0 0 34.4 34.4" aria-hidden="true"><path fill="#BDB0F9" d="M17.2,0h0c9.5,0,17.2,7.7,17.2,17.2h0c0,9.5-7.7,17.2-17.2,17.2h0C7.7,34.4,0,26.7,0,17.2h0C0,7.7,7.7,0,17.2,0Z"/><path fill="#003C16" d="M21.4,16c-2.8,0-5,2.2-5,5s2.2,5,5,5,5-2.2,5-5-2.2-5-5-5ZM21.4,24.8c-2.1,0-3.8-1.7-3.8-3.8s1.7-3.8,3.8-3.8,3.8,1.7,3.8,3.8-1.7,3.8-3.8,3.8Z"/><path fill="#003C16" d="M21.4,15.3h3.6c0-1-.8-1.8-1.8-1.8s-1.8.7-1.8,1.7v-3.5c-1,0-1.8.8-1.8,1.8s.8,1.8,1.8,1.8Z"/><path fill="#003C16" d="M15.4,23.1h-4.7c-.2,0-.2,0-.2-.2v-6.6c0-.5,0-1,.3-1.5l1.7-3.7h2.4l1.7,3.7c.2.5.3,1,.3,1.5v.5c.3-.3.7-.6,1-.8,0-.6-.2-1.1-.4-1.6l-1.5-3.3h.7c.3,0,.6-.3.6-.6v-.7c0-.3-.3-.6-.6-.6h-5.6c-.3,0-.6.3-.6.6v.7c0,.3.3.6.6.6h.4l-1.5,3.3c-.3.6-.4,1.2-.4,1.9v6.6c0,.7.5,1.2,1.2,1.2h5.2c0-.3-.3-.7-.4-1h-.1Z"/></svg></span>
+        <span class="tjeneste__luft"></span>
+        <h3>Altid Mad</h3>
+        <p>A meal plan and a shopping list with prices from the shops you use.</p>
+      </article>
+      <article class="tjeneste" style="background: var(--blaa)">
+        <span class="tjeneste__ikon"><svg viewBox="0 0 34.44 34.44" aria-hidden="true"><path fill="#A3D5FF" d="M17.22,0h0c9.51,0,17.22,7.71,17.22,17.22h0c0,9.51-7.71,17.22-17.22,17.22h0C7.71,34.44,0,26.73,0,17.22h0C0,7.71,7.71,0,17.22,0Z"/><path fill="#003C16" d="M20.83,25.03c0,.16-.06.31-.18.42-.11.11-.27.18-.42.18h-6.01c-.16,0-.31-.06-.42-.18-.11-.11-.18-.27-.18-.42s.06-.31.18-.42c.11-.11.27-.18.42-.18h6.01c.16,0,.31.06.42.18.11.11.18.27.18.42ZM23.83,15.42c0,1-.22,1.99-.66,2.89-.44.9-1.08,1.69-1.87,2.31-.15.11-.27.26-.35.43-.08.17-.13.35-.13.54v.45c0,.32-.13.62-.35.85-.23.23-.53.35-.85.35h-4.81c-.32,0-.62-.13-.85-.35-.23-.23-.35-.53-.35-.85v-.45c0-.18-.04-.36-.12-.53-.08-.16-.2-.31-.34-.42-.79-.61-1.42-1.4-1.86-2.29-.44-.9-.67-1.88-.67-2.88-.02-3.58,2.87-6.56,6.45-6.65.88-.02,1.76.13,2.58.46.82.32,1.57.81,2.2,1.42.63.62,1.13,1.35,1.47,2.16.34.81.52,1.69.52,2.57ZM22.63,15.42c0-.72-.14-1.44-.42-2.1-.28-.66-.69-1.27-1.21-1.77-.52-.5-1.13-.9-1.8-1.16-.67-.26-1.39-.39-2.11-.37-2.93.07-5.29,2.51-5.28,5.44,0,.82.19,1.62.55,2.35.36.73.88,1.37,1.53,1.88.29.23.52.51.68.84.16.33.24.69.24,1.06v.45h1.8v-3.36l-2.23-2.23c-.11-.11-.18-.27-.18-.43s.06-.31.18-.43.27-.18.43-.18.31.06.43.18l1.98,1.98,1.98-1.98c.06-.06.12-.1.2-.13.07-.03.15-.05.23-.05s.16.02.23.05c.07.03.14.07.2.13.06.06.1.12.13.2.03.07.05.15.05.23s-.02.16-.05.23c-.03.07-.07.14-.13.2l-2.23,2.23v3.36h1.8v-.45c0-.37.09-.73.25-1.06.16-.33.4-.62.69-.84.65-.5,1.17-1.15,1.53-1.89.36-.74.54-1.55.54-2.37Z"/></svg></span>
+        <span class="tjeneste__luft"></span>
+        <h3>Altid Energi</h3>
+        <p>See the electricity price hour by hour, and find out when power is cheap.</p>
+      </article>
+      <article class="tjeneste" style="background: var(--rosa)">
+        <span class="tjeneste__ikon"><img src="brandbook-img/icon_forsikring.svg" alt="" width="56" height="56" loading="lazy" decoding="async"></span>
+        <span class="tjeneste__luft"></span>
+        <h3>Altid Forsikring</h3>
+        <p>Keep all your insurance policies in one place, and sign up for a quote.</p>
+      </article>
+      <article class="tjeneste" style="background: var(--lysegroen)">
+        <img class="tjeneste__app" src="brandbook-img/altid_hjem_app_icon.svg" alt="" width="56" height="56" loading="lazy" decoding="async">
+        <span class="tjeneste__luft"></span>
+        <h3>Økonomi</h3>
+        <p>Connect your bank and see what you have left until payday.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 5 How Altid Hjem looks -->
+<section class="ark" id="ark-5" aria-label="How Altid Hjem looks">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">05</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="princip">
+      <div class="princip__venstre">
+        <div class="kicker">
+          <h2 class="h2">Keep the base. Highlight one element</h2>
+          <p class="lead">All media uses Cream, Deep forest and the same UI elements. One big number, one colour block or one Deep forest background may stand out. Never two.</p>
+        </div>
+        <div class="princip__kort">
+          <div class="pk pk--lys">
+            <h3>Always the same</h3>
+            <ul>
+              <li>The colours and what they mean</li>
+              <li>DM Sans and Onest, one type scale</li>
+              <li>Rounded corners: 20 px in the app, 32 to 50 in mails</li>
+              <li>Buttons, cards and the tab bar</li>
+              <li>Warm, plain Danish</li>
+            </ul>
+          </div>
+          <div class="pk pk--moerk">
+            <h3>Free to vary</h3>
+            <ul>
+              <li>Scale: a number as big as the screen allows</li>
+              <li>Pastel blocks and Deep forest backgrounds</li>
+              <li>Data shown as a picture, not as a table</li>
+              <li>One element people remember</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 Design philosophy -->
+<section class="ark ark--div ark--snap" id="ark-6" aria-label="Design philosophy" style="--bg: var(--gul); --fg: var(--groen); --wm: var(--groen)">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">06</span></div>
+  </header>
+  <div class="div__krop div__krop--slut">
+    <h2 class="div__satz">Would you screenshot it?</h2>
+    <p class="div__under">Our design philosophy is built around this. We don’t prioritise what’s conventional, polished or perfectly aligned. Instead, we focus on creating unique, memorable experiences that make users want to take a screenshot and share it with a friend.</p>
+  </div>
+</section>
+
+<!-- 7 Brand design -->
+<section class="ark ark--div" id="ark-7" aria-label="Brand design" style="--bg: var(--groen); --fg: var(--creme); --wm: var(--hvid)">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">07</span></div>
+  </header>
+  <div class="div__krop">
+    <p class="div__range label"><span>Sheets 08 to 09</span><span>Logo, Logo rules</span></p>
+    <div>
+      <h2 class="div__ord">Brand design</h2>
+    </div>
+  </div>
+</section>
+
+<!-- 8 Logo -->
+<section class="ark" id="ark-8" aria-label="Logo">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">08</span></div>
+  </header>
+  <div class="logo">
+    <div class="logo__tekst">
+      <div class="kicker">
+        <h2 class="h2">Wordmark and app icon</h2>
+      </div>
+      <p class="lead">The logo consists of the wordmark and the app icon. The wordmark is used on Cream and Deep forest. The app icon always stands on its own, with its rounded corners.</p>
+    </div>
+    <div class="logo__grid">
+      <div class="flise flise--creme">
+        <svg class="flise__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="The wordmark in Deep forest" style="fill: var(--groen)"><use href="#wm"/></svg>
+        <p class="flise__tekst billedtekst">Wordmark on Cream</p>
+      </div>
+      <div class="flise flise--moerk">
+        <svg class="flise__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="The wordmark in white" style="fill: var(--hvid)"><use href="#wm"/></svg>
+        <p class="flise__tekst billedtekst">Wordmark on Deep forest</p>
+      </div>
+      <div class="flise flise--creme">
+        <img class="flise__ikon" src="brandbook-img/altid_hjem_app_icon.svg" alt="The app icon" width="104" height="104" loading="lazy" decoding="async">
+        <p class="flise__tekst billedtekst">App icon on Cream</p>
+      </div>
+      <div class="flise flise--moerk">
+        <img class="flise__ikon" src="brandbook-img/app-badge.png" alt="The app icon on Deep forest" width="104" height="104" loading="lazy" decoding="async">
+        <p class="flise__tekst billedtekst">App icon on Deep forest</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 Logo rules -->
+<section class="ark" id="ark-9" aria-label="Logo rules">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">09</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="kicker">
+      <h2 class="h2">Logo rules</h2>
+    </div>
+    <div class="regler">
+      <div class="regler__felt">
+        <p class="label">Clear space</p>
+        <svg class="fri" viewBox="-330 -300 1604 1100" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Clear space around the wordmark: x is the height of the a">
+          <rect x="-250" y="-250" width="1444.2" height="1000.74" fill="#F5EFE3"/>
+          <rect x="0" y="0" width="944.2" height="500.74" fill="#FDFAF4"/>
+          <g stroke="#6F6A61" stroke-width="3" stroke-dasharray="10 10" fill="none">
+            <rect x="-250" y="-250" width="1444.2" height="1000.74"/>
+            <line x1="-250" y1="0" x2="1194.2" y2="0"/>
+            <line x1="-250" y1="500.74" x2="1194.2" y2="500.74"/>
+            <line x1="0" y1="-250" x2="0" y2="750.74"/>
+            <line x1="944.2" y1="-250" x2="944.2" y2="750.74"/>
+          </g>
+          <use href="#wm" x="0" y="0" width="944.2" height="500.74" fill="#003C16"/>
+          <g stroke="#6F6A61" stroke-width="4" fill="none">
+            <line x1="-40" y1="69.9" x2="-40" y2="319.7"/>
+            <line x1="-60" y1="69.9" x2="-20" y2="69.9"/>
+            <line x1="-60" y1="319.7" x2="-20" y2="319.7"/>
+            <line x1="472" y1="-250" x2="472" y2="0"/>
+            <line x1="452" y1="-250" x2="492" y2="-250"/>
+            <line x1="452" y1="0" x2="492" y2="0"/>
+            <line x1="-250" y1="625" x2="0" y2="625"/>
+            <line x1="-250" y1="605" x2="-250" y2="645"/>
+            <line x1="0" y1="605" x2="0" y2="645"/>
+          </g>
+          <g font-family="Onest, Helvetica Neue, Arial, sans-serif" font-weight="500" font-size="56" fill="#6F6A61">
+            <text x="-62" y="212" text-anchor="end">x</text>
+            <text x="500" y="-108">x</text>
+            <text x="-125" y="600" text-anchor="middle">x</text>
+            <text x="1069" y="268" text-anchor="middle">x</text>
+          </g>
+        </svg>
+        <p class="billedtekst">x = the height of the a</p>
+      </div>
+      <div class="regler__felt">
+        <p class="label">Minimum size</p>
+        <div class="mini">
+          <div class="mini__raekke">
+            <svg class="mini__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="The wordmark at 96 px"><use href="#wm"/></svg>
+            <div><p class="mini__maal tal">96 px</p><p class="billedtekst tal">25 mm · wordmark</p></div>
+          </div>
+          <div class="mini__raekke">
+            <img class="mini__ikon" src="brandbook-img/altid_hjem_app_icon.svg" alt="The app icon at 24 px" width="24" height="24" loading="lazy" decoding="async">
+            <div><p class="mini__maal tal">24 px</p><p class="billedtekst">app icon</p></div>
+          </div>
+        </div>
+        <div class="ikonregler">
+          <p class="label">App icon</p>
+          <p>Keep the square. Never cut the house out of its background.</p>
+          <p>Clear space: at least a quarter of the icon's width.</p>
+        </div>
+      </div>
+    </div>
+    <div class="dodont">
+      <div class="dd">
+        <div class="dd__flise" style="background: var(--creme); border: 1px solid var(--hairline)"><svg class="wm" viewBox="0 0 944.2 500.74" style="fill: var(--groen)" aria-hidden="true"><use href="#wm"/></svg></div>
+        <p class="dd__tekst"><b>Do</b><span class="graa">On Cream</span></p>
+      </div>
+      <div class="dd">
+        <div class="dd__flise" style="background: var(--groen)"><svg class="wm" viewBox="0 0 944.2 500.74" style="fill: var(--hvid)" aria-hidden="true"><use href="#wm"/></svg></div>
+        <p class="dd__tekst"><b>Do</b><span class="graa">On Deep forest</span></p>
+      </div>
+      <div class="dd">
+        <div class="dd__flise" style="background: var(--lilla)"><svg class="wm" viewBox="0 0 944.2 500.74" style="fill: var(--groen)" aria-hidden="true"><use href="#wm"/></svg></div>
+        <p class="dd__tekst"><b>Do</b><span class="graa">On a pastel card</span></p>
+      </div>
+      <div class="dd">
+        <div class="dd__flise" style="background: var(--creme); border: 1px solid var(--hairline)"><svg class="wm wm--strakt" viewBox="0 0 944.2 500.74" preserveAspectRatio="none" style="fill: var(--groen)" aria-hidden="true"><use href="#wm"/></svg><svg class="dd__streg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="100" x2="100" y2="0" stroke="#6F6A61" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></div>
+        <p class="dd__tekst"><b>Never</b><span class="graa">Stretched or squashed</span></p>
+      </div>
+      <div class="dd">
+        <div class="dd__flise" style="background: var(--creme); border: 1px solid var(--hairline)"><svg class="wm" viewBox="0 0 944.2 500.74" style="fill: var(--blaa)" aria-hidden="true"><use href="#wm"/></svg><svg class="dd__streg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="100" x2="100" y2="0" stroke="#6F6A61" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></div>
+        <p class="dd__tekst"><b>Never</b><span class="graa">In another colour</span></p>
+      </div>
+      <div class="dd">
+        <div class="dd__flise" style="background: var(--creme); border: 1px solid var(--hairline)"><svg class="wm wm--skygge" viewBox="0 0 944.2 500.74" style="fill: var(--groen)" aria-hidden="true"><use href="#wm"/></svg><svg class="dd__streg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="100" x2="100" y2="0" stroke="#6F6A61" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></div>
+        <p class="dd__tekst"><b>Never</b><span class="graa">With a shadow</span></p>
+      </div>
+      <div class="dd">
+        <div class="dd__flise" style="background: var(--creme); border: 1px solid var(--hairline)"><svg class="wm wm--kun" viewBox="0 0 944.2 320" style="fill: var(--groen)" aria-hidden="true"><use href="#wm" width="944.2" height="500.74"/></svg><svg class="dd__streg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="100" x2="100" y2="0" stroke="#6F6A61" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></div>
+        <p class="dd__tekst"><b>Never</b><span class="graa">The word altid alone</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 Colour -->
+<section class="ark ark--div" id="ark-10" aria-label="Colour" style="--bg: var(--signal); --fg: var(--groen); --wm: var(--groen)">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">10</span></div>
+  </header>
+  <div class="div__krop">
+    <p class="div__range label"><span>Sheets 11 to 13</span><span>Primary colours, Pastels, Colours in use</span></p>
+    <div>
+      <h2 class="div__ord">Colours</h2>
+    </div>
+  </div>
+</section>
+
+<!-- 11 Primary colours -->
+<section class="ark" id="ark-11" aria-label="Primary colours">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">11</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="kicker">
+      <h2 class="h2">Primary colours</h2>
+    </div>
+    <div class="primaer">
+      <div class="farve paa-moerk" style="background: var(--groen)">
+        <h3>Deep forest</h3>
+        <p class="vaerdi"><span>#003C16</span><span>RGB 0 60 22</span></p>
+        <p class="farve__brug">App, header, breaker</p>
+      </div>
+      <div class="farve paa-moerk" style="background: var(--groen-tekst)">
+        <h3>Dark forest</h3>
+        <p class="vaerdi"><span>#163223</span><span>RGB 22 50 35</span></p>
+        <p class="farve__brug">Text and footer</p>
+      </div>
+        <div class="farve" style="background: var(--creme); border: 1px solid var(--hairline)">
+          <h3>Cream</h3>
+          <p class="vaerdi"><span>#FDFAF4</span><span>RGB 253 250 244</span></p>
+          <p class="farve__brug">Background in mails and the app</p>
+        </div>
+        <div class="farve" style="background: var(--signal)">
+          <h3>Signal green</h3>
+          <p class="vaerdi"><span>#90FF7C</span><span>RGB 144 255 124</span></p>
+          <p class="farve__brug">Buttons, for action only</p>
+        </div>
+        <div class="farve paa-moerk" style="background: var(--graa)">
+          <h3>Stone</h3>
+          <p class="vaerdi"><span>#6F6A61</span><span>RGB 111 106 97</span></p>
+          <p class="farve__brug">Secondary text</p>
+        </div>
+    </div>
+    <p class="farve__regel">Signal green is for action. In the app: one button and one number per screen. In mails: only the buttons.</p>
+  </div>
+</section>
+
+<!-- 12 Pastels -->
+<section class="ark" id="ark-12" aria-label="Pastels">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">12</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="kicker">
+      <h2 class="h2">Pastels</h2>
+    </div>
+    <div class="pastel">
+      <div class="pastel__grid">
+        <div class="farve farve--lille" style="background: var(--lysegroen)">
+          <h3>Mint</h3>
+          <p class="vaerdi"><span>#B7F2A7</span></p>
+          <p class="farve__brug">Bills</p>
+        </div>
+        <div class="farve farve--lille" style="background: var(--gul)">
+          <h3>Honey</h3>
+          <p class="vaerdi"><span>#FFD27A</span></p>
+          <p class="farve__brug">Takeaway and dreams</p>
+        </div>
+        <div class="farve farve--lille" style="background: var(--lilla)">
+          <h3>Lavender</h3>
+          <p class="vaerdi"><span>#BDB0F9</span></p>
+          <p class="farve__brug">Meal plan</p>
+        </div>
+        <div class="farve farve--lille" style="background: var(--sand)">
+          <h3>Sand</h3>
+          <p class="vaerdi"><span>#F5EFE3</span></p>
+          <p class="farve__brug">Shopping</p>
+        </div>
+        <div class="farve farve--lille" style="background: var(--blaa)">
+          <h3>Sky</h3>
+          <p class="vaerdi"><span>#A3D5FF</span></p>
+          <p class="farve__brug">Altid Energi</p>
+        </div>
+        <div class="farve farve--lille" style="background: var(--rosa)">
+          <h3>Rose</h3>
+          <p class="vaerdi"><span>#FFBAB8</span></p>
+          <p class="farve__brug">Altid Forsikring</p>
+        </div>
+      </div>
+      <div class="pastel__side">
+        <figure class="pastel__eks">
+          <img src="brandbook-img/block-mad-desk.webp" alt="The Altid Mad card on Lavender" width="1072" height="680" loading="lazy" decoding="async">
+          <figcaption class="billedtekst">Lavender in use: the Altid Mad card in the welcome mail</figcaption>
+        </figure>
+        <p class="pastel__regel">One pastel per card.<span>The block carries the picture: one idea per block, eight words at most. Text on a pastel is always Deep forest.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 Colours in use -->
+<section class="ark" id="ark-13" aria-label="Colours in use">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">13</span></div>
+  </header>
+  <div class="ark__krop ark__krop--midt">
+    <div class="kicker">
+      <h2 class="h2">Colours in use</h2>
+    </div>
+    <div class="ftiles">
+      <figure class="ftile__eks"><div class="ftile"><img class="ftile__app" src="brandbook-img/app-01-hjem.webp" alt="The home screen of the app" width="904" height="1400" loading="lazy" decoding="async"><span class="pill pill--paa">App</span></div><ul class="prikker prikker--raekke"><li><span class="prik" style="background: var(--groen)"></span>Deep forest</li><li><span class="prik" style="background: var(--creme)"></span>Cream</li><li><span class="prik" style="background: var(--gul)"></span>Honey</li><li><span class="prik" style="background: var(--signal)"></span>Signal green</li></ul></figure>
+      <figure class="ftile__eks"><div class="ftile"><img class="ftile__mail" src="brandbook-img/block-mad-desk.webp" alt="The Altid Mad card in the welcome mail" width="1072" height="680" loading="lazy" decoding="async"><span class="pill pill--paa">Mail</span></div><ul class="prikker prikker--raekke"><li><span class="prik" style="background: var(--lilla)"></span>Lavender</li><li><span class="prik" style="background: var(--groen)"></span>Deep forest</li></ul></figure>
+      <figure class="ftile__eks"><div class="ftile"><img class="ftile__store" src="brandbook-img/store-06-altid-forsikring.webp" alt="The Altid Forsikring App Store slide" width="506" height="1100" loading="lazy" decoding="async"><span class="pill pill--paa">App Store</span></div><ul class="prikker prikker--raekke"><li><span class="prik" style="background: var(--rosa)"></span>Rose</li><li><span class="prik" style="background: var(--groen)"></span>Deep forest</li><li><span class="prik" style="background: var(--creme)"></span>Cream</li></ul></figure>
+    </div>
+    <p class="regel regel--fod">Deep forest and Cream carry every surface. A pastel marks one card. Signal green marks the one action.</p>
+  </div>
+</section>
+
+<!-- 14 Type -->
+<section class="ark ark--div" id="ark-14" aria-label="Type" style="--bg: var(--lilla); --fg: var(--groen); --wm: var(--groen)">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">14</span></div>
+  </header>
+  <div class="div__krop">
+    <p class="div__range label"><span>Sheets 15 to 17</span><span>Typography, Anatomy of a screen, Anatomy of a mail</span></p>
+    <div>
+      <h2 class="div__ord">Type</h2>
+    </div>
+  </div>
+</section>
+
+<!-- 15 Typography -->
+<section class="ark" id="ark-15" aria-label="Typography">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">15</span></div>
+  </header>
+  <div class="typo">
+    <div class="typo__venstre">
+      <div class="kicker">
+        <p class="label">Typography · DM Sans 700</p>
+        <h2 class="specimen" lang="da">Nu åbner dørene til <span style="white-space: nowrap">Altid Hjem</span></h2>
+        <p class="en" lang="en">The doors are now opening to Altid Hjem</p>
+      </div>
+      <ul class="skala">
+        <li><span class="s-overskrift">Headline</span><span class="skala__spec">DM Sans 700 · 28 px · line height 1.15</span></li>
+        <li><span class="s-afslutning">Closing line</span><span class="skala__spec">DM Sans 700 · 26 px · line height 1.15</span></li>
+        <li><span class="s-overskrift hang">“Hvor handler vi billigst ind?”</span><span class="skala__spec">Hanging quotation marks · indent −0.42 em</span></li>
+        <li><span class="s-broed">Body text</span><span class="skala__spec">Onest 400 · 16 px · line height 1.6</span></li>
+        <li><span class="s-signatur">Signature</span><span class="skala__spec">Onest 500 · 16 px</span></li>
+        <li><span class="s-billed">Caption</span><span class="skala__spec">Onest 400 · 13 px · Stone</span></li>
+      </ul>
+      <p class="typo__note">The app uses DM Sans for everything. Mails use DM Sans for headlines and Onest for body text.</p>
+    </div>
+    <div class="typo__hoejre">
+      <div class="tal-blok">
+        <p class="label">Number first</p>
+        <p class="tal-raekke"><span class="tal-hero">2.090 kr.</span><span class="tal-enhed">tilbage</span></p>
+        <p class="typo__note">Big numbers: DM Sans 800, line height 0.9, with a smaller unit after the number. One big number per screen.</p>
+      </div>
+      <div class="mail" lang="da">
+        <img class="mail__header" src="brandbook-img/header-frame.png" alt="The mail header" width="780" height="230" loading="lazy" decoding="async">
+        <div class="mail__krop">
+          <p>Hej Thor,</p>
+          <p>Du skrev dig op til Altid Hjem, og nu er ventetiden endelig forbi! <span style="color: var(--graa)">Som en af de første får du eksklusiv adgang til vores beta. Hent appen allerede i dag, og vær med til at forme Altid Hjem.</span></p>
+          <p class="billedtekst">Onest 16 px, set as in the welcome mail</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16 Anatomy of a screen -->
+<section class="ark" id="ark-16" aria-label="Anatomy of a screen">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">16</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="kicker">
+      <h2 class="h2">Anatomy of a screen</h2>
+    </div>
+    <div class="anat anat--skaerm">
+      <div class="anat__bild"><img src="brandbook-img/app-01-hjem.webp" alt="The home screen of the app, with numbered callouts" width="904" height="1400" loading="lazy" decoding="async"><svg class="anat__linjer" viewBox="0 0 904 1400" aria-hidden="true"><line x1="55" y1="330" x2="165" y2="330" stroke="#003C16" stroke-width="1" vector-effect="non-scaling-stroke"/><circle cx="165" cy="330" r="9.04" fill="#003C16"/><line x1="855" y1="250" x2="775" y2="250" stroke="#003C16" stroke-width="1" vector-effect="non-scaling-stroke"/><circle cx="775" cy="250" r="9.04" fill="#003C16"/><line x1="855" y1="1090" x2="765" y2="1090" stroke="#003C16" stroke-width="1" vector-effect="non-scaling-stroke"/><circle cx="765" cy="1090" r="9.04" fill="#003C16"/><line x1="55" y1="900" x2="165" y2="900" stroke="#003C16" stroke-width="1" vector-effect="non-scaling-stroke"/><circle cx="165" cy="900" r="9.04" fill="#003C16"/><line x1="855" y1="800" x2="672" y2="905" stroke="#003C16" stroke-width="1" vector-effect="non-scaling-stroke"/><circle cx="672" cy="905" r="9.04" fill="#003C16"/></svg><span class="co" style="left: 6.08%; top: 23.57%" aria-hidden="true">1</span><span class="co" style="left: 94.58%; top: 17.86%" aria-hidden="true">2</span><span class="co" style="left: 94.58%; top: 77.86%" aria-hidden="true">3</span><span class="co" style="left: 6.08%; top: 64.29%" aria-hidden="true">4</span><span class="co" style="left: 94.58%; top: 57.14%" aria-hidden="true">5</span></div>
+      <ol class="anat__legende"><li><span class="co" aria-hidden="true">1</span><span>Hero number, DM Sans 800, as big as the screen allows.</span></li><li><span class="co" aria-hidden="true">2</span><span>Deep forest hero at the top.</span></li><li><span class="co" aria-hidden="true">3</span><span>Cream body.</span></li><li><span class="co" aria-hidden="true">4</span><span>One pastel card that pops out.</span></li><li><span class="co" aria-hidden="true">5</span><span>One primary action per screen. In the app it is a Deep forest button.</span></li></ol>
+    </div>
+  </div>
+</section>
+
+<!-- 17 Anatomy of a mail -->
+<section class="ark" id="ark-17" aria-label="Anatomy of a mail">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">17</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="kicker">
+      <h2 class="h2">Anatomy of a mail</h2>
+    </div>
+    <div class="anat anat--mail">
+      <div class="anat__bild"><img src="brandbook-img/anatomy-mail.webp" alt="The welcome mail on a phone in three columns, with numbered callouts" width="1250" height="782" loading="lazy" decoding="async"><svg class="anat__linjer" viewBox="0 0 1250 782" aria-hidden="true"><line x1="410" y1="250" x2="360" y2="250" stroke="#003C16" stroke-width="1" vector-effect="non-scaling-stroke"/><circle cx="360" cy="250" r="12.5" fill="#003C16"/><line x1="410" y1="450" x2="350" y2="450" stroke="#003C16" stroke-width="1" vector-effect="non-scaling-stroke"/><circle cx="350" cy="450" r="12.5" fill="#003C16"/><line x1="840" y1="250" x2="795" y2="250" stroke="#003C16" stroke-width="1" vector-effect="non-scaling-stroke"/><circle cx="795" cy="250" r="12.5" fill="#003C16"/><line x1="1055" y1="530" x2="1055" y2="462" stroke="#003C16" stroke-width="1" vector-effect="non-scaling-stroke"/><circle cx="1055" cy="462" r="12.5" fill="#003C16"/><line x1="410" y1="625" x2="370" y2="625" stroke="#003C16" stroke-width="1" vector-effect="non-scaling-stroke"/><circle cx="370" cy="625" r="12.5" fill="#003C16"/><line x1="840" y1="650" x2="815" y2="650" stroke="#003C16" stroke-width="1" vector-effect="non-scaling-stroke"/><circle cx="815" cy="650" r="12.5" fill="#003C16"/></svg><span class="co" style="left: 32.80%; top: 31.97%" aria-hidden="true">1</span><span class="co" style="left: 32.80%; top: 57.54%" aria-hidden="true">2</span><span class="co" style="left: 67.20%; top: 31.97%" aria-hidden="true">3</span><span class="co" style="left: 84.40%; top: 67.77%" aria-hidden="true">4</span><span class="co" style="left: 32.80%; top: 79.92%" aria-hidden="true">5</span><span class="co" style="left: 67.20%; top: 83.12%" aria-hidden="true">6</span></div>
+      <ol class="anat__legende"><li><span class="co" aria-hidden="true">1</span><span>Header: headline and lockup on Deep forest, bottom corners radius 50.</span></li><li><span class="co" aria-hidden="true">2</span><span>Intro: first sentence Deep forest, the rest Stone.</span></li><li><span class="co" aria-hidden="true">3</span><span>Cards: one pastel each, the phone breaks out at the bottom.</span></li><li><span class="co" aria-hidden="true">4</span><span>Breaker: Deep forest, radius 50, icons with light beams.</span></li><li><span class="co" aria-hidden="true">5</span><span>Store buttons in Signal green, QR cards for desktop readers.</span></li><li><span class="co" aria-hidden="true">6</span><span>Footer: Dark forest, top corners radius 32.</span></li></ol>
+    </div>
+  </div>
+</section>
+
+<!-- 18 Elements -->
+<section class="ark ark--div" id="ark-18" aria-label="Elements" style="--bg: var(--blaa); --fg: var(--groen); --wm: var(--groen)">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">18</span></div>
+  </header>
+  <div class="div__krop">
+    <p class="div__range label"><span>Sheets 19 to 23</span><span>Cards, The block, Buttons, QR and footer, Imagery, Six checks</span></p>
+    <div>
+      <h2 class="div__ord">Elements</h2>
+    </div>
+  </div>
+</section>
+
+<!-- 19 Cards -->
+<section class="ark" id="ark-19" aria-label="Cards">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">19</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="kicker">
+      <h2 class="h2">Cards</h2>
+      <p class="regel">One idea per card. One pastel. A headline that asks the everyday question. The phone breaks out of the card.</p>
+    </div>
+    <div class="raekke raekke--kort">
+      <figure class="eks"><span class="pill">Mail</span><img src="brandbook-img/block-regninger-desk.webp" alt="The bills card in the welcome mail" width="1072" height="680" loading="lazy" decoding="async"></figure>
+      <figure class="eks"><span class="pill">App</span><img src="brandbook-img/app-06-forsikring.webp" alt="Altid Forsikring in the app: four policies as cards" width="904" height="1400" loading="lazy" decoding="async"></figure>
+      <figure class="eks"><span class="pill">App Store</span><img src="brandbook-img/store-04-altid-mad.webp" alt="The Altid Mad App Store slide" width="506" height="1100" loading="lazy" decoding="async"></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 20 The block -->
+<section class="ark" id="ark-20" aria-label="The block">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">20</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="kicker">
+      <h2 class="h2">The block</h2>
+      <p class="regel">A Deep forest block carries the statement: the hero of a screen, the breaker of a mail, the header of a store slide.</p>
+    </div>
+    <div class="raekke raekke--moerk">
+      <figure class="eks"><span class="pill">Mail</span><img src="brandbook-img/breaker.webp" alt="The breaker in the welcome mail" width="1200" height="636" loading="lazy" decoding="async"></figure>
+      <figure class="eks"><span class="pill">App</span><img class="eks__crop" style="aspect-ratio: 904 / 760" src="brandbook-img/app-01-hjem.webp" alt="The Deep forest hero at the top of the home screen" width="904" height="1400" loading="lazy" decoding="async"></figure>
+      <figure class="eks"><span class="pill">App Store</span><img class="eks__crop" style="aspect-ratio: 506 / 520" src="brandbook-img/store-01-altid-hjem.webp" alt="The top of the first App Store slide" width="506" height="1100" loading="lazy" decoding="async"></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 21 Buttons, QR and footer -->
+<section class="ark" id="ark-21" aria-label="Buttons, QR and footer">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">21</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="kicker">
+      <h2 class="h2">Buttons, QR and footer</h2>
+      <p class="regel">Signal green is the action. One button per screen; in mails only the store buttons. Secondary buttons sit on Cream.</p>
+    </div>
+    <div class="raekke raekke--knapper">
+      <figure class="eks"><span class="pill">Mail</span><div class="knapper"><img src="brandbook-img/btn-appstore.png" alt="Hent i App Store" width="520" height="104" loading="lazy" decoding="async"><img src="brandbook-img/btn-googleplay.png" alt="Hent i Google Play" width="520" height="104" loading="lazy" decoding="async"></div><figcaption class="billedtekst">Store buttons: Signal green pill, Deep forest text; the second sits on Cream.</figcaption></figure>
+      <figure class="eks"><span class="pill">Mail</span><div class="qr"><img src="brandbook-img/qr-appstore.png" alt="QR card for the App Store" width="480" height="546" loading="lazy" decoding="async"><img src="brandbook-img/qr-play.png" alt="QR card for Google Play" width="480" height="546" loading="lazy" decoding="async"></div><figcaption class="billedtekst">QR cards for people reading on a computer</figcaption></figure>
+      <figure class="eks"><span class="pill">Mail</span><div class="footer footer--fuld">
+          <img class="f-badge" src="brandbook-img/app-badge.png" alt="Altid Hjem app" width="48" height="48" loading="lazy" decoding="async">
+          <div class="luft-16"></div>
+          <img class="f-tagline" src="brandbook-img/f-tagline.png" alt="Bedre råd til hjemmet. Altid." width="202" height="16" loading="lazy" decoding="async">
+          <div class="luft-16"></div>
+          <img class="f-company" src="brandbook-img/f-company.png" alt="Altid Hjem ApS · Danmark · altidhjem.dk" width="237" height="12" loading="lazy" decoding="async">
+          <div class="luft-8"></div>
+          <img class="f-linkedin" src="brandbook-img/f-linkedin.png" alt="Følg os på LinkedIn" width="116" height="14" loading="lazy" decoding="async">
+          <div class="luft-16"></div>
+          <img class="f-afmeld" src="brandbook-img/f-afmeld.png" alt="Afmeld" width="43" height="12" loading="lazy" decoding="async">
+        </div><figcaption class="billedtekst">Footer: Dark forest #163223, top corner radius 32</figcaption></figure>
+      <figure class="eks"><span class="pill">App</span><img src="brandbook-img/app-button.webp" alt="Ret drøm: the primary button on the Drømme screen" width="990" height="190" loading="lazy" decoding="async"><figcaption class="billedtekst">In the app the primary button is Deep forest, one per screen.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 22 Imagery -->
+<section class="ark" id="ark-22" aria-label="Imagery">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">22</span></div>
+  </header>
+  <div class="billeder">
+    <div class="billeder__tekst">
+      <div class="kicker">
+        <h2 class="h2">The app is our picture</h2>
+        <p class="lead">We don’t use stock photos or standalone illustrations. When displaying the app, we also use real app screens with sample data, shown in a phone, and can include elements breaking out of the phone.</p>
+      </div>
+      <ul class="noter">
+        <li>Real screens, never mock-ups with filler text</li>
+        <li>The number is always readable in the picture</li>
+        <li>Icons come from the app, each in a pastel circle with a white ring</li>
+      </ul>
+    </div>
+    <div class="billeder__raekke">
+      <figure>
+        <img src="brandbook-img/app-02-okonomi.webp" alt="Økonomi in the app: categories with shop logos outside the phone" width="904" height="1400" loading="lazy" decoding="async">
+        <figcaption class="billedtekst">Økonomi: categories and shop logos outside the phone</figcaption>
+      </figure>
+      <figure>
+        <img src="brandbook-img/app-06-forsikring.webp" alt="Altid Forsikring in the app: four policies as colour blocks" width="904" height="1400" loading="lazy" decoding="async">
+        <figcaption class="billedtekst">Altid Forsikring: four policies as colour blocks, each with a logo</figcaption>
+      </figure>
+      <figure>
+        <img src="brandbook-img/app-08-dromme.webp" alt="Drømme in the app: the goal as a drawing, 62 per cent outside the phone" width="904" height="1400" loading="lazy" decoding="async">
+        <figcaption class="billedtekst">Drømme: the goal as a drawing, the percentage outside the phone</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 23 Six checks -->
+<section class="ark" id="ark-23" aria-label="Six checks">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">23</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="kicker">
+      <h2 class="h2">Six checks for every screen</h2>
+    </div>
+    <ol class="tjek">
+      <li><span class="tjek__nr">1</span><h3>Picture first</h3><p>Start with the picture. Use text only where the picture cannot explain the idea.</p></li>
+      <li><span class="tjek__nr">2</span><h3>Make them want it</h3><p>The standard is “I want that.” Correct is not enough.</p></li>
+      <li><span class="tjek__nr">3</span><h3>Show what they miss</h3><p>A feature that is switched off is shown as a missed saving in kroner. Never greyed out.</p></li>
+      <li><span class="tjek__nr">4</span><h3>See it, not read it</h3><p>An error looks like an error before anyone has read a word.</p></li>
+      <li><span class="tjek__nr">5</span><h3>Within thumb reach</h3><p>The button or switch sits where the thumb can reach it.</p></li>
+      <li><span class="tjek__nr">6</span><h3>Nothing extra</h3><p>Remove back arrows with no function, lines that repeat the title, and pills with no purpose.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 24 Voice -->
+<section class="ark ark--div" id="ark-24" aria-label="Voice" style="--bg: var(--gul); --fg: var(--groen); --wm: var(--groen)">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">24</span></div>
+  </header>
+  <div class="div__krop">
+    <p class="div__range label"><span>Sheets 25 to 26</span><span>How we talk, Words we use</span></p>
+    <div>
+      <h2 class="div__ord">Voice</h2>
+    </div>
+  </div>
+</section>
+
+<!-- 25 How we talk -->
+<section class="ark" id="ark-25" aria-label="How we talk">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">25</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="kicker">
+      <p class="label">Tone of voice</p>
+      <h2 class="h2">How we talk</h2>
+    </div>
+    <div class="tone">
+      <div class="citater">
+        <div class="citat"><p class="label">The everyday question</p><p class="citat__tekst" lang="da">Ikke mere “hvad skal vi spise?”</p><p class="en" lang="en">No more “what's for dinner?”</p></div>
+        <div class="citat"><p class="label">Warm and direct</p><p class="citat__tekst" lang="da">Du skrev dig op til Altid Hjem, og nu er ventetiden endelig forbi!</p><p class="en" lang="en">You signed up for Altid Hjem, and the wait is finally over!</p></div>
+        <div class="citat"><p class="label">Personal closing lines</p><p class="citat__tekst" lang="da">Vi glæder os til at se dig/jer</p><p class="en" lang="en">We look forward to seeing you</p></div>
+      </div>
+      <div class="foerefter">
+        <table class="fe">
+          <thead><tr><th class="fe__ikke" scope="col">Not like this</th><th class="fe__saadan" scope="col">Like this</th></tr></thead>
+          <tbody>
+            <tr><td><span lang="da">Brugeren kan aktivere funktionen</span><span class="en" lang="en">The user can activate the feature</span></td><td><span lang="da">I kan slå det til</span><span class="en" lang="en">You can switch it on</span></td></tr>
+            <tr><td><span lang="da">Spar penge på din økonomi</span><span class="en" lang="en">Save money on your finances</span></td><td><span lang="da">4.200 kr. sparet i år</span><span class="en" lang="en">4,200 kr. saved this year</span></td></tr>
+            <tr><td><span lang="da">Vi har registreret dit forbrug for perioden</span><span class="en" lang="en">We have registered your consumption for the period</span></td><td><span lang="da">Her er jeres forbrug i marts</span><span class="en" lang="en">Here is your consumption for March</span></td></tr>
+            <tr><td><span lang="da">Der opstod en fejl. Prøv igen senere.</span><span class="en" lang="en">An error occurred. Try again later.</span></td><td><span lang="da">Vi kunne ikke hente jeres priser. Prøv igen om lidt.</span><span class="en" lang="en">We could not fetch your prices. Try again shortly.</span></td></tr>
+          </tbody>
+        </table>
+        <p class="fe__regler">Always du, I and jeres (you), never brugere (users). Use an amount instead of a promise, and give every number a source. No dashes: write ranges as kl. 13 til 15. We say ét overblik, ét login (one overview, one login).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 26 Words we use -->
+<section class="ark" id="ark-26" aria-label="Words we use">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">26</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="kicker">
+      <p class="label">Glossary</p>
+      <h2 class="h2">Words we use</h2>
+    </div>
+    <dl class="ord">
+      <div><dt>Base</dt><dd>Cream and Deep forest, the same everywhere</dd></div>
+      <div><dt>Highlight</dt><dd>The one element allowed to stand out</dd></div>
+      <div><dt>Block</dt><dd>A rounded colour rectangle that holds one idea</dd></div>
+      <div><dt>Card</dt><dd>A block with a phone or a number inside</dd></div>
+      <div><dt>Pop-out</dt><dd>An element that breaks out of the phone</dd></div>
+      <div><dt>Hero number</dt><dd>The big amount at the top of a screen</dd></div>
+      <div><dt>Breaker</dt><dd>The Deep forest block that interrupts a mail</dd></div>
+      <div><dt>Signal green</dt><dd>The one colour for action</dd></div>
+      <div><dt>Pastels</dt><dd>The six soft colours, one per card</dd></div>
+      <div><dt>Sheet</dt><dd>One page of this book</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- 27 In use -->
+<section class="ark ark--div" id="ark-27" aria-label="In use" style="--bg: var(--rosa); --fg: var(--groen); --wm: var(--groen)">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">27</span></div>
+  </header>
+  <div class="div__krop">
+    <p class="div__range label"><span>Sheets 28 to 29</span><span>Applications, Contact</span></p>
+    <div>
+      <h2 class="div__ord">In use</h2>
+    </div>
+  </div>
+</section>
+
+<!-- 28 Applications -->
+<section class="ark" id="ark-28" aria-label="Applications">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">28</span></div>
+  </header>
+  <div class="ark__krop">
+    <div class="kicker">
+      <h2 class="h2">Applications</h2>
+      <p class="regel regel--bred">Where the brand lives today: the app, the store listing and the welcome mail.</p>
+    </div>
+    <div class="brug3">
+      <figure class="brug2__fig brug3__mailfig"><span class="pill pill--paa brug2__mailpill">Mail</span><div class="brug2__mail" tabindex="0" role="region" aria-label="The welcome mail on desktop, scrollable"><img class="brug2__mailimg" src="brandbook-img/figma-mail-desktop.webp" alt="The welcome mail on a computer" width="600" height="5271" loading="lazy" decoding="async"></div><figcaption class="billedtekst">The welcome mail, 2 November 2026</figcaption></figure>
+      <figure class="brug2__fig"><div class="brug2__tall"><img class="brug2__contain" src="brandbook-img/app-04-madplan.webp" alt="The Altid Mad meal plan in the app" width="560" height="977" loading="lazy" decoding="async"><span class="pill pill--paa pill--naer">App</span></div><figcaption class="billedtekst">Altid Mad in the app</figcaption></figure>
+      <figure class="brug2__fig"><div class="brug2__tall"><img class="brug2__cover" src="brandbook-img/store-04-altid-mad.webp" alt="The Altid Mad App Store slide" width="506" height="1100" loading="lazy" decoding="async"><span class="pill pill--paa pill--naer">App Store</span></div><figcaption class="billedtekst">App Store</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 29 Contact -->
+<section class="ark ark--moerk" id="ark-29" aria-label="Contact">
+  <header class="rh">
+    <svg class="rh__wm" viewBox="0 0 944.2 500.74" role="img" aria-label="Altid Hjem"><use href="#wm"/></svg>
+    <div class="rh__meta label"><span>Brand book</span><span>·</span><span class="tal">29</span></div>
+  </header>
+  <div class="bagside">
+    <img class="bagside__ikon" src="brandbook-img/app-badge.png" alt="The app icon" width="120" height="120" loading="lazy" decoding="async">
+    <p class="bagside__tagline" lang="da">Bedre råd til hjemmet. Altid.</p>
+    <p class="en" style="color: var(--creme); opacity: .72;" lang="en">Better advice for the home. Always.</p>
+    <p class="bagside__kontakt">altidhjem.dk · hej@altidhjem.dk</p>
+    <p class="bagside__firma">Altid Hjem ApS · Denmark</p>
+    <section class="dlk dlk--ark" aria-label="Downloads" data-chrome>
+      <p class="dlk__titel">Downloads</p>
+      <a class="dlk__rad" href="Altid-Hjem-logo-pack-2026-11.zip" download><svg class="dlk__ikon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 4v10M7.5 9.5L12 14l4.5-4.5M4.5 15v3.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dlk__navn">Logo pack</span><span class="dlk__meta">ZIP · 0.4 MB</span></a>
+      <a class="dlk__rad" href="BRANDBOOK-2026-11-Altid-Hjem-print.pdf" download><svg class="dlk__ikon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 4v10M7.5 9.5L12 14l4.5-4.5M4.5 15v3.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dlk__navn">Brand book, print (A4)</span><span class="dlk__meta">PDF · 9.8 MB</span></a>
+      <a class="dlk__rad" href="BRANDBOOK-2026-11-Altid-Hjem-web.pdf" download><svg class="dlk__ikon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 4v10M7.5 9.5L12 14l4.5-4.5M4.5 15v3.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dlk__navn">Brand book, web (1920×1080)</span><span class="dlk__meta">PDF · 9.8 MB</span></a>
+    </section>
+  </div>
+</section>
+
+</main>
+<div class="chrome" data-chrome hidden>
+  <button class="ol__vis" type="button" aria-controls="outline" aria-expanded="false" aria-label="Show outline"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M6 7h12M6 12h12M6 17h12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+  <nav class="ol" id="outline" aria-label="Outline">
+    <button class="ol__min" type="button" aria-controls="outline" aria-label="Hide outline"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path d="M6 12h12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+    <div class="ol__scroll">
+      <div class="ol__list">
+      </div>
+    </div>
+  </nav>
+  <div class="pil">
+    <button class="pil__knap pil__op" type="button" aria-label="Previous sheet"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="pil__knap pil__ned" type="button" aria-label="Next sheet"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+  <section class="dlk dlk--fix" id="downloads" aria-label="Downloads">
+    <div class="dlk__inner">
+      <div class="dlk__kopf"><p class="dlk__titel">Downloads</p><button class="dlk__min" type="button" aria-controls="downloads" aria-label="Minimise downloads"><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true" focusable="false"><path d="M6 12h12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button></div>
+      <a class="dlk__rad" href="Altid-Hjem-logo-pack-2026-11.zip" download><svg class="dlk__ikon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 4v10M7.5 9.5L12 14l4.5-4.5M4.5 15v3.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dlk__navn">Logo pack</span><span class="dlk__meta">ZIP · 0.4 MB</span></a>
+      <a class="dlk__rad" href="BRANDBOOK-2026-11-Altid-Hjem-print.pdf" download><svg class="dlk__ikon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 4v10M7.5 9.5L12 14l4.5-4.5M4.5 15v3.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dlk__navn">Brand book, print (A4)</span><span class="dlk__meta">PDF · 9.8 MB</span></a>
+      <a class="dlk__rad" href="BRANDBOOK-2026-11-Altid-Hjem-web.pdf" download><svg class="dlk__ikon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 4v10M7.5 9.5L12 14l4.5-4.5M4.5 15v3.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dlk__navn">Brand book, web (1920×1080)</span><span class="dlk__meta">PDF · 9.8 MB</span></a>
+    </div>
+    <button class="dlk__pill" type="button" aria-controls="downloads" aria-label="Show downloads" tabindex="-1"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M12 4v10M7.5 9.5L12 14l4.5-4.5M4.5 15v3.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Downloads</span></button>
+  </section>
+  <button class="til-top" type="button" aria-label="Back to top" title="Back to top" tabindex="-1"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M6 5h12M7 15l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 10v10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  if (!root.classList.contains("js")) return;
+  var GROUPS = ".kicker > *, .indhold__titel, .gruppe, .tjeneste, .princip__kort > *, .logo__tekst > p, .flise, .regler__felt, .dd, .farve, .farve__regel, .pastel__side > *, .skala li, .typo__note, .tal-blok, .mail, .par > img, .noter li, .resten__kol, .billeder__raekke figure, .tjek li, .citat, .fe tr, .fe__regler, .brug figure, .bagside > *, .div__range, .div__under, .laes__tile, .eks, .anat__legende li, .ord > div, .regel, .laes__fod, .ftile__eks, .brug2__fig";
+  var BILD = ".laes__tile, .eks, .ftile__eks, .brug2__fig, .billeder__raekke figure, .par > img, .mail, .princip__app, .resten__kol, .flise";
+  document.querySelectorAll(".ark:not(.ark--cover)").forEach(function (sheet) {
+    sheet.querySelectorAll(GROUPS + ", .irad, .princip__app").forEach(function (el) {
+      var i = 0, s = el.previousElementSibling;
+      while (s) { if (s.classList.contains("rv")) i++; s = s.previousElementSibling; }
+      el.classList.add("rv");
+      if (el.matches(BILD)) el.classList.add("rv--bild");
+      el.style.setProperty("--i", Math.min(i, 6));
+    });
+    sheet.querySelectorAll(".div__ord, .div__satz").forEach(function (el) { el.classList.add("rv", "rv--big"); });
+  });
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // a sheet counts as seen when the given share of it is visible, or when the visible part fills that share of the viewport (tall sheets on phones)
+  function seen(e, share) { return e.isIntersecting && (e.intersectionRatio >= share || e.intersectionRect.height >= window.innerHeight * share); }
+  var steps = []; for (var k = 0; k <= 20; k++) steps.push(k / 20);
+  var snapSheet = document.querySelector(".ark--snap");
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!seen(e, 0.35)) return;
+      io.unobserve(e.target);
+      if (e.target === snapSheet && !reduce) return;
+      e.target.classList.add("is-in");
+    });
+  }, { threshold: steps });
+  document.querySelectorAll(".ark").forEach(function (sheet) { io.observe(sheet); });
+  if (snapSheet && !reduce) {
+    var so = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!seen(e, 0.6)) return;
+        so.unobserve(e.target);
+        var finish = function () { snapSheet.classList.remove("snap-go"); snapSheet.classList.add("is-in"); };
+        // the capture lasts 1200 ms; finish on its end, or after 1500 ms if the browser skips the animation event (a hidden tab)
+        var timer = setTimeout(finish, 1500);
+        snapSheet.addEventListener("animationend", function done(ev) {
+          if (ev.target !== snapSheet || ev.animationName !== "snap-sheet") return;
+          snapSheet.removeEventListener("animationend", done);
+          clearTimeout(timer);
+          finish();
+        });
+        snapSheet.classList.add("snap-go");
+      });
+    }, { threshold: steps });
+    so.observe(snapSheet);
+  }
+  if (reduce) return;
+  var t0 = performance.now();
+  var layers = Array.prototype.slice.call(document.querySelectorAll(".cover__lag img"));
+  Promise.all(layers.map(function (img) {
+    return new Promise(function (ok, fail) {
+      img.onload = ok;
+      img.onerror = function () { fail(new Error("Cover layer did not load: " + img.dataset.src)); };
+      img.src = img.dataset.src;
+    });
+  })).then(function () { if (performance.now() - t0 < 1500) root.classList.add("cover-on"); }, function (err) { console.error(err); });
+})();
+</script>
+<script>
+(function () {
+  var chrome = document.querySelector(".chrome");
+  if (!chrome || !("IntersectionObserver" in window)) return;
+  var sheets = Array.prototype.slice.call(document.querySelectorAll("main > .ark"));
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var nav = chrome.querySelector(".ol"), box = chrome.querySelector(".ol__scroll"), list = chrome.querySelector(".ol__list");
+  var dl = chrome.querySelector(".ol__dl"), show = chrome.querySelector(".ol__vis"), hide = chrome.querySelector(".ol__min");
+  var up = chrome.querySelector(".pil__op"), down = chrome.querySelector(".pil__ned");
+  function link(n, text, cls) { var a = document.createElement("a"); a.href = "#ark-" + n; a.textContent = text; a.dataset.n = n; if (cls) a.className = cls; return a; }
+  function group() { var g = document.createElement("div"); g.className = "ol__grp"; list.insertBefore(g, dl); return g; }
+  // cover and contents, then one group per section row of the Contents sheet
+  var g0 = group(); g0.appendChild(link(1, "Cover")); g0.appendChild(link(2, "Contents"));
+  document.querySelectorAll("#ark-2 .irad").forEach(function (row) {
+    var g = group(), head = row.querySelector(".irad__navn"), num = head.querySelector(".tal");
+    var label = head.firstElementChild ? head.firstElementChild.textContent : head.textContent;
+    if (num) g.appendChild(link(+num.textContent, label, "ol__navn"));
+    else { var p = document.createElement("p"); p.className = "ol__navn"; p.textContent = label; g.appendChild(p); }
+    row.querySelectorAll("a").forEach(function (a) { g.appendChild(link(+a.getAttribute("href").replace("#ark-", ""), a.querySelector(".indhold__navn").textContent)); });
+  });
+  var links = Array.prototype.slice.call(list.querySelectorAll("a[data-n]"));
+  var items = Array.prototype.slice.call(list.querySelectorAll("a, .ol__navn"));
+
+  // picker wheel: scale 1 to 0.86 and opacity 1 to 0.35 with the distance from the list's centre
+  var ticking = false;
+  function wheel() {
+    ticking = false;
+    var r = box.getBoundingClientRect(), mid = r.top + r.height / 2, half = r.height / 2 || 1;
+    items.forEach(function (el) {
+      var b = el.getBoundingClientRect(), d = Math.min(1, Math.abs(b.top + b.height / 2 - mid) / half);
+      el.style.scale = String(1 - 0.14 * d); el.style.opacity = String(1 - 0.65 * d);
+    });
+  }
+  function queueWheel() { if (!ticking) { ticking = true; requestAnimationFrame(wheel); } }
+  box.addEventListener("scroll", queueWheel, { passive: true });
+  if ("ResizeObserver" in window) new ResizeObserver(function () { if (Date.now() > pausedUntil) centre(true); }).observe(box);
+  window.addEventListener("scroll", queueWheel, { passive: true });
+  window.addEventListener("resize", queueWheel);
+
+  // auto-centring of the current item, paused for 2 s after the reader scrolls the list by hand
+  var pausedUntil = 0;
+  ["wheel", "touchstart", "pointerdown"].forEach(function (ev) { box.addEventListener(ev, function () { pausedUntil = Date.now() + 2000; }, { passive: true }); });
+  box.addEventListener("keydown", function (e) { if (/^(Arrow|Page|Home|End)/.test(e.key)) pausedUntil = Date.now() + 2000; });
+  function centre(instant) {
+    var a = list.querySelector('a[aria-current="true"]'); if (!a || nav.hidden) return;
+    var top = a.offsetTop - (box.clientHeight - a.offsetHeight) / 2;
+    box.scrollTo({ top: Math.max(0, top), behavior: instant || reduce ? "auto" : "smooth" });
+    queueWheel();
+  }
+
+  // layout: docked in the margin from 1808 px, an overlay from the left below that
+  function docked() { return window.innerWidth >= 1808; }
+  function setOpen(open) {
+    var dock = docked();
+    chrome.classList.toggle("ol-dock", dock); chrome.classList.toggle("ol-over", !dock);
+    nav.hidden = !open; show.hidden = open;
+    show.setAttribute("aria-expanded", String(open));
+    if (open) { centre(true); queueWheel(); }
+  }
+  // docked from 1808 px: always shown, no toggle and no stored state; below that an overlay that starts closed
+  setOpen(docked());
+  show.addEventListener("click", function () { setOpen(true); hide.focus(); });
+  hide.addEventListener("click", function () { if (docked()) return; setOpen(false); show.focus(); });
+  var wasDocked = docked();
+  window.addEventListener("resize", function () {
+    if (docked() === wasDocked) return;
+    wasDocked = docked();
+    setOpen(wasDocked);
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !docked() && !nav.hidden) { setOpen(false); show.focus(); } });
+
+  function go(n) {
+    var el = document.getElementById("ark-" + n); if (!el) return;
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    if (history.replaceState) history.replaceState(null, "", "#ark-" + n);
+  }
+  list.addEventListener("click", function (e) {
+    var a = e.target.closest("a[data-n]"); if (!a) return;
+    e.preventDefault(); go(+a.dataset.n);
+    if (!docked()) { setOpen(false); show.focus(); }
+  });
+
+  // current sheet: the one with the largest visible share of the viewport
+  var vis = new Map(), current = 0;
+  function update() {
+    var best = -1, n = current || 1;
+    vis.forEach(function (h, k) { if (h > best) { best = h; n = k; } });
+    var changed = n !== current; current = n;
+    links.forEach(function (a) { if (+a.dataset.n === current) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
+    up.disabled = current <= 1; down.disabled = current >= sheets.length;
+    if (changed && Date.now() > pausedUntil) centre(false);
+  }
+  var steps = []; for (var k = 0; k <= 20; k++) steps.push(k / 20);
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { vis.set(+e.target.id.replace("ark-", ""), e.isIntersecting ? e.intersectionRect.height : 0); });
+    update();
+  }, { threshold: steps });
+  sheets.forEach(function (s) { io.observe(s); });
+  var top = chrome.querySelector(".til-top"), seven = document.getElementById("ark-7");
+  function topState() {
+    var on = seven && seven.getBoundingClientRect().top <= window.innerHeight;
+    chrome.classList.toggle("top-on", on); top.tabIndex = on ? 0 : -1;
+  }
+  // downloads card: minimises into a pill and grows back, with measured sizes (Web Animations API)
+  var card = chrome.querySelector(".dlk--fix"), inner = card.querySelector(".dlk__inner"), pill = card.querySelector(".dlk__pill"), mini = card.querySelector(".dlk__min");
+  var DKEY = "brandbook-downloads", EASE = "cubic-bezier(0.22, 1, 0.36, 1)", busy = null;
+  function dstored() { try { return localStorage.getItem(DKEY); } catch (err) { return null; } }
+  function dremember(v) { try { localStorage.setItem(DKEY, v); } catch (err) { /* storage blocked: keep the in-page state only */ } }
+  function measure(el) { var r = el.getBoundingClientRect(), cs = getComputedStyle(el); return { width: r.width + "px", height: r.height + "px", borderRadius: cs.borderRadius, backgroundColor: cs.backgroundColor, borderColor: cs.borderColor, borderWidth: cs.borderTopWidth }; }
+  function setMin(min, animate) {
+    if (busy) { busy.forEach(function (a) { a.cancel(); }); busy = null; }
+    var from = measure(card);
+    card.classList.toggle("is-min", min);
+    pill.tabIndex = min ? 0 : -1; mini.tabIndex = min ? -1 : 0;
+    inner.querySelectorAll("a").forEach(function (a) { a.tabIndex = min ? -1 : 0; });
+    sizeVar();
+    if (!animate || reduce) return;
+    var to = measure(card);
+    var opts = { duration: 380, easing: EASE };
+    busy = [
+      card.animate([from, to], opts),
+      inner.animate(min ? [{ opacity: 1, visibility: "visible" }, { opacity: 0, visibility: "visible", offset: 0.4 }, { opacity: 0, visibility: "visible" }]
+                        : [{ opacity: 0, visibility: "visible" }, { opacity: 0, visibility: "visible", offset: 0.6 }, { opacity: 1, visibility: "visible" }], { duration: 380 }),
+      pill.animate(min ? [{ opacity: 0 }, { opacity: 0, offset: 0.6 }, { opacity: 1 }] : [{ opacity: 1 }, { opacity: 0, offset: 0.3 }, { opacity: 0 }], { duration: 380 })
+    ];
+    var frame = function () { if (busy) { sizeVar(); requestAnimationFrame(frame); } };
+    requestAnimationFrame(frame);
+    busy[0].finished.then(function () { busy = null; sizeVar(); }, function () { /* cancelled by a newer toggle */ });
+  }
+  function sizeVar() { chrome.style.setProperty("--dlk-h", card.getBoundingClientRect().height + "px"); }
+  var dsaved = dstored();
+  // starts as the pill at every width; a saved "open" from an earlier visit is honoured
+  setMin(dsaved !== "open", false);
+  mini.addEventListener("click", function () { setMin(true, true); dremember("min"); pill.focus({ preventScroll: true }); });
+  pill.addEventListener("click", function () { setMin(false, true); dremember("open"); mini.focus({ preventScroll: true }); });
+  if ("ResizeObserver" in window) new ResizeObserver(sizeVar).observe(card); else window.addEventListener("resize", sizeVar);
+  var topTick = false;
+  window.addEventListener("scroll", function () { if (!topTick) { topTick = true; requestAnimationFrame(function () { topTick = false; topState(); }); } }, { passive: true });
+  window.addEventListener("resize", topState);
+  top.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); if (history.replaceState) history.replaceState(null, "", location.pathname + location.search); });
+  topState();
+  up.addEventListener("click", function () { if (current > 1) go(current - 1); });
+  down.addEventListener("click", function () { if (current < sheets.length) go(current + 1); });
+  chrome.hidden = false;
+  sizeVar(); update(); queueWheel();
+})();
+</script>
+</body>
+</html>

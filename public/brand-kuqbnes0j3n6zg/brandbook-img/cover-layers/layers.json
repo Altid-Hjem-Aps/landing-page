@@ -1,0 +1,109 @@
+{
+  "canvas": {
+    "w": 1920,
+    "h": 1549,
+    "scale": 2,
+    "note": "All layers share this canvas; stack in z order (0 = bottom). Same canvas and crop as cover-art.png."
+  },
+  "layers": [
+    {
+      "file": "icon-1.png",
+      "description": "Service icon Energi (top left) with its light beam",
+      "z": 0,
+      "bbox": {
+        "x": 86,
+        "y": 294,
+        "w": 474,
+        "h": 207
+      }
+    },
+    {
+      "file": "icon-2.png",
+      "description": "Service icon Økonomi (top right) with its light beam",
+      "z": 1,
+      "bbox": {
+        "x": 1305,
+        "y": 163,
+        "w": 537,
+        "h": 227
+      }
+    },
+    {
+      "file": "phone-left.png",
+      "description": "Left phone (Altid Mad screen)",
+      "z": 2,
+      "bbox": {
+        "x": 21,
+        "y": 470,
+        "w": 910,
+        "h": 1079
+      }
+    },
+    {
+      "file": "phone-right.png",
+      "description": "Right phone (Altid Forsikring screen, Tryg)",
+      "z": 3,
+      "bbox": {
+        "x": 998,
+        "y": 568,
+        "w": 894,
+        "h": 981
+      }
+    },
+    {
+      "file": "phone-centre.png",
+      "description": "Centre phone (Økonomi screen) with its pop-out cards, logos and the Dark forest holes behind the cards",
+      "z": 4,
+      "bbox": {
+        "x": 344,
+        "y": 431,
+        "w": 1232,
+        "h": 1118
+      }
+    },
+    {
+      "file": "headline.png",
+      "description": "Headline \"Brand book\"",
+      "z": 5,
+      "bbox": {
+        "x": 541,
+        "y": 0,
+        "w": 844,
+        "h": 126
+      }
+    },
+    {
+      "file": "lockup.png",
+      "description": "App icon + wordmark",
+      "z": 6,
+      "bbox": {
+        "x": 667,
+        "y": 194,
+        "w": 569,
+        "h": 195
+      }
+    },
+    {
+      "file": "icon-3.png",
+      "description": "Service icon Madplan (bottom left) with its light beam",
+      "z": 7,
+      "bbox": {
+        "x": 0,
+        "y": 738,
+        "w": 410,
+        "h": 715
+      }
+    },
+    {
+      "file": "icon-4.png",
+      "description": "Service icon Forsikring (bottom right) with its light beam",
+      "z": 8,
+      "bbox": {
+        "x": 1425,
+        "y": 1054,
+        "w": 495,
+        "h": 495
+      }
+    }
+  ]
+}
