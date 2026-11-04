@@ -48,7 +48,7 @@ function Column({ col, prefix, at, animate }: { col: typeof COL_A; prefix: 'a' |
           >
             <span
               className="shrink-0 grid place-items-center text-[10px] font-bold"
-              style={{ width: 20, height: 20, borderRadius: '50%', backgroundColor: on ? 'var(--forest)' : 'rgba(26,61,34,0.15)', color: '#fff', transition: `background-color ${DUR_MED}ms ${EASE_STANDARD}` }}
+              style={{ width: 20, height: 20, borderRadius: '50%', backgroundColor: on ? 'var(--app-forest)' : 'rgba(22,50,35,0.15)', color: '#fff', transition: `background-color ${DUR_MED}ms ${EASE_STANDARD}` }}
             >
               <span
                 key={on ? 'check' : 'off'}
@@ -57,7 +57,7 @@ function Column({ col, prefix, at, animate }: { col: typeof COL_A; prefix: 'a' |
                 {on ? '✓' : ''}
               </span>
             </span>
-            <span className="min-w-0 font-semibold text-[12px] leading-snug" style={{ color: 'var(--text-dark)' }}>
+            <span className="min-w-0 font-semibold text-[12px] leading-snug" style={{ color: 'var(--app-ink)' }}>
               <span
                 key={on ? 'on' : 'off'}
                 style={{ display: 'inline-block', animation: animate && on ? `hjem-value-in ${DUR_MED}ms ${EASE_OUT} both` : 'none', animationDelay: staggerDelay(2, animate) }}
@@ -84,7 +84,7 @@ export default function BudgetAppSammenligning() {
       role="img"
       aria-label="Sammenligning: en budget-app viser tidligere forbrug, et samlet overblik samler de faste aftaler"
       className="w-full max-w-[440px] rounded-[24px] px-5 pt-5 pb-4 hjem-motion-scope"
-      style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
+      style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-dm-sans)', ...mockupEntranceStyle(entered, reduced) }}
     >
       <CardHeader eyebrow="Sammenlign behovet" title="To veje til overblik" icon="/app-badge.png" />
 
@@ -96,7 +96,7 @@ export default function BudgetAppSammenligning() {
       <div
         className="rounded-2xl px-4 py-3"
         style={{
-          backgroundColor: 'var(--forest)',
+          backgroundColor: 'var(--app-forest)',
           ...revealPanelStyle(phase === 'done'),
         }}
         aria-hidden={phase !== 'done'}

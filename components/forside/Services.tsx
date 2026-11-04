@@ -1,18 +1,14 @@
 import ServiceSection from '@/components/forside/ServiceSection'
 import { SERVICES, type ServiceKey } from '@/lib/forside-copy'
-import type { StaticImageData } from 'next/image'
-import okonomi from './img/okonomi.webp'
-import mad from './img/mad.webp'
-import energi from './img/energi.webp'
-import forsikring from './img/forsikring.webp'
+import { TOURS, type TourData } from '@/lib/screen-captures'
 
 // The four live services of app release 1.0, in the store text's order.
 // Desktop alternates the phone's side: right, left, right, left.
-const VISUAL: Record<ServiceKey, { tint: string; image: StaticImageData; phoneLeft: boolean }> = {
-  okonomi: { tint: 'var(--tint-okonomi)', image: okonomi, phoneLeft: false },
-  mad: { tint: 'var(--tint-mad)', image: mad, phoneLeft: true },
-  energi: { tint: 'var(--tint-energi)', image: energi, phoneLeft: false },
-  forsikring: { tint: 'var(--tint-forsikring)', image: forsikring, phoneLeft: true },
+const VISUAL: Record<ServiceKey, { tint: string; tour: TourData; phoneLeft: boolean }> = {
+  okonomi: { tint: 'var(--tint-okonomi)', tour: TOURS.okonomi, phoneLeft: false },
+  mad: { tint: 'var(--tint-mad)', tour: TOURS.mad, phoneLeft: true },
+  energi: { tint: 'var(--tint-energi)', tour: TOURS.energi, phoneLeft: false },
+  forsikring: { tint: 'var(--tint-forsikring)', tour: TOURS.forsikring, phoneLeft: true },
 }
 
 export default function Services() {

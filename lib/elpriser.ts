@@ -37,8 +37,8 @@ export function priceWith(spot: number, tax: number, trans: number, dist: number
 }
 
 /** "14–15"-formatering af en times interval. */
-export function hourSpan(h: number): string {
-  return `${String(h).padStart(2, '0')}–${String((h + 1) % 24).padStart(2, '0')}`
+export function hourSpan(h: number, separator = '–'): string {
+  return `${String(h).padStart(2, '0')}${separator}${String((h + 1) % 24).padStart(2, '0')}`
 }
 
 // Upstream-fejl må ikke kunne hænge en server-render eller API-rute.

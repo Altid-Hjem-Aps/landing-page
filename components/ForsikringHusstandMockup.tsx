@@ -120,8 +120,8 @@ function PersonIcon({ child = false }: { child?: boolean }) {
   const s = child ? 15 : 19
   return (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy={child ? 9 : 8} r={child ? 3.1 : 4} fill="var(--forest)" />
-      <path d={child ? 'M6.5 19c0-3 2.5-5.2 5.5-5.2s5.5 2.2 5.5 5.2Z' : 'M3.5 20.5c0-4 3.8-7 8.5-7s8.5 3 8.5 7Z'} fill="var(--forest)" />
+      <circle cx="12" cy={child ? 9 : 8} r={child ? 3.1 : 4} fill="var(--app-forest)" />
+      <path d={child ? 'M6.5 19c0-3 2.5-5.2 5.5-5.2s5.5 2.2 5.5 5.2Z' : 'M3.5 20.5c0-4 3.8-7 8.5-7s8.5 3 8.5 7Z'} fill="var(--app-forest)" />
     </svg>
   )
 }
@@ -132,7 +132,7 @@ function StatusBadge({ kind }: { kind: 'error' | 'ok' }) {
     <span
       aria-hidden="true"
       className="inline-flex items-center justify-center shrink-0"
-      style={{ width: 12, height: 12, borderRadius: '50%', background: err ? RED : 'var(--forest)', color: '#fff', fontSize: 8, fontWeight: 700, lineHeight: 1 }}
+      style={{ width: 12, height: 12, borderRadius: '50%', background: err ? RED : 'var(--app-forest)', color: '#fff', fontSize: 8, fontWeight: 700, lineHeight: 1 }}
     >
       {err ? '!' : '✓'}
     </span>
@@ -149,8 +149,8 @@ function Tag({ label, icon }: { label: string; icon: 'error' | 'ok' | 'none' }) 
         fontSize: 9,
         fontWeight: 400,
         padding: '2px 7px',
-        background: err ? 'rgba(192,57,43,0.10)' : ok ? 'rgba(168,224,99,0.28)' : 'rgba(26,61,34,0.06)',
-        color: err ? RED : ok ? 'var(--forest)' : 'rgba(26,61,34,0.6)',
+        background: err ? 'rgba(192,57,43,0.10)' : ok ? 'rgba(168,224,99,0.28)' : 'rgba(22,50,35,0.06)',
+        color: err ? RED : ok ? 'var(--app-forest)' : 'rgba(22,50,35,0.6)',
         border: err ? `1px solid ${RED}40` : '1px solid transparent',
         transition: 'background 0.4s ease, color 0.4s ease, border-color 0.4s ease',
         whiteSpace: 'nowrap',
@@ -164,11 +164,11 @@ function Tag({ label, icon }: { label: string; icon: 'error' | 'ok' | 'none' }) 
 
 function AssistantBar({ title, working }: { title: string; working: boolean }) {
   return (
-    <div className="flex items-center gap-2.5 rounded-2xl mb-3" style={{ background: 'var(--forest)', padding: '10px 12px' }}>
-      <span className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 26, height: 26, background: 'var(--sage)' }}>
+    <div className="flex items-center gap-2.5 rounded-2xl mb-3" style={{ background: 'var(--app-forest)', padding: '10px 12px' }}>
+      <span className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 26, height: 26, background: 'var(--app-sage)' }}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6L12 2z" fill="var(--forest)" />
-          <circle cx="18.5" cy="17.5" r="2" fill="var(--forest)" />
+          <path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6L12 2z" fill="var(--app-forest)" />
+          <circle cx="18.5" cy="17.5" r="2" fill="var(--app-forest)" />
         </svg>
       </span>
       <div style={{ minWidth: 0, flex: 1 }}>
@@ -181,7 +181,7 @@ function AssistantBar({ title, working }: { title: string; working: boolean }) {
       {working ? (
         <span className="shrink-0 animate-spin" style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff' }} />
       ) : (
-        <span className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 16, height: 16, background: 'var(--sage)', color: 'var(--forest)', fontSize: 10, fontWeight: 800 }}>✓</span>
+        <span className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 16, height: 16, background: 'var(--app-sage)', color: 'var(--app-forest)', fontSize: 10, fontWeight: 800 }}>✓</span>
       )}
     </div>
   )
@@ -205,17 +205,17 @@ function Bill({ reveal, year }: { reveal: number; year: number }) {
       <div className="flex flex-col gap-2" style={{ marginTop: 10 }}>
         {BILL_ITEMS.map((it, i) => (
           <Row key={it.label} show={reveal > i}>
-            <span style={{ fontSize: 10.5, color: 'rgba(26,61,34,0.7)' }}>
+            <span style={{ fontSize: 10.5, color: 'rgba(22,50,35,0.7)' }}>
               <span style={{ color: RED, fontWeight: 700, marginRight: 4 }}>✕</span>
               {it.label}
             </span>
-            <span style={{ fontSize: 10.5, textDecoration: 'line-through', color: 'rgba(26,61,34,0.4)' }}>{it.amt} kr./md.</span>
+            <span style={{ fontSize: 10.5, textDecoration: 'line-through', color: 'rgba(22,50,35,0.4)' }}>{it.amt} kr./md.</span>
           </Row>
         ))}
       </div>
 
       <div style={{ marginTop: 'auto' }}>
-        <div style={{ borderTop: '1px dashed rgba(26,61,34,0.25)', margin: '10px 0', opacity: reveal > BILL_ITEMS.length ? 1 : 0, transition: 'opacity 0.4s ease' }} />
+        <div style={{ borderTop: '1px dashed rgba(22,50,35,0.25)', margin: '10px 0', opacity: reveal > BILL_ITEMS.length ? 1 : 0, transition: 'opacity 0.4s ease' }} />
 
         <Row show={reveal > BILL_ITEMS.length}>
           <span style={{ fontSize: 11, fontWeight: 700 }}>I sparer månedligt</span>
@@ -224,11 +224,11 @@ function Bill({ reveal, year }: { reveal: number; year: number }) {
 
         <div
           className="rounded-2xl text-center"
-          style={{ marginTop: 12, padding: '14px 10px', background: 'var(--sage)', opacity: yearlyShown ? 1 : 0, transform: yearlyShown ? 'scale(1)' : 'scale(0.96)', transition: 'opacity 0.45s ease, transform 0.45s ease' }}
+          style={{ marginTop: 12, padding: '14px 10px', background: 'var(--app-sage)', opacity: yearlyShown ? 1 : 0, transform: yearlyShown ? 'scale(1)' : 'scale(0.96)', transition: 'opacity 0.45s ease, transform 0.45s ease' }}
         >
-          <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(26,61,34,0.7)' }}>I sparer nu</p>
-          <p style={{ fontSize: 24, fontWeight: 800, lineHeight: 1.1, color: 'var(--forest)' }}>{year.toLocaleString('da-DK')} kr.</p>
-          <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(26,61,34,0.7)' }}>om året</p>
+          <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(22,50,35,0.7)' }}>I sparer nu</p>
+          <p style={{ fontSize: 24, fontWeight: 800, lineHeight: 1.1, color: 'var(--app-forest)' }}>{year.toLocaleString('da-DK')} kr.</p>
+          <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(22,50,35,0.7)' }}>om året</p>
         </div>
       </div>
     </div>
@@ -430,11 +430,11 @@ export default function ForsikringHusstandMockup() {
     <div
       ref={cardRef}
       className="rounded-3xl w-full"
-      style={{ maxWidth: 300, background: '#fff', border: '1px solid rgba(26,61,34,0.1)', boxShadow: '0 18px 40px -12px rgba(26,61,34,0.22)', padding: 16, color: 'var(--forest)' }}
+      style={{ maxWidth: 300, fontFamily: 'var(--font-dm-sans)', background: '#fff', border: '1px solid rgba(22,50,35,0.1)', boxShadow: '0 18px 40px -12px rgba(22,50,35,0.22)', padding: 16, color: 'var(--app-forest)' }}
     >
       <div style={{ opacity: fade, transition: 'opacity 0.55s ease' }}>
       <p style={{ fontSize: 16, fontWeight: 700 }}>Min husstand</p>
-      <p style={{ fontSize: 10, color: 'rgba(26,61,34,0.5)', marginBottom: 12 }}>3 medlemmer · {count} forsikringer</p>
+      <p style={{ fontSize: 10, color: 'rgba(22,50,35,0.5)', marginBottom: 12 }}>3 medlemmer · {count} forsikringer</p>
 
       <AssistantBar title={barTitle} working={barWorking} />
 
@@ -451,7 +451,7 @@ export default function ForsikringHusstandMockup() {
             const overlaps = m.covers.filter((cv) => cv.kind === 'overlap')
             const allResolved = overlaps.length > 0 && overlaps.every((cv) => removedSet.includes(cv.label))
             // Profil-cirkel: grå → rød (fejl fundet) → grøn (fejl rettet).
-            const avatarBg = hasError ? 'rgba(192,57,43,0.16)' : allResolved ? 'rgba(168,224,99,0.5)' : 'rgba(26,61,34,0.08)'
+            const avatarBg = hasError ? 'rgba(192,57,43,0.16)' : allResolved ? 'rgba(168,224,99,0.5)' : 'rgba(22,50,35,0.08)'
             // Collapse-fase: skjul nedefra og op (Dig=0, Marie=1, Lukas=2, Sparet=3).
             const hidden = phase === 'collapse' && mi >= 4 - collapseStep
             return (
@@ -462,8 +462,8 @@ export default function ForsikringHusstandMockup() {
                 <div
                   className="rounded-2xl flex items-center gap-2.5"
                   style={{
-                    background: hasError ? 'rgba(192,57,43,0.07)' : 'var(--cream)',
-                    border: hasError ? '1px solid rgba(192,57,43,0.25)' : '1px solid rgba(26,61,34,0.08)',
+                    background: hasError ? 'rgba(192,57,43,0.07)' : 'var(--app-paper)',
+                    border: hasError ? '1px solid rgba(192,57,43,0.25)' : '1px solid rgba(22,50,35,0.08)',
                     padding: '9px 11px',
                     transition: 'background 0.45s ease, border-color 0.45s ease',
                   }}
@@ -477,7 +477,7 @@ export default function ForsikringHusstandMockup() {
                   <div style={{ minWidth: 0 }}>
                     <p style={{ fontSize: 11, fontWeight: 600 }}>
                       {m.name}
-                      <span style={{ fontSize: 9, fontWeight: 400, color: 'rgba(26,61,34,0.4)' }}>{m.role === 'adult' ? ' · voksen' : ' · barn'}</span>
+                      <span style={{ fontSize: 9, fontWeight: 400, color: 'rgba(22,50,35,0.4)' }}>{m.role === 'adult' ? ' · voksen' : ' · barn'}</span>
                     </p>
                     <div className="flex flex-wrap items-center gap-1" style={{ marginTop: 3 }}>
                       {m.covers.map((cv) => (
@@ -495,16 +495,16 @@ export default function ForsikringHusstandMockup() {
             const hidden = phase === 'collapse' && 3 >= 4 - collapseStep
             return (
               <div style={{ maxHeight: hidden ? 0 : 56, opacity: hidden ? 0 : 1, marginTop: hidden ? 0 : 8, overflow: 'hidden', transition: 'max-height 0.4s ease, opacity 0.3s ease, margin-top 0.4s ease' }}>
-                <div className="flex items-center justify-between" style={{ paddingTop: 12, borderTop: '1px solid rgba(26,61,34,0.1)' }}>
-                  <p style={{ fontSize: 10, color: 'rgba(26,61,34,0.55)' }}>Sparet i alt</p>
+                <div className="flex items-center justify-between" style={{ paddingTop: 12, borderTop: '1px solid rgba(22,50,35,0.1)' }}>
+                  <p style={{ fontSize: 10, color: 'rgba(22,50,35,0.55)' }}>Sparet i alt</p>
                   <div className="flex items-center gap-2">
                     <span
                       className="rounded-full"
-                      style={{ fontSize: 9, fontWeight: 700, padding: '2px 7px', background: 'var(--sage)', color: 'var(--forest)', opacity: chipShown ? 1 : 0, transform: chipShown ? 'translateY(0)' : 'translateY(4px)', transition: 'opacity 0.3s ease, transform 0.3s ease' }}
+                      style={{ fontSize: 9, fontWeight: 700, padding: '2px 7px', background: 'var(--app-sage)', color: 'var(--app-forest)', opacity: chipShown ? 1 : 0, transform: chipShown ? 'translateY(0)' : 'translateY(4px)', transition: 'opacity 0.3s ease, transform 0.3s ease' }}
                     >
                       +{justAdded ?? 0} kr.
                     </span>
-                    <span style={{ fontSize: 17, fontWeight: 800, color: 'var(--forest)', display: 'inline-block', width: 112, flexShrink: 0, textAlign: 'right', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>{shownSaved} kr./md.</span>
+                    <span style={{ fontSize: 17, fontWeight: 800, color: 'var(--app-forest)', display: 'inline-block', width: 112, flexShrink: 0, textAlign: 'right', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>{shownSaved} kr./md.</span>
                   </div>
                 </div>
               </div>

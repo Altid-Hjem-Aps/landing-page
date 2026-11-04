@@ -23,7 +23,8 @@ export const HERO = {
   title: 'Hele hjemmets økonomi i én app',
   lead: 'Madplan, strøm, forsikring og økonomi samlet ét sted. Ét overblik, ét login.',
   note: 'Det er gratis at hente appen og oprette sig.',
-  imageAlt: 'Altid Hjem-appens forside med beløbet, der er tilbage til næste løn',
+  imageAlt: 'Altid Hjem-appens forside med beløbet, der er tilbage til næste løn, og Økonomi med forbruget',
+  screensCaption: 'Skærmbilleder fra appen med eksempeldata.',
 } as const
 
 export const STORE_BADGES = {
@@ -67,7 +68,7 @@ export const SERVICES: readonly ServiceCopy[] = [
     ],
     qualification:
       'Appen kan kun læse jeres kontooplysninger og kan aldrig flytte penge. I vælger selv, om I vil forbinde banken.',
-    imageAlt: 'Økonomi i Altid Hjem: forbrug fordelt på kategorier siden sidste løn',
+    imageAlt: 'Økonomi i Altid Hjem: forbrug fordelt på kategorier, en drøm at spare op til og månedens regninger',
   },
   {
     key: 'mad',
@@ -87,7 +88,7 @@ export const SERVICES: readonly ServiceCopy[] = [
       linkHref: 'https://altidmad.dk',
       footnoteAfterLink: '.',
     },
-    imageAlt: 'Altid Mad: ugens madplan med dagens retter',
+    imageAlt: 'Altid Mad: ugens madplan med dagens retter og indkøbsturen, hvor varerne krydses af',
   },
   {
     key: 'energi',
@@ -101,7 +102,7 @@ export const SERVICES: readonly ServiceCopy[] = [
     ],
     qualification:
       'Er du ikke kunde endnu, kan du blive det direkte i appen. Er du kunde hos Altid Energi, logger du ind som før.',
-    imageAlt: 'Altid Energi: elprisen time for time og forbruget i de seneste måneder',
+    imageAlt: 'Altid Energi: elprisen time for time, saldoen og forbruget måned for måned',
   },
   {
     key: 'forsikring',
@@ -113,7 +114,7 @@ export const SERVICES: readonly ServiceCopy[] = [
       'Vil I have et tilbud, så bed om det i appen. I bliver ringet op, når det er klart',
       'Det er gratis og uforpligtende, og tilbuddet kommer fra vores samarbejdspartner',
     ],
-    imageAlt: 'Altid Forsikring: husstandens forsikringer samlet med pris pr. måned',
+    imageAlt: 'Altid Forsikring: vælg de forsikringer, I vil have tilbud på, og følg forløbet',
   },
 ]
 

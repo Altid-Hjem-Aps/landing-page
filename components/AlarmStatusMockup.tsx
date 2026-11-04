@@ -38,7 +38,7 @@ export default function AlarmStatusMockup() {
       role="img"
       aria-label="Eksempel: hjemmets alarmsensorer aktiveres, og alarmen slås til"
       className="w-full max-w-[400px] rounded-[24px] px-5 pt-5 pb-4 hjem-motion-scope"
-      style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
+      style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-dm-sans)', ...mockupEntranceStyle(entered, reduced) }}
     >
       <CardHeader eyebrow="Alarmstatus" title="Alarmen slås til" icon="/services/icon-alarm.svg" />
 
@@ -71,7 +71,7 @@ export default function AlarmStatusMockup() {
             >
               <span
                 className="shrink-0 grid place-items-center text-[11px] font-bold"
-                style={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: armed ? 'var(--forest)' : 'rgba(26,61,34,0.15)', color: '#fff', transition: `background-color ${DUR_MED}ms ${EASE_STANDARD}` }}
+                style={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: armed ? 'var(--app-forest)' : 'rgba(22,50,35,0.15)', color: '#fff', transition: `background-color ${DUR_MED}ms ${EASE_STANDARD}` }}
               >
                 <span
                   key={armed ? 'on' : 'off'}
@@ -80,12 +80,12 @@ export default function AlarmStatusMockup() {
                   {armed ? '✓' : ''}
                 </span>
               </span>
-              <span className="flex-1 min-w-0 truncate font-semibold text-[13.5px]" style={{ color: 'var(--text-dark)' }}>
+              <span className="flex-1 min-w-0 truncate font-semibold text-[13.5px]" style={{ color: 'var(--app-ink)' }}>
                 {s}
               </span>
               <span
                 className="shrink-0 font-semibold text-[10px] uppercase px-2 py-1"
-                style={{ borderRadius: 6, backgroundColor: armed ? SAGE : 'rgba(26,61,34,0.08)', color: FOREST, letterSpacing: '0.4px', opacity: armed ? 1 : 0.6, transition: `background-color ${DUR_MED}ms ${EASE_STANDARD}, opacity ${DUR_MED}ms ${EASE_STANDARD}` }}
+                style={{ borderRadius: 6, backgroundColor: armed ? SAGE : 'rgba(22,50,35,0.08)', color: FOREST, letterSpacing: '0.4px', opacity: armed ? 1 : 0.6, transition: `background-color ${DUR_MED}ms ${EASE_STANDARD}, opacity ${DUR_MED}ms ${EASE_STANDARD}` }}
               >
                 <span
                   key={armed ? 'Aktiv' : 'Klar'}
@@ -102,7 +102,7 @@ export default function AlarmStatusMockup() {
       <div
         className="rounded-2xl px-4 py-3 flex items-center justify-between gap-3"
         style={{
-          backgroundColor: 'var(--forest)',
+          backgroundColor: 'var(--app-forest)',
           ...revealPanelStyle(phase === 'secured'),
         }}
         aria-hidden={phase !== 'secured'}

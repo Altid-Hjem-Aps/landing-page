@@ -1,11 +1,11 @@
-import type { StaticImageData } from 'next/image'
-import PhoneImage from '@/components/forside/PhoneImage'
+import ScreenTour from '@/components/ScreenTour'
 import ServiceLockup from '@/components/forside/ServiceLockup'
 import type { ServiceCopy } from '@/lib/forside-copy'
+import type { TourData } from '@/lib/screen-captures'
 import { H2 } from '@/lib/typography'
 
 // One full-bleed band per live service. Built as a self-contained panel
-// (copy, tint, image, side) so the four can later become tabs without a
+// (copy, tint, tour, side) so the four can later become tabs without a
 // rewrite. Every text on the tint is forest: the tints fail contrast with the
 // muted greys.
 
@@ -14,18 +14,18 @@ const PAD = 'clamp(56px, 8vw, 112px)'
 export default function ServiceSection({
   copy,
   tint,
-  image,
+  tour,
   phoneLeft = false,
 }: {
   copy: ServiceCopy
   tint: string
-  image: StaticImageData
+  tour: TourData
   phoneLeft?: boolean
 }) {
   return (
     <section
       id={copy.id}
-      className="focus-ring-light overflow-hidden text-[var(--app-forest)]"
+      className="focus-ring-light overflow-clip text-[var(--app-forest)]"
       style={{ background: tint, paddingTop: PAD, paddingBottom: PAD }}
     >
       <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-10 px-6 lg:grid-cols-2 lg:gap-12 lg:px-12">
@@ -55,14 +55,17 @@ export default function ServiceSection({
           {copy.qualification && <p className="mt-7 text-[15px] leading-[1.55]">{copy.qualification}</p>}
         </div>
         {/* The phone runs off the band's bottom edge: the negative margin
-            cancels the bottom padding and the fixed height cuts the phone. */}
+            cancels the bottom padding and the tour's window cuts the phone. */}
         <div
           className={`self-end flex justify-center ${phoneLeft ? 'lg:order-first' : ''}`}
           style={{ marginBottom: `calc(-1 * ${PAD})` }}
         >
-          <div className="h-[420px] w-full max-w-[300px] overflow-hidden lg:h-[560px] lg:max-w-[360px]">
-            <PhoneImage src={image} alt={copy.imageAlt} />
-          </div>
+          <ScreenTour
+            {...tour}
+            label={copy.imageAlt}
+            windowClassName="h-[480px] lg:h-[600px]"
+            phoneClassName="max-w-[300px] lg:max-w-[360px]"
+          />
         </div>
       </div>
     </section>
