@@ -68,7 +68,7 @@ export default function ElprisAppMockup({ data }: Props) {
         <div
           role="img"
           aria-label="Altid Energi i appen med elprisen time for time"
-          style={{ aspectRatio: '1 / 0.86', clipPath: 'inset(-60px -60px 0 -60px)' }}
+          style={{ aspectRatio: '1 / 0.86', minHeight: 0, clipPath: 'inset(-100px -100px 0 -100px)' }}
         >
           <PhoneShell>
             <Image
