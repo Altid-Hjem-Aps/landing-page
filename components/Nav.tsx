@@ -54,13 +54,12 @@ function Pill({ motionControl = false }: { motionControl?: boolean }) {
   return (
     <nav
       aria-label="Hovedmenu"
-      className="pointer-events-auto flex h-14 w-full max-w-[560px] items-center justify-between gap-6 rounded-full border pl-5 pr-1.5 md:h-16 md:pl-6 md:pr-2.5 min-[960px]:w-auto min-[960px]:max-w-none"
+      className="pointer-events-auto flex h-[60px] w-full max-w-[560px] items-center justify-between gap-6 rounded-full border pl-5 pr-1.5 md:h-16 md:pl-6 md:pr-2.5 min-[960px]:w-auto min-[960px]:max-w-none"
       style={{ background: 'var(--ah-cream)', borderColor: 'rgb(22 50 35 / 0.12)', color: 'var(--ah-dark-forest)' }}
     >
-      {/* 96 px is the wordmark's minimum width in the logo pack. It is 51 px high
-          there, too much for the 56 px pill on a phone: 76 px on Thor's call. */}
+      {/* 96 px is the wordmark's minimum width in the logo pack. */}
       <Link href="/" aria-label="Altid Hjem forside" className="shrink-0">
-        <Logo className="h-auto w-[76px] md:w-24" variant="dark" />
+        <Logo className="h-auto w-24" variant="dark" />
       </Link>
       <ul className="hidden min-[960px]:flex items-center gap-0.5">
         {NAV_LINKS.map(({ label, href }) => (

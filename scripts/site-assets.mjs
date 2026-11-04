@@ -22,24 +22,14 @@ const SCREEN_QUALITY = 82
 
 const SCREENS = [
   'hjem/hjem.top',
-  'hjem/hjem.scrolled',
   'okonomi/okonomi.top',
-  'okonomi/okonomi.mod_normal',
   'okonomi/droemme.detail',
   'okonomi/regninger.top',
-  'okonomi/okonomi.category_transport',
   'mad/mad.home',
-  'mad/mad.meal_plan',
   'mad/mad.trip.in_progress',
-  'mad/mad.recipe',
-  'mad/mad.flow.9_week_plan',
-  'mad/mad.welcome.2',
-  'mad/mad.welcome.3',
   'energi/energi.home',
-  'energi/energi.usage',
   'forsikring/b.flow.3_insurances_chosen',
   'forsikring/b.forlob.waiting',
-  'forsikring/b.tilbud.before',
 ]
 
 // The card that breaks out of the phone: full-resolution top of hjem.top, from

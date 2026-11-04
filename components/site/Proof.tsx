@@ -66,13 +66,13 @@ export default function Proof() {
 
           <div className="pf-tile pf-login">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={APP_ICON} alt="" className="pf-app-icon" />
+            <img src={APP_ICON} alt="" width={124} height={124} loading="lazy" className="pf-app-icon" />
             <p className="ah-h3">Mad, strøm, forsikring og økonomi. Ét login.</p>
           </div>
 
           <div className="pf-tile pf-team">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={ALTID_ENERGI_LOGO} alt="Altid Energi" className="pf-energi-logo" />
+            <img src={ALTID_ENERGI_LOGO} alt="Altid Energi" width={220} height={117} loading="lazy" className="pf-energi-logo" />
             <p className="ah-h3">Fra holdet bag Altid Energi.</p>
           </div>
         </div>

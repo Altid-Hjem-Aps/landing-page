@@ -45,7 +45,7 @@ function Stage({ scrolled }: { scrolled: MotionValue<number> }) {
   const time = useTransform(scrolled, timeline)
   const scale = useTransform(time, [0.2, 0.7], [0.26, 1])
   const cream = useTransform(time, [0.9, 1], [0, 1])
-  const words = useTransform(time, [0.52, 0.68], [0.12, 1])
+  const words = useTransform(time, [0.52, 0.68], [0, 1])
   const wordsY = useTransform(time, [0.52, 0.68], [28, 0])
 
   return (
