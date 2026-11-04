@@ -21,7 +21,7 @@ const SEQ: { p: Phase; ms: number }[] = [
   { p: 'done', ms: 8500 },
 ]
 
-const INKFADE = 'rgba(26,61,34,0.35)'
+const INKFADE = 'rgba(22,50,35,0.35)'
 
 
 const LINES = [
@@ -48,7 +48,7 @@ export default function GebyrMockup() {
       role="img"
       aria-label="Eksempel: elregningens gebyrlinjer findes og falder til nul kroner hos et gebyrfrit elselskab"
       className="w-full max-w-[400px] rounded-[24px] px-5 pt-5 pb-4 hjem-motion-scope"
-      style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
+      style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-dm-sans)', ...mockupEntranceStyle(entered, reduced) }}
     >
       <CardHeader eyebrow="Gebyrtjek" title="Tjek af din elregning" icon="/services/icon-strom.svg" />
 
@@ -82,7 +82,7 @@ export default function GebyrMockup() {
             >
               <span
                 className="shrink-0 grid place-items-center text-[11px] font-bold"
-                style={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: flagged ? RED : 'var(--forest)', color: '#fff', transition: `background-color ${DUR_MED}ms ${EASE_STANDARD}` }}
+                style={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: flagged ? RED : 'var(--app-forest)', color: '#fff', transition: `background-color ${DUR_MED}ms ${EASE_STANDARD}` }}
               >
                 <span
                   key={flagged ? '!' : scanned ? 'check' : 'dot'}
@@ -94,9 +94,9 @@ export default function GebyrMockup() {
               <span
                 className="flex-1 min-w-0 truncate font-semibold text-[13.5px]"
                 style={{
-                  color: 'var(--text-dark)',
+                  color: 'var(--app-ink)',
                   textDecorationLine: collapsed ? 'line-through' : 'none',
-                  textDecorationColor: 'rgba(26,61,34,0.4)',
+                  textDecorationColor: 'rgba(22,50,35,0.4)',
                   transition: `color ${DUR_MED}ms ${EASE_STANDARD}`,
                 }}
               >
@@ -107,7 +107,7 @@ export default function GebyrMockup() {
                   className="shrink-0 font-semibold text-[10px] uppercase px-2 py-1"
                   style={{
                     borderRadius: 6,
-                    backgroundColor: flagged ? RED : collapsed ? SAGE : 'rgba(26,61,34,0.08)',
+                    backgroundColor: flagged ? RED : collapsed ? SAGE : 'rgba(22,50,35,0.08)',
                     color: flagged ? '#fff' : FOREST,
                     letterSpacing: '0.4px',
                     opacity: scanned ? 1 : 0.6,
@@ -140,7 +140,7 @@ export default function GebyrMockup() {
       <div
         className="rounded-2xl px-4 py-3 flex items-center justify-between gap-3"
         style={{
-          backgroundColor: 'var(--forest)',
+          backgroundColor: 'var(--app-forest)',
           ...revealPanelStyle(phase === 'done'),
         }}
         aria-hidden={phase !== 'done'}

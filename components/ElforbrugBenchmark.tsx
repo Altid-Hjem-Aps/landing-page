@@ -29,7 +29,7 @@ export default function ElforbrugBenchmark() {
       role="group"
       aria-label="Typisk elforbrug pr. år fordelt på boligtype, vejledende niveauer"
       className="w-full max-w-[440px] rounded-[24px] px-5 pt-5 pb-4"
-      style={{ background: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)' }}
+      style={{ background: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-dm-sans)' }}
     >
       <CardHeader eyebrow="Sammenlign jeres hjem" title="Typisk elforbrug" icon="/services/icon-strom.svg" />
 
@@ -41,19 +41,19 @@ export default function ElforbrugBenchmark() {
             style={{ borderBottom: i < ROWS.length - 1 ? `1px solid ${HAIRLINE}` : 'none' }}
           >
             <div className="flex items-center justify-between gap-3 mb-1.5">
-              <span className="min-w-0 truncate font-semibold text-[13px]" style={{ color: 'var(--text-dark)' }}>
+              <span className="min-w-0 truncate font-semibold text-[13px]" style={{ color: 'var(--app-ink)' }}>
                 {r.label}
               </span>
               <span className="shrink-0 text-[12px] font-bold tabular-nums" style={{ color: FOREST }}>
                 {r.range}
               </span>
             </div>
-            <div className="h-[6px] rounded-full overflow-hidden" style={{ background: 'rgba(26,61,34,0.08)' }}>
+            <div className="h-[6px] rounded-full overflow-hidden" style={{ background: 'rgba(22,50,35,0.08)' }}>
               <div
                 className="h-full rounded-full"
                 style={{
                   width: `${(r.mid / MAX) * 100}%`,
-                  background: i === ROWS.length - 1 ? 'var(--forest)' : 'rgba(26,61,34,0.45)',
+                  background: i === ROWS.length - 1 ? 'var(--app-forest)' : 'rgba(22,50,35,0.45)',
                   transform: grown ? 'scaleX(1)' : 'scaleX(0)',
                   transformOrigin: 'left',
                   transition: reduced ? 'none' : `transform 0.9s cubic-bezier(0.16,1,0.3,1) ${i * 0.08}s`,
@@ -64,7 +64,7 @@ export default function ElforbrugBenchmark() {
         ))}
       </div>
 
-      <div className="rounded-2xl px-4 py-3 flex items-center justify-between gap-3" style={{ background: 'var(--forest)' }}>
+      <div className="rounded-2xl px-4 py-3 flex items-center justify-between gap-3" style={{ background: 'var(--app-forest)' }}>
         <div className="min-w-0">
           <p style={{ fontSize: 11, color: ON_FOREST_MUTED, marginBottom: 1 }}>
             Familie i hus, vejledende niveau
@@ -78,7 +78,7 @@ export default function ElforbrugBenchmark() {
         </span>
       </div>
 
-      <p className="text-[11px] mt-3 leading-relaxed" style={{ color: 'rgba(26,61,34,0.55)' }}>
+      <p className="text-[11px] mt-3 leading-relaxed" style={{ color: 'rgba(22,50,35,0.55)' }}>
         Vejledende 2026-niveauer fra Energistyrelsen og elselskaber, uden elbil og elvarme.
       </p>
     </div>

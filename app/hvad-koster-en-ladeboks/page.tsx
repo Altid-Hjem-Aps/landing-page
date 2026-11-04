@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import LadeboksCalculator from '@/components/LadeboksCalculator'
 
 export const metadata: Metadata = {
-  title: 'Hvad koster en ladeboks? Priser og valg – Altid Hjem',
+  title: 'Hvad koster en ladeboks? Priser og valg | Altid Hjem',
   description:
     'Se vejledende priser på ladeboks, installation, leje og refusion, og få styr på prisen for hjemmeladning. Prøv beregneren her på siden.',
   alternates: { canonical: 'https://altidhjem.dk/hvad-koster-en-ladeboks' },

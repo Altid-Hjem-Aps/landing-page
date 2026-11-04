@@ -99,7 +99,7 @@ export default function LadeboksCalculator() {
       role="group"
       aria-label="Beregner: månedlig udgift til hjemmeladning af elbil"
       className="w-full max-w-[440px] rounded-[24px] px-5 pt-5 pb-5 hjem-motion-scope"
-      style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
+      style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-dm-sans)', ...mockupEntranceStyle(entered, reduced) }}
     >
       <CardHeader eyebrow="Månedligt estimat" title="Beregn din ladeudgift" icon="/services/icon-opladning.svg" />
 
@@ -140,7 +140,7 @@ export default function LadeboksCalculator() {
         {hasCost ? (
           <div
             className="rounded-2xl px-4 py-3 mb-3"
-            style={{ backgroundColor: 'var(--forest)', animation: reduced ? 'none' : `hjem-panel-in ${DUR_MED}ms ${EASE_OUT} both` }}
+            style={{ backgroundColor: 'var(--app-forest)', animation: reduced ? 'none' : `hjem-panel-in ${DUR_MED}ms ${EASE_OUT} both` }}
           >
             <p style={{ fontSize: 9, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: SAGE, marginBottom: 2 }}>
               Estimat
@@ -185,12 +185,12 @@ export default function LadeboksCalculator() {
       <a
         href="#hent-appen"
         className="w-full inline-flex items-center justify-center rounded-full px-6 py-3.5 text-[15px] font-medium transition-opacity hover:opacity-85"
-        style={{ backgroundColor: SAGE, color: 'var(--forest)' }}
+        style={{ backgroundColor: SAGE, color: 'var(--app-forest)' }}
       >
         Hent Altid Hjem, og få overblik over husstanden
       </a>
 
-      <p className="text-[11px] mt-3 leading-relaxed" style={{ color: 'rgba(26,61,34,0.55)' }}>
+      <p className="text-[11px] mt-3 leading-relaxed" style={{ color: 'rgba(22,50,35,0.55)' }}>
         Estimatet bygger alene på dine egne tal og er ikke et pristilbud. Hjemmeladning koster typisk
         2,00-3,50 kr. pr. kWh før refusion; en refusionsaftale kan ændre regnestykket. Intet gemmes,
         når du beregner.

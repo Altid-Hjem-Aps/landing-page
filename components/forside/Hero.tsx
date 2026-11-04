@@ -1,8 +1,8 @@
 import StoreBadges from '@/components/StoreBadges'
-import PhoneImage from '@/components/forside/PhoneImage'
+import ScreenTour from '@/components/ScreenTour'
 import { HERO } from '@/lib/forside-copy'
 import { H1, BODY } from '@/lib/typography'
-import hjem from './img/hjem.webp'
+import { TOURS } from '@/lib/screen-captures'
 
 export default function Hero() {
   return (
@@ -17,12 +17,20 @@ export default function Hero() {
           <p className="mt-4 text-[14px] text-[var(--app-ink-muted)]">{HERO.note}</p>
         </div>
         {/* Forest card with the phone running off its bottom edge. On phones
-            the card shows the top part of the phone, so the screen peeks
-            above the fold. */}
-        <div className="overflow-hidden rounded-[40px] bg-[var(--app-forest)] px-6 pt-8 lg:pt-12">
-          <div className="mx-auto h-[184px] w-[260px] overflow-hidden sm:h-[212px] sm:w-[300px] lg:h-[520px] lg:w-[360px]">
-            <PhoneImage src={hjem} alt={HERO.imageAlt} preload />
+            the copy and badges come first and the phone's top part shows above
+            the fold on 390 x 844. */}
+        <div>
+          <div className="focus-ring-dark overflow-clip rounded-[40px] bg-[var(--app-forest)] px-6 pt-3 lg:pt-5">
+            <ScreenTour
+              {...TOURS.hero}
+              label={HERO.imageAlt}
+              priority
+              tone="forest"
+              windowClassName="h-[400px] sm:h-[460px] lg:h-[560px]"
+              phoneClassName="mx-auto max-w-[260px] sm:max-w-[300px] lg:max-w-[360px]"
+            />
           </div>
+          <p className="mt-3 text-center text-[13px] text-[var(--app-ink-muted)] lg:text-right">{HERO.screensCaption}</p>
         </div>
       </div>
     </section>

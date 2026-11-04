@@ -7,7 +7,7 @@ import { storeLink } from '@/lib/store-links'
 
 // The launch front page, rendered whole. Boundaries faked: the Amplitude SDK
 // (the nav's consent-gated events), the App Router, and the browser APIs jsdom
-// lacks (matchMedia, sendBeacon).
+// lacks (matchMedia, IntersectionObserver, sendBeacon).
 vi.mock('@amplitude/analytics-browser', () => ({ track: vi.fn() }))
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
@@ -15,7 +15,18 @@ vi.mock('next/navigation', () => ({
 }))
 
 beforeEach(() => {
-  window.matchMedia = vi.fn().mockReturnValue({ matches: false }) as unknown as typeof window.matchMedia
+  window.matchMedia = vi.fn().mockReturnValue({
+    matches: false,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  }) as unknown as typeof window.matchMedia
+  vi.stubGlobal(
+    'IntersectionObserver',
+    class {
+      observe() {}
+      disconnect() {}
+    },
+  )
 })
 
 afterEach(() => {

@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import AlarmStatusMockup from '@/components/AlarmStatusMockup'
 
 export const metadata: Metadata = {
-  title: 'Hvad koster en tyverialarm? – Altid Hjem',
+  title: 'Hvad koster en tyverialarm? | Altid Hjem',
   description:
     'Se vejledende priser på tyverialarmer, fra gør-det-selv til abonnement, og lær, hvad der påvirker totalprisen. Få et ærligt overblik her.',
   alternates: { canonical: 'https://altidhjem.dk/hvad-koster-en-tyverialarm' },

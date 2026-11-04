@@ -37,6 +37,12 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      // The phone pictures keep their names when refreshed, so never immutable:
+      // a stale picture would no longer match the regions in lib/screen-captures.ts.
+      {
+        source: "/app-screens/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
+      },
       // Keep the brand book out of search engines; it is reachable by link only.
       {
         source: "/brand-kuqbnes0j3n6zg/:path*",

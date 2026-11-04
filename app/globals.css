@@ -17,8 +17,8 @@
   --accent-lilac: #ffbbf8;
 }
 
-/* The Altid Hjem app palette (app_colors.dart), used by the front page.
-   The --forest/--cream tokens above stay for the other pages. */
+/* The Altid Hjem app palette (app_colors.dart), used by the front page and the
+   SEO data cards. The --forest/--cream tokens above stay for the other pages. */
 :root {
   --app-forest: #163223;
   --app-brand-green: #003C16;
@@ -111,8 +111,7 @@ body {
   [style*="dot-flow"] { animation: none !important; opacity: var(--dot-max, 1); }
 }
 
-/* Carousel pagination (shared via CarouselPagination: Blog, Testimonials and
-   the hero phone) — the active dot is a pill whose fill loads up over the
+/* Carousel pagination (CarouselPagination, used by Blog): the active dot is a pill whose fill loads up over the
    autoplay interval (Apple-gallery style), then the carousel advances. */
 @keyframes blog-progress {
   from { width: 0%; }
@@ -208,11 +207,6 @@ body {
   100% { transform: rotate(0deg); }
 }
 
-@keyframes badge-glow {
-  0%   { box-shadow: 0 0 0 0 rgba(168,224,99,0.6); }
-  60%  { box-shadow: 0 0 0 6px rgba(168,224,99,0); }
-  100% { box-shadow: 0 0 0 0 rgba(168,224,99,0); }
-}
 
 @keyframes slide-down-fade {
   from { opacity: 0; transform: translateY(-10px) scale(0.98); }

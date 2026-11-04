@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Onest, Afacad } from 'next/font/google'
+import { Onest, Afacad, DM_Sans } from 'next/font/google'
 import './globals.css'
 import ResetScrollOnLoad from '@/components/ResetScrollOnLoad'
 import CookieBanner from '@/components/CookieBanner'
@@ -18,6 +18,14 @@ const afacad = Afacad({
   subsets: ['latin'],
   weight: ['400', '500'],
   variable: '--font-afacad',
+})
+
+// The app's own font, for the data cards on the SEO pages that use the app's
+// look. Not preloaded: most pages never use it.
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-dm-sans',
+  preload: false,
 })
 
 export const metadata: Metadata = {
@@ -52,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="da"
       data-scroll-behavior="smooth"
-      className={`${onest.variable} ${afacad.variable}`}
+      className={`${onest.variable} ${afacad.variable} ${dmSans.variable}`}
       suppressHydrationWarning
     >
       <head>

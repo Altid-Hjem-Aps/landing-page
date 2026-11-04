@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import SkiftTjeklisteMockup from '@/components/SkiftTjeklisteMockup'
 
 export const metadata: Metadata = {
-  title: 'Skift forsikringsselskab sikkert – Altid Hjem',
+  title: 'Skift forsikringsselskab sikkert | Altid Hjem',
   description:
     'Skift forsikringsselskab i den rigtige rækkefølge. Få styr på opsigelse, dækning og selvrisiko, og hent Altid Hjem gratis.',
   alternates: { canonical: 'https://altidhjem.dk/skift-forsikringsselskab' },

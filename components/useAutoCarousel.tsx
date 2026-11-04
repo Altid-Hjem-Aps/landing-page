@@ -265,8 +265,6 @@ export function CarouselPagination({
   itemLabel,
 }: {
   count: number
-  // Structural subset of useAutoCarousel's return — lets surfaces with their
-  // own slide logic (the hero phone) reuse the exact same pagination UI.
   carousel: Pick<ReturnType<typeof useAutoCarousel>, 'active' | 'reduced' | 'inView' | 'paused' | 'goTo' | 'togglePaused' | 'autoMs'>
   itemLabel: (i: number) => string
 }) {

@@ -5,7 +5,7 @@ import BottomCta from '@/components/sections/BottomCta'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'Spiir-alternativ: Hvad skal du bruge i stedet for Spiir? – Altid Hjem',
+  title: 'Spiir-alternativ: Hvad skal du bruge i stedet for Spiir? | Altid Hjem',
   description:
     'Spiir lukkede 8. juni 2026. Leder du efter et Spiir-alternativ, der giver overblik over dine faste udgifter? Altid Hjem samler økonomi, strøm, forsikring og madplan i én app. Hent den gratis.',
 }

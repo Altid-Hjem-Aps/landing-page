@@ -48,7 +48,7 @@ export default function AbonnementMockup() {
       role="img"
       aria-label="Eksempel: husstandens abonnementer gennemgås, og ubrugte aftaler markeres"
       className="w-full max-w-[400px] rounded-[24px] px-5 pt-5 pb-4 hjem-motion-scope"
-      style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
+      style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-dm-sans)', ...mockupEntranceStyle(entered, reduced) }}
     >
       <CardHeader eyebrow="Årligt abonnementstjek" title="Tjek jeres abonnementer" icon="/app-badge.png" />
 
@@ -78,7 +78,7 @@ export default function AbonnementMockup() {
             >
               <span
                 className="shrink-0 grid place-items-center text-[11px] font-bold"
-                style={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: flagged ? RED : 'var(--forest)', color: '#fff', transition: `background-color ${DUR_MED}ms ${EASE_STANDARD}` }}
+                style={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: flagged ? RED : 'var(--app-forest)', color: '#fff', transition: `background-color ${DUR_MED}ms ${EASE_STANDARD}` }}
               >
                 <span
                   key={flagged ? '!' : scanned ? 'check' : 'dot'}
@@ -90,9 +90,9 @@ export default function AbonnementMockup() {
               <span
                 className="flex-1 min-w-0 truncate font-semibold text-[13.5px]"
                 style={{
-                  color: 'var(--text-dark)',
+                  color: 'var(--app-ink)',
                   textDecorationLine: cancelled ? 'line-through' : 'none',
-                  textDecorationColor: 'rgba(26,61,34,0.4)',
+                  textDecorationColor: 'rgba(22,50,35,0.4)',
                 }}
               >
                 {r.name}
@@ -121,7 +121,7 @@ export default function AbonnementMockup() {
       <div
         className="rounded-2xl px-4 py-3 flex items-center justify-between gap-3"
         style={{
-          backgroundColor: 'var(--forest)',
+          backgroundColor: 'var(--app-forest)',
           ...revealPanelStyle(phase === 'done'),
         }}
         aria-hidden={phase !== 'done'}

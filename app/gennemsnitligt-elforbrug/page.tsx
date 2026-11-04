@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import ElforbrugBenchmark from '@/components/ElforbrugBenchmark'
 
 export const metadata: Metadata = {
-  title: 'Gennemsnitligt elforbrug i hjemmet – Altid Hjem',
+  title: 'Gennemsnitligt elforbrug i hjemmet | Altid Hjem',
   description:
     'Se typisk elforbrug for lejlighed og hus, sammenlign jeres kWh med vejledende niveauer, og få konkrete råd til at forstå og sænke forbruget.',
   alternates: { canonical: 'https://altidhjem.dk/gennemsnitligt-elforbrug' },

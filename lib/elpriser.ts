@@ -36,9 +36,9 @@ export function priceWith(spot: number, tax: number, trans: number, dist: number
   return fees.moms ? base * MOMS : base
 }
 
-/** "14–15"-formatering af en times interval. */
-export function hourSpan(h: number): string {
-  return `${String(h).padStart(2, '0')}–${String((h + 1) % 24).padStart(2, '0')}`
+/** "14-15"-formatering af en times interval. */
+export function hourSpan(h: number, separator = '-'): string {
+  return `${String(h).padStart(2, '0')}${separator}${String((h + 1) % 24).padStart(2, '0')}`
 }
 
 // Upstream-fejl må ikke kunne hænge en server-render eller API-rute.
@@ -302,6 +302,6 @@ export function currentCopenhagenHour(): number {
 }
 
 export function formatKr(price: number | null): string {
-  if (price === null) return '–'
+  if (price === null) return '-'
   return `${price.toLocaleString('da-DK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kr.`
 }

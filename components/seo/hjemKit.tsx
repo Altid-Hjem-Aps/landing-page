@@ -4,20 +4,21 @@ import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, RefObject } from 'react'
 
 /**
- * Shared tokens, primitives and animation plumbing for the SEO-page
- * mockups and calculators on altidhjem.dk. Mirrors the design language of
- * the existing page mockups (ForsikringHusstandMockup, ElprisAppMockup):
- * white app-card on the cream page, forest ink, sage accents, red only for
- * flagged problems, and slow narrative phase timing.
+ * Shared tokens, primitives and animation plumbing for the SEO-page data
+ * cards and calculators on altidhjem.dk. They illustrate the article's data;
+ * they are not screens from the app (those are real captures, see
+ * lib/screen-captures.ts). They use the app's look: DM Sans, the --app-*
+ * colours, sage accents, red only for flagged problems, and slow narrative
+ * phase timing.
  */
 
-export const FOREST = 'var(--forest)'
-export const SAGE = 'var(--sage)'
+export const FOREST = 'var(--app-forest)'
+export const SAGE = 'var(--app-sage)'
 export const RED = '#c0392b'
-export const CARD_BORDER = 'rgba(26,61,34,0.1)'
-export const HAIRLINE = 'rgba(26,61,34,0.08)'
-export const CARD_SHADOW = '0 14px 34px rgba(17,40,24,0.10)'
-export const INK_MUTED = 'rgba(26,61,34,0.55)'
+export const CARD_BORDER = 'rgba(22,50,35,0.1)'
+export const HAIRLINE = 'rgba(22,50,35,0.08)'
+export const CARD_SHADOW = '0 14px 34px rgba(22,50,35,0.10)'
+export const INK_MUTED = 'rgba(22,50,35,0.55)'
 export const SAGE_WASH = 'rgba(168,224,99,0.18)'
 export const RED_WASH = 'rgba(192,57,43,0.1)'
 // Secondary text on forest: high enough for small functional text (≥4.5:1).
@@ -231,9 +232,9 @@ export function Field({ label, children }: { label: string; children: React.Reac
 }
 
 export const inputCls =
-  'w-full rounded-xl px-3.5 py-3 text-[14px] font-semibold outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a3d22]'
+  'w-full rounded-xl px-3.5 py-3 text-[14px] font-semibold outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#163223]'
 
-export const fieldStyle = { background: SAGE_WASH, border: `1px solid ${CARD_BORDER}`, color: 'var(--forest)' }
+export const fieldStyle = { background: SAGE_WASH, border: `1px solid ${CARD_BORDER}`, color: 'var(--app-forest)' }
 
 /** Danish number input: dots before 3-digit groups are thousands separators
  * ("1.200" = 1200), the comma starts decimals ("2,50" = 2.5). The whole
