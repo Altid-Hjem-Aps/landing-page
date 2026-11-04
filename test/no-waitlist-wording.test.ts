@@ -49,10 +49,6 @@ const DASH_ALLOWED: Record<string, string> = {
   'app/api/bekraeft/route.ts': 'a server log line',
   'app/api/waitlist/route.ts': 'a server log line',
   'app/api/cron/slack-waitlist/route.ts': 'the internal Slack message, not on the site',
-  'app/preview/alt-87/page.tsx': 'an internal preview, not linked from anywhere',
-  // The two below are inside phone mockups, which change in their own PR.
-  'components/iphone/HomeScreen.tsx': 'phone mockup in the hero',
-  'components/sections/why/cards.ts': 'phone mockup in the WhatIs animation',
 }
 
 function dashedCopy(source: string): string[] {

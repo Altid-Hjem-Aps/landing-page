@@ -1,19 +1,18 @@
-'use client'
+import { ReactNode } from 'react'
 
-import { ReactNode, useEffect, useRef, useState } from 'react'
+/** Width of the screen inside the shell: 270 less the 8 px bezel on each side. */
+export const PHONE_SCREEN_WIDTH = 254
 
-type ChildrenFn = (hovered: boolean) => ReactNode
-
+// The phone around a picture of the app. The frames carry their own status bar,
+// island and tab bar, so the shell draws none of them.
 export default function PhoneShell({
   children,
   variant = 'foreground',
-  hovered: externalHovered,
   sheen = true,
   softShadow = false,
 }: {
-  children: ReactNode | ChildrenFn
+  children: ReactNode
   variant?: 'foreground' | 'back'
-  hovered?: boolean
   /** The glass reflection overlay tints everything under it toward white —
    *  turn it off where exact brand colours matter. */
   sheen?: boolean
@@ -21,42 +20,9 @@ export default function PhoneShell({
   softShadow?: boolean
 }) {
   const isBack = variant === 'back'
-  const [internalHovered, setInternalHovered] = useState(false)
-  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const isControlled = externalHovered !== undefined
-  const hovered = isControlled ? !!externalHovered : internalHovered
-
-  useEffect(() => {
-    if (isControlled) return
-    if (typeof navigator === 'undefined' || !navigator.maxTouchPoints) return
-    const t1 = setTimeout(() => {
-      setInternalHovered(true)
-      resetTimerRef.current = setTimeout(() => setInternalHovered(false), 3200)
-    }, 1800)
-    return () => clearTimeout(t1)
-  }, [isControlled])
-
-  function onEnter() {
-    if (!isControlled) setInternalHovered(true)
-  }
-  function onLeave() {
-    if (!isControlled) setInternalHovered(false)
-  }
-
-  const rendered = typeof children === 'function' ? (children as ChildrenFn)(hovered) : children
 
   return (
-    <div
-      className="mx-auto select-none cursor-default"
-      onMouseEnter={onEnter}
-      onMouseLeave={onLeave}
-      onTouchStart={onEnter}
-      onTouchEnd={() => {
-        if (isControlled) return
-        if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
-        resetTimerRef.current = setTimeout(onLeave, 2800)
-      }}
-    >
+    <div className="mx-auto select-none cursor-default">
       <div style={{ position: 'relative', width: 270, height: 560 }}>
         <div
           style={{
@@ -96,7 +62,6 @@ export default function PhoneShell({
             }}
           >
             <div
-              className="flex flex-col"
               style={{
                 position: 'absolute',
                 inset: 0,
@@ -105,8 +70,7 @@ export default function PhoneShell({
                 overflow: 'hidden',
               }}
             >
-              <StatusBar />
-              {rendered}
+              {children}
             </div>
 
             {sheen && (
@@ -122,110 +86,9 @@ export default function PhoneShell({
                 }}
               />
             )}
-            <div
-              style={{
-                position: 'absolute',
-                top: 14,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: 95,
-                height: 28,
-                background: '#000',
-                borderRadius: 20,
-                zIndex: 20,
-              }}
-            />
           </div>
         </div>
       </div>
-    </div>
-  )
-}
-
-function StatusBar() {
-  // Live clock in Danish time (Europe/Copenhagen). Starts as the classic 9:41
-  // for SSR, then syncs on the client and ticks every 30s.
-  const [time, setTime] = useState('9:41')
-  useEffect(() => {
-    const sync = () =>
-      setTime(
-        new Intl.DateTimeFormat('da-DK', { hour: 'numeric', minute: '2-digit', timeZone: 'Europe/Copenhagen' }).format(new Date()),
-      )
-    sync()
-    const id = setInterval(sync, 30_000)
-    return () => clearInterval(id)
-  }, [])
-
-  return (
-    <div className="flex items-center justify-between px-6 pt-5 pb-2 shrink-0">
-      <span suppressHydrationWarning className="text-[11px] font-semibold" style={{ color: 'var(--text-dark)' }}>
-        {time}
-      </span>
-      <div className="flex items-center gap-1">
-        <svg width="15" height="10" viewBox="0 0 15 10" fill="none">
-          <rect x="0" y="3" width="3" height="7" rx="1" fill="#0d2818" opacity="0.3" />
-          <rect x="4" y="2" width="3" height="8" rx="1" fill="#0d2818" opacity="0.5" />
-          <rect x="8" y="0.5" width="3" height="9.5" rx="1" fill="#0d2818" opacity="0.7" />
-          <rect x="12" y="0" width="3" height="10" rx="1" fill="#0d2818" />
-        </svg>
-        <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
-          <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#0d2818" strokeOpacity="0.35" />
-          <rect x="2" y="2" width="17" height="8" rx="2" fill="#0d2818" />
-          <path d="M23 4.5V7.5C23.8 7.2 24.5 6.5 24.5 6C24.5 5.5 23.8 4.8 23 4.5Z" fill="#0d2818" opacity="0.4" />
-        </svg>
-      </div>
-    </div>
-  )
-}
-
-export function TabBar({ active }: { active: 'hjem' | 'forbrug' | 'sparetips' | 'profil' }) {
-  return (
-    <div
-      className="mt-auto shrink-0 flex items-center justify-around px-6 pt-2 pb-1"
-      style={{ borderTop: '1px solid rgba(27,104,64,0.07)' }}
-    >
-      <Tab label="Hjem" isActive={active === 'hjem'}>
-        <path d="M3 12L12 4L21 12V21H15V15H9V21H3V12Z" fill="currentColor" />
-      </Tab>
-      <Tab label="Forbrug" isActive={active === 'forbrug'}>
-        <rect x="3" y="12" width="4" height="9" rx="1" fill="currentColor" />
-        <rect x="10" y="7" width="4" height="14" rx="1" fill="currentColor" />
-        <rect x="17" y="3" width="4" height="18" rx="1" fill="currentColor" />
-      </Tab>
-      <Tab label="Sparetips" isActive={active === 'sparetips'}>
-        <path d="M12 2L9 9H2L7.5 13.5L5.5 21L12 16.5L18.5 21L16.5 13.5L22 9H15L12 2Z" fill="currentColor" />
-      </Tab>
-      <Tab label="Profil" isActive={active === 'profil'}>
-        <circle cx="12" cy="8" r="4" fill="currentColor" />
-        <path
-          d="M4 20C4 16.7 7.6 14 12 14C16.4 14 20 16.7 20 20"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      </Tab>
-    </div>
-  )
-}
-
-function Tab({ label, isActive, children }: { label: string; isActive: boolean; children: ReactNode }) {
-  const color = isActive ? 'var(--forest)' : 'rgba(13,40,24,0.25)'
-  return (
-    <div className="flex flex-col items-center gap-0.5">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ color }}>
-        {children}
-      </svg>
-      <span style={{ fontSize: 8, fontWeight: isActive ? 600 : 400, color: isActive ? 'var(--forest)' : 'var(--text-light)' }}>
-        {label}
-      </span>
-    </div>
-  )
-}
-
-export function HomeIndicator() {
-  return (
-    <div className="flex justify-center pb-2 pt-1">
-      <div className="w-24 h-1 rounded-full" style={{ background: 'rgba(13,40,24,0.2)' }} />
     </div>
   )
 }

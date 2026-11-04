@@ -1,28 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import AbonnementMockup from '@/components/AbonnementMockup'
-import AlarmStatusMockup from '@/components/AlarmStatusMockup'
 import BudgetAppSammenligning from '@/components/BudgetAppSammenligning'
-import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
-import GebyrMockup from '@/components/GebyrMockup'
-import IndboTjekMockup from '@/components/IndboTjekMockup'
-import MobilOverblikMockup from '@/components/MobilOverblikMockup'
-import SkiftTjeklisteMockup from '@/components/SkiftTjeklisteMockup'
 
-/* Smoke coverage for the eight migrated mockups: the shared hook is unit
+/* Smoke coverage for the migrated mockup: the shared hook is unit
  * tested in hjem-kit.test.tsx, but each component hand-writes its own
  * phase-zero gate and final-phase content — a per-file mistake (wrong SEQ
  * index, missed reduced guard) only surfaces by rendering the component. */
 
 const CASES = [
-  { name: 'AbonnementMockup', C: AbonnementMockup, finalText: 'Gennemgangen er færdig' },
-  { name: 'AlarmStatusMockup', C: AlarmStatusMockup, finalText: 'Alarmen er slået til' },
   { name: 'BudgetAppSammenligning', C: BudgetAppSammenligning, finalText: 'Begge kan have værdi i jeres økonomi' },
-  { name: 'ForsikringHusstandMockup', C: ForsikringHusstandMockup, finalText: 'Alle forsikringer ét sted' },
-  { name: 'GebyrMockup', C: GebyrMockup, finalText: 'Ingen faste gebyrer, intet abonnement' },
-  { name: 'IndboTjekMockup', C: IndboTjekMockup, finalText: 'Overblikket er klar' },
-  { name: 'MobilOverblikMockup', C: MobilOverblikMockup, finalText: 'Alle mobilaftaler er gennemgået' },
-  { name: 'SkiftTjeklisteMockup', C: SkiftTjeklisteMockup, finalText: 'Skiftet er på plads' },
 ]
 
 function stubMedia(reduced: boolean) {
@@ -60,15 +46,5 @@ describe.each(CASES)('$name', ({ C, finalText }) => {
     expect(root).not.toBeNull()
     // final receipt panel is mounted but hidden pre-'done'
     expect(root.querySelector('[aria-hidden="true"]')).not.toBeNull()
-  })
-})
-
-describe('ForsikringHusstandMockup', () => {
-  it('shows the overview and nothing the app does not have: no saving, no assistant', () => {
-    stubMedia(true)
-    const { container } = render(<ForsikringHusstandMockup />)
-    expect(screen.getByText('Min husstand')).toBeInTheDocument()
-    expect(screen.getByText(/7 forsikringer/)).toBeInTheDocument()
-    expect(container.textContent).not.toMatch(/sparer|sparet|besparelse|Assistent|\bkr\b/i)
   })
 })

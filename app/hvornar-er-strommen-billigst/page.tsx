@@ -217,7 +217,7 @@ export default async function HvornarErStrommenBilligst() {
                 <h2 className="font-semibold text-base mb-4" style={{ color: 'var(--forest)' }}>
                   Lad Altid Hjem holde øje med elprisen for dig
                 </h2>
-                <ElprisAppMockup data={data} />
+                <ElprisAppMockup />
               </section>
 
               <section>
