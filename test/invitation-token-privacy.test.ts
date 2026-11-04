@@ -49,6 +49,23 @@ describe('partner invitation token privacy', () => {
     expect(window.location.hash).toBe('')
   })
 
+  it('keeps a well-formed token in memory for the Google Play link and a malformed one out', async () => {
+    const { rememberedInviteToken } = await import('@/lib/invite-token')
+    const token = 'A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q7r8S9t0U_-'
+    window.history.replaceState(null, '', `/invitation#${token}`)
+
+    await import('@/instrumentation-client')
+
+    expect(rememberedInviteToken()).toBe(token)
+    expect(window.location.hash).toBe('')
+
+    vi.resetModules()
+    const fresh = await import('@/lib/invite-token')
+    window.history.replaceState(null, '', '/invitation#private-invite-token')
+    await import('@/instrumentation-client')
+    expect(fresh.rememberedInviteToken()).toBeNull()
+  })
+
   it('leaves unrelated page fragments alone', async () => {
     let urlAtAnalyticsStart = ''
     analytics.startAnalytics.mockImplementation(() => {
