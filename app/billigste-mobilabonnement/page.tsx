@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import MobilOverblikMockup from '@/components/MobilOverblikMockup'
 
 export const metadata: Metadata = {
-  title: 'Billigste mobilabonnement i 2026 – Altid Hjem',
+  title: 'Billigste mobilabonnement i 2026 | Altid Hjem',
   description:
     'Find det billigste mobilabonnement til hele husstanden. Se vejledende priser, typiske faldgruber og få en enkel tjekliste. Hent Altid Hjem, og få overblik over husstanden.',
   alternates: { canonical: 'https://altidhjem.dk/billigste-mobilabonnement' },

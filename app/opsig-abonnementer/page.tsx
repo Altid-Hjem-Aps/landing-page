@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import AbonnementMockup from '@/components/AbonnementMockup'
 
 export const metadata: Metadata = {
-  title: 'Opsig abonnementer, I ikke bruger – Altid Hjem',
+  title: 'Opsig abonnementer, I ikke bruger | Altid Hjem',
   description:
     'Find alle husstandens abonnementer, tjek binding og opsig korrekt. Få en enkel guide til at rydde op, og hent Altid Hjem gratis.',
   alternates: { canonical: 'https://altidhjem.dk/opsig-abonnementer' },

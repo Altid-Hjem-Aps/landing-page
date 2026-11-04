@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
 
 export const metadata: Metadata = {
-  title: 'Hvad koster forsikring i 2026? Se priser – Altid Hjem',
+  title: 'Hvad koster forsikring i 2026? Se priser | Altid Hjem',
   description:
     'Hvad koster forsikring i Danmark? Se vejledende priser på indbo, hus, bil, ulykke og rejse. Find ud af, om du betaler for meget. Hent Altid Hjem gratis, og saml dine forsikringer ét sted.',
   alternates: { canonical: 'https://altidhjem.dk/hvad-koster-forsikring' },
@@ -24,11 +24,11 @@ const FOREST_TEXT = 'rgba(26,61,34,0.75)'
 // Vejledende månedspriser (DK, 2026) som INTERVALLER — forsikringspris afhænger
 // stærkt af profil, dækning og selskab. Pointen er spredningen, ikke et præcist tal.
 const PRISER: { type: string; interval: string; note: string }[] = [
-  { type: 'Indboforsikring', interval: '140–250 kr./md.', note: 'Afhænger af adresse, husstand, indbosum, selvrisiko og tilvalg.' },
-  { type: 'Husforsikring', interval: '250–600 kr./md.', note: 'Afhænger af husets størrelse, alder, tagtype, stand og beliggenhed.' },
-  { type: 'Bilforsikring', interval: '400–900 kr./md.', note: 'Afhænger af bilen, førerens alder, postnummer, skadehistorik, kasko og selvrisiko.' },
-  { type: 'Ulykkesforsikring', interval: '50–200 kr./md.', note: 'Afhænger af forsikringssum, alder, erhverv og om dækningen gælder fritid eller hele døgnet.' },
-  { type: 'Årsrejseforsikring', interval: '30–100 kr./md.', note: 'Afhænger af antal personer, destination, dækning og tilvalg.' },
+  { type: 'Indboforsikring', interval: '140-250 kr./md.', note: 'Afhænger af adresse, husstand, indbosum, selvrisiko og tilvalg.' },
+  { type: 'Husforsikring', interval: '250-600 kr./md.', note: 'Afhænger af husets størrelse, alder, tagtype, stand og beliggenhed.' },
+  { type: 'Bilforsikring', interval: '400-900 kr./md.', note: 'Afhænger af bilen, førerens alder, postnummer, skadehistorik, kasko og selvrisiko.' },
+  { type: 'Ulykkesforsikring', interval: '50-200 kr./md.', note: 'Afhænger af forsikringssum, alder, erhverv og om dækningen gælder fritid eller hele døgnet.' },
+  { type: 'Årsrejseforsikring', interval: '30-100 kr./md.', note: 'Afhænger af antal personer, destination, dækning og tilvalg.' },
 ]
 
 // FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).
@@ -36,21 +36,21 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Hvad koster en indboforsikring?',
     a: [
-      'En indboforsikring koster typisk 140–250 kr. om måneden for en almindelig husstand.',
+      'En indboforsikring koster typisk 140-250 kr. om måneden for en almindelig husstand.',
       'Prisen afhænger blandt andet af adresse, indbosum, husstandens størrelse, selvrisiko og tilvalg.',
     ],
   },
   {
     q: 'Hvad koster en bilforsikring?',
     a: [
-      'En bilforsikring koster typisk 400–900 kr. om måneden, hvis du har kasko.',
+      'En bilforsikring koster typisk 400-900 kr. om måneden, hvis du har kasko.',
       'Ansvarsforsikring alene kan være billigere, mens unge bilister, dyre biler og lav selvrisiko trækker prisen op.',
     ],
   },
   {
     q: 'Hvad koster en husforsikring?',
     a: [
-      'En husforsikring koster ofte 250–600 kr. om måneden.',
+      'En husforsikring koster ofte 250-600 kr. om måneden.',
       'Prisen afhænger især af husets størrelse, alder, byggematerialer, tagtype, stand og beliggenhed.',
     ],
   },
@@ -252,12 +252,12 @@ export default function HvadKosterForsikring() {
                 </p>
                 <p className="mb-6">
                   Altid Hjem samler{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>hele husstandens forsikringer ét sted</span>{' '}
-                  og markerer, hvor I kan være dækket dobbelt, så I kan beholde den rigtige dækning og opsige
-                  det, I ikke har brug for.
+                  <span className="font-medium" style={{ color: 'var(--forest)' }}>hele husstandens forsikringer ét sted</span>
+                  , så I selv kan se, hvor I kan være dækket dobbelt. Så kan I beholde den rigtige dækning og
+                  opsige det, I ikke har brug for.
                 </p>
 
-                {/* Animeret app-mockup: scanner husstanden, finder mulige dobbeltdækninger og rydder op. */}
+                {/* Animeret kort: husstandens forsikringer som ét overblik. Ingen beløb, ingen assistent. */}
                 <div
                   className="rounded-3xl flex justify-center py-10 px-4"
                   style={{ background: 'linear-gradient(160deg, rgba(168,224,99,0.12) 0%, rgba(26,61,34,0.05) 100%)' }}
@@ -265,8 +265,8 @@ export default function HvadKosterForsikring() {
                   <ForsikringHusstandMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Et samlet overblik gør det lettere at se mulige dobbeltdækninger, og hvad I kan rydde op i.
-                  Den personlige ulykkesforsikring beholdes. Illustration, ikke et skærmbillede fra appen.
+                  Et samlet overblik gør det lettere at se mulige dobbeltdækninger. Illustration, ikke et
+                  skærmbillede fra appen.
                 </p>
               </section>
 

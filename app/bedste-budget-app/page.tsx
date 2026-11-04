@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import BudgetAppSammenligning from '@/components/BudgetAppSammenligning'
 
 export const metadata: Metadata = {
-  title: 'Bedste budget-app til jeres økonomi – Altid Hjem',
+  title: 'Bedste budget-app til jeres økonomi | Altid Hjem',
   description:
     'Få en ærlig guide til budget-apps, faste aftaler og økonomisk overblik. Se forskellen på værktøjerne, og find den løsning, der passer til jer.',
   alternates: { canonical: 'https://altidhjem.dk/bedste-budget-app' },

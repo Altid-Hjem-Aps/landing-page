@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import IndboTjekMockup from '@/components/IndboTjekMockup'
 
 export const metadata: Metadata = {
-  title: 'Pris på indboforsikring i 2026 – Altid Hjem',
+  title: 'Pris på indboforsikring i 2026 | Altid Hjem',
   description:
     'Se, hvad en indboforsikring typisk koster, hvorfor prisen varierer, og hvad du bør tjekke før et skifte. Få et ærligt overblik hos Altid Hjem.',
   alternates: { canonical: 'https://altidhjem.dk/hvad-koster-indboforsikring' },

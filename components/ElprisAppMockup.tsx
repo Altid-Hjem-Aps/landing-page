@@ -100,7 +100,7 @@ export default function ElprisAppMockup({ data }: Props) {
           </p>
           {visTal && billigst && dyrest && (
             <p className="mt-0.5 mb-2.5 text-[12px] leading-snug" style={{ color: 'var(--app-ink-muted)' }}>
-              Billigst kl. {hourSpan(billigst.hour, '-')}, {pctBilligere} % lavere end kl. {dyrest.hour}.
+              Billigst kl. {hourSpan(billigst.hour)}, {pctBilligere} % lavere end kl. {dyrest.hour}.
             </p>
           )}
           {visTal && billigst && dyrest ? (

@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import GebyrMockup from '@/components/GebyrMockup'
 
 export const metadata: Metadata = {
-  title: 'Billigste elselskab, sådan sammenligner du – Altid Hjem',
+  title: 'Billigste elselskab, sådan sammenligner du | Altid Hjem',
   description:
     'Find det billigste elselskab ved at sammenligne spotpris, tillæg og gebyrer for dit forbrug. Få en enkel guide, og hent Altid Hjem gratis.',
   alternates: { canonical: 'https://altidhjem.dk/billigste-elselskab' },
