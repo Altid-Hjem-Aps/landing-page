@@ -10,7 +10,7 @@ export default function BottomCta() {
       <div className="mx-auto flex max-w-[760px] flex-col items-center px-6 text-center">
         <h2 className={`${H2} text-white`}>{BOTTOM.title}</h2>
         <p className="mt-5 text-[17px] leading-[1.6] text-white/80">{BOTTOM.lead}</p>
-        <StoreBadges position="bottom" className="mt-9 justify-center" />
+        <StoreBadges position="bottom" variant="dark" className="mt-9 justify-center" />
         <p className="mt-8 text-[15px] leading-[1.6] text-white/72">
           {BOTTOM.shareLead}
           <Link href={BOTTOM.shareHref} className="text-white underline underline-offset-2">

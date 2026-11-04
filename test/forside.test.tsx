@@ -69,14 +69,20 @@ describe('front page', () => {
     const bottom = within(container.querySelector('#hent') as HTMLElement)
 
     expect(hero.getByRole('link', { name: 'Hent i App Store' })).toHaveAttribute('href', storeLink('appstore'))
-    expect(hero.getByRole('link', { name: 'Hent den på Google Play' })).toHaveAttribute('href', storeLink('play'))
+    expect(hero.getByRole('link', { name: 'Hent i Google Play' })).toHaveAttribute('href', storeLink('play'))
     expect(bottom.getByRole('link', { name: 'Hent i App Store' })).toHaveAttribute('href', storeLink('appstore'))
-    expect(bottom.getByRole('link', { name: 'Hent den på Google Play' })).toHaveAttribute('href', storeLink('play'))
+    expect(bottom.getByRole('link', { name: 'Hent i Google Play' })).toHaveAttribute('href', storeLink('play'))
+
+    // The site's own pills, not badge images: dark on the light hero, white on forest.
+    expect(hero.getByRole('link', { name: 'Hent i App Store' }).querySelector('img')).toBeNull()
+    expect(hero.getByRole('link', { name: 'Hent i Google Play' })).toHaveTextContent('Hent i Google Play')
+    expect(hero.getByRole('link', { name: 'Hent i App Store' })).not.toHaveStyle({ color: '#fff' })
+    expect(bottom.getByRole('link', { name: 'Hent i App Store' })).toHaveStyle({ color: '#fff' })
 
     // jsdom cannot follow the store link; stop the navigation after React's
     // handler has run.
     container.addEventListener('click', (e) => e.preventDefault())
-    fireEvent.click(hero.getByRole('link', { name: 'Hent den på Google Play' }))
+    fireEvent.click(hero.getByRole('link', { name: 'Hent i Google Play' }))
     expect(sendBeacon).toHaveBeenCalledTimes(1)
     const [url, blob] = sendBeacon.mock.calls[0]
     expect(url).toBe('/api/forside/store-click')
@@ -126,12 +132,13 @@ describe('the SEO pages\' closing section', () => {
   it('has the page\'s copy, the store badges and then the newsletter', () => {
     const { container } = render(<SeoBottomCta eyebrow="Linje" heading="Overskrift" subtitle="Sætning" />)
     const section = within(container.querySelector('#hent-appen') as HTMLElement)
+    expect(section.getByRole('link', { name: 'Hent i App Store' })).toHaveStyle({ color: '#fff' })
     expect(section.getByRole('heading', { name: 'Overskrift' })).toBeInTheDocument()
     expect(section.getByText('Linje')).toBeInTheDocument()
     expect(section.getByText('Sætning')).toBeInTheDocument()
     const badge = section.getByRole('link', { name: 'Hent i App Store' })
     expect(badge).toHaveAttribute('href', storeLink('appstore'))
-    expect(section.getByRole('link', { name: 'Hent den på Google Play' })).toHaveAttribute('href', storeLink('play'))
+    expect(section.getByRole('link', { name: 'Hent i Google Play' })).toHaveAttribute('href', storeLink('play'))
     const form = container.querySelector('form') as HTMLFormElement
     expect(badge.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })

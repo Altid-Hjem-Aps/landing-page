@@ -28,8 +28,9 @@ export const HERO = {
 } as const
 
 export const STORE_BADGES = {
-  appStoreAlt: 'Hent i App Store',
-  playAlt: 'Hent den på Google Play',
+  prefix: 'Hent i',
+  appStore: 'App Store',
+  play: 'Google Play',
 } as const
 
 export type ServiceKey = 'okonomi' | 'mad' | 'energi' | 'forsikring'
