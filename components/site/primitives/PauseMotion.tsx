@@ -32,7 +32,7 @@ function setPaused(paused: boolean) {
 // and with reduced motion, where the loops are off already.
 export default function PauseMotion() {
   const paused = useSyncExternalStore(subscribe, isPaused, notPausedOnServer)
-  const label = paused ? 'Start bevægelse' : 'Stop bevægelse'
+  const label = paused ? 'Start animationer' : 'Stop animationer'
   return (
     <button type="button" className="ah-pause" aria-pressed={paused} title={label} onClick={() => setPaused(!paused)}>
       <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden>

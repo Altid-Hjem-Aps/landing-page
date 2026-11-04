@@ -37,6 +37,12 @@ const VARIANTS = {
     pill: { borderColor: 'rgba(255, 255, 255, 0.6)', color: '#fff' },
     name: '#fff',
   },
+  // On a pastel, where the thin border is too weak to hold its own.
+  solid: {
+    focus: 'focus-visible:outline-[#003c16]',
+    pill: { borderColor: '#003c16', borderWidth: '1.5px', background: '#fdfaf4', color: '#003c16' },
+    name: '#003c16',
+  },
 }
 
 const STORES: { store: Store; name: string; className?: string; path: string }[] = [

@@ -16,7 +16,7 @@ export default function Velkommen() {
           <h2 className="vk-title">
             <span>Velkommen hjem.</span> <span>Hent Altid Hjem gratis i dag.</span>
           </h2>
-          <StorePills position="final" variant="light" className="vk-pills" />
+          <StorePills position="final" variant="solid" className="vk-pills" />
         </div>
         <VelkommenStage />
       </div>

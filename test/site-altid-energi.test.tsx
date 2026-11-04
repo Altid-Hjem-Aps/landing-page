@@ -424,11 +424,11 @@ describe('Vestdanmark and Østdanmark', () => {
     render(<ElprisBars data={data({ hours })} />)
 
     expect(answer()).toBe('I dag: kl. 10 til 11')
-    expect(screen.getByText(/i Vestdanmark, med N1 som netselskab\. Kilde: Strømligning\./)).toBeInTheDocument()
+    expect(screen.getByText(/i Vestdanmark med N1 som netselskab, inkl\. afgifter og moms\. Kilde: Strømligning\./)).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Østdanmark' }))
     expect(answer()).toBe('I dag: kl. 20 til 21')
-    expect(screen.getByText(/i Østdanmark, med Radius som netselskab\. Kilde: Strømligning\./)).toBeInTheDocument()
+    expect(screen.getByText(/i Østdanmark med Radius som netselskab, inkl\. afgifter og moms\. Kilde: Strømligning\./)).toBeInTheDocument()
   })
 
   it('hides the toggle and shows the other zone when one is missing', () => {
@@ -439,7 +439,7 @@ describe('Vestdanmark and Østdanmark', () => {
     expect(screen.queryByRole('button', { name: 'Vestdanmark' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Østdanmark' })).not.toBeInTheDocument()
     expect(answer()).toBe('I dag: kl. 20 til 21')
-    expect(screen.getByText(/i Østdanmark, med Radius/)).toBeInTheDocument()
+    expect(screen.getByText(/i Østdanmark med Radius/)).toBeInTheDocument()
   })
 })
 

@@ -22,17 +22,17 @@ const FAQ: { question: string; answer: string; more?: ReactNode }[] = [
   },
   {
     question: 'Hvordan forbinder jeg min bank?',
-    answer: 'Med MitID, i appen. I bestemmer selv, hvad I forbinder.',
+    answer: 'Med MitID i appen. I bestemmer selv, hvad I vil forbinde.',
   },
   {
-    question: 'Hvad kan jeg i appen i dag?',
+    question: 'Hvad kan appen i dag?',
     answer:
-      'Madplan og indkøbsliste med Altid Mad, elpris time for time og forbrug med Altid Energi, jeres forsikringer samlet med Altid Forsikring, og overblik over regninger og forbrug i Økonomi.',
+      'Madplan og indkøbsliste i Altid Mad, elpris time for time og forbrug i Altid Energi, jeres forsikringer samlet i Altid Forsikring og overblik over regninger og forbrug i Økonomi.',
   },
   {
     question: 'Hvor meget kan jeg spare?',
     answer:
-      'Det afhænger af jeres husstand. For dagligvarer viser Altid Mad Q3-rapporten, at den samme ugentlige indkøbskurv til en familie på fire koster 21,6 % mindre i den billigste kæde end i den midterste af 13 kæder. Det svarer til 11.207 kr. om året.',
+      'Det afhænger af jeres husstand. For dagligvarer viser Q3-rapporten fra Altid Mad, at den samme ugentlige indkøbskurv til en familie på fire koster 21,6 % mindre i den billigste kæde end i den midterste af 13 kæder. Det svarer til 11.207 kr. om året.',
     more: (
       <a href="https://altidmad.dk/altid-mad-kvartalsrapport-q3.pdf" className="fq-link">
         Læs rapporten
@@ -45,7 +45,7 @@ const FAQ: { question: string; answer: string; more?: ReactNode }[] = [
     // an account to spend from (hjem_lens_toggle.dart).
     question: 'Kan vi bruge den sammen?',
     answer:
-      'Ja. Du kan invitere din partner i appen. Når I har både egne og fælles konti, kan I skifte mellem Mine og Fælles, så I kan se jeres egne penge og det, I deler. Du vælger selv, hvilke fælles konti din partner ser, og dine egne konti ser kun du.',
+      'Ja. Du kan invitere din partner i appen. Når I har både egne og fælles konti, kan I skifte mellem Mine og Fælles, så hver af jer kan se sine egne penge og det, I deler. Du vælger selv, hvilke fælles konti din partner ser, og dine egne konti ser kun du.',
   },
   {
     question: 'Hvor henter jeg den?',

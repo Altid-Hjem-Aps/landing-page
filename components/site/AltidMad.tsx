@@ -15,7 +15,7 @@ function plate(slug: string): PlateData {
   return found
 }
 
-const MAIN = plate('kylling-i-karry')
+const MAIN_DISH = 'Kylling i karry med æble, gulerod og ris'
 // On the ring around the big plate, degrees from straight up, as the reference's seven.
 const RING = [
   { dish: plate('stegt-flaesk'), angle: -73.8 },
@@ -30,7 +30,7 @@ const SMALL_TOP = plate('kyllingewok')
 const SMALL_BOTTOM = plate('frikadeller-af-kalv-og-flaesk')
 
 // The ring plates are decoration, so the main plate's alt carries the real dishes.
-const ALT = `${MAIN.name}, omgivet af andre retter fra Altid Mad: ${RING.map((r) => r.dish.name).join(', ')}`
+const ALT = `${MAIN_DISH}, omgivet af andre retter fra Altid Mad: ${RING.map((r) => r.dish.name).join(', ')}`
 
 function Crop({ name, width, height, sizes }: { name: string; width: number; height: number; sizes: string }) {
   return <Image src={`/site/crops/${name}.webp`} alt="" width={width} height={height} sizes={sizes} />
@@ -79,7 +79,9 @@ export default function AltidMad() {
           <Crop name="mad-today-row" width={1000} height={214} sizes="(max-width: 767px) 60vw, 330px" />
         </div>
         <div className="gl-chip gl-chip--budget">
-          <Crop name="mad-budget-bar" width={1075} height={440} sizes="(max-width: 767px) 44vw, 260px" />
+          <span className="gl-chip-dark">
+            <Crop name="mad-budget-bar" width={1075} height={440} sizes="(max-width: 767px) 44vw, 260px" />
+          </span>
         </div>
         <div className="gl-chip gl-chip--people">
           <span className="gl-people">
@@ -102,7 +104,9 @@ export default function AltidMad() {
           </svg>
         </div>
         <div className="gl-chip gl-chip--trip">
-          <Crop name="mad-trip-head" width={1100} height={400} sizes="(max-width: 767px) 44vw, 240px" />
+          <span className="gl-chip-dark">
+            <Crop name="mad-trip-head" width={1100} height={400} sizes="(max-width: 767px) 44vw, 240px" />
+          </span>
         </div>
         <div className="gl-chip gl-chip--small gl-chip--small-bottom">
           <Plate plate={SMALL_BOTTOM} sizes="(max-width: 767px) 80px, 120px" />

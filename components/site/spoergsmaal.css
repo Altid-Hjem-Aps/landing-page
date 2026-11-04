@@ -1,9 +1,9 @@
 /* Spørgsmål. Not in the reference: it stands between the bento and the closing section,
-   on the same Deep forest, in the bento's tile language. */
+   on the same dark page, in the bento's tile language. */
 
 .fq-sec {
   padding: 0 calc(132 * var(--u)) calc(104 * var(--u));
-  background: var(--ah-deep-forest);
+  background: var(--ah-page);
   color: var(--ah-cream);
 }
 .fq-title {

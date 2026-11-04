@@ -135,7 +135,7 @@ function useHop() {
 function Failure() {
   return (
     <div className="ae-panel ae-panel--failure">
-      <p className="ah-h3 ae-failure">Priserne kan ikke hentes lige nu</p>
+      <p className="ae-failure">Priserne kan ikke hentes lige nu</p>
       <Link href="/hvornar-er-strommen-billigst" className="ae-link">
         Se siden med elpriser
       </Link>
@@ -320,7 +320,7 @@ export default function ElprisBars({ data }: { data: ElpriserData | null }) {
       </div>
 
       <p className="ae-source">
-        {rolling ? 'Dagens og morgendagens' : 'Dagens'} timepriser inkl. afgifter og moms i {zone.label}, med {zone.netselskab} som netselskab. Kilde: Strømligning.
+        {rolling ? 'Dagens og morgendagens' : 'Dagens'} timepriser i {zone.label} med {zone.netselskab} som netselskab, inkl. afgifter og moms. Kilde: Strømligning.
       </p>
     </>
   )

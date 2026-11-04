@@ -19,22 +19,22 @@ describe('Pause control', () => {
   // Risk: the control comes back in the pill on pages with nothing to stop.
   it('is not in the nav', () => {
     render(<Nav />)
-    expect(screen.queryByRole('button', { name: 'Stop bevægelse' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Stop animationer' })).toBeNull()
   })
 
   it('stops and starts the loops, and says which it will do', () => {
     render(<PauseMotion />)
-    const stop = screen.getByRole('button', { name: 'Stop bevægelse' })
+    const stop = screen.getByRole('button', { name: 'Stop animationer' })
     expect(stop).toHaveAttribute('aria-pressed', 'false')
 
     fireEvent.click(stop)
     expect(document.documentElement.dataset.motion).toBe('paused')
-    const start = screen.getByRole('button', { name: 'Start bevægelse' })
+    const start = screen.getByRole('button', { name: 'Start animationer' })
     expect(start).toHaveAttribute('aria-pressed', 'true')
 
     fireEvent.click(start)
     expect(document.documentElement.dataset.motion).toBeUndefined()
-    expect(screen.getByRole('button', { name: 'Stop bevægelse' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Stop animationer' })).toBeInTheDocument()
   })
 
   it('still works for this visit when storage is blocked', () => {
@@ -47,7 +47,7 @@ describe('Pause control', () => {
     })
     try {
       render(<PauseMotion />)
-      fireEvent.click(screen.getByRole('button', { name: 'Stop bevægelse' }))
+      fireEvent.click(screen.getByRole('button', { name: 'Stop animationer' }))
       expect(document.documentElement.dataset.motion).toBe('paused')
     } finally {
       if (blocked) Object.defineProperty(window, 'localStorage', blocked)
@@ -75,7 +75,7 @@ describe('MOTION_SCRIPT, on the next page load', () => {
 
   it('keeps the loops stopped after a click on the button', () => {
     render(<PauseMotion />)
-    fireEvent.click(screen.getByRole('button', { name: 'Stop bevægelse' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Stop animationer' }))
     expect(run(localStorage)).toEqual({ classes: ['js'], motion: 'paused' })
   })
 

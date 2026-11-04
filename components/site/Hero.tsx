@@ -403,7 +403,7 @@ function Scene({ progress }: { progress: MotionValue<number> }) {
             <div className="ah-hero-card-face">
               <Image
                 src={HJEM_HERO_CROP.src}
-                alt="Søjlerne viser, at I er foran"
+                alt="Søjlerne viser, at I ligger foran"
                 width={HJEM_HERO_CROP.width}
                 height={HJEM_HERO_CROP.height}
                 sizes="(max-width: 767px) 86vw, 30vw"

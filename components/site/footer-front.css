@@ -7,7 +7,7 @@
   background: #6fd65e;
 }
 .ft-panel {
-  padding: calc(64 * var(--u)) calc(60 * var(--u));
+  padding: calc(56 * var(--u)) calc(60 * var(--u)) calc(29 * var(--u));
   border-radius: calc(31.68 * var(--u)) calc(31.68 * var(--u)) 0 0;
   background: var(--ah-dark-forest);
   color: var(--ah-cream);
@@ -40,7 +40,7 @@
   gap: 0 calc(40 * var(--u));
   width: 100%;
   max-width: none;
-  margin-top: calc(32 * var(--u));
+  margin-top: calc(28 * var(--u));
 }
 .ft-news h3 {
   padding-top: calc(10 * var(--u));
@@ -79,8 +79,8 @@ html:not(.js) .ft-news .ah-newsletter-fields { display: none; }
   align-items: flex-end;
   justify-content: space-between;
   gap: calc(24 * var(--u));
-  margin-top: calc(24 * var(--u));
-  padding-top: calc(40 * var(--u));
+  margin-top: calc(20 * var(--u));
+  padding-top: calc(20 * var(--u));
   border-top: 1px solid rgb(253 250 244 / 0.1);
 }
 .ft-legal {
@@ -126,7 +126,6 @@ html:not(.js) .ft-news .ah-newsletter-fields { display: none; }
   display: flex;
   flex-wrap: wrap;
   gap: 0 calc(16 * var(--u));
-  margin-top: calc(12 * var(--u));
   color: rgb(253 250 244 / 0.72);
   font-size: max(12px, calc(12.5 * var(--u)));
   line-height: 1.5;
@@ -143,65 +142,68 @@ html:not(.js) .ft-news .ah-newsletter-fields { display: none; }
   margin-left: auto;
 }
 
-/* Over the last stretch of the closing section (velkommen.css). */
-@media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
-  html.js .ft-front { margin-top: calc(-83 * var(--u)); }
-}
-
-/* Phone */
+/* Phone. The newsletter keeps its consent text, so the rest is tightened: field and button
+   on one line, links in two columns, every target still 44 px. */
 @media (max-width: 767.98px) {
   .ft-panel {
-    padding: calc(39 * var(--um)) calc(16 * var(--um)) calc(40 * var(--um));
+    padding: calc(28 * var(--um)) calc(16 * var(--um)) calc(20 * var(--um));
     border-radius: calc(24.96 * var(--um)) calc(24.96 * var(--um)) 0 0;
     text-align: center;
   }
   .ft-top {
     flex-direction: column;
-    gap: calc(12 * var(--um));
+    gap: calc(4 * var(--um));
   }
   .ft-big { font-size: calc(33.15 * var(--um)); }
   .ft-news {
     display: block;
-    margin-top: calc(32 * var(--um));
+    margin-top: calc(22 * var(--um));
     text-align: left;
   }
   .ft-news h3 {
     padding: 0;
     font-size: calc(17 * var(--um));
     text-align: center;
-    margin-bottom: calc(12 * var(--um));
+    margin-bottom: calc(10 * var(--um));
   }
   .ft-news > noscript > p { text-align: center; }
   .ft-news .ah-newsletter-fields { display: block; }
-  .ft-news .ah-newsletter-fields > div:nth-of-type(2) > * { margin-top: calc(12 * var(--um)) !important; }
+  .ft-news .ah-newsletter-row { flex-direction: row; }
+  .ft-news .ah-newsletter-row button { padding-inline: calc(18 * var(--um)); }
+  .ft-news .ah-newsletter-fields > div:nth-of-type(2) > * { margin-top: calc(10 * var(--um)) !important; }
   .ft-down {
     flex-direction: column-reverse;
-    align-items: center;
-    gap: calc(30 * var(--um));
-    margin-top: calc(24 * var(--um));
-    padding-top: calc(36 * var(--um));
+    align-items: stretch;
+    gap: calc(12 * var(--um));
+    margin-top: calc(14 * var(--um));
+    padding-top: calc(14 * var(--um));
   }
   .ft-legal {
-    flex-direction: column;
-    gap: 0;
-    font-size: calc(14.43 * var(--um));
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 calc(8 * var(--um));
+    font-size: calc(14 * var(--um));
+    justify-items: center;
   }
-  .ft-legal p { order: 1; margin-top: calc(8 * var(--um)); }
-  .ft-social { gap: calc(16 * var(--um)); }
+  .ft-legal p { order: 1; grid-column: 1 / -1; margin-top: calc(4 * var(--um)); }
+  .ft-social { justify-content: center; gap: calc(12 * var(--um)); }
   .ft-social a {
-    width: calc(60 * var(--um));
-    height: calc(60 * var(--um));
+    width: 44px;
+    height: 44px;
     border-radius: calc(12.48 * var(--um));
   }
   .ft-social svg { width: calc(21 * var(--um)); height: calc(21 * var(--um)); }
   .ft-more {
-    justify-content: center;
-    margin-top: calc(20 * var(--um));
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 calc(8 * var(--um));
+    justify-items: center;
+    margin-top: calc(8 * var(--um));
     font-size: calc(12.5 * var(--um));
   }
-  .ft-more p { width: 100%; justify-content: center; margin-left: 0; }
+  .ft-more p { grid-column: 1 / -1; justify-content: center; min-height: 0; margin: calc(4 * var(--um)) 0 0; }
 
   @media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
-    html.js .ft-front { margin-top: calc(-371 * var(--um)); }
+    html.js .ft-front { margin-top: calc(-72 * var(--um)); }
   }
 }

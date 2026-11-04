@@ -5,7 +5,7 @@
 
 .ah-hero {
   position: relative;
-  background: var(--ah-deep-forest);
+  background: var(--ah-page);
   color: var(--ah-cream);
 }
 
@@ -162,7 +162,7 @@
   font-weight: 700;
   line-height: 1.18;
 }
-.ah-hero-statement-line { display: block; }
+.ah-hero-statement-line { display: block; text-wrap: balance; }
 .ah-hero-statement-accent { color: var(--ah-signal); }
 
 .ah-hero-benefits {
@@ -242,6 +242,12 @@
   to { translate: 0 2.5%; }
 }
 
+/* The scene hides the text with visibility once it has faded. In plain flow nothing fades,
+   and the scene's progress must not take the heading away from a reader scrolling past. */
+@media (prefers-reduced-motion: reduce), (max-height: 500px) {
+  .ah-hero-text { visibility: visible !important; }
+}
+
 /* The scroll scene, first frame */
 @media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
   html.js .ah-hero {
@@ -273,7 +279,7 @@
     inset: 0;
     isolation: isolate;
     padding: 0;
-    background: var(--ah-deep-forest);
+    background: var(--ah-page);
   }
   html.js .ah-hero-box {
     position: absolute;
@@ -331,7 +337,7 @@
     min-height: 0;
     padding: 0;
     border-radius: max(12px, calc(15.84 * var(--hu)));
-    background: var(--ah-deep-forest);
+    background: var(--ah-page);
     font-size: max(13px, calc(16 * var(--hu)));
   }
   html.js .ah-hero-pills svg { width: max(16px, calc(20 * var(--hu))); height: max(16px, calc(20 * var(--hu))); }
@@ -347,7 +353,7 @@
     transform: translateY(calc(-262 * var(--hu)));
     background:
       radial-gradient(ellipse 30% 9.5% at 50% 70%, #fff 0%, #fff 58%, rgb(236 253 226 / 0.92) 76%, transparent 100%),
-      radial-gradient(ellipse 40% 24% at 50% 70%, rgb(183 242 167 / 0.78) 0%, rgb(144 255 124 / 0.34) 52%, transparent 100%);
+      radial-gradient(ellipse 46% 30% at 50% 70%, rgb(214 250 200 / 0.98) 0%, rgb(144 255 124 / 0.56) 50%, transparent 100%);
   }
   html.js .ah-hero-eclipse::after {
     content: '';
@@ -387,7 +393,7 @@
     left: calc(var(--base) * -0.826);
     width: calc(var(--base) * 1.652);
     height: calc(var(--base) * 1.5);
-    background: radial-gradient(ellipse 50% 42% at 50% 42%, rgb(84 214 92 / 0.92) 0%, rgb(66 186 78 / 0.74) 44%, rgb(34 124 56 / 0.32) 74%, transparent 100%);
+    background: radial-gradient(ellipse 50% 42% at 50% 42%, rgb(84 214 92 / 0.86) 0%, rgb(44 150 62 / 0.62) 40%, rgb(0 60 22 / 0.6) 72%, transparent 100%);
   }
   html.js .ah-hero-glow {
     position: absolute;
@@ -399,8 +405,8 @@
   }
   html.js .ah-hero-glow--a {
     background:
-      radial-gradient(ellipse 23% 15% at 50% 49%, rgb(214 240 205 / 0.52) 0%, rgb(210 239 200 / 0.48) 45%, rgb(200 238 188 / 0.36) 60%, rgb(190 240 176 / 0.21) 72%, rgb(183 242 167 / 0.09) 85%, transparent 100%),
-      radial-gradient(ellipse 21% 11% at 50% 29%, rgb(144 255 124 / 0.4) 0%, rgb(144 255 124 / 0.16) 60%, transparent 100%),
+      radial-gradient(ellipse 23% 15% at 50% 49%, rgb(214 240 205 / 0.34) 0%, rgb(210 239 200 / 0.31) 45%, rgb(200 238 188 / 0.23) 60%, rgb(190 240 176 / 0.13) 72%, rgb(183 242 167 / 0.05) 85%, transparent 100%),
+      radial-gradient(ellipse 21% 11% at 50% 29%, rgb(183 242 167 / 0.72) 0%, rgb(144 255 124 / 0.2) 60%, transparent 100%),
       radial-gradient(ellipse 20% 9% at 50% 69%, rgb(144 255 124 / 0.34) 0%, transparent 100%);
   }
   html.js .ah-hero-glow--b {
@@ -483,7 +489,7 @@
   html.js .ah-hero-screen {
     height: 193.8cqw;
     aspect-ratio: auto;
-    background: linear-gradient(180deg, #0a4422 0%, #0e5c2e 18%, #0a4d26 25%, #03331a 33%, #00260e 42%, #00260e 100%);
+    background: linear-gradient(180deg, #072f18 0%, #0a4323 18%, #073a1d 25%, #01280f 33%, var(--ah-page) 44%, var(--ah-page) 100%);
   }
   html.js .ah-hero-layer--money,
   html.js .ah-hero-layer--hjem { opacity: 0; }
@@ -500,7 +506,7 @@
     position: absolute;
     inset: 0;
     display: block;
-    background: #00260e;
+    background: var(--ah-page);
     opacity: 0;
   }
   html.js .ah-hero-sheet {
@@ -699,7 +705,7 @@
     width: calc(1152 * var(--hu));
     height: calc(1728 * var(--hu));
     border-radius: 50%;
-    background: radial-gradient(closest-side, var(--ah-deep-forest) 62%, transparent 100%);
+    background: radial-gradient(closest-side, var(--ah-page) 62%, transparent 100%);
     opacity: 0;
   }
 
@@ -743,7 +749,7 @@
     left: 0;
     display: block;
     height: calc(288 * var(--hu));
-    background: linear-gradient(180deg, rgb(0 60 22 / 0), var(--ah-deep-forest) 75%);
+    background: linear-gradient(180deg, rgb(0 31 11 / 0), var(--ah-page) 75%);
   }
 
   @keyframes ah-hero-coin {

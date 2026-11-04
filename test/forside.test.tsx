@@ -49,33 +49,39 @@ function allReadableText(root: HTMLElement): string {
 }
 
 describe('front page', () => {
-  it('has one h1 and the sections in the plan\'s order', async () => {
+  // Wrong behaviour guarded: a second h1, or a section lost or moved in the page's one story.
+  it('has one h1 and the sections in the order of the page', async () => {
     const { container } = render(await Home())
     expect(Array.from(container.querySelectorAll('h1')).map((h) => h.textContent)).toEqual(['Hele hjemmet i én app'])
     const ids = Array.from(container.querySelectorAll('main > section[id]')).map((s) => s.id)
-    const inOrder = ['okonomi', 'altid-mad', 'altid-energi', 'altid-forsikring', 'spoergsmaal', 'velkommen']
-    expect(ids.filter((id) => inOrder.includes(id))).toEqual(inOrder)
+    expect(ids).toEqual(['top', 'okonomi', 'altid-mad', 'tryghed', 'spoergsmaal', 'velkommen'])
   })
 
-  it('every link in the nav lands on a section', async () => {
+  // Wrong behaviour guarded: the only link at the top of the page goes nowhere, or the nav pill comes back.
+  it('has no nav pill, and the header link lands on the store pills', async () => {
     const { container } = render(await Home())
-    const nav = within(container.querySelector('nav') as HTMLElement)
-    const targets = nav
-      .getAllByRole('link')
-      .map((a) => a.getAttribute('href') as string)
-      .filter((href) => href.startsWith('/#'))
-    expect(targets.length).toBeGreaterThan(4)
-    for (const href of targets) expect(container.querySelector(href.slice(1)), href).not.toBeNull()
+    expect(container.querySelector('nav')).toBeNull()
+    const get = within(container.querySelector('#top header') as HTMLElement).getByRole('link', { name: 'Hent appen' })
+    expect(container.querySelector((get.getAttribute('href') as string).replace(/^\//, ''))).not.toBeNull()
   })
 
-  it('has store pills at the top and the bottom, with the exact links, and one target for "Hent appen"', async () => {
+  // Wrong behaviour guarded: the savings figure stands alone, without the source it needs.
+  it('has the footnote right after the figure, with the report', async () => {
     const { container } = render(await Home())
-    const appStore = within(container).getAllByRole('link', { name: 'Hent i App Store' })
-    const play = within(container).getAllByRole('link', { name: 'Hent i Google Play' })
-    expect(appStore.length).toBeGreaterThanOrEqual(2)
-    expect(play.length).toBe(appStore.length)
-    appStore.forEach((a) => expect(a).toHaveAttribute('href', APP_STORE))
-    play.forEach((a) => expect(a).toHaveAttribute('href', PLAY))
+    const mad = within(container.querySelector('#altid-mad') as HTMLElement)
+    const figure = mad.getByText('11.207')
+    const footnote = mad.getByText(/^\*Q3-rapporten fra Altid Mad viser/)
+    expect(figure.parentElement?.nextElementSibling).toBe(footnote)
+    expect(within(footnote).getByRole('link', { name: 'Læs rapporten' })).toHaveAttribute('href', 'https://altidmad.dk/altid-mad-kvartalsrapport-q3.pdf')
+  })
+
+  it('has store pills in the hero and the closing section, with the exact links, and one target for "Hent appen"', async () => {
+    const { container } = render(await Home())
+    for (const id of ['#top', '#velkommen']) {
+      const section = within(container.querySelector(id) as HTMLElement)
+      expect(section.getByRole('link', { name: 'Hent i App Store' })).toHaveAttribute('href', APP_STORE)
+      expect(section.getByRole('link', { name: 'Hent i Google Play' })).toHaveAttribute('href', PLAY)
+    }
     const anchors = container.querySelectorAll('#hent-appen')
     expect(anchors).toHaveLength(1)
     expect(within(anchors[0] as HTMLElement).getByRole('link', { name: 'Hent i App Store' })).toBeInTheDocument()

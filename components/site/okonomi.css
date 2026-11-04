@@ -5,7 +5,7 @@
 
 .ok {
   --u: calc(min(100vw, 1920px) / 1440);
-  --ok-page: var(--ah-deep-forest);
+  --ok-page: var(--ah-page);
   --ok-tile: var(--ah-dark-forest, #163223);
   position: relative;
   z-index: 1;
@@ -324,9 +324,13 @@
   opacity: 1;
 }
 
+/* Under the stage, on the top of the next section. */
 .ok-caption {
-  padding: calc(12 * var(--u)) 0;
-  background: var(--ah-cream);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  padding-top: calc(12 * var(--u));
   text-align: center;
 }
 .ok-caption .ah-caption {
@@ -374,9 +378,7 @@
     will-change: clip-path;
   }
   html.js .ok-caption {
-    position: absolute;
-    left: 0;
-    right: 0;
+    top: auto;
     /* Under the area's bottom edge, also when the area stands in the middle. */
     bottom: calc((100svh - min(100svh - 40 * var(--u), 860 * var(--u))) / 2 - 20 * var(--u));
     height: calc(20 * var(--u));
@@ -439,7 +441,7 @@
     --um: calc(100vw / 390);
     background: var(--ah-cream);
     padding-top: calc(70 * var(--um));
-    padding-bottom: calc(8 * var(--um));
+    padding-bottom: calc(44 * var(--um));
   }
   .ok-stage {
     height: auto;
@@ -615,15 +617,15 @@
   .ok-tile {
     border-radius: calc(18 * var(--um));
   }
-  /* Over the top of the next section, so the page keeps the reference's lengths. */
+  /* On the dark page, under the second card. */
   .ok-caption {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: calc(-22 * var(--um));
+    top: auto;
+    bottom: calc(-30 * var(--um));
     padding: 0;
-    background: none;
     opacity: 1 !important;
+  }
+  .ok-caption .ah-caption {
+    color: rgb(253 250 244 / 0.72);
   }
 }
 

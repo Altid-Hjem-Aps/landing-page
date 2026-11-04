@@ -1,10 +1,10 @@
 /* The closing section. White to blue in the reference, here Cream to Mint to green with
    the same stops. Every number is the reference's at 1440 wide (u) or 390 wide (um). */
 
-/* The footer is taller than the reference's by --vk-over, because the newsletter sits in
-   it. So the section holds still and the footer slides over it for that last stretch,
-   and the page ends on the same picture: pills at the top, phone between them and the
-   footer. Without JS or with reduced motion it is plain flow. */
+/* On a phone the footer is taller than the reference's by --vk-over, because the
+   newsletter sits in it. So the section holds still and the footer slides over it for
+   that last stretch, and the page ends on the same picture: pills at the top, phone
+   between them and the footer. Without JS or with reduced motion it is plain flow. */
 .vk-wrap { position: relative; }
 .vk-sec {
   position: relative;
@@ -53,8 +53,7 @@
   min-height: 44px;
   padding: 0 calc(16 * var(--u));
   border-radius: calc(15.84 * var(--u));
-  background: var(--ah-cream);
-  font-size: max(13px, calc(15 * var(--u)));
+  font-size: max(13px, calc(16 * var(--u)));
 }
 .vk-pills svg {
   width: calc(20 * var(--u));
@@ -143,18 +142,6 @@
   }
 }
 
-/* The section holds still while the footer goes over it. */
-@media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
-  html.js .vk-wrap {
-    --vk-over: calc(83 * var(--u));
-    height: calc(825 * var(--u) + var(--vk-over));
-  }
-  html.js .vk-sec {
-    position: sticky;
-    top: calc(100svh - 373 * var(--u) - 825 * var(--u));
-  }
-}
-
 /* Phone */
 @media (max-width: 767.98px) {
   .vk-sec { height: calc(736 * var(--um)); }
@@ -226,9 +213,12 @@
   }
   @media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
     html.js .vk-wrap {
-      --vk-over: calc(371 * var(--um));
+      --vk-over: calc(72 * var(--um));
       height: calc(736 * var(--um) + var(--vk-over));
     }
-    html.js .vk-sec { top: calc(100svh - 604 * var(--um) - 736 * var(--um)); }
+    html.js .vk-sec {
+      position: sticky;
+      top: calc(100svh - 604 * var(--um) - 736 * var(--um));
+    }
   }
 }

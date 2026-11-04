@@ -69,7 +69,7 @@ function FerieRing() {
         />
       </svg>
       <span className="pf-gauge-star" />
-      <span className="pf-gauge-pill">62 % på vej</span>
+      <span className="pf-gauge-pill">62 %</span>
     </div>
   )
 }

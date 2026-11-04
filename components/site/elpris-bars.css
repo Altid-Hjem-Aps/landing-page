@@ -23,6 +23,7 @@
   font-size: max(18px, calc(28 * var(--u)));
   font-weight: 700;
   line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
 /* The answer stays above the chart, the controls move below it. */

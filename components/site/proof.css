@@ -12,7 +12,7 @@
 .pf-sec { position: relative; }
 .pf-full {
   overflow: clip;
-  background: var(--ah-deep-forest);
+  background: var(--ah-page);
   color: var(--ah-cream);
 }
 
@@ -363,7 +363,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #00260e, rgb(0 38 14 / 0) 10%, rgb(0 38 14 / 0) 90%, #00260e);
+  background: linear-gradient(90deg, var(--ah-page), rgb(0 31 11 / 0) 10%, rgb(0 31 11 / 0) 90%, var(--ah-page));
   pointer-events: none;
 }
 .pf-feat-label {
