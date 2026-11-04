@@ -1,0 +1,289 @@
+/* The live chart in the wide tile of the bento (Proof.tsx). */
+
+.ae-panel {
+  --ae-gap: calc(3 * var(--u));
+  container-type: inline-size;
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  min-height: 0;
+  height: 100%;
+  color: var(--ah-cream);
+}
+.ae-panel--failure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(8 * var(--u));
+  text-align: center;
+}
+.ae-failure {
+  font-family: var(--ah-font-display);
+  font-size: max(18px, calc(28 * var(--u)));
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* The answer stays above the chart, the controls move below it. */
+.ae-top { display: contents; }
+
+/* The height is held so the answer arriving after hydration moves nothing below it. */
+.ae-answer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0 calc(14 * var(--u));
+  min-height: calc(30 * var(--u));
+  font-family: var(--ah-font-display);
+  font-size: max(15px, calc(21.6 * var(--u)));
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+}
+.ae-today em {
+  color: var(--ah-signal);
+  font-style: normal;
+}
+.ae-tomorrow {
+  color: rgb(253 250 244 / 0.78);
+  font-size: max(13px, calc(14.1 * var(--u)));
+  font-weight: 400;
+  font-family: var(--ah-font-body);
+}
+/* What a visitor without JS gets instead of an answer. */
+.ae-date { color: rgb(253 250 244 / 0.78); }
+html.js .ae-date { visibility: hidden; }
+
+.ae-side {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(12 * var(--u));
+  grid-row: 4;
+  margin-top: calc(2 * var(--u));
+}
+.ae-readout {
+  font-size: max(13px, calc(14.1 * var(--u)));
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  color: rgb(253 250 244 / 0.88);
+}
+.ae-zones {
+  display: flex;
+  flex: none;
+  gap: 2px;
+}
+.ae-zones button {
+  position: relative;
+  min-height: 44px;
+  padding: 0 calc(12 * var(--u));
+  color: rgb(253 250 244 / 0.72);
+  font-size: max(13px, calc(13 * var(--u)));
+  font-weight: 500;
+  cursor: pointer;
+}
+/* The target is 44 px high, the pill drawn in it is not. */
+.ae-zones button::before {
+  content: '';
+  position: absolute;
+  inset: 6px 0;
+  z-index: -1;
+  border-radius: 999px;
+}
+.ae-zones button[aria-pressed='true'] { color: var(--ah-cream); }
+.ae-zones button[aria-pressed='true']::before { background: rgb(253 250 244 / 0.14); }
+
+.ae-bars {
+  grid-row: 2;
+  display: flex;
+  align-items: stretch;
+  gap: var(--ae-gap);
+  min-height: 0;
+  /* Room for the marker above a full-height bar. */
+  padding-top: calc(16 * var(--u));
+  cursor: ew-resize;
+  /* Vertical scrolling stays with the page; a sideways drag scrubs. */
+  touch-action: pan-y;
+  user-select: none;
+}
+.ae-col {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: 0;
+}
+/* Marks sit in the gap between today and tomorrow, and run on into the axis. */
+.ae-col[data-daystart]::after,
+.ae-axis > [data-daystart]::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--ae-gap) / -2 - 0.5px);
+  width: 1px;
+  background: rgb(253 250 244 / 0.4);
+}
+.ae-col[data-daystart]::after { top: -14px; bottom: -6px; }
+.ae-axis > [data-daystart]::before { top: 0; bottom: 4px; }
+
+.ae-bar {
+  position: relative;
+  display: block;
+  flex: none;
+  min-height: 3px;
+  border-radius: calc(4 * var(--u)) calc(4 * var(--u)) 0 0;
+  transform-origin: 50% 100%;
+}
+/* A ramp in the tile's own greens: the cheaper the brighter, the cheapest in Signal. */
+.ae-bar[data-level='low'] { background: #b7f2a7; }
+.ae-bar[data-level='mid'] { background: #7fb387; }
+.ae-bar[data-level='high'] { background: #4f7c5e; }
+.ae-bar[data-level='best'] { background: var(--ah-signal); }
+.ae-bar[data-past] { background: rgb(253 250 244 / 0.14); }
+
+/* The box that hops, one of up to three. Drawn over its column, as the reference's
+   highlighted cell: a thin edge and a light along the bottom. */
+.ae-hop {
+  position: absolute;
+  inset: calc(-14 * var(--u)) calc(-2 * var(--u)) calc(-3 * var(--u));
+  border: 1px solid rgb(144 255 124 / 0.32);
+  border-bottom: 2px solid #d8ffcf;
+  border-radius: calc(4 * var(--u));
+  background: linear-gradient(to top, rgb(144 255 124 / 0.26), rgb(144 255 124 / 0) 46%);
+  box-shadow: 0 calc(4 * var(--u)) calc(14 * var(--u)) rgb(144 255 124 / 0.42);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.7s ease-in-out;
+}
+.ae-hop[data-on] { opacity: 1; }
+
+/* A filled dot over the running hour, a ring over the hour being read. */
+.ae-mark {
+  flex: none;
+  align-self: center;
+  width: min(100%, calc(10 * var(--u)));
+  min-width: 5px;
+  aspect-ratio: 1;
+  margin-bottom: calc(4 * var(--u));
+  border: 1.5px solid var(--ah-cream);
+  border-radius: 50%;
+}
+.ae-mark[data-now] { background: var(--ah-cream); }
+
+/* One beat when the chart comes into view, then still. The waiting state only exists
+   once the client has set it, so nothing is hidden without JS, on paper or when paused. */
+@keyframes ae-rise {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  html:not([data-motion='paused']) .ae-bars[data-rise='wait'] .ae-bar { transform: scaleY(0); }
+  html:not([data-motion='paused']) .ae-bars[data-rise='go'] .ae-bar {
+    animation: ae-rise 640ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--ae-i) * 18ms);
+  }
+}
+
+.ae-axis {
+  grid-row: 3;
+  display: flex;
+  gap: var(--ae-gap);
+  height: calc(22 * var(--u));
+  margin-top: calc(5 * var(--u));
+  font-size: max(11px, calc(12 * var(--u)));
+  line-height: calc(20 * var(--u));
+  white-space: nowrap;
+}
+.ae-axis > span {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  justify-content: center;
+  min-width: 0;
+  color: rgb(253 250 244 / 0.72);
+}
+.ae-axis > span:first-child,
+.ae-axis > [data-daystart] { justify-content: flex-start; }
+.ae-axis > span:last-child { justify-content: flex-end; }
+.ae-now {
+  flex: none;
+  height: calc(20 * var(--u));
+  padding: 0 calc(7 * var(--u));
+  border-radius: 999px;
+  background: var(--ah-cream);
+  color: var(--ah-deep-forest);
+  font-weight: 700;
+}
+/* Starts at the divider, past the "Nu" pill when that stands right next to it. A column's
+   width is 100% here, so the shift is gone as soon as the columns are wide enough. */
+.ae-tomorrow-label {
+  flex: none;
+  margin-left: max(5px, calc(46px - var(--ae-after-now, 9) * 100%));
+  color: var(--ah-cream);
+  font-weight: 700;
+}
+
+/* The reference's tile has no slider: scrubbing the bars does it by pointer, and this
+   stays for the keyboard and for screen readers, lighting the chart up when in focus. */
+.ae-range {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.ae-panel:has(.ae-range:focus-visible) .ae-bars {
+  outline: 2px solid var(--ah-cream);
+  outline-offset: calc(4 * var(--u));
+  border-radius: calc(4 * var(--u));
+}
+/* There is no room for "kl." under bars this narrow, or for a time beside a wider label. */
+@container (max-width: 560px) {
+  .ae-kl,
+  .ae-axis > [data-tight] > .ae-time { display: none; }
+}
+/* Without JS these do nothing, so they are not offered. */
+html:not(.js) .ae-range,
+html:not(.js) .ae-zones { display: none; }
+
+/* Below the bento on a wide screen, under the tile at phone width (proof.css places it). */
+.ae-source {
+  color: rgb(253 250 244 / 0.72);
+  font-size: max(12px, calc(13 * var(--u)));
+  line-height: 1.5;
+}
+
+.ae-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ah-mint);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 767.98px) {
+  .ae-panel { --ae-gap: calc(1.5 * var(--um)); height: auto; grid-template-rows: auto calc(150 * var(--um)) auto auto; }
+  .ae-answer { min-height: calc(32 * var(--um)); font-size: calc(22.85 * var(--um)); gap: 0 calc(12 * var(--um)); }
+  .ae-tomorrow { width: 100%; font-size: calc(14.43 * var(--um)); }
+  .ae-side { flex-direction: column; align-items: center; gap: 0; margin-top: calc(6 * var(--um)); }
+  .ae-readout { font-size: calc(14.43 * var(--um)); }
+  .ae-zones button { font-size: calc(14 * var(--um)); padding: 0 calc(12 * var(--um)); }
+  .ae-bars { padding-top: calc(16 * var(--um)); }
+  .ae-axis { height: calc(22 * var(--um)); margin-top: calc(5 * var(--um)); font-size: calc(12 * var(--um)); line-height: calc(20 * var(--um)); }
+  .ae-bar { border-radius: calc(2 * var(--um)) calc(2 * var(--um)) 0 0; }
+  .ae-now { height: calc(20 * var(--um)); padding: 0 calc(6 * var(--um)); }
+  .ae-mark { width: min(100%, calc(8 * var(--um))); margin-bottom: calc(3 * var(--um)); }
+  .ae-hop {
+    inset: calc(-14 * var(--um)) calc(-1 * var(--um)) calc(-3 * var(--um));
+    box-shadow: 0 calc(3 * var(--um)) calc(10 * var(--um)) rgb(144 255 124 / 0.42);
+  }
+  .ae-source { font-size: 12px; }
+}

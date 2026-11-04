@@ -1,60 +1,32 @@
-'use client'
-
-import { useRef } from 'react'
-import { motion, useTransform } from 'framer-motion'
-import { countClick } from '@/components/StoreBadges'
-import Caption from '@/components/site/primitives/Caption'
-import IconBeam from '@/components/site/primitives/IconBeam'
+import Image from 'next/image'
 import Phone from '@/components/site/primitives/Phone'
-import { useTargetProgress } from '@/components/site/primitives/Pin'
-import { QR_CODES, SCREENS } from '@/components/site/screens'
-import { storeLink, type Store } from '@/lib/store-links'
+import Reveal from '@/components/site/Reveal'
+import { SCREENS } from '@/components/site/screens'
 
-const QR: { store: Store; name: string; code: { src: string; alt: string } }[] = [
-  { store: 'appstore', name: 'App Store', code: QR_CODES.appstore },
-  { store: 'play', name: 'Google Play', code: QR_CODES.play },
-]
+// Four icons float around the phone, each its own place in velkommen.css. Two share a
+// beat and two the other, as in the reference. The third is left out at phone width there.
+const ICONS = ['madplan', 'strom', 'okonomi', 'forsikring'] as const
 
-// Hidden on phones by velkommen.css. A click counts as 'qr'; a scan cannot be counted.
-export function QrCards() {
+export function VelkommenStage() {
   return (
-    <div className="vk-qr">
-      {QR.map(({ store, name, code }) => (
-        <a key={store} href={storeLink(store)} onClick={() => countClick(store, 'qr')} className="vk-qr-card">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={code.src} alt={code.alt} width={112} height={112} />
-          <span aria-hidden>{name}</span>
-        </a>
+    <>
+      {ICONS.map((icon) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img key={icon} src={`/site/icons/${icon}.svg`} alt="" width={115} height={115} loading="lazy" className={`vk-coin vk-coin--${icon}`} />
       ))}
-    </div>
-  )
-}
-
-// The page ends on the object it started with: three phones rising from behind
-// the footer, as in the M0 mail hero. Tilts are CSS, the parallax only ever
-// offsets a phone from the resting place it has without JS.
-export function VelkommenFan() {
-  const ref = useRef<HTMLDivElement>(null)
-  const progress = useTargetProgress(ref, ['start end', 'end end'])
-  const centre = useTransform(progress, [0, 1], [130, 0])
-  const sides = useTransform(progress, [0, 1], [70, 0])
-  return (
-    <div ref={ref} className="vk-fan">
-      <motion.div className="vk-phone vk-phone--left ah-m" style={{ y: sides }}>
-        <Phone screen={SCREENS.hjemTop} sizes="(max-width: 767px) 54vw, 360px" />
-      </motion.div>
-      <motion.div className="vk-phone vk-phone--right ah-m" style={{ y: sides }}>
-        <Phone screen={SCREENS.madHome} sizes="(max-width: 767px) 54vw, 360px" />
-      </motion.div>
-      <motion.div className="vk-phone vk-phone--centre ah-m" style={{ y: centre }}>
-        {/* Rides on the phone, so it never floats alone while the phone rises. */}
-        <Caption on="pastel" className="vk-caption" />
-        <Phone screen={SCREENS.okonomiTop} sizes="(max-width: 767px) 62vw, 400px" />
-      </motion.div>
-      <IconBeam icon="strom" direction={20} length={2.4} delay={-2} className="vk-icon vk-icon--strom" />
-      <IconBeam icon="madplan" direction={-20} length={2.2} delay={-5} className="vk-icon vk-icon--madplan" />
-      <IconBeam icon="okonomi" direction={165} length={2.4} delay={-7} className="vk-icon vk-icon--okonomi" />
-      <IconBeam icon="forsikring" direction={200} length={2.2} delay={-1} className="vk-icon vk-icon--forsikring" />
-    </div>
+      <Reveal margin="-22%" className="vk-stage">
+        <div className="vk-card vk-card--left">
+          <div className="vk-card-tilt">
+            <Image src={SCREENS.okonomiTop.src} alt={SCREENS.okonomiTop.alt} fill sizes="(max-width: 767px) 40vw, 300px" />
+          </div>
+        </div>
+        <div className="vk-card vk-card--right">
+          <div className="vk-card-tilt">
+            <Image src={SCREENS.madHome.src} alt={SCREENS.madHome.alt} fill sizes="(max-width: 767px) 40vw, 300px" />
+          </div>
+        </div>
+        <Phone screen={SCREENS.hjemTop} className="vk-phone" sizes="(max-width: 767px) 50vw, 300px" />
+      </Reveal>
+    </>
   )
 }

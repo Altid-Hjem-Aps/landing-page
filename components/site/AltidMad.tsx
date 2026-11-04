@@ -1,14 +1,12 @@
 'use client'
 
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { motion, useTransform, type MotionValue } from 'framer-motion'
+import { useMotionValueEvent } from 'framer-motion'
 import Caption from '@/components/site/primitives/Caption'
-import Phone from '@/components/site/primitives/Phone'
-import Pin, { useTargetProgress } from '@/components/site/primitives/Pin'
+import { useTargetProgress } from '@/components/site/primitives/Pin'
 import Plate from '@/components/site/primitives/Plate'
 import { PLATES, type PlateData } from '@/components/site/plates'
-import { SCREENS } from '@/components/site/screens'
 import './altid-mad.css'
 
 function plate(slug: string): PlateData {
@@ -18,196 +16,115 @@ function plate(slug: string): PlateData {
 }
 
 const MAIN = plate('kylling-i-karry')
-const ORBIT = [
-  'hjemmelavet-pizza',
-  'caesarsalat',
-  'stegt-flaesk',
-  'amerikanske-pandekager',
-  'klassiske-tacos',
-  'gulerodssuppe',
-  'burger',
-  'kyllingewok',
-  'butter-chicken',
-  'lasagne',
-  'frikadeller-af-kalv-og-flaesk',
-  'svamperisotto',
-].map(plate)
+// On the ring around the big plate, degrees from straight up, as the reference's seven.
+const RING = [
+  { dish: plate('stegt-flaesk'), angle: -73.8 },
+  { dish: plate('hjemmelavet-pizza'), angle: -49.1 },
+  { dish: plate('caesarsalat'), angle: -25 },
+  { dish: plate('butter-chicken'), angle: -1.1 },
+  { dish: plate('klassiske-tacos'), angle: 25 },
+  { dish: plate('burger'), angle: 49.1 },
+  { dish: plate('lasagne'), angle: 73.8 },
+]
+const SMALL_TOP = plate('kyllingewok')
+const SMALL_BOTTOM = plate('frikadeller-af-kalv-og-flaesk')
 
-// The orbit plates are decoration, so the main plate's alt carries the real dishes.
-const MAIN_WITH_DISHES: PlateData = {
-  ...MAIN,
-  name: `${MAIN.name}, omgivet af andre retter fra Altid Mad: ${ORBIT.map((p) => p.name).join(', ')}`,
-}
+// The ring plates are decoration, so the main plate's alt carries the real dishes.
+const ALT = `${MAIN.name}, omgivet af andre retter fra Altid Mad: ${RING.map((r) => r.dish.name).join(', ')}`
 
-const TURN = Math.PI * 1.7
-const PULL_FROM = 0.78
-const PULL_TO = 0.92
-const round = (n: number) => n.toFixed(3)
-
-/** Near plates are bigger; the sine of the angle is the depth on the tilted ellipse. */
-const depthOf = (angle: number) => 0.62 + 0.48 * ((Math.sin(angle) + 1) / 2)
-
-// One plate on the orbit. Its resting place is left and top, so it stands on the
-// ellipse without JS, with reduced motion and at 390 px, where .ah-m cancels the
-// transforms. Those transforms only add what scrolling changes. Radii come from
-// CSS (--am-rx, --am-ry), so they follow the screen without a measure in JS.
-function OrbitPlate({ data, index, progress }: { data: PlateData; index: number; progress: MotionValue<number> }) {
-  const home = (index / ORBIT.length) * Math.PI * 2 + 0.26
-  // The orbit stops as the plates pull aside, so none changes side on its way out.
-  const angleAt = (p: number) => home + Math.min(p, PULL_FROM) * TURN
-  const pullAt = (p: number) => Math.max(0, Math.min(1, (p - PULL_FROM) / (PULL_TO - PULL_FROM)))
-
-  const x = useTransform(progress, (p) => {
-    const cos = Math.cos(angleAt(p))
-    return `calc(var(--am-rx) * ${round(cos + Math.sign(cos) * pullAt(p) * 1.9 - Math.cos(home))})`
-  })
-  const y = useTransform(progress, (p) => `calc(var(--am-ry) * ${round(Math.sin(angleAt(p)) - Math.sin(home))})`)
-  const scale = useTransform(progress, (p) => depthOf(angleAt(p)) / depthOf(home))
-  const zIndex = useTransform(progress, (p) => (Math.sin(angleAt(p)) > 0 ? 3 : 1))
-
-  return (
-    <motion.div
-      className="am-plate ah-m"
-      style={{
-        left: `calc(50% + var(--am-rx) * ${round(Math.cos(home))})`,
-        top: `calc(var(--am-cy) + var(--am-ry) * ${round(Math.sin(home))})`,
-        x,
-        y,
-        scale,
-        zIndex,
-      }}
-    >
-      <div className="am-plate-depth" style={{ transform: `scale(${round(depthOf(home))})` }}>
-        <div className="am-plate-bob" style={{ animationDelay: `${-index * 1.7}s` }}>
-          <Plate plate={data} sizes="(max-width: 767px) 28vw, 240px" />
-        </div>
-      </div>
-    </motion.div>
-  )
-}
-
-function Scene({ progress }: { progress: MotionValue<number> }) {
-  // Rises from below, then moves up beside the heading to leave the stage to the number.
-  const planetY = useTransform(progress, [0.2, 0.68, 0.8, 0.97], [34, 0, 0, -53])
-  const planetX = useTransform(progress, [0.8, 0.97], [0, 31])
-  const planetScale = useTransform(progress, [0.8, 0.97], [1, 0.46])
-  const planetTurn = useTransform(progress, [0, 1], [-24, 24])
-  const y = useTransform(planetY, (v) => `${v}cqh`)
-  const x = useTransform(planetX, (v) => `${v}cqw`)
-
-  const numberOpacity = useTransform(progress, [0.84, 0.93], [0, 1])
-  const numberY = useTransform(progress, [0.84, 0.97], [40, 0])
-  const numberScale = useTransform(progress, [0.84, 0.97], [0.94, 1])
-  const wordsOpacity = useTransform(progress, [0.89, 0.97], [0, 1])
-
-  return (
-    <div className="am-stage">
-      <header className="am-head">
-        <div className="ah-wrap">
-          <h2 className="ah-h2">
-            <span className="block">Ikke mere</span>{' '}
-            <span className="block ah-hang">“hvad skal vi spise?”</span>
-          </h2>
-          <p className="am-lead">Få en komplet madplan på få minutter, tilpasset dig og din familie.</p>
-        </div>
-      </header>
-
-      <div className="am-orbit ah-frame">
-        {ORBIT.map((p, i) => (
-          <div key={p.slug} aria-hidden>
-            <OrbitPlate data={p} index={i} progress={progress} />
-          </div>
-        ))}
-        <motion.div className="am-planet ah-m" style={{ x, y, scale: planetScale }}>
-          <motion.div className="am-planet-plate ah-m" style={{ rotate: planetTurn }}>
-            <Plate plate={MAIN_WITH_DISHES} large sizes="(max-width: 767px) 80vw, 900px" />
-          </motion.div>
-        </motion.div>
-      </div>
-
-      <div className="am-number ah-frame">
-        <div className="ah-wrap am-number-wrap">
-          <motion.p
-            className="ah-num am-figure ah-m"
-            style={{ opacity: numberOpacity, y: numberY, scale: numberScale }}
-          >
-            11.207 <span className="ah-unit">kr.</span>
-          </motion.p>
-          <motion.div className="ah-m" style={{ opacity: wordsOpacity }}>
-            <p className="ah-h3 am-spar">Spar 11.207 kr. om året på dagligvarer*</p>
-            <p className="am-footnote">
-              *Altid Mad Q3-rapporten viser, at den samme ugentlige indkøbskurv til en familie på fire koster 21,6 %
-              mindre i den billigste kæde end i den midterste af 13 kæder.{' '}
-              <a href="https://altidmad.dk/altid-mad-kvartalsrapport-q3.pdf">Læs rapporten</a>
-            </p>
-          </motion.div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// A real crop of a row in mad.trip.in_progress (780 x 1691), lifted off the screen
-// to sit over the row it was cut from.
-function ShoppingRow({ top, className }: { top: number; className: string }) {
-  const { src, width, height } = SCREENS.madTripInProgress
-  const ROW = { left: 52, width: 676, height: 132 }
-  return (
-    <div className={`am-row ${className}`} aria-hidden>
-      <Image
-        src={src}
-        alt=""
-        width={width}
-        height={height}
-        sizes="(max-width: 767px) 90vw, 420px"
-        style={{
-          width: `${(width / ROW.width) * 100}%`,
-          left: `${(-ROW.left / ROW.width) * 100}%`,
-          top: `${(-top / ROW.height) * 100}%`,
-        }}
-      />
-    </div>
-  )
+function Crop({ name, width, height, sizes }: { name: string; width: number; height: number; sizes: string }) {
+  return <Image src={`/site/crops/${name}.webp`} alt="" width={width} height={height} sizes={sizes} />
 }
 
 export default function AltidMad() {
-  const ref = useRef<HTMLDivElement>(null)
-  // From the moment the stage enters the screen, not only while it is pinned, so
-  // the plates are already turning as it comes up.
-  const progress = useTargetProgress(ref, ['start end', 'end end'])
+  const ref = useRef<HTMLElement>(null)
+  // Their ring and plate are played, not scrubbed: the scroll only decides when.
+  // Measured at the bottom of the screen, so on a tall screen the big plate is gone
+  // before the number row comes into view. 1060 of 1666 at 1440 x 900, 600 of 1251 at 390.
+  const passed = useTargetProgress(ref, ['start end', 'end end'])
+  const setOn = (v: number) => {
+    const at = window.innerWidth < 768 ? 600 / 1251 : 1060 / 1666
+    ref.current?.toggleAttribute('data-on', v >= at)
+  }
+  useMotionValueEvent(passed, 'change', setOn)
+  useEffect(() => setOn(passed.get()))
 
   return (
-    <section id="altid-mad" className="am-sec">
-      <div ref={ref}>
-        <Pin vh={150} mobileVh={null}>
-          {() => <Scene progress={progress} />}
-        </Pin>
-      </div>
+    <section ref={ref} id="altid-mad" className="gl">
+      <span className="gl-bg" aria-hidden />
 
-      <div className="ah-wrap am-lower">
-        <div className="am-sand ah-bg-sand">
-          <div className="am-sand-copy">
-            <h3 className="ah-hang am-sand-title">“Hvor handler vi billigst ind?”</h3>
-            <p className="am-sand-body">Appen finder automatisk de billigste varer på tværs af de butikker, I handler i.</p>
-            <Caption kind="screens" on="pastel" className="am-caption" />
-          </div>
-          <div className="am-sand-phone">
-            <Phone screen={SCREENS.madTripInProgress} crop={0.81} sizes="(max-width: 767px) 72vw, 340px" />
-            <ShoppingRow top={1040} className="am-row--ticked" />
-            <ShoppingRow top={1176} className="am-row--open" />
-          </div>
-        </div>
+      <h2 className="gl-head">
+        <span>Ikke mere</span> <span className="gl-accent">“hvad skal vi spise?”</span>
+      </h2>
+      <p className="gl-lead">Få en komplet madplan på få minutter, tilpasset dig og din familie.</p>
 
-        <div className="am-home">
-          <Caption kind="screens" on="pastel" />
-          <div className="am-home-phone">
-            <Phone screen={SCREENS.madHome} crop={0.62} sizes="(max-width: 767px) 66vw, 320px" />
-            {/* The same dish as today's plate on the screen, out in the room. */}
-            <div className="am-home-plate" aria-hidden>
-              <Plate plate={MAIN} sizes="(max-width: 767px) 38vw, 220px" />
+      <div className="gl-ring" aria-hidden>
+        {RING.map(({ dish, angle }) => (
+          <div key={dish.slug} className="gl-arm" style={{ '--gl-angle': `${angle}deg` } as React.CSSProperties}>
+            <div className="gl-coin">
+              <Plate plate={dish} sizes="(max-width: 767px) 106px, 210px" />
             </div>
           </div>
+        ))}
+      </div>
+
+      <div className="gl-plate">
+        <div className="gl-plate-turn">
+          <Image src="/site/crops/kylling-i-karry-disc.webp" alt={ALT} width={1200} height={1200} sizes="(max-width: 767px) 90vw, 1008px" />
         </div>
+      </div>
+
+      <div className="gl-chips" aria-hidden>
+        <div className="gl-chip gl-chip--row-a">
+          <Crop name="mad-today-row" width={1000} height={214} sizes="(max-width: 767px) 60vw, 330px" />
+        </div>
+        <div className="gl-chip gl-chip--budget">
+          <Crop name="mad-budget-bar" width={1075} height={440} sizes="(max-width: 767px) 44vw, 260px" />
+        </div>
+        <div className="gl-chip gl-chip--people">
+          <span className="gl-people">
+            <Crop name="mad-household" width={150} height={72} sizes="90px" />
+          </span>
+          <span className="gl-today">
+            <Crop name="mad-today-pill" width={456} height={86} sizes="170px" />
+          </span>
+        </div>
+        <div className="gl-chip gl-chip--small gl-chip--small-top">
+          <Plate plate={SMALL_TOP} sizes="(max-width: 767px) 80px, 120px" />
+        </div>
+        <div className="gl-chip gl-chip--row-b">
+          <Crop name="mad-ticked-row" width={1012} height={190} sizes="(max-width: 767px) 56vw, 300px" />
+        </div>
+        <div className="gl-chip gl-chip--basket">
+          <svg viewBox="0 0 58 50">
+            <path d="M15 21C17 10 23 4 29 4s12 6 14 17" fill="none" stroke="#fdfaf4" strokeWidth="4" strokeLinecap="round" />
+            <path d="M5 19h48a3 3 0 0 1 3 3.7l-5.6 22.6a4 4 0 0 1-3.9 3H11.5a4 4 0 0 1-3.9-3L2 22.7A3 3 0 0 1 5 19z" fill="#fdfaf4" />
+          </svg>
+        </div>
+        <div className="gl-chip gl-chip--trip">
+          <Crop name="mad-trip-head" width={1100} height={400} sizes="(max-width: 767px) 44vw, 240px" />
+        </div>
+        <div className="gl-chip gl-chip--small gl-chip--small-bottom">
+          <Plate plate={SMALL_BOTTOM} sizes="(max-width: 767px) 80px, 120px" />
+        </div>
+      </div>
+
+      <Caption on="pastel" className="gl-caption" />
+
+      <div className="gl-number">
+        <p className="gl-spar">Spar</p>
+        <div className="gl-row">
+          <p className="gl-figure">11.207</p>
+          <p className="gl-words">
+            kr. om året på dagligvarer* Få en madplan for hele ugen, og find automatisk de{' '}
+            <span className="gl-accent-dark">billigste varer</span> i jeres foretrukne butikker.
+          </p>
+        </div>
+        <p className="gl-footnote">
+          *Q3-rapporten fra Altid Mad viser, at den samme ugentlige indkøbskurv til en familie på fire koster 21,6 % mindre
+          i den billigste kæde end i den midterste af 13 kæder.{' '}
+          <a href="https://altidmad.dk/altid-mad-kvartalsrapport-q3.pdf">Læs rapporten</a>
+        </p>
       </div>
     </section>
   )

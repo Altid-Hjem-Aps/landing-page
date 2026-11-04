@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState, useSyncExternalStore, type PointerEvent } from 'react'
+import { useCallback, useEffect, useState, useSyncExternalStore, type PointerEvent } from 'react'
 import Link from 'next/link'
 import {
   copenhagenDateKey,
@@ -12,6 +12,7 @@ import {
   type Fees,
   type HourPrice,
 } from '@/lib/elpriser'
+import './elpris-bars.css'
 
 // Real hourly prices. The page is cached for half an hour and can outlive midnight,
 // so everything that depends on "now" is decided in the browser after hydration:
@@ -80,7 +81,7 @@ const subscribeToClock = (tick: () => void) => {
 const readClock = () => `${copenhagenDateKey(new Date())} ${currentCopenhagenHour()}`
 const noClockOnServer = () => null
 
-// Long enough for the last bar of a full chart: see the stagger in altid-energi.css.
+// Long enough for the last bar of a full chart: see the stagger in elpris-bars.css.
 const RISE_MS = 1500
 
 /** The bars rise once, the first time the chart comes into view. */
@@ -114,6 +115,23 @@ function useRiseOnce() {
   return { rise, watch }
 }
 
+const HOP_MS = 1800
+
+/** Which of the cheap hours the box stands on. Stays on the cheapest when motion is stopped. */
+function useHop() {
+  const [step, setStep] = useState(0)
+  useEffect(() => {
+    const id = setInterval(() => {
+      const still =
+        document.documentElement.dataset.motion === 'paused' ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      setStep((s) => (still ? 0 : s + 1))
+    }, HOP_MS)
+    return () => clearInterval(id)
+  }, [])
+  return step
+}
+
 function Failure() {
   return (
     <div className="ae-panel ae-panel--failure">
@@ -130,6 +148,7 @@ export default function ElprisBars({ data }: { data: ElpriserData | null }) {
   const [wantedZone, setWantedZone] = useState<Zone>('dk1')
   const [picked, setPicked] = useState<string | null>(null)
   const { rise, watch } = useRiseOnce()
+  const hop = useHop()
 
   if (data === null) return <Failure />
 
@@ -165,6 +184,10 @@ export default function ElprisBars({ data }: { data: ElpriserData | null }) {
   const selected = shown.find((b) => keyOf(b) === picked) ?? currentBar ?? best ?? tomorrowBest ?? shown[0]
   const selectedIndex = shown.indexOf(selected)
   const readout = `${selected.day === 'tomorrow' ? 'I morgen ' : ''}${kl(selected.hour)}: ${formatKr(selected.price)} pr. kWh`
+
+  // The box hops between the three cheapest hours still to come, starting on the cheapest.
+  const cheapHours = [...(best ? (now ? remaining : today) : tomorrow)].sort((a, b) => a.price - b.price).slice(0, 3)
+  const hopOn = cheapHours[hop % cheapHours.length]
 
   const top = Math.max(...shown.map((b) => b.price), 0) || 1
   const third = thirds(shown)
@@ -236,6 +259,7 @@ export default function ElprisBars({ data }: { data: ElpriserData | null }) {
             const isSelected = b === selected
             return (
               <div key={keyOf(b)} className="ae-col" data-daystart={(i === dayStart && i > 0) || undefined}>
+                {cheapHours.includes(b) && <span className="ae-hop" data-on={b === hopOn || undefined} />}
                 {(b === currentBar || isSelected) && (
                   <span className="ae-mark" data-now={b === currentBar || undefined} />
                 )}

@@ -50,7 +50,7 @@ const FAQ: { question: string; answer: string; more?: ReactNode }[] = [
   {
     question: 'Hvor henter jeg den?',
     answer: 'I App Store og Google Play.',
-    more: <StorePills position="faq" className="mt-4" />,
+    more: <StorePills position="faq" variant="dark" className="mt-4" />,
   },
   {
     question: 'Hvordan sletter jeg min konto?',
@@ -77,26 +77,37 @@ const FAQ_JSON_LD = {
   })),
 }
 
+function Item({ question, answer, more, open }: (typeof FAQ)[number] & { open: boolean }) {
+  return (
+    <details className="fq-item" open={open}>
+      <summary className="fq-summary">
+        <h3 className="fq-question">{question}</h3>
+        <span className="fq-mark" aria-hidden />
+      </summary>
+      <div className="fq-answer">
+        <p className="fq-text">{answer}</p>
+        {more}
+      </div>
+    </details>
+  )
+}
+
+// Two columns of their own, so opening a question moves nothing in the other one.
+const COLUMNS = [FAQ.slice(0, 5), FAQ.slice(5)]
+
 export default function Spoergsmaal() {
   return (
-    <section id="spoergsmaal" className="ah-sec ah-bg-cream">
+    <section id="spoergsmaal" className="fq-sec">
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(FAQ_JSON_LD)} />
-      <div className="ah-wrap fq-grid">
-        <h2 className="ah-h2 fq-title">Spørgsmål</h2>
-        <div className="fq-list">
-          {FAQ.map(({ question, answer, more }, i) => (
-            <details key={question} className="fq-item" open={i === 0}>
-              <summary className="fq-summary">
-                <h3 className="fq-question">{question}</h3>
-                <span className="fq-mark" aria-hidden />
-              </summary>
-              <div className="fq-answer">
-                <p className="ah-body">{answer}</p>
-                {more}
-              </div>
-            </details>
-          ))}
-        </div>
+      <h2 className="fq-title">Spørgsmål</h2>
+      <div className="fq-grid">
+        {COLUMNS.map((column, c) => (
+          <div key={c} className="fq-col">
+            {column.map((item) => (
+              <Item key={item.question} {...item} open={item === FAQ[0]} />
+            ))}
+          </div>
+        ))}
       </div>
     </section>
   )

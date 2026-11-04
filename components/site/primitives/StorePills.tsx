@@ -26,7 +26,7 @@ const inBrowser = (): Target => {
 
 // "Hent appen". The server sends a link to the pills, which works on every page
 // and without JS. After load a phone gets the right store directly; a desktop
-// stays on the pills and QR codes, on this page if it has them.
+// stays on the pills, on this page if it has them.
 export function GetAppLink({
   position = 'nav',
   className,

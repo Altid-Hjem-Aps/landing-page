@@ -1,189 +1,558 @@
-/* Proof. A dark bento: tiles of truly different sizes, one column with its own
-   rhythm on a phone. */
+/* Features: the bento and the marquee. Every number is the reference's at 1440 wide
+   (u) or 390 wide (um). Unlayered, so these beat the primitives. */
+
+/* Tablet: the desktop layout, a little smaller than a straight scale so it still fits. */
+@media (min-width: 768px) and (max-width: 959.98px) {
+  .pf-sec,
+  .fq-sec,
+  .vk-wrap,
+  .ft-front { --u: calc(100vw / 1240); }
+}
+
+.pf-sec { position: relative; }
+.pf-full {
+  overflow: clip;
+  background: var(--ah-deep-forest);
+  color: var(--ah-cream);
+}
+
+.pf-h {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  padding: calc(104 * var(--u)) calc(40 * var(--u)) 0;
+  font-family: var(--ah-font-display);
+  font-size: calc(67.68 * var(--u));
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-align: center;
+  /* The reference's sheen, in Cream. */
+  background-image: linear-gradient(#fdfaf4, rgb(253 250 244 / 0.7) 40%, #fdfaf4 50%, #fdfaf4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.pf-accent {
+  display: block;
+  -webkit-text-fill-color: var(--ah-signal);
+}
 
 .pf-grid {
+  position: relative;
   display: grid;
-  gap: 14px;
-  margin-top: clamp(40px, 5vw, 72px);
+  grid-template-columns: repeat(3, calc(371 * var(--u)));
+  grid-template-rows: calc(360 * var(--u)) calc(347 * var(--u));
+  gap: calc(32 * var(--u));
+  justify-content: center;
+  /* 168 high in the reference with its line box, 162 here. */
+  margin-top: calc(77.6 * var(--u));
 }
+
 .pf-tile {
   position: relative;
+  scroll-margin-top: calc(32 * var(--u));
   overflow: hidden;
-  border-radius: var(--ah-radius-block);
-  padding: clamp(24px, 3vw, 40px);
-}
-.pf-tile .ah-h3 { text-wrap: pretty; }
-
-/* The big one: a padlock too large for its tile. */
-.pf-lock {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  min-height: 500px;
+  border-radius: calc(31.68 * var(--u));
   background: var(--ah-dark-forest);
-  color: var(--ah-cream);
 }
-.pf-lock-text { position: relative; max-width: 560px; }
-.pf-lock-title {
+.pf-t {
+  position: relative;
+  z-index: 1;
+  padding: calc(40 * var(--u)) calc(40 * var(--u)) 0;
   font-family: var(--ah-font-display);
+  font-size: max(15px, calc(21.6 * var(--u)));
   font-weight: 700;
-  font-size: clamp(30px, 3.5vw, 50px);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-.pf-padlock {
-  position: absolute;
-  top: -22px;
-  right: -28px;
-  width: 248px;
-  height: auto;
-  rotate: 9deg;
-}
-.pf-ray {
-  position: absolute;
-  top: 110px;
-  right: 80px;
-  width: 620px;
-  height: 200px;
-  background: linear-gradient(90deg, var(--ah-mint), transparent);
-  clip-path: polygon(0 40%, 100% 0, 100% 100%, 0 60%);
-  opacity: 0.22;
-  rotate: 150deg;
-  transform-origin: 0 50%;
-}
-
-/* The tall one, the toggle over a phone cut by the tile's bottom edge. */
-.pf-lens {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-bottom: 0;
-  background: var(--ah-honey);
-  color: var(--ah-deep-forest);
+  line-height: 1.5;
   text-align: center;
 }
-.pf-toggle {
-  display: inline-flex;
-  padding: 4px;
-  border-radius: 999px;
-  background: var(--ah-deep-forest);
-}
-.pf-toggle button {
-  min-width: 96px;
-  min-height: 44px;
-  padding: 0 20px;
-  border-radius: 999px;
-  color: var(--ah-cream);
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-}
-.pf-toggle button[aria-pressed="true"] {
-  background: var(--ah-cream);
-  color: var(--ah-deep-forest);
-}
-/* Inside the button: its own text colour shows on both states. */
-.pf-toggle button:focus-visible { outline-offset: -5px; }
-/* Without JS the buttons could do nothing, and the first screen just shows. */
-html:not(.js) .pf-toggle { display: none; }
-
-.pf-lens-line { max-width: 15em; margin-top: 18px; text-wrap: balance; }
-.pf-lens-stack {
+.pf-b {
   position: relative;
-  display: grid;
-  width: min(100%, 340px);
-  margin-top: auto;
-  padding-top: 28px;
-  --ah-phone-w: 100%;
+  z-index: 1;
+  color: rgb(253 250 244 / 0.72);
+  font-size: max(13px, calc(14.112 * var(--u)));
+  line-height: 1.6;
+  text-align: center;
 }
-.pf-lens-screen {
-  grid-area: 1 / 1;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.25s, visibility 0.25s;
-}
-.pf-lens-screen[data-on="true"] { opacity: 1; visibility: visible; }
 
-/* Bills: the calendar crop rising from the tile's edge. */
-.pf-bills {
+/* Wide: Altid Energi, live. */
+.pf-wide {
+  grid-column: 1 / 3;
+  overflow: visible;
+}
+.pf-wide-in {
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  padding-bottom: 0;
-  background: var(--ah-mint);
+  height: 100%;
+  padding: 0 calc(41 * var(--u)) calc(10 * var(--u));
+}
+.pf-wide .pf-t { padding: calc(40 * var(--u)) 0 0; }
+.pf-wide .ae-panel { flex: 1 1 0; }
+.pf-wide .ae-source {
+  position: absolute;
+  top: calc(739 * var(--u) + 14 * var(--u));
+  left: 0;
+  width: calc(773 * var(--u));
+}
+.pf-caption {
+  position: absolute;
+  top: calc(100% + 14 * var(--u));
+  right: calc(50% - 588 * var(--u));
+  font-size: max(12px, calc(13 * var(--u)));
+}
+
+/* Rows of empty cells, drifting. A pool of light up to the right, as in the reference. */
+.pf-cells {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  background: radial-gradient(calc(330 * var(--u)) calc(170 * var(--u)) at 67% 22%, rgb(253 250 244 / 0.1), rgb(253 250 244 / 0));
+}
+.pf-cells::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, var(--ah-dark-forest) 2%, rgb(22 50 35 / 0) 15%, rgb(22 50 35 / 0) 85%, var(--ah-dark-forest) 98%),
+    linear-gradient(var(--ah-dark-forest), rgb(22 50 35 / 0) 34%);
+}
+.pf-cell-row {
+  position: absolute;
+  left: calc(-120 * var(--u));
+  display: flex;
+  gap: calc(4 * var(--u));
+  height: calc(92 * var(--u));
+  will-change: transform;
+}
+.pf-cell-row span {
+  flex: none;
+  width: calc(205 * var(--u));
+  border: 1px solid rgb(253 250 244 / 0.07);
+  background: rgb(253 250 244 / 0.012);
+}
+.pf-cell-row[data-row='0'] { top: calc(44 * var(--u)); margin-left: calc(-60 * var(--u)); }
+.pf-cell-row[data-row='1'] { top: calc(141 * var(--u)); }
+.pf-cell-row[data-row='2'] { top: calc(238 * var(--u)); margin-left: calc(-90 * var(--u)); }
+.pf-cell-row[data-row='3'] { top: calc(335 * var(--u)); margin-left: calc(-30 * var(--u)); }
+@keyframes pf-drift {
+  to { transform: translate3d(calc(-418 * var(--u)), 0, 0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .pf-cell-row { animation: pf-drift 14s linear infinite; }
+  html.js .pf-cell-row[data-row='0'],
+  html.js .pf-cell-row[data-row='2'] { animation-duration: 18s; }
+}
+
+/* Tall: Altid Forsikring. The colour blocks of the screen stand where the reference has its orb. */
+.pf-tall {
+  grid-column: 3;
+  grid-row: 1 / 3;
+  /* Mint light in the reference's falloff: rises to the phone's lower edge, gone by 78 %. */
+  background:
+    linear-gradient(
+      rgb(144 255 124 / 0.1),
+      rgb(144 255 124 / 0.12) 28%,
+      rgb(144 255 124 / 0.32) 49%,
+      rgb(144 255 124 / 0.26) 56%,
+      rgb(144 255 124 / 0.1) 66%,
+      rgb(144 255 124 / 0) 78%
+    ),
+    var(--ah-dark-forest);
+}
+.pf-tall-phone {
+  --ah-phone-w: calc(299 * var(--u));
+  position: absolute;
+  bottom: calc(100% - 420 * var(--u));
+  left: calc(36 * var(--u));
+}
+.pf-tall-phone .ah-phone-body {
+  box-shadow:
+    0 0 0 calc(1.6 * var(--u)) #e4ffdc,
+    0 0 calc(12 * var(--u)) calc(2 * var(--u)) rgb(144 255 124 / 0.8),
+    0 0 calc(46 * var(--u)) calc(12 * var(--u)) rgb(144 255 124 / 0.3);
+}
+.pf-tall-t {
+  position: absolute;
+  top: calc(506 * var(--u));
+  left: 0;
+  width: 100%;
+  padding: 0 calc(40 * var(--u));
+}
+.pf-tall .pf-b {
+  position: absolute;
+  top: calc(586 * var(--u));
+  left: 0;
+  width: 100%;
+  padding: 0 calc(40 * var(--u));
+}
+
+/* Small light: the reference's gradient with its stops: light at the top, gone by 66 %. */
+.pf-light {
   color: var(--ah-deep-forest);
+  background:
+    linear-gradient(
+      rgb(22 50 35 / 0) 20%,
+      rgb(22 50 35 / 0.14) 28%,
+      rgb(22 50 35 / 0.42) 38%,
+      rgb(22 50 35 / 0.72) 48%,
+      rgb(22 50 35 / 0.92) 58%,
+      var(--ah-dark-forest) 68%
+    ),
+    linear-gradient(100deg, #fdfaf4 8%, #e4f7dc 28%, #b7f2a7 55%, #6fd65e 100%);
 }
-.pf-bills-phone { --ah-phone-w: min(88%, 290px); margin: auto auto 0; padding-top: 28px; }
-
-.pf-login {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 40px;
-  background: var(--ah-dark-forest);
-  color: var(--ah-cream);
+.pf-light-art {
+  position: absolute;
+  inset: 0;
 }
-.pf-app-icon { width: clamp(88px, 9vw, 124px); height: auto; }
+.pf-light-icon {
+  position: absolute;
+  top: calc(173 * var(--u));
+  left: calc(17 * var(--u));
+  width: calc(70 * var(--u));
+  height: calc(70 * var(--u));
+  filter: drop-shadow(0 0 calc(10 * var(--u)) rgb(144 255 124 / 0.6));
+}
+.pf-row {
+  position: absolute;
+  overflow: hidden;
+  border-radius: calc(16 * var(--u));
+  background: var(--ah-cream);
+}
+.pf-row img {
+  position: absolute;
+  max-width: none;
+  height: auto;
+}
+.pf-light-card {
+  top: calc(138 * var(--u));
+  left: calc(96 * var(--u));
+  width: calc(254 * var(--u));
+  height: calc(66 * var(--u));
+}
+.pf-light-card img {
+  /* Restaurant og takeaway on the Økonomi screen: x 28 to 752, y 1108 to 1296 of 780 x 1691. */
+  width: calc(273.6 * var(--u));
+  left: calc(-9.8 * var(--u));
+  top: calc(-389 * var(--u));
+}
+.pf-light-card2 {
+  top: calc(222 * var(--u));
+  left: calc(160 * var(--u));
+  width: calc(190 * var(--u));
+  height: calc(50 * var(--u));
+  opacity: 0.55;
+}
+.pf-light-card2 img {
+  /* Transport: y 1280 to 1470. */
+  width: calc(204.7 * var(--u));
+  left: calc(-7.3 * var(--u));
+  top: calc(-336 * var(--u));
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .pf-light-art > * {
+    transition:
+      transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.5s ease-out;
+  }
+  html.js .pf-light-art:not([data-in]) > * {
+    opacity: 0;
+    transform: translateY(calc(20 * var(--u))) scale(0.94);
+  }
+}
 
-.pf-team {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+/* Small dark: the coast painting in the gauge's place, with the ring at 62 %. */
+.pf-dark {
+  background:
+    radial-gradient(calc(220 * var(--u)) calc(150 * var(--u)) at 8% 100%, rgb(144 255 124 / 0.26), rgb(144 255 124 / 0)),
+    radial-gradient(calc(220 * var(--u)) calc(150 * var(--u)) at 92% 100%, rgb(144 255 124 / 0.2), rgb(144 255 124 / 0)),
+    var(--ah-dark-forest);
+}
+.pf-gauge {
+  position: absolute;
+  top: calc(160 * var(--u));
+  left: calc(50% - 148 * var(--u));
+  width: calc(296 * var(--u));
+  height: calc(296 * var(--u));
+}
+.pf-gauge-disc {
+  position: absolute;
+  inset: calc(18 * var(--u));
+  overflow: hidden;
+  border-radius: 50%;
+}
+.pf-gauge-disc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 62%;
+}
+.pf-gauge-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* Where the ring ends: 17 degrees past the top. */
+.pf-gauge-star {
+  position: absolute;
+  top: calc(148 * var(--u) - 134 * var(--u));
+  left: calc(148 * var(--u) + 41 * var(--u));
+  width: calc(96 * var(--u));
+  height: calc(96 * var(--u));
+  margin: calc(-48 * var(--u)) 0 0 calc(-48 * var(--u));
+  background:
+    radial-gradient(closest-side, #fff 6%, rgb(228 255 220 / 0.85) 16%, rgb(144 255 124 / 0.32) 42%, rgb(144 255 124 / 0)),
+    linear-gradient(90deg, rgb(255 255 255 / 0), #fff 50%, rgb(255 255 255 / 0)) 50% 50% / 100% 2px no-repeat,
+    linear-gradient(rgb(255 255 255 / 0), #fff 50%, rgb(255 255 255 / 0)) 50% 50% / 2px 100% no-repeat;
+  border-radius: 50%;
+}
+@keyframes pf-twinkle {
+  50% { transform: scale(0.8) rotate(14deg); opacity: 0.82; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .pf-gauge-star { animation: pf-twinkle 4.6s ease-in-out infinite; }
+}
+.pf-gauge-pill {
+  position: absolute;
+  top: calc(116 * var(--u));
+  left: 50%;
+  padding: calc(5 * var(--u)) calc(13 * var(--u));
+  border-radius: 999px;
   background: var(--ah-cream);
   color: var(--ah-deep-forest);
-}
-.pf-energi-logo { width: clamp(150px, 15vw, 220px); height: auto; }
-
-@media (prefers-reduced-motion: reduce) {
-  .pf-toggle button,
-  .pf-lens-screen { transition: none; }
-}
-
-/* One column with a rhythm of its own: each tile a different height, the phones
-   cut well above where the bento cuts them. Beats the Phone's inline ratio. */
-@media (max-width: 899.98px) {
-  .pf-lock { min-height: 330px; padding-top: 172px; }
-  .pf-padlock { top: -20px; right: -14px; width: 152px; }
-  /* From the padlock, whatever the tile's width. */
-  .pf-ray { top: 6px; right: auto; left: calc(100% - 90px); width: 420px; height: 130px; }
-  .pf-lens { padding-top: 22px; }
-  .pf-lens-line { margin-top: 14px; }
-  .pf-lens-stack { width: min(82%, 340px); padding-top: 20px; }
-  .pf-lens .ah-phone-screen { aspect-ratio: 1179 / 1250 !important; }
-  .pf-bills { padding-top: 22px; }
-  .pf-bills-phone { --ah-phone-w: min(76%, 290px); padding-top: 18px; }
-  .pf-bills .ah-phone-screen { aspect-ratio: 1179 / 880 !important; }
-  .pf-login { flex-direction: row; align-items: center; gap: 16px; padding: 18px 20px; }
-  .pf-app-icon { width: 60px; flex: none; }
-  .pf-login .ah-h3 { font-size: 19px; }
-  .pf-team { flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; padding: 26px 20px; }
-  .pf-energi-logo { width: 116px; flex: none; }
-  .pf-team .ah-h3 { font-size: 19px; text-align: right; }
+  font-family: var(--ah-font-display);
+  font-size: max(12px, calc(14.112 * var(--u)));
+  font-weight: 700;
+  white-space: nowrap;
+  transform: translateX(-50%);
 }
 
-@media (min-width: 900px) {
+/* The dust in the reference's canvases, in Mint white. */
+.pf-specks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.pf-tall .pf-specks { top: calc(268 * var(--u)); bottom: auto; height: calc(371 * var(--u)); }
+.pf-specks i {
+  position: absolute;
+  width: calc(3 * var(--u));
+  height: calc(3 * var(--u));
+  border-radius: 50%;
+  background: #e4ffdc;
+  opacity: 0.7;
+}
+@keyframes pf-speck {
+  50% { transform: translateY(calc(-14 * var(--u))); opacity: 0.25; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .pf-specks i { animation: pf-speck 6s ease-in-out infinite; }
+}
+
+/* Marquee */
+.pf-feat {
+  position: relative;
+  min-height: calc(326 * var(--u));
+  margin-top: calc(104 * var(--u));
+  padding-block: calc(72 * var(--u)) calc(32 * var(--u));
+}
+/* The sides go dark, as the reference's mask does, and the logos fade into them. */
+.pf-feat::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #00260e, rgb(0 38 14 / 0) 10%, rgb(0 38 14 / 0) 90%, #00260e);
+  pointer-events: none;
+}
+.pf-feat-label {
+  color: rgb(253 250 244 / 0.62);
+  font-family: var(--ah-font-display);
+  font-size: max(15px, calc(21.6 * var(--u)));
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+}
+.pf-mq {
+  margin-top: calc(32 * var(--u));
+  overflow: hidden;
+}
+/* Static: one set, wrapping, so every service can be read. Moving: all four sets in a row. */
+.pf-mq-track { display: flex; }
+.pf-mq-set {
+  display: flex;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: calc(32 * var(--u));
+  padding-right: calc(32 * var(--u));
+}
+.pf-mq-set[data-copy] { display: none; }
+.pf-mq-set li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: calc(210 * var(--u));
+  height: calc(86 * var(--u));
+  padding: 0 calc(15 * var(--u));
+  border-radius: calc(15.84 * var(--u));
+  opacity: 0.6;
+}
+.pf-mq-set img {
+  width: auto;
+  height: calc(40 * var(--u));
+  filter: brightness(0) invert(1);
+}
+.pf-mq-set .pf-mq-energi { height: calc(62 * var(--u)); }
+.pf-mq-set .pf-mq-lockup {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: var(--ah-font-display);
+  font-size: calc(21 * var(--u));
+  font-weight: 500;
+  line-height: 1.05;
+}
+.pf-mq-word {
+  color: #fff;
+  font-family: var(--ah-font-display);
+  font-size: calc(40 * var(--u));
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+@keyframes pf-mq {
+  to { transform: translate3d(-25%, 0, 0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .pf-mq-track { width: max-content; animation: pf-mq 20s linear infinite; }
+  html.js .pf-mq-set { flex: none; flex-wrap: nowrap; }
+  html.js .pf-mq-set[data-copy] { display: flex; }
+}
+
+/* Phone */
+@media (max-width: 767.98px) {
+  .pf-full { border-radius: calc(24.96 * var(--um)) calc(24.96 * var(--um)) 0 0; }
+  .pf-h {
+    padding: calc(70 * var(--um)) calc(16 * var(--um)) 0;
+    /* Three lines, as the reference's closing heading has at this width. */
+    font-size: calc(40 * var(--um));
+  }
   .pf-grid {
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(2, 258px) repeat(2, 146px) auto;
+    grid-template-columns: calc(349 * var(--um));
+    grid-template-rows: none;
+    gap: calc(25 * var(--um));
+    margin-top: calc(40 * var(--um));
   }
-  .pf-lock { grid-column: 1 / 8; grid-row: 1 / 3; min-height: 0; }
-  .pf-lens { grid-column: 8 / 13; grid-row: 1 / 5; }
-  .pf-bills { grid-column: 1 / 5; grid-row: 3 / 6; }
-  .pf-login { grid-column: 5 / 8; grid-row: 3 / 5; }
-  .pf-team {
-    grid-column: 5 / 13;
-    grid-row: 5;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 32px;
+  .pf-tile,
+  .pf-wide,
+  .pf-tall { grid-column: 1; grid-row: auto; border-radius: calc(24.96 * var(--um)); }
+  .pf-light { order: 1; height: calc(337 * var(--um)); }
+  .pf-dark { order: 2; height: calc(337 * var(--um)); }
+  .pf-tall { order: 3; height: calc(755 * var(--um)); }
+  .pf-t {
+    padding: calc(38 * var(--um)) calc(39 * var(--um)) 0;
+    font-size: calc(22.85 * var(--um));
   }
-  .pf-team .ah-h3 { max-width: 13em; text-align: right; }
-  .pf-lens-stack { width: min(100%, 370px); }
-  .pf-lock-text { max-width: 54%; }
-  .pf-lock-title { font-size: clamp(30px, 3.1vw, 44px); }
-  .pf-padlock { width: 44%; max-width: 330px; top: 28px; right: -22px; }
-  .pf-ray { right: 26%; top: 150px; }
-  .pf-login .ah-h3 { font-size: clamp(20px, 1.8vw, 26px); }
+  .pf-b { font-size: calc(14.43 * var(--um)); }
+
+  .pf-wide-in { padding: 0 calc(14 * var(--um)) calc(10 * var(--um)); }
+  .pf-wide .pf-t { padding: calc(30 * var(--um)) calc(16 * var(--um)) 0; }
+  .pf-wide .ae-panel { flex: none; }
+  .pf-wide .ae-source {
+    position: static;
+    width: auto;
+    margin-top: calc(6 * var(--um));
+    padding: 0 calc(6 * var(--um)) calc(12 * var(--um));
+    text-align: center;
+  }
+  .pf-caption {
+    position: static;
+    order: 4;
+    text-align: center;
+  }
+  .pf-cells { background: radial-gradient(calc(170 * var(--um)) calc(110 * var(--um)) at 67% 18%, rgb(253 250 244 / 0.1), rgb(253 250 244 / 0)); }
+  .pf-cell-row { left: calc(-40 * var(--um)); gap: calc(3 * var(--um)); height: calc(70 * var(--um)); }
+  .pf-cell-row span { width: calc(120 * var(--um)); }
+  .pf-cell-row[data-row='0'] { top: calc(80 * var(--um)); margin-left: calc(-30 * var(--um)); }
+  .pf-cell-row[data-row='1'] { top: calc(153 * var(--um)); margin-left: 0; }
+  .pf-cell-row[data-row='2'] { top: calc(226 * var(--um)); margin-left: calc(-60 * var(--um)); }
+  .pf-cell-row[data-row='3'] { top: calc(299 * var(--um)); margin-left: calc(-20 * var(--um)); }
+  /* The reference's numbers at 390: phone 279 screen, title at 507, body at 592. */
+  .pf-tall-phone {
+    --ah-phone-w: calc(295 * var(--um));
+    bottom: calc(100% - 404 * var(--um) - 12 * var(--um));
+    left: calc(27 * var(--um));
+  }
+  .pf-tall-phone .ah-phone-body {
+    box-shadow:
+      0 0 0 calc(1.6 * var(--um)) #e4ffdc,
+      0 0 calc(12 * var(--um)) calc(2 * var(--um)) rgb(144 255 124 / 0.8),
+      0 0 calc(46 * var(--um)) calc(12 * var(--um)) rgb(144 255 124 / 0.3);
+  }
+  .pf-tall-t { top: calc(507 * var(--um)); padding: 0 calc(39 * var(--um)); }
+  .pf-tall .pf-b { top: calc(592 * var(--um)); padding: 0 calc(39 * var(--um)); }
+  .pf-tall .pf-specks { top: calc(319 * var(--um)); height: calc(349 * var(--um)); }
+  .pf-specks i { width: calc(3 * var(--um)); height: calc(3 * var(--um)); }
+
+  .pf-light-icon {
+    top: calc(170 * var(--um));
+    left: calc(16 * var(--um));
+    width: calc(66 * var(--um));
+    height: calc(66 * var(--um));
+  }
+  .pf-row { border-radius: calc(14 * var(--um)); }
+  .pf-light-card {
+    top: calc(134 * var(--um));
+    left: calc(90 * var(--um));
+    width: calc(240 * var(--um));
+    height: calc(62 * var(--um));
+  }
+  .pf-light-card img { width: calc(258.6 * var(--um)); left: calc(-9.3 * var(--um)); top: calc(-367 * var(--um)); }
+  .pf-light-card2 {
+    top: calc(214 * var(--um));
+    left: calc(150 * var(--um));
+    width: calc(180 * var(--um));
+    height: calc(47 * var(--um));
+  }
+  .pf-light-card2 img { width: calc(193.9 * var(--um)); left: calc(-7 * var(--um)); top: calc(-318 * var(--um)); }
+
+  .pf-gauge {
+    top: calc(152 * var(--um));
+    left: calc(50% - 139 * var(--um));
+    width: calc(278 * var(--um));
+    height: calc(278 * var(--um));
+  }
+  .pf-gauge-disc { inset: calc(17 * var(--um)); }
+  .pf-gauge-star {
+    top: calc(139 * var(--um) - 126 * var(--um));
+    left: calc(139 * var(--um) + 38 * var(--um));
+    width: calc(90 * var(--um));
+    height: calc(90 * var(--um));
+    margin: calc(-45 * var(--um)) 0 0 calc(-45 * var(--um));
+  }
+  .pf-gauge-pill {
+    top: calc(108 * var(--um));
+    padding: calc(5 * var(--um)) calc(12 * var(--um));
+    font-size: calc(14 * var(--um));
+  }
+
+  .pf-feat {
+    min-height: calc(199 * var(--um));
+    margin-top: calc(86 * var(--um));
+    padding-block: calc(19 * var(--um));
+  }
+  .pf-feat-label { font-size: calc(22.85 * var(--um)); }
+  .pf-mq { margin-top: calc(21 * var(--um)); }
+  .pf-mq-set { gap: calc(47 * var(--um)); padding-right: calc(47 * var(--um)); }
+  .pf-mq-set li { min-width: calc(164 * var(--um)); height: calc(62 * var(--um)); padding: 0 calc(10 * var(--um)); border-radius: calc(4.29 * var(--um)); }
+  .pf-mq-set img { height: calc(29 * var(--um)); }
+  .pf-mq-set .pf-mq-energi { height: calc(44 * var(--um)); }
+  .pf-mq-set .pf-mq-lockup { font-size: calc(15 * var(--um)); }
+  .pf-mq-word { font-size: calc(31 * var(--um)); }
 }

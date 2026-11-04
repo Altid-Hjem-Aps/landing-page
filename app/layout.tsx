@@ -14,6 +14,7 @@ const onest = Onest({
 const dmSans = DM_Sans({
   subsets: ['latin'],
   weight: ['700', '800'],
+  style: ['normal', 'italic'],
   variable: '--font-dm-sans',
 })
 

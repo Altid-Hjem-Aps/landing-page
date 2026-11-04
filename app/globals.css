@@ -263,6 +263,9 @@ html[data-platform="android"] .store-badge-play { order: -1; }
   --ah-radius-card: 20px;
   --ah-radius-block: clamp(32px, 4vw, 50px);
   --ah-gutter: clamp(20px, 4vw, 64px);
+  /* One px of the reference's layouts, at 1440 wide (capped at 1920) and at 390 wide. */
+  --u: calc(min(100vw, 1920px) / 1440);
+  --um: calc(100vw / 390);
 }
 
 .ah-site section[id] {
@@ -412,15 +415,19 @@ html[data-platform="android"] .store-badge-play { order: -1; }
   }
   .ah-beam-icon { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-  /* Pause control (primitives/PauseMotion.tsx). It sits in the nav pill. */
+  /* Pause control (primitives/PauseMotion.tsx). Small, round, fixed bottom left. */
   .ah-pause {
+    position: fixed;
+    z-index: 90;
+    bottom: 16px;
+    left: 16px;
     display: grid;
-    flex: none;
     place-items: center;
     width: 44px;
     height: 44px;
     border: 1px solid rgb(22 50 35 / 0.14);
     border-radius: 999px;
+    background: var(--ah-cream);
     color: var(--ah-dark-forest);
     cursor: pointer;
     transition: background-color 0.15s;

@@ -1,127 +1,234 @@
-/* Velkommen. Cream washes to Mint, and the fan is cut by the section's end, which
-   the footer overlaps with its rounded top. */
+/* The closing section. White to blue in the reference, here Cream to Mint to green with
+   the same stops. Every number is the reference's at 1440 wide (u) or 390 wide (um). */
 
+/* The footer is taller than the reference's by --vk-over, because the newsletter sits in
+   it. So the section holds still and the footer slides over it for that last stretch,
+   and the page ends on the same picture: pills at the top, phone between them and the
+   footer. Without JS or with reduced motion it is plain flow. */
+.vk-wrap { position: relative; }
 .vk-sec {
   position: relative;
-  /* Its own stacking context, so the centre phone goes behind the footer's overlap. */
-  isolation: isolate;
-  overflow: clip;
-  padding-top: clamp(56px, 8vw, 120px);
-  background: linear-gradient(180deg, var(--ah-cream) 0, var(--ah-cream) 8%, var(--ah-mint) 58%);
-  color: var(--ah-deep-forest);
+  overflow: hidden;
+  height: calc(825 * var(--u));
+  background: linear-gradient(#fdfaf4 24%, #b7f2a7 61%, #6fd65e 100%);
+  color: var(--ah-dark-forest);
+}
+.vk-grid {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(90deg, rgb(22 50 35 / 0.035) 0 1px, rgb(22 50 35 / 0) 1px calc(149.3 * var(--u))) calc(85 * var(--u)) 0,
+    repeating-linear-gradient(rgb(22 50 35 / 0.035) 0 1px, rgb(22 50 35 / 0) 1px calc(150 * var(--u))) 0 calc(46 * var(--u));
+  pointer-events: none;
 }
 
-.vk-head {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-inline: var(--ah-gutter);
+.vk-anchor {
+  position: relative;
+  z-index: 3;
+  padding-top: calc(104 * var(--u));
   text-align: center;
 }
 .vk-title {
   font-family: var(--ah-font-display);
+  font-size: calc(79.2 * var(--u));
   font-weight: 700;
-  font-size: clamp(48px, 9vw, 136px);
-  line-height: 1;
-  letter-spacing: -0.03em;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
-.vk-sub {
-  margin-top: 16px;
-  font-size: clamp(18px, 1.8vw, 24px);
-  line-height: 1.4;
-}
-.vk-anchor {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* Clear of the nav by 32 px at every width. */
-  scroll-margin-top: 112px;
-}
-.vk-get {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 28px;
-}
-
-.vk-qr { display: none; }
-@media (min-width: 900px) {
-  .vk-qr { display: flex; gap: 14px; margin-top: 22px; }
-}
-.vk-qr-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 14px 10px;
-  border-radius: var(--ah-radius-card);
-  background: var(--ah-cream);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ah-deep-forest);
-  transition: opacity 0.15s;
-}
-.vk-qr-card:hover { opacity: 0.85; }
-
-/* Under the pills and well below them in rank: a small title, one row, narrow. */
-.vk-form { max-width: 360px; margin-top: clamp(28px, 3vw, 40px); }
-.vk-form h3 { font-size: 15px; }
-.vk-form label[for] { margin-top: 8px; font-size: 13px; }
-.vk-form .ah-newsletter-row { flex-direction: row; gap: 8px; margin-top: 4px; }
-.vk-form .ah-newsletter-row input { min-height: 44px; border-radius: 12px; padding-inline: 12px; }
-.vk-form .ah-newsletter-row button { min-height: 44px; border-radius: 12px; padding-inline: 16px; font-size: 15px; }
-
-.vk-fan {
-  --vk-w: clamp(240px, 62vw, 300px);
-  position: relative;
-  height: calc(var(--vk-w) * 1.36);
-  margin-top: 56px;
-}
-.vk-phone {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: var(--vk-w);
-  margin-left: calc(var(--vk-w) / -2);
-}
-.vk-phone > * { --ah-phone-w: 100%; }
-.vk-phone--centre { z-index: 2; }
-.vk-phone--left {
-  top: 15%;
-  width: calc(var(--vk-w) * 0.86);
-  margin-left: calc(var(--vk-w) * -1.02);
-}
-.vk-phone--right {
-  top: 15%;
-  width: calc(var(--vk-w) * 0.86);
-  margin-left: calc(var(--vk-w) * 0.16);
-}
-.vk-phone--left > * { rotate: -9deg; }
-.vk-phone--right > * { rotate: 9deg; }
-
-.vk-icon { position: absolute; z-index: 3; --ah-icon-size: clamp(52px, 6.4vw, 96px); }
-.vk-icon--strom { display: none; }
-.vk-icon--okonomi { display: none; }
-.vk-icon--madplan { top: 34%; left: 3%; }
-.vk-icon--forsikring { top: 22%; right: 3%; }
-
-.vk-caption {
-  position: absolute;
-  bottom: calc(100% + 10px);
-  left: 50%;
-  translate: -50% 0;
+.vk-title span {
+  display: block;
   white-space: nowrap;
 }
+.vk-pills {
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: calc(16 * var(--u));
+  margin-top: calc(40 * var(--u));
+}
+.vk-pills a {
+  justify-content: center;
+  width: calc(202 * var(--u));
+  min-width: max-content;
+  height: calc(60 * var(--u));
+  min-height: 44px;
+  padding: 0 calc(16 * var(--u));
+  border-radius: calc(15.84 * var(--u));
+  background: var(--ah-cream);
+  font-size: max(13px, calc(15 * var(--u)));
+}
+.vk-pills svg {
+  width: calc(20 * var(--u));
+  height: calc(20 * var(--u));
+}
 
-@media (min-width: 900px) {
-  .vk-fan {
-    --vk-w: clamp(300px, 27vw, 400px);
-    height: calc(var(--vk-w) * 1.28);
+/* Icons in the place of the coins. */
+.vk-coin {
+  position: absolute;
+  z-index: 2;
+  width: calc(115 * var(--u));
+  height: calc(115 * var(--u));
+}
+.vk-coin--madplan { top: calc(393 * var(--u)); left: calc(187 * var(--u)); }
+.vk-coin--strom { top: calc(537 * var(--u)); left: calc(346 * var(--u)); }
+.vk-coin--okonomi { top: calc(465 * var(--u)); left: calc(1080 * var(--u)); }
+.vk-coin--forsikring { top: calc(681 * var(--u)); left: calc(994 * var(--u)); }
+
+/* A line at the phone's top edge: what comes into view starts the beat. Phone and cards
+   hang from it, the section clips them. */
+.vk-stage {
+  position: absolute;
+  top: calc(534 * var(--u));
+  left: 0;
+  width: 100%;
+  height: 1px;
+  pointer-events: none;
+}
+.vk-phone {
+  --ah-phone-w: calc(288 * var(--u));
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: calc(50% - 144 * var(--u));
+}
+.vk-card {
+  position: absolute;
+  top: calc(385 * var(--u));
+  width: calc(260 * var(--u));
+  height: calc(476 * var(--u));
+  margin: calc(-238 * var(--u)) 0 0 calc(-130 * var(--u));
+}
+.vk-card--left { left: calc(503 * var(--u)); }
+.vk-card--right { left: calc(863 * var(--u)); }
+.vk-card-tilt {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: calc(31.68 * var(--u));
+  background: var(--ah-cream);
+}
+.vk-card--left .vk-card-tilt { rotate: -20deg; }
+.vk-card--right .vk-card-tilt { rotate: 20deg; }
+.vk-card-tilt img { object-fit: cover; object-position: top; }
+
+@keyframes vk-float-a {
+  from { transform: translateY(calc(-6 * var(--u))); }
+  to { transform: translateY(calc(6 * var(--u))); }
+}
+@keyframes vk-tilt {
+  from { transform: rotate(-0.5deg); }
+  to { transform: rotate(0.5deg); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .vk-coin,
+  html.js .vk-card {
+    animation: vk-float-a 2.6s ease-in-out infinite alternate;
   }
-  .vk-phone--left { margin-left: calc(var(--vk-w) * -1.24); }
-  .vk-phone--right { margin-left: calc(var(--vk-w) * 0.38); }
-  .vk-icon--strom { display: block; top: 2%; left: 16%; }
-  .vk-icon--okonomi { display: block; top: 6%; right: 15%; }
-  .vk-icon--madplan { top: 46%; left: 7%; }
-  .vk-icon--forsikring { top: 44%; right: 7%; }
+  html.js .vk-coin--strom,
+  html.js .vk-coin--okonomi,
+  html.js .vk-card--right {
+    animation-delay: -1.7s;
+  }
+  html.js .vk-card-tilt { animation: vk-tilt 3.4s ease-in-out infinite alternate; }
+
+  html.js .vk-phone,
+  html.js .vk-card {
+    transition:
+      scale 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.6s ease-out;
+  }
+  html.js .vk-stage:not([data-in]) .vk-phone,
+  html.js .vk-stage:not([data-in]) .vk-card {
+    opacity: 0;
+    scale: 0.63;
+  }
+}
+
+/* The section holds still while the footer goes over it. */
+@media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
+  html.js .vk-wrap {
+    --vk-over: calc(83 * var(--u));
+    height: calc(825 * var(--u) + var(--vk-over));
+  }
+  html.js .vk-sec {
+    position: sticky;
+    top: calc(100svh - 373 * var(--u) - 825 * var(--u));
+  }
+}
+
+/* Phone */
+@media (max-width: 767.98px) {
+  .vk-sec { height: calc(736 * var(--um)); }
+  .vk-grid {
+    background:
+      repeating-linear-gradient(90deg, rgb(22 50 35 / 0.035) 0 1px, rgb(22 50 35 / 0) 1px calc(80 * var(--um))) calc(20 * var(--um)) 0,
+      repeating-linear-gradient(rgb(22 50 35 / 0.035) 0 1px, rgb(22 50 35 / 0) 1px calc(80 * var(--um))) 0 calc(40 * var(--um));
+  }
+  .vk-anchor { padding-top: calc(78 * var(--um)); }
+  .vk-title {
+    padding: 0 calc(16 * var(--um));
+    /* Three lines as in the reference, which holds pills, icons and phone in their places. */
+    font-size: calc(41 * var(--um));
+    line-height: 1.22;
+  }
+  .vk-title span { white-space: normal; }
+  .vk-pills {
+    flex-direction: column;
+    gap: calc(8 * var(--um));
+    margin-top: calc(47 * var(--um));
+  }
+  .vk-pills a {
+    width: calc(172 * var(--um));
+    min-width: 0;
+    height: calc(51 * var(--um));
+    padding: 0;
+    border-radius: calc(8.58 * var(--um));
+    font-size: calc(13 * var(--um));
+  }
+  .vk-pills svg { width: calc(17 * var(--um)); height: calc(17 * var(--um)); }
+
+  /* Three in the reference: the first is left out here. */
+  .vk-coin--madplan { display: none; }
+  .vk-coin {
+    width: calc(86 * var(--um));
+    height: calc(86 * var(--um));
+  }
+  .vk-coin--strom { top: calc(392 * var(--um)); left: calc(20 * var(--um)); }
+  .vk-coin--okonomi {
+    top: calc(396 * var(--um));
+    left: calc(289 * var(--um));
+    width: calc(62 * var(--um));
+    height: calc(62 * var(--um));
+  }
+  .vk-coin--forsikring { top: calc(532 * var(--um)); left: calc(300 * var(--um)); }
+
+  .vk-stage { top: calc(490 * var(--um)); }
+  .vk-phone {
+    --ah-phone-w: calc(187 * var(--um));
+    left: calc(50% - 93.5 * var(--um));
+  }
+  .vk-card {
+    top: calc(212 * var(--um));
+    width: calc(148 * var(--um));
+    height: calc(272 * var(--um));
+    margin: calc(-136 * var(--um)) 0 0 calc(-74 * var(--um));
+  }
+  .vk-card--left { left: calc(63 * var(--um)); }
+  .vk-card--right { left: calc(325 * var(--um)); }
+  .vk-card-tilt { border-radius: calc(18 * var(--um)); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes vk-float-m {
+      from { transform: translateY(calc(-3 * var(--um))); }
+      to { transform: translateY(calc(3 * var(--um))); }
+    }
+    html.js .vk-coin,
+    html.js .vk-card { animation-name: vk-float-m; }
+  }
+  @media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
+    html.js .vk-wrap {
+      --vk-over: calc(371 * var(--um));
+      height: calc(736 * var(--um) + var(--vk-over));
+    }
+    html.js .vk-sec { top: calc(100svh - 604 * var(--um) - 736 * var(--um)); }
+  }
 }

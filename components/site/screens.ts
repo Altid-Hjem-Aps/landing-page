@@ -1,12 +1,6 @@
 // Every picture from the app on the front page, one place. Files come from
 // scripts/site-assets.mjs. Staged screens carry SCREEN_CAPTION on the page
 // (primitives/Caption.tsx).
-//
-// The QR files are generated once outside the repo (Python segno, level M, a
-// quiet zone of 4 modules, Deep forest on transparent) and hold the exact output
-// of storeLink() in lib/store-links.ts, also written in each SVG's <desc>
-// (test/site-assets.test.ts). If the links change: regenerate them. They need a
-// light card behind them; the card's radius rounds the quiet zone.
 
 export type Screen = { src: string; alt: string; width: number; height: number }
 
@@ -42,11 +36,6 @@ export const PAINTING = {
   line: { src: '/site/painting/coast-line.webp', width: 960, height: 1280 },
   colour: { src: '/site/painting/coast-colour.webp', width: 960, height: 1280 },
   alt: 'Maleri af en kyst med hvide huse, grønne træer og en båd på havet',
-} as const
-
-export const QR_CODES = {
-  appstore: { src: '/site/qr/app-store.svg', alt: 'QR-kode til Altid Hjem i App Store' },
-  play: { src: '/site/qr/google-play.svg', alt: 'QR-kode til Altid Hjem i Google Play' },
 } as const
 
 export const APP_ICON = '/site/icons/app-icon.svg'

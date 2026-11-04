@@ -1,248 +1,479 @@
-/* Altid Mad: one plate as a planet, twelve in orbit, then the number.
-   Unlayered, so these beat the primitives. Base is plain flow, pinned below. */
+/* Altid Mad, 1:1 with the reference's globe section, numbers at 1440 x 900 through
+   --u. Everything scrolls with the page. The base is the finished picture: small
+   plate, chips out, no ring; that is also what no JS and reduced motion get. The
+   block further down adds the moment before it: big plate and ring. */
 
-.am-sec {
+.gl {
+  --u: calc(min(100vw, 1920px) / 1440);
+  --gl-chip-shadow: 0 calc(6 * var(--u)) calc(22 * var(--u)) rgb(0 60 22 / 0.16);
   position: relative;
-  background: linear-gradient(180deg, var(--ah-cream) 0, var(--ah-lavender) min(90svh, 900px));
+  height: calc(1666 * var(--u));
   color: var(--ah-deep-forest);
-}
-
-.am-head {
-  position: relative;
-  z-index: 5;
-  padding: clamp(56px, 7vw, 96px) var(--ah-gutter) 0;
-}
-.am-lead {
-  max-width: 28ch;
-  margin-top: 14px;
-  font-size: clamp(18px, 1.7vw, 24px);
-  line-height: 1.4;
-}
-
-/* size container: plates, radii and the planet's size are all in cq units. */
-.am-orbit {
-  --am-rx: 38cqw;
-  --am-ry: 33cqw;
-  --am-cy: 50%;
-  --am-plate: 25cqw;
-  --am-planet: 92cqw;
-  position: relative;
-  container-type: size;
-  height: min(112vw, 480px);
+  background: var(--ah-cream);
   overflow: clip;
 }
-.am-plate {
-  position: absolute;
-  width: var(--am-plate);
-  margin: calc(var(--am-plate) / -2) 0 0 calc(var(--am-plate) / -2);
-}
-.am-plate-depth { transform-origin: center; }
-.am-plate img,
-.am-planet img,
-.am-home-plate img { display: block; width: 100%; height: auto; }
 
-/* The file's own shadow is cut flat at the bottom, which shows at this size. So the
-   plate is clipped to its rim (65.8 % of the file) and gets a shadow of its own. */
-.am-planet {
+/* Same stops and same placement as their gradient: 2000 high from 167 above the
+   section, Cream 9 %, Mint 31 %, green 47 %, Mint 67 %, Cream 91 %. */
+.gl-bg {
   position: absolute;
-  z-index: 2;
-  top: var(--am-planet-cy, var(--am-cy));
-  left: 50%;
-  width: var(--am-planet);
-  margin: calc(var(--am-planet) / -2) 0 0 calc(var(--am-planet) / -2);
+  left: 0;
+  right: 0;
+  top: calc(-167 * var(--u));
+  height: calc(2000 * var(--u));
+  background: linear-gradient(#fdfaf4 9%, #b7f2a7 31%, #6fd65e 47%, #b7f2a7 67%, #fdfaf4 91%);
 }
-.am-planet::before {
+
+.gl-head {
+  position: absolute;
+  left: 50%;
+  top: calc(80 * var(--u));
+  width: calc(1100 * var(--u));
+  margin: 0 0 0 calc(-550 * var(--u));
+  text-align: center;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-weight: 700;
+  font-size: calc(79.2 * var(--u));
+  line-height: 1.2;
+  color: var(--ah-deep-forest);
+}
+.gl-head span {
+  display: block;
+}
+.gl-accent {
+  color: #1f8a3b;
+}
+.gl-lead {
+  position: absolute;
+  left: calc(403 * var(--u));
+  top: calc(290 * var(--u));
+  width: calc(634 * var(--u));
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-onest), sans-serif;
+  font-weight: 300;
+  font-size: max(15px, calc(18 * var(--u)));
+  line-height: 1.6;
+  color: var(--ah-dark-forest, #163223);
+}
+
+/* The big plate's final place: 428 wide, centre 720, 852. The image is laid out at
+   1008 and scaled down, so it stays sharp when it is big. */
+.gl-plate {
+  position: absolute;
+  left: calc(216 * var(--u));
+  top: calc(348 * var(--u));
+  width: calc(1008 * var(--u));
+  height: calc(1008 * var(--u));
+  transform: scale(0.4246);
+  transform-origin: 50% 50%;
+}
+.gl-plate::before {
   content: '';
   position: absolute;
-  inset: 17.1%;
+  inset: 1% -2% -4% 1%;
   border-radius: 50%;
-  box-shadow: calc(var(--am-planet) * 0.02) calc(var(--am-planet) * 0.04) calc(var(--am-planet) * 0.08) rgb(48 24 110 / 0.34);
+  background: radial-gradient(closest-side, rgb(0 38 14 / 0.42) 88%, transparent);
 }
-.am-planet-plate img { clip-path: circle(32.9% at 49.8% 49.8%); }
-
-/* Under 768 px nothing is pinned; the plates only breathe. JS only, because the
-   pause control that stops it needs JS too. */
-@media (max-width: 767.98px) {
-  html.js .am-plate-bob {
-    animation: am-bob 7s ease-in-out infinite alternate;
-  }
-}
-@keyframes am-bob {
-  from { transform: translate3d(0, -5%, 0); }
-  to { transform: translate3d(0, 5%, 0); }
-}
-
-.am-number {
+.gl-plate-turn {
   position: relative;
-  z-index: 4;
-  padding: 0 var(--ah-gutter);
+  width: 100%;
+  height: 100%;
+  animation: gl-turn 120s linear infinite;
 }
-.am-number-wrap { container-type: inline-size; }
-.am-figure {
-  font-size: 28.4cqw;
-  white-space: nowrap;
-  transform-origin: left bottom;
+.gl-plate img {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
-.am-figure .ah-unit { margin-left: -0.12em; }
-.am-spar { margin-top: 0.7em; }
-.am-footnote {
-  max-width: 72ch;
-  margin-top: 10px;
-  font-size: clamp(15px, 1.2vw, 17px);
-  line-height: 1.5;
-}
-.am-footnote a {
-  display: inline-block;
-  padding-block: 11px;
-  margin-block: -11px;
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+@keyframes gl-turn {
+  to { transform: rotate(360deg); }
 }
 
-/* Static flow on a screen wide enough: the same scene with more room. */
-@media (min-width: 768px) {
-  .am-orbit {
-    --am-rx: 38cqw;
-    --am-ry: 13cqw;
-    --am-plate: 15cqw;
-    --am-planet: min(60cqw, 140cqh);
-    height: clamp(420px, 50vw, 640px);
-  }
+.gl-ring {
+  display: none;
 }
 
-/* Pinned: head on top, the orbit fills the stage, the number stands at the bottom. */
-@media (prefers-reduced-motion: no-preference) and (min-height: 501px) and (min-width: 768px) {
-  html.js .am-stage { position: relative; height: 100%; }
-  html.js .am-plate,
-  html.js .am-planet { will-change: transform; }
-  html.js .am-head { padding-top: clamp(92px, 11svh, 112px); }
-  html.js .am-orbit {
-    --am-cy: 60%;
-    --am-planet-cy: 78%;
-    --am-rx: min(41cqw, 780px);
-    --am-ry: min(10cqw, 17cqh);
-    --am-plate: min(14cqw, 25cqh);
-    --am-planet: min(92cqw, 116cqh);
-    height: auto;
-  }
-  html.js .am-number {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding-bottom: clamp(20px, 5svh, 56px);
-    pointer-events: none;
-  }
-  html.js .am-number a { pointer-events: auto; }
-  html.js .am-number-wrap { width: 100%; }
-  html.js .am-figure { font-size: min(28.4cqw, 38svh); }
-}
-
-/* The lower row, in the mail's blocks. */
-.am-lower {
-  display: grid;
-  gap: 40px;
-  --am-lower-end: clamp(32px, 4vw, 64px);
-  padding: clamp(40px, 6vw, 88px) var(--ah-gutter) var(--am-lower-end);
-  box-sizing: content-box;
-}
-.am-sand {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  padding: 36px 24px 0;
-  overflow: clip;
-  border-radius: var(--ah-radius-block);
-  color: var(--ah-deep-forest);
-}
-.am-sand-copy { padding-left: 0.5em; }
-.am-sand-title {
-  font-family: var(--ah-font-display);
-  font-size: clamp(30px, 3.4vw, 46px);
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-}
-.am-sand-body {
-  max-width: 30ch;
-  margin-top: 14px;
-  font-size: clamp(18px, 1.5vw, 21px);
-  line-height: 1.5;
-}
-.am-caption { margin-top: 16px; }
-
-.am-sand-phone {
-  --ah-phone-w: min(72vw, 340px);
-  position: relative;
-  align-self: center;
-  width: var(--ah-phone-w);
-}
-/* Tops are worked out from the rows' place on the screen at crop 0.81. */
-.am-row {
+.gl-chips {
   position: absolute;
-  aspect-ratio: 676 / 132;
+  inset: 0;
+  pointer-events: none;
+}
+.gl-chip {
+  position: absolute;
   overflow: hidden;
-  border: 1px solid rgb(0 60 22 / 0.14);
-  border-radius: 20px;
-  background: #fff;
+  border-radius: calc(16 * var(--u));
+  animation: gl-float 5.6s ease-in-out infinite alternate;
 }
-.am-row img {
-  position: absolute;
-  max-width: none;
+.gl-chip:nth-child(even) {
+  animation-delay: -2.8s;
+}
+@keyframes gl-float {
+  from { translate: 0 calc(-5 * var(--u)); }
+  to { translate: 0 calc(6 * var(--u)); }
+}
+.gl-chip img {
+  display: block;
+  width: 100%;
   height: auto;
 }
-.am-row--ticked {
-  top: 75%;
-  left: -14%;
-  width: 104%;
-  transform: rotate(-2.4deg);
+/* Rectangles from their cards at scroll 9300, y + 300. */
+.gl-chip--row-a {
+  left: calc(87 * var(--u));
+  top: calc(862 * var(--u));
+  width: calc(325 * var(--u));
+  background: #fff;
+  box-shadow: var(--gl-chip-shadow);
 }
-.am-row--open {
-  top: 88.9%;
-  right: -14%;
-  width: 104%;
-  transform: rotate(1.8deg);
+.gl-chip--budget {
+  left: calc(192 * var(--u));
+  top: calc(633 * var(--u));
+  width: calc(252 * var(--u));
+  padding: calc(4 * var(--u)) calc(6 * var(--u));
+  background: var(--ah-dark-forest, #163223);
+  box-shadow: var(--gl-chip-shadow);
 }
-
-/* Flat crop on the section's bottom edge, on top of the padding the Sand block keeps. */
-.am-home {
+.gl-chip--people {
+  left: calc(532 * var(--u));
+  top: calc(510 * var(--u));
+  width: calc(238 * var(--u));
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  align-self: end;
-  text-align: center;
-  margin-bottom: calc(var(--am-lower-end) * -1);
+  gap: calc(8 * var(--u));
+  overflow: visible;
+  border-radius: 0;
 }
-.am-home-phone {
-  --ah-phone-w: min(66vw, 320px);
-  position: relative;
-  width: var(--ah-phone-w);
+.gl-people {
+  flex: 0 0 auto;
+  width: calc(72 * var(--u));
+  padding: calc(6 * var(--u)) calc(8 * var(--u));
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: var(--gl-chip-shadow);
 }
-.am-home-plate {
-  position: absolute;
-  top: 24%;
-  left: -24%;
-  width: 52%;
+.gl-today {
+  flex: 1 1 auto;
+  padding: calc(5 * var(--u));
+  border-radius: calc(14 * var(--u));
+  background: #fff;
+  box-shadow: var(--gl-chip-shadow);
+}
+.gl-chip--small {
+  overflow: visible;
+  border-radius: 0;
+}
+.gl-chip--small img {
+  width: 128%;
+  max-width: none;
+  margin: -14%;
+}
+.gl-chip--small-top {
+  left: calc(962 * var(--u));
+  top: calc(485 * var(--u));
+  width: calc(112 * var(--u));
+}
+.gl-chip--small-bottom {
+  left: calc(374 * var(--u));
+  top: calc(1078 * var(--u));
+  width: calc(115 * var(--u));
+}
+.gl-chip--row-b {
+  left: calc(1021 * var(--u));
+  top: calc(712 * var(--u));
+  width: calc(300 * var(--u));
+  background: #fff;
+  box-shadow: var(--gl-chip-shadow);
+}
+.gl-chip--basket {
+  left: calc(1158 * var(--u));
+  top: calc(837 * var(--u));
+  width: calc(58 * var(--u));
+  overflow: visible;
+  border-radius: 0;
+  filter: drop-shadow(0 calc(4 * var(--u)) calc(8 * var(--u)) rgb(0 60 22 / 0.25));
+}
+.gl-chip--basket svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: rotate(-10deg);
+}
+.gl-chip--trip {
+  left: calc(1010 * var(--u));
+  top: calc(1003 * var(--u));
+  width: calc(240 * var(--u));
+  padding: calc(8 * var(--u));
+  background: var(--ah-dark-forest, #163223);
+  box-shadow: var(--gl-chip-shadow);
 }
 
-@media (min-width: 1100px) {
-  .am-lower {
-    grid-template-columns: minmax(0, 2.5fr) minmax(0, 1fr);
-    gap: clamp(24px, 3vw, 48px);
-    align-items: end;
+.gl-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(1216 * var(--u));
+  margin: 0;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* The number row, centred as a whole. Footnote right under it, one viewport. */
+.gl-number {
+  position: absolute;
+  left: calc(136 * var(--u));
+  right: calc(136 * var(--u));
+  top: calc(1296 * var(--u));
+}
+.gl-spar {
+  margin: 0;
+  font-family: var(--font-onest), sans-serif;
+  font-size: calc(31.68 * var(--u));
+  line-height: 1.3;
+  color: var(--ah-dark-forest, #163223);
+}
+.gl-row {
+  display: flex;
+  align-items: center;
+  gap: calc(44 * var(--u));
+  margin-top: calc(-8 * var(--u));
+}
+.gl-figure {
+  flex: 0 0 auto;
+  margin: 0;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: calc(220 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ah-deep-forest);
+}
+.gl-words {
+  flex: 1 1 auto;
+  margin: 0;
+  font-family: var(--font-onest), sans-serif;
+  font-size: calc(31.68 * var(--u));
+  line-height: 1.4;
+  color: var(--ah-dark-forest, #163223);
+}
+.gl-accent-dark {
+  color: #1f8a3b;
+}
+.gl-footnote {
+  margin: calc(10 * var(--u)) 0 0;
+  max-width: calc(1080 * var(--u));
+  font-family: var(--font-onest), sans-serif;
+  font-size: max(13px, calc(15 * var(--u)));
+  line-height: 1.5;
+  color: var(--ah-dark-forest, #163223);
+}
+.gl-footnote a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  display: inline-block;
+  padding-block: 2px;
+}
+
+/* The moment before: big plate, ring, chips still inside. From 9160 on [data-on]
+   plays it to the base picture. */
+@media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
+  html.js .gl-ring {
+    display: block;
+    position: absolute;
+    left: calc(72 * var(--u));
+    top: calc(434 * var(--u));
+    width: calc(1296 * var(--u));
+    height: calc(1296 * var(--u));
+    transition: transform 1.1s cubic-bezier(0.55, 0, 0.3, 1), opacity 0.25s linear 0.9s;
+  }
+  html.js .gl-arm {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    transform: rotate(var(--gl-angle));
+  }
+  html.js .gl-coin {
+    position: absolute;
+    left: calc(-77.5 * var(--u));
+    top: calc(-77.5 * var(--u));
+    width: calc(155 * var(--u));
+    height: calc(155 * var(--u));
+    transform: translateY(calc(-643.7 * var(--u)));
+    transition: transform 1.1s cubic-bezier(0.55, 0, 0.3, 1);
+  }
+  html.js .gl-coin img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform: rotate(calc(var(--gl-angle) * -1));
+  }
+  html.js .gl-plate {
+    transform: translateY(calc(230 * var(--u))) scale(1);
+    transition: transform 1.1s cubic-bezier(0.55, 0, 0.3, 1);
+  }
+  html.js .gl-chip-wrap,
+  html.js .gl-chip {
+    opacity: 0;
+    scale: 0.82;
+    transition: opacity 0.5s ease, scale 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  html.js .gl[data-on] .gl-ring {
+    transform: translateY(calc(-230 * var(--u))) rotate(70deg);
+    opacity: 0;
+  }
+  html.js .gl[data-on] .gl-coin {
+    transform: translateY(0);
+  }
+  html.js .gl[data-on] .gl-plate {
+    transform: scale(0.4246);
+  }
+  html.js .gl[data-on] .gl-chip {
+    opacity: 1;
+    scale: 1;
+    transition-delay: 0.45s;
   }
 }
-@media (min-width: 768px) {
-  .am-sand {
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
-    padding: clamp(32px, 4vw, 56px) clamp(40px, 5vw, 72px) 0 clamp(40px, 4.4vw, 64px);
-    min-height: 600px;
+
+/* Phone: their section is 1251 high at 390. Plate at half the width, and of the
+   chips only the four they keep there. Numbers from their frames, y from the top
+   of the section. */
+@media (max-width: 767.98px) {
+  .gl {
+    --um: calc(100vw / 390);
+    --gl-chip-shadow: 0 calc(4 * var(--um)) calc(14 * var(--um)) rgb(0 60 22 / 0.16);
+    height: auto;
+    min-height: calc(1251 * var(--um));
+    padding-bottom: calc(14 * var(--um));
   }
-  .am-sand-copy { align-self: center; flex: 1 1 0; min-width: 0; }
-  .am-sand-phone { --ah-phone-w: clamp(240px, 24vw, 340px); flex: none; }
-  .am-home-phone { --ah-phone-w: clamp(220px, 22vw, 320px); }
+  .gl-bg {
+    top: calc(-126 * var(--um));
+    height: calc(100% + 252 * var(--um));
+  }
+  .gl-head {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: auto;
+    margin: 0;
+    padding: calc(69 * var(--um)) calc(12 * var(--um)) 0;
+    font-size: calc(57.72 * var(--um));
+  }
+  .gl-lead {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: calc(351 * var(--um));
+    margin: calc(5 * var(--um)) auto 0;
+    font-size: calc(15.6 * var(--um));
+  }
+  .gl-plate {
+    left: calc(-141 * var(--um));
+    top: calc(306 * var(--um));
+    width: calc(672 * var(--um));
+    height: calc(672 * var(--um));
+    transform: scale(0.293);
+  }
+  .gl-chip,
+  .gl-people,
+  .gl-today {
+    border-radius: calc(10 * var(--um));
+  }
+  .gl-people {
+    border-radius: 999px;
+    width: calc(38 * var(--um));
+    padding: calc(3 * var(--um)) calc(4 * var(--um));
+  }
+  .gl-today {
+    padding: calc(2 * var(--um));
+  }
+  .gl-chip--row-b,
+  .gl-chip--basket,
+  .gl-chip--trip {
+    display: none;
+  }
+  .gl-chip--row-a {
+    left: calc(170 * var(--um));
+    top: calc(576 * var(--um));
+    width: calc(198 * var(--um));
+  }
+  .gl-chip--budget {
+    left: calc(38 * var(--um));
+    top: calc(440 * var(--um));
+    width: calc(124 * var(--um));
+    padding: calc(2 * var(--um)) calc(3 * var(--um));
+  }
+  .gl-chip--people {
+    left: calc(190 * var(--um));
+    top: calc(404 * var(--um));
+    width: calc(138 * var(--um));
+    gap: calc(3 * var(--um));
+  }
+  .gl-chip--small-top {
+    left: calc(290 * var(--um));
+    top: calc(458 * var(--um));
+    width: calc(48 * var(--um));
+  }
+  .gl-chip--small-bottom {
+    left: calc(66 * var(--um));
+    top: calc(678 * var(--um));
+    width: calc(50 * var(--um));
+  }
+  .gl-caption {
+    top: calc(772 * var(--um));
+  }
+  .gl-number {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    margin-top: calc(518 * var(--um));
+    padding: 0 calc(20 * var(--um));
+  }
+  .gl-spar {
+    font-size: calc(24 * var(--um));
+  }
+  .gl-row {
+    display: block;
+    margin-top: 0;
+  }
+  .gl-figure {
+    font-size: calc(106 * var(--um));
+  }
+  .gl-words {
+    margin-top: calc(10 * var(--um));
+    font-size: calc(24 * var(--um));
+    line-height: 1.3;
+  }
+  .gl-footnote {
+    margin-top: calc(12 * var(--um));
+    max-width: none;
+    font-size: 13px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (min-height: 501px) and (max-width: 767.98px) {
+  html.js .gl-ring {
+    left: calc(-236 * var(--um));
+    top: calc(450 * var(--um));
+    width: calc(862 * var(--um));
+    height: calc(862 * var(--um));
+  }
+  html.js .gl-coin {
+    left: calc(-51.5 * var(--um));
+    top: calc(-51.5 * var(--um));
+    width: calc(103 * var(--um));
+    height: calc(103 * var(--um));
+    transform: translateY(calc(-428 * var(--um)));
+  }
+  html.js .gl-plate {
+    transform: translateY(calc(239 * var(--um))) scale(1);
+  }
+  html.js .gl[data-on] .gl-ring {
+    transform: translateY(calc(-239 * var(--um))) rotate(70deg);
+  }
+  html.js .gl[data-on] .gl-plate {
+    transform: scale(0.293);
+  }
 }

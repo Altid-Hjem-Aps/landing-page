@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import * as amplitude from '@amplitude/analytics-browser'
 import { Logo } from '@/components/Logo'
 import { GetAppLink } from '@/components/site/primitives/StorePills'
-import PauseMotion from '@/components/site/primitives/PauseMotion'
 import { STORE_ANCHOR } from '@/lib/store-links'
 
 // One opaque Cream pill floating at the top, on every page and over every
@@ -40,8 +39,6 @@ interface NavProps {
   spiirBanner?: boolean
   /** Generic campaign banner above the menu: same look as the Spiir banner. */
   banner?: BannerConfig
-  /** The control that stops the page's loops. Only the front page has loops. */
-  motionControl?: boolean
 }
 
 const SPIIR_BANNER: BannerConfig = {
@@ -50,7 +47,7 @@ const SPIIR_BANNER: BannerConfig = {
   source: 'spiir-banner',
 }
 
-function Pill({ motionControl = false }: { motionControl?: boolean }) {
+function Pill() {
   return (
     <nav
       aria-label="Hovedmenu"
@@ -74,7 +71,6 @@ function Pill({ motionControl = false }: { motionControl?: boolean }) {
         ))}
       </ul>
       <div className="flex shrink-0 items-center gap-1.5 md:gap-2">
-        {motionControl && <PauseMotion />}
         <GetAppLink
           className="inline-flex min-h-[44px] shrink-0 items-center rounded-full px-4 text-[14px] font-medium whitespace-nowrap transition-opacity hover:opacity-90 md:min-h-[48px] md:px-5 md:text-[15px]"
           style={{ background: 'var(--ah-deep-forest)', color: 'var(--ah-cream)' }}
@@ -162,13 +158,13 @@ function BannerNav({ config }: { config: BannerConfig }) {
   )
 }
 
-export default function Nav({ spiirBanner = false, banner, motionControl = false }: NavProps) {
+export default function Nav({ spiirBanner = false, banner }: NavProps) {
   // The Spiir banner is just a fixed configuration of the generic banner.
   const bannerConfig = banner ?? (spiirBanner ? SPIIR_BANNER : null)
   if (bannerConfig) return <BannerNav config={bannerConfig} />
   return (
     <div className="ah-chrome fixed inset-x-0 top-3 z-[100] flex justify-center px-3 pointer-events-none">
-      <Pill motionControl={motionControl} />
+      <Pill />
     </div>
   )
 }

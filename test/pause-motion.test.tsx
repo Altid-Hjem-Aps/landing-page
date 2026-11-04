@@ -1,7 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import Nav from '@/components/Nav'
 import KeepJsClass from '@/components/site/primitives/KeepJsClass'
+import PauseMotion from '@/components/site/primitives/PauseMotion'
 import { MOTION_SCRIPT } from '@/lib/platform'
 
 vi.mock('@amplitude/analytics-browser', () => ({ track: vi.fn() }))
@@ -14,22 +15,15 @@ afterEach(() => {
   localStorage.clear()
 })
 
-const FrontPageNav = () => <Nav motionControl />
-
 describe('Pause control', () => {
-  // Risk: the control is dropped from the pill, or shows on pages with nothing to stop.
-  it('sits in the nav pill only where the page asks for it', () => {
-    const { unmount } = render(<FrontPageNav />)
-    const pill = screen.getByRole('navigation', { name: 'Hovedmenu' })
-    expect(within(pill).getByRole('button', { name: 'Stop bevægelse' })).toBeInTheDocument()
-    unmount()
-
+  // Risk: the control comes back in the pill on pages with nothing to stop.
+  it('is not in the nav', () => {
     render(<Nav />)
     expect(screen.queryByRole('button', { name: 'Stop bevægelse' })).toBeNull()
   })
 
   it('stops and starts the loops, and says which it will do', () => {
-    render(<FrontPageNav />)
+    render(<PauseMotion />)
     const stop = screen.getByRole('button', { name: 'Stop bevægelse' })
     expect(stop).toHaveAttribute('aria-pressed', 'false')
 
@@ -52,7 +46,7 @@ describe('Pause control', () => {
       },
     })
     try {
-      render(<FrontPageNav />)
+      render(<PauseMotion />)
       fireEvent.click(screen.getByRole('button', { name: 'Stop bevægelse' }))
       expect(document.documentElement.dataset.motion).toBe('paused')
     } finally {
@@ -80,7 +74,7 @@ describe('MOTION_SCRIPT, on the next page load', () => {
   }
 
   it('keeps the loops stopped after a click on the button', () => {
-    render(<FrontPageNav />)
+    render(<PauseMotion />)
     fireEvent.click(screen.getByRole('button', { name: 'Stop bevægelse' }))
     expect(run(localStorage)).toEqual({ classes: ['js'], motion: 'paused' })
   })

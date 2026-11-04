@@ -3,7 +3,6 @@
 // changes: `node scripts/site-assets.mjs`. Output is committed; the sources are
 // not, and the app has no build step that needs them.
 //
-// The QR codes in public/site/qr are not made here: see components/site/screens.ts.
 
 import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
@@ -120,7 +119,46 @@ async function icons() {
   await copyFile(join(PACK, 'sub-brands', 'altid-energi-logo.svg'), join(OUT, 'icons', 'altid-energi.svg'))
 }
 
+// Real pieces of Altid Mad screens, floating around the plate in the Altid Mad
+// section. Rectangles are in the 1179 px wide captures.
+const MAD_CROPS = {
+  'mad-ticked-row': { from: 'mad/mad.trip.in_progress', left: 87, top: 1378, width: 1012, height: 190 },
+  'mad-today-row': { from: 'mad/mad.home', left: 92, top: 1950, width: 1000, height: 214 },
+  'mad-budget-bar': { from: 'mad/mad.meal_plan', left: 60, top: 270, width: 1075, height: 440 },
+  'mad-trip-head': { from: 'mad/mad.trip.in_progress', left: 40, top: 310, width: 1100, height: 400 },
+  'mad-today-pill': { from: 'mad/mad.meal_plan', left: 72, top: 1462, width: 456, height: 86 },
+  'mad-household': { from: 'mad/mad.meal_plan', left: 340, top: 1722, width: 150, height: 72 },
+}
+
+async function crops() {
+  await mkdir(join(OUT, 'crops'), { recursive: true })
+  for (const [name, { from, ...rect }] of Object.entries(MAD_CROPS)) {
+    await sharp(join(CAPTURES, `${from}.png`))
+      .extract(rect)
+      .webp({ quality: 88, smartSubsample: true })
+      .toFile(join(OUT, 'crops', `${name}.webp`))
+  }
+
+  // The plate that goes 1008 wide on the page, without its baked shadow so it can
+  // turn while CSS holds the shadow still. The source's disc is only 531 px, so it
+  // is upscaled here, where the filter is better than the browser's.
+  const dishes = JSON.parse(await readFile(join(FOOD, 'alpha.json'), 'utf8'))
+  const [, file] = dishes.find(([name]) => name.startsWith('Kylling i karry'))
+  const SIZE = 1200
+  const circle = Buffer.from(`<svg width="${SIZE}" height="${SIZE}"><circle cx="${SIZE / 2}" cy="${SIZE / 2}" r="${SIZE / 2}"/></svg>`)
+  const disc = await sharp(file)
+    .extract({ left: 136, top: 136, width: 531, height: 531 })
+    .resize({ width: SIZE, kernel: 'lanczos3' })
+    .sharpen({ sigma: 1.1 })
+    .toBuffer()
+  await sharp(disc)
+    .composite([{ input: circle, blend: 'dest-in' }])
+    .webp({ quality: 80, alphaQuality: 90 })
+    .toFile(join(OUT, 'crops', 'kylling-i-karry-disc.webp'))
+}
+
 await screens()
 await plates()
 await paintings()
 await icons()
+await crops()

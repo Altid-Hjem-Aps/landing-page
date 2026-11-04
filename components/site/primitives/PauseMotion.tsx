@@ -28,8 +28,8 @@ function setPaused(paused: boolean) {
   window.dispatchEvent(new Event(CHANGED))
 }
 
-// In the nav pill, front page only (Nav's motionControl). Hidden without JS, where it
-// could do nothing, and with reduced motion, where the loops are off already.
+// Fixed bottom left, front page only. Hidden without JS, where it could do nothing,
+// and with reduced motion, where the loops are off already.
 export default function PauseMotion() {
   const paused = useSyncExternalStore(subscribe, isPaused, notPausedOnServer)
   const label = paused ? 'Start bevægelse' : 'Stop bevægelse'

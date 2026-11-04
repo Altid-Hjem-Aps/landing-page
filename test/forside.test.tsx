@@ -117,7 +117,7 @@ describe('front page', () => {
     const { container } = render(await Home())
     const energi = within(container.querySelector('#altid-energi') as HTMLElement)
     expect(energi.getByText(/Priserne kan ikke hentes lige nu/)).toBeInTheDocument()
-    expect(energi.getByRole('link', { name: 'Se dagens elpriser' })).toHaveAttribute('href', '/hvornar-er-strommen-billigst')
+    expect(energi.getByRole('link', { name: 'Se siden med elpriser' })).toHaveAttribute('href', '/hvornar-er-strommen-billigst')
   })
 
   it('has the newsletter under the bottom pills on the SEO pages', () => {

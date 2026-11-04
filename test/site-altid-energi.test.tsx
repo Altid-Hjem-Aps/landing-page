@@ -2,11 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { hydrateRoot } from 'react-dom/client'
 import { renderToString } from 'react-dom/server'
-import AltidEnergi from '@/components/site/AltidEnergi'
 import ElprisBars from '@/components/site/ElprisBars'
 import { getElpriser, type ElpriserData, type HourPrice } from '@/lib/elpriser'
 
-// Today's real prices on the front page. The page is cached, so the risk is a
+// Today's real prices on the front page, in the wide tile of the bento. The page is cached, so the risk is a
 // confident answer from old data: a wrong hour told to a household.
 
 const TODAY = '2026-11-04'
@@ -63,10 +62,15 @@ class FakeObserver {
   disconnect() {}
 }
 
+function motionAllowed(allowed: boolean) {
+  vi.stubGlobal('matchMedia', vi.fn().mockReturnValue({ matches: !allowed }))
+}
+
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['Date', 'setInterval', 'clearInterval'] })
   observers.length = 0
   vi.stubGlobal('IntersectionObserver', FakeObserver)
+  motionAllowed(true)
 })
 afterEach(() => {
   vi.useRealTimers()
@@ -120,33 +124,33 @@ describe('the answer is the cheapest hour left today', () => {
     },
   ])('$name', ({ now, hours, expected }) => {
     setClock(at(TODAY, now))
-    render(<AltidEnergi elpriser={data({ hours })} />)
+    render(<ElprisBars data={data({ hours })} />)
     expect(answer()).toBe(expected)
   })
 
   it('after the last hour with tomorrow known, says only tomorrow', () => {
     setClock(at(TODAY, '23:30'))
-    render(<AltidEnergi elpriser={data({ hours: dayOf({}, 23), tomorrowHours: dayOf({ 4: 0.5 }) })} />)
+    render(<ElprisBars data={data({ hours: dayOf({}, 23), tomorrowHours: dayOf({ 4: 0.5 }) })} />)
     expect(answer()).toBe('I morgen: kl. 04 til 05')
   })
 
   it('names tomorrow when it is known, and not otherwise', () => {
     setClock(at(TODAY, '14:00'))
-    const { unmount } = render(<AltidEnergi elpriser={data({ tomorrowHours: dayOf({ 3: 0.5 }) })} />)
+    const { unmount } = render(<ElprisBars data={data({ tomorrowHours: dayOf({ 3: 0.5 }) })} />)
     expect(screen.getByText('I morgen: kl. 03 til 04')).toBeInTheDocument()
     unmount()
 
-    const lastHour = render(<AltidEnergi elpriser={data({ tomorrowHours: dayOf({ 23: 0.5 }) })} />)
+    const lastHour = render(<ElprisBars data={data({ tomorrowHours: dayOf({ 23: 0.5 }) })} />)
     expect(screen.getByText('I morgen: kl. 23 til 24')).toBeInTheDocument()
     lastHour.unmount()
 
-    render(<AltidEnergi elpriser={data()} />)
+    render(<ElprisBars data={data()} />)
     expect(screen.queryByText(/I morgen/)).not.toBeInTheDocument()
   })
 
   it('moves on by itself when the hour passes with the page open', () => {
     setClock(at(TODAY, '13:59'))
-    render(<AltidEnergi elpriser={data({ hours: dayOf({ 13: 0.5, 18: 1 }) })} />)
+    render(<ElprisBars data={data({ hours: dayOf({ 13: 0.5, 18: 1 }) })} />)
     expect(answer()).toBe('I dag: nu til kl. 14')
 
     act(() => {
@@ -161,8 +165,7 @@ describe('old cached data never gives a stale answer', () => {
   it('promotes yesterday\'s "tomorrow" to today when the cache is a day old', () => {
     setClock(at(TOMORROW, '08:00'))
     render(
-      <AltidEnergi
-        elpriser={data({ hours: dayOf({ 10: 0.1 }), tomorrowHours: dayOf({ 15: 0.5 }) })}
+      <ElprisBars data={data({ hours: dayOf({ 10: 0.1 }), tomorrowHours: dayOf({ 15: 0.5 }) })}
       />,
     )
     expect(answer()).toBe('I dag: kl. 15 til 16')
@@ -172,14 +175,14 @@ describe('old cached data never gives a stale answer', () => {
 
   it('shows the failure state when the cache is old and tomorrow is unknown', () => {
     setClock(at(TOMORROW, '08:00'))
-    render(<AltidEnergi elpriser={data()} />)
+    render(<ElprisBars data={data()} />)
     expect(screen.getByText('Priserne kan ikke hentes lige nu')).toBeInTheDocument()
     expect(answer()).toBeUndefined()
   })
 
   it('shows the failure state when the cache is two days old, even with a tomorrow in it', () => {
     setClock(at('2026-11-06', '08:00'))
-    render(<AltidEnergi elpriser={data({ tomorrowHours: dayOf() })} />)
+    render(<ElprisBars data={data({ tomorrowHours: dayOf() })} />)
     expect(screen.getByText('Priserne kan ikke hentes lige nu')).toBeInTheDocument()
   })
 
@@ -208,7 +211,7 @@ describe('the chart looks ahead when tomorrow is known', () => {
 
   it('tomorrow known: starts at the running hour and runs through the end of tomorrow', () => {
     setClock(at(TODAY, '22:30'))
-    render(<AltidEnergi elpriser={data({ tomorrowHours: dayOf() })} />)
+    render(<ElprisBars data={data({ tomorrowHours: dayOf() })} />)
 
     expect(document.querySelectorAll('.ae-bar')).toHaveLength(26)
     expect(pastBars()).toHaveLength(0)
@@ -223,7 +226,7 @@ describe('the chart looks ahead when tomorrow is known', () => {
 
   it('tomorrow unknown: the whole of today, with the hours gone dimmed', () => {
     setClock(at(TODAY, '14:10'))
-    render(<AltidEnergi elpriser={data()} />)
+    render(<ElprisBars data={data()} />)
 
     expect(document.querySelectorAll('.ae-bar')).toHaveLength(24)
     expect(pastBars()).toHaveLength(14)
@@ -235,7 +238,7 @@ describe('the chart looks ahead when tomorrow is known', () => {
 
   it('the last row of today is gone: only tomorrow, with no "Nu"', () => {
     setClock(at(TODAY, '23:30'))
-    render(<AltidEnergi elpriser={data({ hours: dayOf({}, 23), tomorrowHours: dayOf({ 4: 0.5 }) })} />)
+    render(<ElprisBars data={data({ hours: dayOf({}, 23), tomorrowHours: dayOf({ 4: 0.5 }) })} />)
 
     expect(range().max).toBe('23')
     expect(screen.getByText('I morgen')).toBeInTheDocument()
@@ -245,7 +248,7 @@ describe('the chart looks ahead when tomorrow is known', () => {
 
   it('the same hour on the two days stays two hours: reading it and colouring it', () => {
     setClock(at(TODAY, '14:10'))
-    render(<AltidEnergi elpriser={data({ hours: dayOf({ 20: 1 }), tomorrowHours: dayOf({ 3: 0.5, 20: 1.5 }) })} />)
+    render(<ElprisBars data={data({ hours: dayOf({ 20: 1 }), tomorrowHours: dayOf({ 3: 0.5, 20: 1.5 }) })} />)
 
     const tomorrow20 = 10 + 20
     expect(readAt(tomorrow20)).toBe('I morgen kl. 20: 1,88 kr. pr. kWh')
@@ -269,17 +272,17 @@ describe('the chart looks ahead when tomorrow is known', () => {
     }
     setClock(at(TODAY, '00:30'))
     const spiky = Array.from({ length: 24 }, (_, h) => row(h, 1 + h * h * 0.01))
-    const first = render(<AltidEnergi elpriser={data({ hours: spiky })} />)
+    const first = render(<ElprisBars data={data({ hours: spiky })} />)
     expect(levels()).toEqual({ best: 1, low: 7, mid: 8, high: 8 })
     first.unmount()
 
-    render(<AltidEnergi elpriser={data()} />)
+    render(<ElprisBars data={data()} />)
     expect(levels()).toEqual({ best: 1, mid: 23 })
   })
 
   it('drops the hour that has passed, with the page open', () => {
     setClock(at(TODAY, '22:59'))
-    render(<AltidEnergi elpriser={data({ tomorrowHours: dayOf() })} />)
+    render(<ElprisBars data={data({ tomorrowHours: dayOf() })} />)
     expect(range().max).toBe('25')
 
     act(() => {
@@ -293,7 +296,7 @@ describe('the chart looks ahead when tomorrow is known', () => {
   it('goes back to the whole day in a zone where tomorrow is unknown', () => {
     setClock(at(TODAY, '14:10'))
     const tomorrowHours = dayOf().map((r) => row(r.hour, 2, null))
-    render(<AltidEnergi elpriser={data({ tomorrowHours })} />)
+    render(<ElprisBars data={data({ tomorrowHours })} />)
     expect(range().max).toBe('33')
 
     fireEvent.click(screen.getByRole('button', { name: 'Østdanmark' }))
@@ -328,7 +331,7 @@ describe('the bars rise once', () => {
   it('waits below the fold, rises on coming into view, then stays still', () => {
     vi.useFakeTimers({ toFake: ['Date', 'setInterval', 'clearInterval', 'setTimeout', 'clearTimeout'] })
     setClock(at(TODAY, '14:10'))
-    render(<AltidEnergi elpriser={data()} />)
+    render(<ElprisBars data={data()} />)
     expect(chart()).toHaveAttribute('data-rise', 'wait')
 
     act(() => observers[0].report(false))
@@ -350,9 +353,67 @@ describe('the bars rise once', () => {
   it('already on screen when hydrated: nothing is taken away to rise again', () => {
     vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: 100, bottom: 400 } as DOMRect)
     setClock(at(TODAY, '14:10'))
-    render(<AltidEnergi elpriser={data()} />)
+    render(<ElprisBars data={data()} />)
     expect(chart()).not.toHaveAttribute('data-rise')
     expect(observers).toHaveLength(0)
+  })
+})
+
+describe('the box that hops', () => {
+  const lit = () => {
+    const bars = [...document.querySelectorAll('.ae-col')]
+    return bars.findIndex((col) => col.querySelector('.ae-hop[data-on]'))
+  }
+  const cheap = dayOf({ 15: 0.5, 16: 0.7, 17: 0.9 })
+
+  it('starts on the cheapest hour and moves between the three cheapest', () => {
+    setClock(at(TODAY, '08:30'))
+    render(<ElprisBars data={data({ hours: cheap })} />)
+    expect(document.querySelectorAll('.ae-hop')).toHaveLength(3)
+    expect(lit()).toBe(15)
+    act(() => {
+      vi.advanceTimersByTime(1_800)
+    })
+    expect(lit()).toBe(16)
+    act(() => {
+      vi.advanceTimersByTime(1_800)
+    })
+    expect(lit()).toBe(17)
+    act(() => {
+      vi.advanceTimersByTime(1_800)
+    })
+    expect(lit()).toBe(15)
+  })
+
+  // Risk: the page's pause control leaves one loop running (WCAG 2.2.2).
+  it('stays on the cheapest hour when motion is stopped', () => {
+    setClock(at(TODAY, '08:30'))
+    document.documentElement.dataset.motion = 'paused'
+    render(<ElprisBars data={data({ hours: cheap })} />)
+    act(() => {
+      vi.advanceTimersByTime(5_400)
+    })
+    expect(lit()).toBe(15)
+    delete document.documentElement.dataset.motion
+  })
+
+  it('stays on the cheapest hour with reduced motion', () => {
+    setClock(at(TODAY, '08:30'))
+    motionAllowed(false)
+    render(<ElprisBars data={data({ hours: cheap })} />)
+    act(() => {
+      vi.advanceTimersByTime(5_400)
+    })
+    expect(lit()).toBe(15)
+  })
+
+  it('never stands on an hour that has gone', () => {
+    setClock(at(TODAY, '16:30'))
+    render(<ElprisBars data={data({ hours: cheap })} />)
+    const hops = [...document.querySelectorAll('.ae-col')].flatMap((col, i) => (col.querySelector('.ae-hop') ? [i] : []))
+    expect(hops.every((i) => i >= 16)).toBe(true)
+    expect(hops).toContain(16)
+    expect(hops).toContain(17)
   })
 })
 
@@ -360,7 +421,7 @@ describe('Vestdanmark and Østdanmark', () => {
   it('starts in Vestdanmark, names it in the source line, and the toggle switches the prices', () => {
     setClock(at(TODAY, '08:30'))
     const hours = dayOf().map((r) => (r.hour === 10 ? row(10, 0.5, 2) : r.hour === 20 ? row(20, 2, 0.5) : r))
-    render(<AltidEnergi elpriser={data({ hours })} />)
+    render(<ElprisBars data={data({ hours })} />)
 
     expect(answer()).toBe('I dag: kl. 10 til 11')
     expect(screen.getByText(/i Vestdanmark, med N1 som netselskab\. Kilde: Strømligning\./)).toBeInTheDocument()
@@ -373,7 +434,7 @@ describe('Vestdanmark and Østdanmark', () => {
   it('hides the toggle and shows the other zone when one is missing', () => {
     setClock(at(TODAY, '08:30'))
     const hours = dayOf().map((r) => row(r.hour, null, r.hour === 20 ? 0.5 : 2))
-    render(<AltidEnergi elpriser={data({ hours })} />)
+    render(<ElprisBars data={data({ hours })} />)
 
     expect(screen.queryByRole('button', { name: 'Vestdanmark' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Østdanmark' })).not.toBeInTheDocument()
@@ -388,7 +449,7 @@ describe('when the prices cannot be fetched', () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response('down', { status: 503 })))
     const errors = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    render(<AltidEnergi elpriser={await getElpriser()} />)
+    render(<ElprisBars data={await getElpriser()} />)
 
     expect(screen.getByText('Priserne kan ikke hentes lige nu')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Se siden med elpriser' })).toHaveAttribute(
@@ -432,7 +493,7 @@ describe('the chart follows the rows, not a 24-hour clock', () => {
         .filter((h) => h !== 2)
         .map((h) => ({ time: `2026-03-29T${hh(h)}:00:00`, spot: h === 1 ? 0.5 : 2 })),
     )
-    render(<AltidEnergi elpriser={await getElpriser()} />)
+    render(<ElprisBars data={await getElpriser()} />)
 
     expect(range().max).toBe('22')
     expect(answer()).toBe('I dag: kl. 01 til 03')
@@ -445,7 +506,7 @@ describe('the chart follows the rows, not a 24-hour clock', () => {
     const quarters = Array.from({ length: 24 }, (_, h) => ({ time: `2026-10-25T${hh(h)}:00:00`, spot: h === 2 ? 1 : 2 }))
     quarters.push({ time: '2026-10-25T02:00:00', spot: 3 })
     stubPrices(quarters)
-    render(<AltidEnergi elpriser={await getElpriser()} />)
+    render(<ElprisBars data={await getElpriser()} />)
 
     expect(range().max).toBe('23')
     fireEvent.change(range(), { target: { value: '2' } })
@@ -458,7 +519,7 @@ describe('the chart follows the rows, not a 24-hour clock', () => {
 describe('reading the chart', () => {
   it('a negative price stands at the baseline while the readout tells the real number', () => {
     setClock(at(TODAY, '00:30'))
-    render(<AltidEnergi elpriser={data({ hours: dayOf({ 3: -0.4 }) })} />)
+    render(<ElprisBars data={data({ hours: dayOf({ 3: -0.4 }) })} />)
 
     expect(answer()).toBe('I dag: kl. 03 til 04')
     const bars = document.querySelectorAll<HTMLElement>('.ae-bar')
@@ -470,7 +531,7 @@ describe('reading the chart', () => {
 
   it('the readout starts at the running hour and follows the range input', () => {
     setClock(at(TODAY, '18:10'))
-    render(<AltidEnergi elpriser={data({ hours: dayOf({ 7: 1.2 }) })} />)
+    render(<ElprisBars data={data({ hours: dayOf({ 7: 1.2 }) })} />)
     expect(screen.getByText('kl. 18: 2,50 kr. pr. kWh')).toBeInTheDocument()
     expect(range().value).toBe('18')
     expect(screen.getByText('Nu')).toBeInTheDocument()
