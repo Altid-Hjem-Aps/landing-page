@@ -20,6 +20,8 @@ export const PLATFORM_SCRIPT = `try{var u=navigator.userAgent||'',t=navigator.ma
 
 // The front page's motion state, also before first paint. html.js switches the
 // pinned scenes on (app/globals.css), so without JS the page stays in static
-// flow. data-motion="paused" holds the visitor's choice from PauseMotion.
+// flow, and a page bundle that fails to load puts it back there, as the pinned
+// scenes start hidden and only the bundle reveals them. data-motion="paused"
+// holds the visitor's choice from PauseMotion.
 export const MOTION_STORAGE_KEY = 'ah-motion'
-export const MOTION_SCRIPT = `document.documentElement.classList.add('js');try{if(localStorage.getItem('${MOTION_STORAGE_KEY}')==='paused')document.documentElement.dataset.motion='paused'}catch(e){}`
+export const MOTION_SCRIPT = `document.documentElement.classList.add('js');addEventListener('error',function(e){var s=e.target&&e.target.src;if(s&&s.indexOf('/_next/')>-1)document.documentElement.classList.remove('js')},true);try{if(localStorage.getItem('${MOTION_STORAGE_KEY}')==='paused')document.documentElement.dataset.motion='paused'}catch(e){}`

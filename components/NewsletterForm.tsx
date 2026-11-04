@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from 'react'
 import { INITIAL_CONSENT } from 'altid-consent'
 import { ConsentBlock } from 'altid-consent/react'
 
@@ -50,6 +50,8 @@ const VARIANTS = {
 type Status = 'idle' | 'sending' | 'done'
 type Problem = { message: string; field?: 'email' | 'consent' } | null
 
+const noSubscribe = () => () => {}
+
 export default function NewsletterForm({
   className = '',
   variant = 'dark',
@@ -62,6 +64,8 @@ export default function NewsletterForm({
   const [consent, setConsent] = useState(INITIAL_CONSENT)
   const [status, setStatus] = useState<Status>('idle')
   const [problem, setProblem] = useState<Problem>(null)
+  // Before hydration a submit would post the page itself and lose the address.
+  const hydrated = useSyncExternalStore(noSubscribe, () => true, () => false)
   const emailId = useId()
   const statusId = useId()
   const emailRef = useRef<HTMLInputElement>(null)
@@ -155,7 +159,7 @@ export default function NewsletterForm({
         />
         <button
           type="submit"
-          disabled={sending}
+          disabled={sending || !hydrated}
           className={`min-h-[48px] shrink-0 cursor-pointer rounded-[14px] border bg-transparent px-6 text-[16px] font-medium transition-colors disabled:cursor-default disabled:opacity-70 ${look.button}`}
         >
           {sending ? NEWSLETTER.buttonPending : NEWSLETTER.button}

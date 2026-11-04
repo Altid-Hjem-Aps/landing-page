@@ -653,3 +653,8 @@
   .ok-area { clip-path: none !important; }
 }
 html:not(.js) .ok-area { clip-path: none !important; }
+
+/* A jump to #okonomi lands where the stage has come in, not on the hero's last frame. */
+@media (prefers-reduced-motion: no-preference) and (min-height: 501px) and (min-width: 768px) {
+  html.js #okonomi { scroll-margin-top: -125svh; }
+}

@@ -332,7 +332,7 @@ html[data-platform="android"] .store-badge-play { order: -1; }
   /* Pause control (primitives/PauseMotion.tsx). Small, round, fixed bottom left. */
   .ah-pause {
     position: fixed;
-    z-index: 90;
+    z-index: 50; /* Under the cookie banner, so it never covers its buttons. */
     bottom: 16px;
     left: 16px;
     display: grid;

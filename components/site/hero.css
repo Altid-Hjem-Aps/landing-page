@@ -729,7 +729,6 @@
     padding: calc(29 * var(--cu));
     border-radius: calc(31.68 * var(--cu));
     opacity: 0;
-    pointer-events: auto;
   }
   html.js .ah-hero-benefit--1 { left: calc(50% - 453.8 * var(--cu)); }
   html.js .ah-hero-benefit--2 { left: calc(50% - 150.8 * var(--cu)); }
