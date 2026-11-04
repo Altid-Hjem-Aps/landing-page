@@ -3,7 +3,7 @@
  * (allowlist). Nye kampagnesider tilføjes HER, ét sted, så klient og server
  * ikke kan drifte fra hinanden.
  */
-export const SIGNUP_SOURCES = ['forside', 'spiir-alternativ', 'elpriser', 'forsikring', 'exit-intent'] as const
+export const SIGNUP_SOURCES = ['forside', 'spiir-alternativ', 'elpriser', 'forsikring', 'exit-intent', 'newsletter'] as const
 
 export type SignupSource = (typeof SIGNUP_SOURCES)[number]
 

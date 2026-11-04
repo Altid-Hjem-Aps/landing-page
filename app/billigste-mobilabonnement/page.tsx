@@ -6,14 +6,14 @@ import Footer from '@/components/Footer'
 import MobilOverblikMockup from '@/components/MobilOverblikMockup'
 
 export const metadata: Metadata = {
-  title: 'Billigste mobilabonnement i 2026 – Altid Hjem',
+  title: 'Billigste mobilabonnement i 2026 | Altid Hjem',
   description:
-    'Find det billigste mobilabonnement til hele husstanden. Se vejledende priser, typiske faldgruber og få en enkel tjekliste. Skriv dig på ventelisten.',
+    'Find det billigste mobilabonnement til hele husstanden. Se vejledende priser, typiske faldgruber og få en enkel tjekliste. Hent Altid Hjem, og få overblik over husstanden.',
   alternates: { canonical: 'https://altidhjem.dk/billigste-mobilabonnement' },
   openGraph: {
     title: 'Det billigste mobilabonnement til hele husstanden',
     description:
-      'Find det billigste mobilabonnement til hele husstanden. Se vejledende priser, typiske faldgruber og få en enkel tjekliste. Skriv dig på ventelisten.',
+      'Find det billigste mobilabonnement til hele husstanden. Se vejledende priser, typiske faldgruber og få en enkel tjekliste. Hent Altid Hjem, og få overblik over husstanden.',
     url: 'https://altidhjem.dk/billigste-mobilabonnement',
     type: 'article',
   },
@@ -67,15 +67,15 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem er en dansk app på vej, som skal kunne samle hjemmets faste udgifter i ét overblik, ét login.',
-      'Ventelisten er åben på altidhjem.dk, mens Altid Energi allerede er i drift.',
+      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så du får ét overblik, ét login.',
+      'Du kan hente den gratis i App Store og Google Play.',
     ],
   },
   {
-    q: 'Koster det noget at skrive sig på ventelisten?',
+    q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej, det koster ikke noget at skrive sig på ventelisten til Altid Hjem.',
-      'Tilmeldingen giver mulighed for at følge med, mens appen bliver gjort klar.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
+      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
     ],
   },
 ]
@@ -190,7 +190,7 @@ export default function BilligsteMobilabonnement() {
                   <MobilOverblikMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Altid Hjem skal kunne samle husstandens mobilaftaler i ét overblik og vise, hvor I betaler for meget. Illustration, ikke et skærmbillede fra appen.
+                  Et samlet overblik viser husstandens mobilaftaler ét sted og gør det tydeligt, hvor I betaler for meget. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
               <section>
@@ -212,16 +212,16 @@ export default function BilligsteMobilabonnement() {
               </section>
               <section>
                 <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvad Altid Hjem skal kunne
+                  Hvad Altid Hjem kan i dag
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem er bygget til at samle hjemmets faste udgifter til blandt andet el, mobil, forsikring, opladning, alarm og mad. Målet er ét overblik, ét login.
+                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så I får ét overblik, ét login.
                 </p>
                 <p className="mb-3">
-                  På mobilområdet skal Altid Hjem kunne samle husstandens aftaler og gøre det lettere at opdage gamle priser, unødvendige tillæg og mulige overpriser. Mobilfunktionen er på vej og findes ikke endnu.
+                  Forbinder I banken, ser I jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket. Mobilabonnementer er ikke en del af appen.
                 </p>
                 <p>
-                  Altid Hjem er udviklet af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab. Altid Energi er i drift i dag og har allerede mere end 15.000 danske kunder, mens de øvrige tjenester er på vej.
+                  Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder.
                 </p>
               </section>
 
@@ -263,13 +263,11 @@ export default function BilligsteMobilabonnement() {
           </div>
         </div>
 
-        <div id="venteliste">
-          <BottomCta
-            eyebrow='Hvad betaler husstanden egentlig for mobil?'
-            subtitle='Skriv dig gratis på ventelisten og få tidlig adgang, når Altid Hjem lanceres'
-            source='billigste-mobilabonnement'
-          />
-        </div>
+        <BottomCta
+          eyebrow='Ét overblik over hele husstanden'
+          heading='Hent Altid Hjem, og få overblik over husstanden'
+          subtitle='Appen er gratis og viser husstandens faste udgifter og abonnementer i en kalender, før pengene bliver trukket.'
+        />
       </main>
       <Footer />
     </>

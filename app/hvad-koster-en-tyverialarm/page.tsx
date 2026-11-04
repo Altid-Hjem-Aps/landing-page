@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import AlarmStatusMockup from '@/components/AlarmStatusMockup'
 
 export const metadata: Metadata = {
-  title: 'Hvad koster en tyverialarm? – Altid Hjem',
+  title: 'Hvad koster en tyverialarm? | Altid Hjem',
   description:
     'Se vejledende priser på tyverialarmer, fra gør-det-selv til abonnement, og lær, hvad der påvirker totalprisen. Få et ærligt overblik her.',
   alternates: { canonical: 'https://altidhjem.dk/hvad-koster-en-tyverialarm' },
@@ -67,15 +67,15 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem er en kommende dansk app, der er bygget til at samle hjemmets faste udgifter i ét overblik, ét login.',
-      'El findes allerede gennem Altid Energi, mens blandt andet alarm, mobil, opladning og forsikring er på vej.',
+      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så du får ét overblik, ét login.',
+      'Du kan hente den gratis i App Store og Google Play. Alarm er ikke en del af appen.',
     ],
   },
   {
-    q: 'Koster det noget at skrive sig på ventelisten til Altid Hjem?',
+    q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej, det koster ikke noget at skrive sig på ventelisten.',
-      'Du kan tilmelde dig på altidhjem.dk og få besked om Altid Hjem.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
+      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
     ],
   },
 ]
@@ -187,7 +187,7 @@ export default function HvadKosterEnTyverialarm() {
                   <AlarmStatusMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Alarmen er en af hjemmets faste udgifter. Altid Hjem skal kunne samle den i overblikket. Illustration, ikke et skærmbillede fra appen.
+                  Alarmen er en af hjemmets faste udgifter. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
               <section>
@@ -217,16 +217,16 @@ export default function HvadKosterEnTyverialarm() {
               </section>
               <section>
                 <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvad Altid Hjem skal kunne
+                  Hvad Altid Hjem kan i dag
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem er bygget til at samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad i ét overblik, ét login. Alarm skal kunne indgå som en tjeneste i overblikket, så det bliver lettere at se pris og vilkår sammen med resten af hjemmets aftaler.
+                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så du får ét overblik, ét login. Alarm er ikke en del af appen, men forbinder du banken, ser du dine faste udgifter og abonnementer i en kalender.
                 </p>
                 <p className="mb-3">
-                  Altid Hjem er ikke lanceret endnu, og ventelisten er åben på altidhjem.dk. Appen bygges af teamet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder.
+                  Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder. Du kan hente den gratis i App Store og Google Play.
                 </p>
                 <p>
-                  Altid Energi er i drift i dag, mens mobil, opladning, alarm og forsikring er på vej. Du kan i mellemtiden bruge prisguiden her på siden til at sammenligne markedets løsninger.
+                  Du kan bruge prisguiden her på siden til at sammenligne markedets løsninger.
                 </p>
               </section>
 
@@ -268,13 +268,11 @@ export default function HvadKosterEnTyverialarm() {
           </div>
         </div>
 
-        <div id="venteliste">
-          <BottomCta
-            eyebrow='Tryghed er også en fast udgift'
-            subtitle='Skriv dig gratis på ventelisten og få tidlig adgang, når Altid Hjem lanceres'
-            source='hvad-koster-en-tyverialarm'
-          />
-        </div>
+        <BottomCta
+          eyebrow='Ét overblik over hjemmets udgifter'
+          heading='Hent Altid Hjem, og få overblik over husstanden'
+          subtitle='Appen er gratis og viser jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket.'
+        />
       </main>
       <Footer />
     </>

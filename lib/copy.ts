@@ -1,8 +1,6 @@
 import { consentSentences, consentVersion } from 'altid-consent'
 
-// Legal/compliance copy that MUST stay identical everywhere it appears.
-// Rendered under the Ét hjem animation in both the WhatIs section and the
-// exit-intent dialog — an edit to one must never strand the other.
+// Legal copy shown under the bills-into-the-app animation in the WhatIs section.
 export const SAVINGS_DISCLAIMER =
   'Eksempelberegning. Besparelsen er vejledende og baseret på antagelser. Den faktiske besparelse afhænger af husstandens forbrug, adresse, aftaler, dækning og gældende priser.'
 
@@ -17,37 +15,14 @@ export const SAVINGS_DISCLAIMER =
 //   flags (consentFlags(state, 'hjem')).
 // - CONSENT_VERSION is stored with each signup. The package derives it
 //   ('<template>-hjem'), so the exact text accepted is identifiable from the
-//   version alone on the waitlist shared with altidmad.dk.
-// - 2026-07-14 (legal fact-check): the Altid Hjem launch email is
-//   markedsføringslov §10 direct marketing, but the waitlist signup itself is
-//   the specific prior consent to that launch notice (SIGNUP_LAUNCH_NOTICE
-//   states the purpose above the button). The box is therefore purely ongoing
-//   marketing. The launch notice is this site's own text and is not versioned
-//   by the package.
+//   version alone on the table shared with altidmad.dk.
 export const CONSENT_VERSION = consentVersion('hjem')
-export const SIGNUP_LAUNCH_NOTICE =
-  'Når du skriver dig op, giver Altid Hjem ApS dig besked på e-mail, når Altid Hjem lanceres. Du kan til enhver tid forlade ventelisten.'
 
-// Double-opt-in copy for an already-listed person who ticks the consent box.
+// Double-opt-in copy for someone already on file whose consent is asked for from
+// an anonymous form. The form cannot prove the person typing an address owns it,
+// so the consent is held pending until the person clicks a link in their own
+// inbox, which is the proof the form cannot give.
 //
-// Why: the signup form is anonymous, so it cannot prove the person typing an
-// address owns it. Writing consent straight from that form would let a stranger
-// sign anyone up for marketing, which is why the 409 path refuses to. But
-// refusing SILENTLY, behind "Du er allerede skrevet op!", tells people they are
-// covered when nothing was stored — 36 people lost their consent that way on
-// altidmad.dk on 14 Jul, and this form had the identical bug. The confirmation
-// mail turns the refusal into a route: the consent is held pending until the
-// person clicks a link in their own inbox, which is the proof the form cannot
-// give.
-//
-// Shared, word for word, with altidmad.dk: the two sites are one waitlist, and a
-// person who signs up on one and confirms from the other must not be handed two
-// different voices mid-flow.
-export const CONFIRM_SENT_HEADING = 'Du er næsten i mål'
-export function confirmSentBody(email: string): string {
-  return `Du står allerede på ventelisten. Vi har sendt en mail til ${email} med et link, som du skal trykke på, før vi må sende dig markedsføring.`
-}
-
 // GET on the emailed link only RENDERS this page; the consent is written on
 // POST. Not optional: corporate mail scanners (Safe Links, Proofpoint) auto-open
 // every URL in an email, so a link that wrote consent on GET would have the
@@ -80,23 +55,15 @@ export const CONFIRM_ALREADY_BODY =
 
 export const CONFIRM_EXPIRED_HEADING = 'Linket virker desværre ikke længere'
 export const CONFIRM_EXPIRED_BODY =
-  'Det kan være udløbet eller være blevet ændret undervejs i din mail. Skriv dig op igen, så sender vi dig et nyt link.'
+  'Det kan være udløbet eller være blevet ændret undervejs i din mail. Tilmeld dig igen på altidhjem.dk, så sender vi dig et nyt link.'
 
 export const CONFIRM_HOME_CTA = 'Gå til altidhjem.dk'
-
-export const CONFIRM_RATE_LIMITED_HEADING = 'Vi har allerede sendt dig en mail'
-export const CONFIRM_RATE_LIMITED_BODY =
-  'Tjek din indbakke, og husk også at kigge i spam. Kan du ikke finde mailen, kan du prøve igen om en time.'
-
-export const ALREADY_CONSENTED_HEADING = 'Du er allerede med'
-export const ALREADY_CONSENTED_BODY =
-  'Du står på ventelisten og vil modtage nyt fra Altid Hjem. Du behøver ikke gøre mere.'
 
 // Per-brand wording for the preference centre and the confirmation mail.
 //
 // The Hjem signup uses ONE combined box that sets both flags, so it has no
 // per-brand text of its own. But the preference centre edits the flags
-// SEPARATELY, and it serves altidmad.dk's audience too. On the shared waitlist
+// SEPARATELY, and it serves altidmad.dk's audience too. On the shared table
 // the `mad` column is Altid Mad's own flag (the package's `own` for the `mad`
 // brand) and `group` is Altid Hjem and the rest of the family (`group`), so
 // both are the package's `mad` sentences: the same flag must never be described
@@ -108,14 +75,9 @@ export const PREF_CONSENT_MAD = MAD.own
 export const PREF_CONSENT_GROUP = MAD.group
 
 
-// Shown when the lookup that decides the 409 path could not run (Supabase raced
-// its 2s timeout). It must NOT fall back to "Du er allerede skrevet op!" — that is
-// the sentence that told 36 people they were covered while their consent was
-// dropped. A retryable failure is honest; a reassuring lie is not.
+// Shown when a lookup or a write could not run. A retryable failure is honest; a
+// reassuring lie is not (36 people on altidmad.dk lost their consent to one on 14 Jul).
 export const LOOKUP_FAILED_ERROR = 'Vi kunne ikke behandle din tilmelding lige nu. Prøv igen om et øjeblik.'
-
-// The plain-duplicate message, for someone who ticked nothing.
-export const DUPLICATE_ERROR = 'Du er allerede skrevet op!'
 
 // Ceiling on confirmation mails per hour ACROSS the whole site, not per address.
 export const CONFIRM_SENDS_PER_HOUR = 100
