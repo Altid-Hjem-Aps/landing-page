@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import * as amplitude from '@amplitude/analytics-browser'
 import { Logo } from '@/components/Logo'
 import { GetAppLink } from '@/components/site/primitives/StorePills'
+import PauseMotion from '@/components/site/primitives/PauseMotion'
 import { STORE_ANCHOR } from '@/lib/store-links'
 
 // One opaque Cream pill floating at the top, on every page and over every
@@ -39,6 +40,8 @@ interface NavProps {
   spiirBanner?: boolean
   /** Generic campaign banner above the menu: same look as the Spiir banner. */
   banner?: BannerConfig
+  /** The control that stops the page's loops. Only the front page has loops. */
+  motionControl?: boolean
 }
 
 const SPIIR_BANNER: BannerConfig = {
@@ -47,18 +50,19 @@ const SPIIR_BANNER: BannerConfig = {
   source: 'spiir-banner',
 }
 
-function Pill() {
+function Pill({ motionControl = false }: { motionControl?: boolean }) {
   return (
     <nav
       aria-label="Hovedmenu"
-      className="pointer-events-auto flex h-16 w-full max-w-[560px] min-[900px]:w-auto min-[900px]:max-w-none items-center justify-between gap-6 rounded-full border pl-6 pr-2.5"
+      className="pointer-events-auto flex h-14 w-full max-w-[560px] items-center justify-between gap-6 rounded-full border pl-5 pr-1.5 md:h-16 md:pl-6 md:pr-2.5 min-[960px]:w-auto min-[960px]:max-w-none"
       style={{ background: 'var(--ah-cream)', borderColor: 'rgb(22 50 35 / 0.12)', color: 'var(--ah-dark-forest)' }}
     >
-      {/* 96 px is the wordmark's minimum width in the logo pack. */}
+      {/* 96 px is the wordmark's minimum width in the logo pack. It is 51 px high
+          there, too much for the 56 px pill on a phone: 76 px on Thor's call. */}
       <Link href="/" aria-label="Altid Hjem forside" className="shrink-0">
-        <Logo className="w-24 h-auto" variant="dark" />
+        <Logo className="h-auto w-[76px] md:w-24" variant="dark" />
       </Link>
-      <ul className="hidden min-[900px]:flex items-center gap-0.5">
+      <ul className="hidden min-[960px]:flex items-center gap-0.5">
         {NAV_LINKS.map(({ label, href }) => (
           <li key={href}>
             <a
@@ -70,10 +74,13 @@ function Pill() {
           </li>
         ))}
       </ul>
-      <GetAppLink
-        className="inline-flex min-h-[48px] shrink-0 items-center rounded-full px-5 text-[15px] font-medium whitespace-nowrap transition-opacity hover:opacity-90"
-        style={{ background: 'var(--ah-deep-forest)', color: 'var(--ah-cream)' }}
-      />
+      <div className="flex shrink-0 items-center gap-1.5 md:gap-2">
+        {motionControl && <PauseMotion />}
+        <GetAppLink
+          className="inline-flex min-h-[44px] shrink-0 items-center rounded-full px-4 text-[14px] font-medium whitespace-nowrap transition-opacity hover:opacity-90 md:min-h-[48px] md:px-5 md:text-[15px]"
+          style={{ background: 'var(--ah-deep-forest)', color: 'var(--ah-cream)' }}
+        />
+      </div>
     </nav>
   )
 }
@@ -156,13 +163,13 @@ function BannerNav({ config }: { config: BannerConfig }) {
   )
 }
 
-export default function Nav({ spiirBanner = false, banner }: NavProps) {
+export default function Nav({ spiirBanner = false, banner, motionControl = false }: NavProps) {
   // The Spiir banner is just a fixed configuration of the generic banner.
   const bannerConfig = banner ?? (spiirBanner ? SPIIR_BANNER : null)
   if (bannerConfig) return <BannerNav config={bannerConfig} />
   return (
     <div className="ah-chrome fixed inset-x-0 top-3 z-[100] flex justify-center px-3 pointer-events-none">
-      <Pill />
+      <Pill motionControl={motionControl} />
     </div>
   )
 }

@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import Spoergsmaal from '@/components/site/Spoergsmaal'
 
 type Faq = { '@type': string; mainEntity: { name: string; acceptedAnswer: { text: string } }[] }
@@ -35,6 +35,20 @@ describe('Spørgsmål', () => {
       'href',
       'https://altidmad.dk/altid-mad-kvartalsrapport-q3.pdf',
     )
+  })
+
+  // Risk: clicks from the answer count as another spot on the page.
+  it('counts a store click from the answer as faq', async () => {
+    const sendBeacon = vi.fn((url: string, data: Blob) => {
+      void url
+      void data
+      return true
+    })
+    vi.stubGlobal('navigator', { ...navigator, sendBeacon })
+    setup()
+    fireEvent.click(screen.getByRole('link', { name: 'Hent i App Store', hidden: true }))
+    expect(JSON.parse(await sendBeacon.mock.calls[0][1].text())).toEqual({ store: 'appstore', position: 'faq' })
+    vi.unstubAllGlobals()
   })
 
   it('links to the page about deleting an account', () => {

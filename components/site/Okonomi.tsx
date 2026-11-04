@@ -56,6 +56,9 @@ function Stage({ scrolled }: { scrolled: MotionValue<number> }) {
         <motion.div className="ah-oko-words ah-m" style={{ opacity: words, y: wordsY }}>
           <h2 className="ah-h2 ah-hang">“Bruger vi for meget på takeaway?”</h2>
           <p className="ah-body">Forbind banken sikkert med MitID, og se hvordan pengene bliver brugt.</p>
+          <p className="ah-oko-trust">
+            <span>Appen kan kun læse.</span> <span>Den kan aldrig flytte penge.</span>
+          </p>
         </motion.div>
         <div className="ah-oko-stand">
           <span className="ah-oko-contact" aria-hidden />
@@ -114,14 +117,11 @@ function Dream() {
         <div className="ah-oko-dream-words">
           <h3 className="ah-oko-dream-line ah-hang">“Skat, hvornår skal vi på ferie igen?”</h3>
           <p className="ah-body">
-            Spar op til det, der er vigtigst for jer. Sæt et mål, og se hver måned, hvor langt I er nået.
+            Spar op til det, som er vigtigst for jer. Sæt et mål, og se hver måned, hvor langt I er nået.
           </p>
           <Caption on="pastel" className="ah-oko-dream-caption" />
         </div>
       </div>
-      <p className="ah-oko-trust">
-        <span>Appen kan kun læse.</span> <span>Den kan aldrig flytte penge.</span>
-      </p>
     </div>
   )
 }

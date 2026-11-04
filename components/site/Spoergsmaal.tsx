@@ -50,7 +50,7 @@ const FAQ: { question: string; answer: string; more?: ReactNode }[] = [
   {
     question: 'Hvor henter jeg den?',
     answer: 'I App Store og Google Play.',
-    more: <StorePills position="bottom" className="mt-4" />,
+    more: <StorePills position="faq" className="mt-4" />,
   },
   {
     question: 'Hvordan sletter jeg min konto?',

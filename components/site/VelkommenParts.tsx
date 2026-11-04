@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { motion, useTransform } from 'framer-motion'
 import { countClick } from '@/components/StoreBadges'
+import Caption from '@/components/site/primitives/Caption'
 import IconBeam from '@/components/site/primitives/IconBeam'
 import Phone from '@/components/site/primitives/Phone'
 import { useTargetProgress } from '@/components/site/primitives/Pin'
@@ -46,6 +47,8 @@ export function VelkommenFan() {
         <Phone screen={SCREENS.madHome} sizes="(max-width: 767px) 54vw, 360px" />
       </motion.div>
       <motion.div className="vk-phone vk-phone--centre ah-m" style={{ y: centre }}>
+        {/* Rides on the phone, so it never floats alone while the phone rises. */}
+        <Caption on="pastel" className="vk-caption" />
         <Phone screen={SCREENS.okonomiTop} sizes="(max-width: 767px) 62vw, 400px" />
       </motion.div>
       <IconBeam icon="strom" direction={20} length={2.4} delay={-2} className="vk-icon vk-icon--strom" />

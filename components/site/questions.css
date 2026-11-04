@@ -46,7 +46,7 @@ html:has(.ah-fan-sec) {
 }
 .ah-fan-body {
   margin-top: 12px;
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.6;
 }
 .ah-fan-phone {
@@ -96,7 +96,7 @@ html:has(.ah-fan-sec) {
   .ah-fan-title { font-size: 4.5cqw; }
   .ah-fan-body {
     margin-top: 1.8cqw;
-    font-size: clamp(16px, 1.9cqw, 18px);
+    font-size: clamp(17px, 2cqw, 22px);
   }
   .ah-fan-phone {
     position: absolute;

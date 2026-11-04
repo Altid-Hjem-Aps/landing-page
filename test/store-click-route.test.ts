@@ -62,7 +62,7 @@ describe('POST /api/forside/store-click', () => {
   })
 
   // A position missing from the list drops that CTA's clicks without a trace.
-  it.each(['nav', 'hero', 'final'])('counts a click from the front page position %s', async (position) => {
+  it.each(['nav', 'hero', 'final', 'faq'])('counts a click from the front page position %s', async (position) => {
     const res = await post({ store: 'appstore', position })
     expect(res.status).toBe(204)
     expect(trackMock).toHaveBeenCalledWith('Store Badge Clicked', { store: 'appstore', position })

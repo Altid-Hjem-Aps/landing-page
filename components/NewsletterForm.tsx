@@ -6,7 +6,8 @@ import { ConsentBlock } from 'altid-consent/react'
 
 // The newsletter signup (lib/newsletter.ts stores it). Sits under the store pills,
 // deliberately quieter than they are: on a forest surface by default, on Mint with
-// variant="light".
+// variant="light". Without JS the fields are hidden (html:not(.js) in globals.css)
+// and a mail line stands in, so an address can never end up in a URL.
 
 const NEWSLETTER = {
   title: 'Få nyheder fra Altid Hjem',
@@ -124,9 +125,8 @@ export default function NewsletterForm({
 
   const sending = status === 'sending'
   return (
-    <form onSubmit={submit} noValidate className={`w-full max-w-[440px] text-left ${className}`}>
+    <form method="post" onSubmit={submit} noValidate className={`w-full max-w-[440px] text-left ${className}`}>
       <h3 className={`text-[17px] font-medium leading-snug ${look.title}`}>{NEWSLETTER.title}</h3>
-      {/* The form needs JS to post. Without it a mail link stands in for the fields below. */}
       <noscript>
         <p className={`mt-3 text-[16px] leading-[1.6] ${look.title}`}>
           Skriv til{' '}
@@ -139,7 +139,7 @@ export default function NewsletterForm({
       <label htmlFor={emailId} className={`mt-4 block text-[14px] leading-snug ${look.label}`}>
         {NEWSLETTER.emailLabel}
       </label>
-      <div className="mt-1.5 flex flex-col gap-2.5 sm:flex-row">
+      <div className="ah-newsletter-row mt-1.5 flex flex-col gap-2.5 sm:flex-row">
         <input
           ref={emailRef}
           id={emailId}

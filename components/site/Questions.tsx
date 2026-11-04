@@ -156,7 +156,7 @@ export default function Questions() {
   return (
     <section id="spoergsmaal-fra-hverdagen" className="ah-fan-sec">
       <h2 className="sr-only">Fire spørgsmål fra hverdagen</h2>
-      <Pin vh={150} mobileVh={null} className="ah-bg-forest">
+      <Pin vh={220} mobileVh={null} className="ah-bg-forest">
         {(progress) => <Fan progress={progress} />}
       </Pin>
     </section>

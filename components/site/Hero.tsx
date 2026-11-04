@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { motion, useMotionValue, useTransform, type MotionStyle, type MotionValue } from 'framer-motion'
+import { easeOut, motion, useMotionValue, useTransform, type MotionStyle, type MotionValue } from 'framer-motion'
 import Phone from '@/components/site/primitives/Phone'
 import Pin from '@/components/site/primitives/Pin'
 import StorePills from '@/components/site/primitives/StorePills'
@@ -18,13 +18,16 @@ import './hero.css'
 // is measured: it is laid out at its giant size and scaled down onto .ah-hero-slot.
 
 const STEPS = [
-  { word: 'Forbind.', caption: 'Forbind banken sikkert med MitID.', screen: SCREENS.okonomiTop, range: [0.2, 0.23, 0.355, 0.385] },
-  { word: 'Se.', caption: 'Se regningerne, før de bliver trukket.', screen: SCREENS.regningerTop, range: [0.355, 0.385, 0.5, 0.53] },
-  { word: 'Slap af.', caption: 'Så ved I, hvad der er tilbage.', screen: SCREENS.hjemTop, range: [0.5, 0.53, 0.98, 1] },
+  { word: 'Forbind.', caption: 'Forbind banken sikkert med MitID.', screen: SCREENS.okonomiTop, range: [0.2, 0.23, 0.34, 0.36] },
+  { word: 'Se.', caption: 'Se regningerne, før de bliver trukket.', screen: SCREENS.regningerTop, range: [0.36, 0.385, 0.485, 0.505] },
+  { word: 'Slap af.', caption: 'Så ved I, hvad der er tilbage.', screen: SCREENS.hjemTop, range: [0.505, 0.53, 0.98, 1] },
 ] as const
 
 const PHONE_SIZES = '(max-width: 767px) 80vw, 340px'
 const SCENE_FADE = [0.74, 0.78]
+const CARD_OUT = 0.56
+// HJEM_HERO_CROP is the screen's full width: the screen is the phone less its 2.4 % edges.
+const CROP_WIDTH_IN_PHONE = 0.952
 
 const ICONS = [
   { icon: 'strom', direction: 14, delay: -1 },
@@ -63,12 +66,12 @@ function Step({ step, progress }: { step: (typeof STEPS)[number]; progress: Moti
   )
 }
 
-// A screen fades in over the one before it, with a tiny slide.
+// A screen slides up over the one before it, solid all the way. A fade would mix
+// the two: text through text and a pale wash on the green.
 function ScreenLayer({ screen, at, progress }: { screen: Screen; at: number; progress: MotionValue<number> }) {
-  const opacity = useTransform(progress, [at, at + 0.03], [0, 1])
-  const y = useTransform(progress, [at, at + 0.03], ['1.6%', '0%'])
+  const y = useTransform(progress, [at, at + 0.035], ['100%', '0%'], { ease: easeOut })
   return (
-    <motion.div className="ah-hero-layer ah-m" style={{ opacity, y }}>
+    <motion.div className="ah-hero-layer ah-m" style={{ y }}>
       <Image src={screen.src} alt={screen.alt} fill sizes={PHONE_SIZES} />
     </motion.div>
   )
@@ -80,12 +83,15 @@ function Scene({ progress }: { progress: MotionValue<number> }) {
   const slot = useRef<HTMLDivElement>(null)
   const landingScale = useMotionValue(1)
   const landingY = useMotionValue(0)
+  const card = useRef<HTMLDivElement>(null)
+  const cardStart = useMotionValue(CROP_WIDTH_IN_PHONE)
 
   useEffect(() => {
-    const [s, p, l] = [stage.current!, phone.current!, slot.current!]
+    const [s, p, l, c] = [stage.current!, phone.current!, slot.current!, card.current!]
     const measure = () => {
       landingScale.set(l.offsetWidth / p.offsetWidth)
       landingY.set(offsetTopIn(l, s) - offsetTopIn(p, s))
+      cardStart.set((l.offsetWidth * CROP_WIDTH_IN_PHONE) / c.offsetWidth)
     }
     measure()
     window.addEventListener('resize', measure)
@@ -95,12 +101,15 @@ function Scene({ progress }: { progress: MotionValue<number> }) {
       window.removeEventListener('resize', measure)
       window.removeEventListener('load', measure)
     }
-  }, [landingScale, landingY])
+  }, [landingScale, landingY, cardStart])
 
   const pull = useTransform(progress, (p) => smooth((p - 0.07) / 0.15))
   const phoneScale = useTransform([pull, landingScale], ([t, s]: number[]) => 1 + (s - 1) * t)
   const phoneY = useTransform([pull, landingY], ([t, y]: number[]) => y * t)
-  const phoneOpacity = useTransform(progress, [0.58, 0.63, SCENE_FADE[0], SCENE_FADE[1]], [1, 0.5, 0.5, 0])
+  const phoneOpacity = useTransform(progress, [...SCENE_FADE], [1, 0])
+  // Into Deep forest, inside the phone. Fading the phone itself mixes a pale screen
+  // with the glow behind it, which reads as a murky pale green.
+  const phoneDim = useTransform(progress, [CARD_OUT, 0.62], [0, 0.92])
 
   const introOpacity = useTransform(progress, [0.07, 0.13], [1, 0])
   const introY = useTransform(progress, [0.07, 0.15], [0, -36])
@@ -109,13 +118,19 @@ function Scene({ progress }: { progress: MotionValue<number> }) {
   const iconsLeft = useTransform(progress, [0.07, 0.18], [0, -90])
   const iconsRight = useTransform(progress, [0.07, 0.18], [0, 90])
   const lightOpacity = useTransform(progress, [0.1, 0.22], [1, 0])
-  const haloOpacity = useTransform(progress, [0.14, 0.24, SCENE_FADE[0], SCENE_FADE[1]], [0, 1, 1, 0])
+  const haloOpacity = useTransform(progress, [0.14, 0.24, CARD_OUT, 0.62, SCENE_FADE[0], SCENE_FADE[1]], [0, 1, 1, 0.4, 0.4, 0])
   const stepsOpacity = useTransform(progress, [0.16, 0.21, SCENE_FADE[0], SCENE_FADE[1]], [0, 1, 1, 0])
 
-  const firstScreen = useTransform(progress, [0.17, 0.21], [1, 0])
-  const cardOpacity = useTransform(progress, [0.56, 0.585, SCENE_FADE[0], SCENE_FADE[1]], [0, 1, 1, 0])
-  const cardScale = useTransform(progress, [0.56, 0.615, 0.65], [0.62, 1.035, 1])
-  const statementOpacity = useTransform(progress, [0.775, 0.8], [0, 1])
+  // The card starts as exactly the part of the screen it is cut from, over it and
+  // the same size, so it is solid from its first frame and nothing pops. Only then
+  // does it grow out of the phone.
+  const cardOpacity = useTransform(progress, [CARD_OUT - 0.001, CARD_OUT, SCENE_FADE[0], SCENE_FADE[1]], [0, 1, 1, 0])
+  const cardEdge = useTransform(progress, [CARD_OUT, 0.585], [0, 1])
+  const cardScale = useTransform([progress, cardStart], ([p, start]: number[]) => {
+    if (p < 0.615) return start + (1.035 - start) * smooth((p - CARD_OUT) / (0.615 - CARD_OUT))
+    return 1.035 - 0.035 * smooth((p - 0.615) / 0.035)
+  })
+  const statementOpacity = useTransform(progress, [0.78, 0.805], [0, 1])
 
   return (
     <div ref={stage} className="ah-hero-stage">
@@ -131,7 +146,7 @@ function Scene({ progress }: { progress: MotionValue<number> }) {
             Få overblik over jeres mad, strøm, forsikring og økonomi.{' '}
             <span className="ah-hero-sub-tail">Hent Altid Hjem gratis i dag.</span>
           </p>
-          <StorePills position="hero" variant="dark" className="ah-hero-pills" />
+          <StorePills position="hero" variant="dark" className="ah-hero-pills ah-pills-large" />
           <p className="ah-hero-trust">Kan kun læse. Aldrig flytte penge.</p>
         </div>
       </motion.div>
@@ -157,13 +172,14 @@ function Scene({ progress }: { progress: MotionValue<number> }) {
         <motion.div ref={phone} className="ah-hero-phone ah-m" style={{ scale: phoneScale, y: phoneY, opacity: phoneOpacity }}>
           <div className="ah-hero-rise">
             <Phone empty>
-              <ScreenLayer screen={SCREENS.okonomiTop} at={0.15} progress={progress} />
-              <ScreenLayer screen={SCREENS.regningerTop} at={0.355} progress={progress} />
-              <ScreenLayer screen={SCREENS.hjemTop} at={0.5} progress={progress} />
               {/* The phone's first screen under 768 px and in the static flow. */}
-              <motion.div className="ah-hero-layer ah-hero-layer--first ah-m" style={{ opacity: firstScreen }}>
+              <div className="ah-hero-layer ah-hero-layer--first">
                 <Image src={SCREENS.hjemTop.src} alt={SCREENS.hjemTop.alt} fill sizes={PHONE_SIZES} preload />
-              </motion.div>
+              </div>
+              <ScreenLayer screen={SCREENS.okonomiTop} at={0.12} progress={progress} />
+              <ScreenLayer screen={SCREENS.regningerTop} at={0.35} progress={progress} />
+              <ScreenLayer screen={SCREENS.hjemTop} at={0.495} progress={progress} />
+              <motion.div className="ah-hero-phone-dim ah-m" style={{ opacity: phoneDim }} aria-hidden />
             </Phone>
           </div>
         </motion.div>
@@ -175,14 +191,17 @@ function Scene({ progress }: { progress: MotionValue<number> }) {
             <Step key={step.word} step={step} progress={progress} />
           ))}
         </motion.ol>
-        <motion.div className="ah-hero-card ah-m" style={{ opacity: cardOpacity, scale: cardScale }}>
-          <Image
-            src={HJEM_HERO_CROP.src}
-            alt={HJEM_HERO_CROP.alt}
-            width={HJEM_HERO_CROP.width}
-            height={HJEM_HERO_CROP.height}
-            sizes="(max-width: 767px) 92vw, 560px"
-          />
+        <motion.div ref={card} className="ah-hero-card ah-m" style={{ opacity: cardOpacity, scale: cardScale }}>
+          <motion.span className="ah-hero-card-edge ah-m" style={{ opacity: cardEdge }} aria-hidden />
+          <div className="ah-hero-card-face">
+            <Image
+              src={HJEM_HERO_CROP.src}
+              alt={HJEM_HERO_CROP.alt}
+              width={HJEM_HERO_CROP.width}
+              height={HJEM_HERO_CROP.height}
+              sizes="(max-width: 767px) 92vw, 560px"
+            />
+          </div>
         </motion.div>
       </div>
 

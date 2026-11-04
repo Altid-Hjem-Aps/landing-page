@@ -3,6 +3,8 @@
 
 .vk-sec {
   position: relative;
+  /* Its own stacking context, so the centre phone goes behind the footer's overlap. */
+  isolation: isolate;
   overflow: clip;
   padding-top: clamp(56px, 8vw, 120px);
   background: linear-gradient(180deg, var(--ah-cream) 0, var(--ah-cream) 8%, var(--ah-mint) 58%);
@@ -28,12 +30,18 @@
   font-size: clamp(18px, 1.8vw, 24px);
   line-height: 1.4;
 }
+.vk-anchor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Clear of the nav by 32 px at every width. */
+  scroll-margin-top: 112px;
+}
 .vk-get {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 28px;
-  scroll-margin-top: 112px;
 }
 
 .vk-qr { display: none; }
@@ -55,15 +63,19 @@
 }
 .vk-qr-card:hover { opacity: 0.85; }
 
-.vk-form { margin-top: clamp(36px, 4vw, 52px); }
-/* The fields cannot post without JS; the form's noscript line stands in. */
-html:not(.js) .ah-newsletter-fields { display: none; }
+/* Under the pills and well below them in rank: a small title, one row, narrow. */
+.vk-form { max-width: 360px; margin-top: clamp(28px, 3vw, 40px); }
+.vk-form h3 { font-size: 15px; }
+.vk-form label[for] { margin-top: 8px; font-size: 13px; }
+.vk-form .ah-newsletter-row { flex-direction: row; gap: 8px; margin-top: 4px; }
+.vk-form .ah-newsletter-row input { min-height: 44px; border-radius: 12px; padding-inline: 12px; }
+.vk-form .ah-newsletter-row button { min-height: 44px; border-radius: 12px; padding-inline: 16px; font-size: 15px; }
 
 .vk-fan {
   --vk-w: clamp(240px, 62vw, 300px);
   position: relative;
   height: calc(var(--vk-w) * 1.36);
-  margin-top: clamp(32px, 4vw, 56px);
+  margin-top: 56px;
 }
 .vk-phone {
   position: absolute;
@@ -93,7 +105,13 @@ html:not(.js) .ah-newsletter-fields { display: none; }
 .vk-icon--madplan { top: 34%; left: 3%; }
 .vk-icon--forsikring { top: 22%; right: 3%; }
 
-.vk-caption { margin-top: 20px; }
+.vk-caption {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  translate: -50% 0;
+  white-space: nowrap;
+}
 
 @media (min-width: 900px) {
   .vk-fan {

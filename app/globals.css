@@ -318,7 +318,7 @@ html[data-platform="android"] .store-badge-play { order: -1; }
     letter-spacing: -0.03em;
   }
   .ah-unit { font-size: 0.42em; letter-spacing: -0.01em; }
-  .ah-body { font-size: clamp(16px, 1.3vw, 18px); font-weight: 400; line-height: 1.6; }
+  .ah-body { font-size: clamp(17px, 1.35vw, 20px); font-weight: 400; line-height: 1.6; }
   /* The opening quote hangs outside the text edge, as in the mails. */
   .ah-hang { text-indent: -0.42em; }
   .ah-caption { font-size: 13px; line-height: 1.5; color: var(--ah-stone); }
@@ -412,58 +412,43 @@ html[data-platform="android"] .store-badge-play { order: -1; }
   }
   .ah-beam-icon { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-  /* Pause control (primitives/PauseMotion.tsx). Clear of the cookie banner: on
-     narrow screens the open banner fills the bottom, so the button moves up
-     under the nav while it is there. */
+  /* Pause control (primitives/PauseMotion.tsx). It sits in the nav pill. */
   .ah-pause {
-    position: fixed;
-    z-index: 70;
-    bottom: 16px;
-    left: 16px;
-    display: flex;
-    align-items: center;
-    min-width: 44px;
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 44px;
     height: 44px;
     border: 1px solid rgb(22 50 35 / 0.14);
     border-radius: 999px;
-    background: var(--ah-cream);
     color: var(--ah-dark-forest);
     cursor: pointer;
+    transition: background-color 0.15s;
   }
-  .ah-pause-icon { display: grid; place-items: center; width: 42px; height: 42px; flex: none; }
-  /* Hidden by clipping, not display:none, so it stays the button's accessible name. */
-  .ah-pause-label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    font-size: 13px;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-  .ah-pause:hover .ah-pause-label,
-  .ah-pause:focus-visible .ah-pause-label {
-    position: static;
-    width: auto;
-    height: auto;
-    padding-right: 16px;
-    overflow: visible;
-    clip-path: none;
-  }
-  @media (max-width: 719.98px) {
-    body:has([aria-labelledby="cookie-banner-title"]) .ah-pause {
-      top: 92px;
-      bottom: auto;
-    }
-  }
+  .ah-pause:hover { background: var(--ah-sand); }
 }
 
-/* The last lines of the footer stay clear of the pause button. Outside the layer,
-   so it beats the footer's padding utility. */
-@media (max-width: 719.98px) {
-  .ah-site footer { padding-bottom: 76px; }
+html:not(.js) .ah-pause { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .ah-pause { display: none; }
 }
+
+/* The big moments' store pills (hero and final). A class, not a variant, so the
+   pills stay the one thin-bordered look. Outside the layer to beat the utilities. */
+@media (min-width: 768px) {
+  .ah-pills-large a {
+    gap: 10px;
+    min-height: 52px;
+    padding-inline: 20px;
+    border-radius: 22px;
+    font-size: 16px;
+  }
+  .ah-pills-large svg { width: 20px; height: 20px; }
+}
+
+/* NewsletterForm: the fields cannot post without JS, on any page. The form's
+   noscript line stands in. Outside .ah-site, as the SEO pages have the form too. */
+html:not(.js) .ah-newsletter-fields { display: none; }
 
 @keyframes ah-drift {
   from { transform: translate3d(-2%, -7%, 0); }

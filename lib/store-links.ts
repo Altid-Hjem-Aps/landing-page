@@ -16,7 +16,7 @@ const CAMPAIGN = `ah_1_${SITE}`
 
 export const STORES = ['appstore', 'play'] as const
 export type Store = (typeof STORES)[number]
-export const STORE_POSITIONS = ['hero', 'founder', 'how-it-works', 'bottom', 'nav', 'final', 'qr'] as const
+export const STORE_POSITIONS = ['hero', 'founder', 'how-it-works', 'bottom', 'nav', 'final', 'qr', 'faq'] as const
 export type StorePosition = (typeof STORE_POSITIONS)[number]
 
 /** The element every "Hent appen" control scrolls to: the closing section's

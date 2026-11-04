@@ -28,21 +28,21 @@ function setPaused(paused: boolean) {
   window.dispatchEvent(new Event(CHANGED))
 }
 
+// In the nav pill, front page only (Nav's motionControl). Hidden without JS, where it
+// could do nothing, and with reduced motion, where the loops are off already.
 export default function PauseMotion() {
   const paused = useSyncExternalStore(subscribe, isPaused, notPausedOnServer)
   const label = paused ? 'Start bevægelse' : 'Stop bevægelse'
   return (
-    <button type="button" className="ah-pause" aria-pressed={paused} onClick={() => setPaused(!paused)}>
-      <span className="ah-pause-icon" aria-hidden>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          {paused ? (
-            <path d="M4 2.5v11a.5.5 0 0 0 .76.43l9-5.5a.5.5 0 0 0 0-.86l-9-5.5A.5.5 0 0 0 4 2.5Z" />
-          ) : (
-            <path d="M3.5 2h3a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5Zm6 0h3a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5Z" />
-          )}
-        </svg>
-      </span>
-      <span className="ah-pause-label">{label}</span>
+    <button type="button" className="ah-pause" aria-pressed={paused} title={label} onClick={() => setPaused(!paused)}>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden>
+        {paused ? (
+          <path d="M4 2.5v11a.5.5 0 0 0 .76.43l9-5.5a.5.5 0 0 0 0-.86l-9-5.5A.5.5 0 0 0 4 2.5Z" />
+        ) : (
+          <path d="M3.5 2h3a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5Zm6 0h3a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5Z" />
+        )}
+      </svg>
+      <span className="sr-only">{label}</span>
     </button>
   )
 }

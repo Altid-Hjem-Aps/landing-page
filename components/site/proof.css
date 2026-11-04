@@ -140,6 +140,28 @@ html:not(.js) .pf-toggle { display: none; }
   .pf-lens-screen { transition: none; }
 }
 
+/* One column with a rhythm of its own: each tile a different height, the phones
+   cut well above where the bento cuts them. Beats the Phone's inline ratio. */
+@media (max-width: 899.98px) {
+  .pf-lock { min-height: 330px; padding-top: 172px; }
+  .pf-padlock { top: -20px; right: -14px; width: 152px; }
+  /* From the padlock, whatever the tile's width. */
+  .pf-ray { top: 6px; right: auto; left: calc(100% - 90px); width: 420px; height: 130px; }
+  .pf-lens { padding-top: 22px; }
+  .pf-lens-line { margin-top: 14px; }
+  .pf-lens-stack { width: min(82%, 340px); padding-top: 20px; }
+  .pf-lens .ah-phone-screen { aspect-ratio: 1179 / 1250 !important; }
+  .pf-bills { padding-top: 22px; }
+  .pf-bills-phone { --ah-phone-w: min(76%, 290px); padding-top: 18px; }
+  .pf-bills .ah-phone-screen { aspect-ratio: 1179 / 880 !important; }
+  .pf-login { flex-direction: row; align-items: center; gap: 16px; padding: 18px 20px; }
+  .pf-app-icon { width: 60px; flex: none; }
+  .pf-login .ah-h3 { font-size: 19px; }
+  .pf-team { flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; padding: 26px 20px; }
+  .pf-energi-logo { width: 116px; flex: none; }
+  .pf-team .ah-h3 { font-size: 19px; text-align: right; }
+}
+
 @media (min-width: 900px) {
   .pf-grid {
     grid-template-columns: repeat(12, 1fr);

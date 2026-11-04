@@ -9,7 +9,7 @@ import AltidForsikring from '@/components/site/AltidForsikring'
 import Proof from '@/components/site/Proof'
 import Spoergsmaal from '@/components/site/Spoergsmaal'
 import Velkommen from '@/components/site/Velkommen'
-import PauseMotion from '@/components/site/primitives/PauseMotion'
+import KeepJsClass from '@/components/site/primitives/KeepJsClass'
 import { getElpriser } from '@/lib/elpriser'
 
 // Today's electricity prices in the Altid Energi section stay at most half an hour old.
@@ -19,10 +19,12 @@ export default async function Home() {
   const elpriser = await getElpriser()
   return (
     <div className="ah-site">
-      <Nav />
+      <KeepJsClass />
+      {/* Before the nav, so it is the first stop for a keyboard. */}
       <a href="#indhold" className="ah-skip">
         Spring til indhold
       </a>
+      <Nav motionControl />
       <main id="indhold">
         <Hero />
         <Questions />
@@ -35,7 +37,6 @@ export default async function Home() {
         <Velkommen />
       </main>
       <Footer sampleData />
-      <PauseMotion />
     </div>
   )
 }

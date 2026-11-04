@@ -16,7 +16,7 @@
   max-width: 34em;
   margin-top: 20px;
   color: var(--ah-cream);
-  font-size: clamp(16px, 1.3vw, 18px);
+  font-size: clamp(17px, 1.35vw, 20px);
   line-height: 1.6;
   text-wrap: pretty;
 }
@@ -79,6 +79,8 @@
 .ah-hero-layer img { object-fit: cover; object-position: top; }
 .ah-hero-layer--first { display: block; }
 
+.ah-hero-phone-dim { display: none; }
+
 /* The door of light, centred on the phone's top edge and behind the phone. */
 .ah-hero-light-anchor {
   position: absolute;
@@ -113,19 +115,30 @@
 }
 .ah-hero-step-caption {
   color: var(--ah-cream);
-  font-size: clamp(16px, 1.3vw, 18px);
+  font-size: clamp(17px, 1.35vw, 20px);
   line-height: 1.6;
 }
 .ah-hero-step-phone { --ah-phone-w: min(300px, 72vw); margin-top: 20px; }
 
 .ah-hero-card {
+  position: relative;
   width: min(100%, 560px);
   margin: 72px auto 0;
-  overflow: hidden;
+}
+.ah-hero-card-edge {
+  position: absolute;
+  inset: 0;
   border-radius: 24px;
   box-shadow:
-    0 0 0 1px rgb(183 242 167 / 0.6),
-    0 28px 70px -12px rgb(0 18 7 / 0.75);
+    0 0 0 1.5px var(--ah-mint),
+    0 36px 80px -8px rgb(0 12 5 / 0.9),
+    0 10px 28px rgb(0 12 5 / 0.55);
+}
+.ah-hero-card-face {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  background: var(--ah-deep-forest);
 }
 .ah-hero-card img { display: block; width: 100%; height: auto; }
 .ah-hero-screens-caption { margin-top: 24px; }
@@ -190,6 +203,13 @@
     transform-origin: 50% 0;
   }
   html.js .ah-hero-layer { display: block; }
+  html.js .ah-hero-phone-dim {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: var(--ah-deep-forest);
+    pointer-events: none;
+  }
   html.js .ah-hero-layer--first { display: none; }
 
   /* Hot band, then bloom. Static gradients: only opacity moves. */
@@ -236,12 +256,14 @@
     margin-left: calc(50vw * -1 + 16px);
   }
   html.js .ah-hero-word { font-size: clamp(44px, 9vw, 84px); }
-  html.js .ah-hero-step-caption { margin-top: 2px; font-size: clamp(16px, 2.1vw, 20px); }
+  html.js .ah-hero-step-caption { margin-top: 2px; font-size: clamp(17px, 2.1vw, 20px); }
 
+  /* Centred on the band of the screen it is cut from: that band's middle is 50.73 %
+     of the phone's width down from its top, the card is 44.1 % as high as it is wide. */
   html.js .ah-hero-card {
     --ah-card-w: min(calc(100vw - 32px), 560px);
     position: absolute;
-    top: 7%;
+    top: calc(var(--ah-small-w) * 0.5073 - var(--ah-card-w) * 0.2205);
     left: 50%;
     width: var(--ah-card-w);
     margin: 0 0 0 calc(var(--ah-card-w) / -2);
@@ -283,7 +305,7 @@
     html.js .ah-hero-sub {
       max-width: 31em;
       margin-top: calc(var(--ah-big-w) * 0.03);
-      font-size: clamp(16px, calc(var(--ah-big-w) * 0.0265), 20px);
+      font-size: clamp(17px, calc(var(--ah-big-w) * 0.0265), 20px);
     }
     html.js .ah-hero-pills { margin-top: calc(var(--ah-big-w) * 0.034); }
 
@@ -321,8 +343,8 @@
     html.js .ah-hero-step:nth-child(1) { top: 12%; right: calc(100% + var(--ah-word-gap)); left: auto; }
     html.js .ah-hero-step:nth-child(2) { top: 44%; left: calc(100% + var(--ah-word-gap)); text-align: left; }
     html.js .ah-hero-step:nth-child(3) { top: 68%; right: calc(100% + var(--ah-word-gap)); left: auto; }
-    html.js .ah-hero-step-caption { margin-top: 8px; font-size: clamp(17px, 1.4vw, 21px); }
-    html.js .ah-hero-card { --ah-card-w: calc(var(--ah-small-w) + 2 * min(var(--ah-word-gap) - 10px, var(--ah-small-w) * 0.28)); top: 9%; }
+    html.js .ah-hero-step-caption { margin-top: 8px; font-size: clamp(17px, 1.35vw, 20px); }
+    html.js .ah-hero-card { --ah-card-w: calc(var(--ah-small-w) + 2 * min(var(--ah-word-gap) - 10px, var(--ah-small-w) * 0.28)); }
   }
 
   @media (min-width: 1200px) {
@@ -337,11 +359,11 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      padding: 92px 16px 0;
+      padding: 100px 16px 0;
     }
     html.js .ah-hero-intro { flex: none; }
     html.js .ah-hero-title { font-size: 40px; }
-    html.js .ah-hero-sub { margin-top: 10px; font-size: 16px; line-height: 1.5; }
+    html.js .ah-hero-sub { margin-top: 10px; font-size: 17px; line-height: 1.45; }
     html.js .ah-hero-pills { margin-top: 14px; column-gap: 8px; row-gap: 8px; }
     html.js .ah-hero-trust { margin-top: 10px; }
 
@@ -374,7 +396,6 @@
     html.js .ah-hero-icon--strom { top: 128px; left: calc(50% - var(--ah-big-w) / 2 - 22px); --ah-icon-size: 44px; }
     html.js .ah-hero-icon--forsikring { top: 168px; right: calc(50% - var(--ah-big-w) / 2 - 22px); --ah-icon-size: 44px; }
 
-    html.js .ah-hero-screens-caption { padding-left: 64px; padding-right: 16px; }
   }
 
   /* Pills wrap to two rows here, as the store pills do at 375 px and below. */

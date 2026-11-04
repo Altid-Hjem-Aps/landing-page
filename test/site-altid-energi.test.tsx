@@ -45,9 +45,28 @@ function data(partial: Partial<ElpriserData> = {}): ElpriserData {
 
 const answer = () => document.querySelector('.ae-answer')?.textContent
 const range = () => screen.getByRole('slider', { name: 'Vælg time' }) as HTMLInputElement
+const readAt = (index: number) => {
+  fireEvent.change(range(), { target: { value: String(index) } })
+  return document.querySelector('.ae-readout')?.textContent
+}
+
+/** jsdom has no IntersectionObserver. This one reports only when told to. */
+const observers: { report: (isIntersecting: boolean) => void }[] = []
+class FakeObserver {
+  constructor(private callback: IntersectionObserverCallback) {
+    observers.push({
+      report: (isIntersecting) =>
+        this.callback([{ isIntersecting } as IntersectionObserverEntry], this as unknown as IntersectionObserver),
+    })
+  }
+  observe() {}
+  disconnect() {}
+}
 
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['Date', 'setInterval', 'clearInterval'] })
+  observers.length = 0
+  vi.stubGlobal('IntersectionObserver', FakeObserver)
 })
 afterEach(() => {
   vi.useRealTimers()
@@ -76,10 +95,16 @@ describe('the answer is the cheapest hour left today', () => {
       expected: 'I dag: nu til kl. 14',
     },
     {
-      name: 'the last hour wraps to midnight',
+      name: 'the last hour, running, ends at 24',
       now: '23:10',
       hours: dayOf(),
-      expected: 'I dag: nu til kl. 00',
+      expected: 'I dag: nu til kl. 24',
+    },
+    {
+      name: 'the last hour ends at 24, not 00',
+      now: '20:30',
+      hours: dayOf({ 23: 1 }),
+      expected: 'I dag: kl. 23 til 24',
     },
     {
       name: 'after the last hour with data, and tomorrow unknown',
@@ -111,6 +136,10 @@ describe('the answer is the cheapest hour left today', () => {
     expect(screen.getByText('I morgen: kl. 03 til 04')).toBeInTheDocument()
     unmount()
 
+    const lastHour = render(<AltidEnergi elpriser={data({ tomorrowHours: dayOf({ 23: 0.5 }) })} />)
+    expect(screen.getByText('I morgen: kl. 23 til 24')).toBeInTheDocument()
+    lastHour.unmount()
+
     render(<AltidEnergi elpriser={data()} />)
     expect(screen.queryByText(/I morgen/)).not.toBeInTheDocument()
   })
@@ -138,6 +167,7 @@ describe('old cached data never gives a stale answer', () => {
     )
     expect(answer()).toBe('I dag: kl. 15 til 16')
     expect(screen.queryByText(/I morgen/)).not.toBeInTheDocument()
+    expect(range().max).toBe('23')
   })
 
   it('shows the failure state when the cache is old and tomorrow is unknown', () => {
@@ -169,6 +199,160 @@ describe('old cached data never gives a stale answer', () => {
     expect(errors).not.toHaveBeenCalled()
     expect(host.querySelector('.ae-answer')?.textContent).toBe('I dag: kl. 09 til 10')
     host.remove()
+  })
+})
+
+describe('the chart looks ahead when tomorrow is known', () => {
+  const pastBars = () => document.querySelectorAll('.ae-bar[data-past]')
+  const greenBars = () => document.querySelectorAll('.ae-bar[data-level="best"]')
+
+  it('tomorrow known: starts at the running hour and runs through the end of tomorrow', () => {
+    setClock(at(TODAY, '22:30'))
+    render(<AltidEnergi elpriser={data({ tomorrowHours: dayOf() })} />)
+
+    expect(document.querySelectorAll('.ae-bar')).toHaveLength(26)
+    expect(pastBars()).toHaveLength(0)
+    expect(readAt(0)).toBe('kl. 22: 2,50 kr. pr. kWh')
+    expect(readAt(2)).toBe('I morgen kl. 00: 2,50 kr. pr. kWh')
+    expect(readAt(25)).toBe('I morgen kl. 23: 2,50 kr. pr. kWh')
+    expect(range().max).toBe('25')
+    expect(screen.getByText('I morgen')).toBeInTheDocument()
+    expect(screen.getByText('Nu')).toBeInTheDocument()
+    expect(screen.getByText(/^Dagens og morgendagens timepriser/)).toBeInTheDocument()
+  })
+
+  it('tomorrow unknown: the whole of today, with the hours gone dimmed', () => {
+    setClock(at(TODAY, '14:10'))
+    render(<AltidEnergi elpriser={data()} />)
+
+    expect(document.querySelectorAll('.ae-bar')).toHaveLength(24)
+    expect(pastBars()).toHaveLength(14)
+    expect(range().value).toBe('14')
+    expect(readAt(0)).toBe('kl. 00: 2,50 kr. pr. kWh')
+    expect(screen.queryByText(/I morgen/)).not.toBeInTheDocument()
+    expect(screen.getByText(/^Dagens timepriser/)).toBeInTheDocument()
+  })
+
+  it('the last row of today is gone: only tomorrow, with no "Nu"', () => {
+    setClock(at(TODAY, '23:30'))
+    render(<AltidEnergi elpriser={data({ hours: dayOf({}, 23), tomorrowHours: dayOf({ 4: 0.5 }) })} />)
+
+    expect(range().max).toBe('23')
+    expect(screen.getByText('I morgen')).toBeInTheDocument()
+    expect(screen.queryByText('Nu')).not.toBeInTheDocument()
+    expect(document.querySelector('.ae-readout')?.textContent).toBe('I morgen kl. 04: 0,63 kr. pr. kWh')
+  })
+
+  it('the same hour on the two days stays two hours: reading it and colouring it', () => {
+    setClock(at(TODAY, '14:10'))
+    render(<AltidEnergi elpriser={data({ hours: dayOf({ 20: 1 }), tomorrowHours: dayOf({ 3: 0.5, 20: 1.5 }) })} />)
+
+    const tomorrow20 = 10 + 20
+    expect(readAt(tomorrow20)).toBe('I morgen kl. 20: 1,88 kr. pr. kWh')
+    expect(range().value).toBe(String(tomorrow20))
+
+    // Today's answer and tomorrow's answer are the only two in Signal green.
+    expect(answer()).toBe('I dag: kl. 20 til 21I morgen: kl. 03 til 04')
+    expect(greenBars()).toHaveLength(2)
+    const bars = [...document.querySelectorAll('.ae-bar')]
+    expect(bars.indexOf(greenBars()[0])).toBe(6)
+    expect(bars.indexOf(greenBars()[1])).toBe(10 + 3)
+  })
+
+  it('splits the hours on the chart in three by rank, and a flat day is all one colour', () => {
+    const levels = () => {
+      const count: Record<string, number> = {}
+      document.querySelectorAll<HTMLElement>('.ae-bar').forEach((b) => {
+        count[b.dataset.level as string] = (count[b.dataset.level as string] ?? 0) + 1
+      })
+      return count
+    }
+    setClock(at(TODAY, '00:30'))
+    const spiky = Array.from({ length: 24 }, (_, h) => row(h, 1 + h * h * 0.01))
+    const first = render(<AltidEnergi elpriser={data({ hours: spiky })} />)
+    expect(levels()).toEqual({ best: 1, low: 7, mid: 8, high: 8 })
+    first.unmount()
+
+    render(<AltidEnergi elpriser={data()} />)
+    expect(levels()).toEqual({ best: 1, mid: 23 })
+  })
+
+  it('drops the hour that has passed, with the page open', () => {
+    setClock(at(TODAY, '22:59'))
+    render(<AltidEnergi elpriser={data({ tomorrowHours: dayOf() })} />)
+    expect(range().max).toBe('25')
+
+    act(() => {
+      setClock(at(TODAY, '23:00'))
+      vi.advanceTimersByTime(30_000)
+    })
+    expect(range().max).toBe('24')
+    expect(document.querySelector('.ae-readout')?.textContent).toBe('kl. 23: 2,50 kr. pr. kWh')
+  })
+
+  it('goes back to the whole day in a zone where tomorrow is unknown', () => {
+    setClock(at(TODAY, '14:10'))
+    const tomorrowHours = dayOf().map((r) => row(r.hour, 2, null))
+    render(<AltidEnergi elpriser={data({ tomorrowHours })} />)
+    expect(range().max).toBe('33')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Østdanmark' }))
+    expect(range().max).toBe('23')
+    expect(pastBars()).toHaveLength(14)
+  })
+
+  it('server render: today under its date, then the window on hydrating, and no mismatch', async () => {
+    const elpriser = data({ tomorrowHours: dayOf() })
+    setClock(at(TODAY, '14:10'))
+    const host = document.createElement('div')
+    host.innerHTML = renderToString(<ElprisBars data={elpriser} />)
+    document.body.append(host)
+    expect(host.querySelectorAll('.ae-bar')).toHaveLength(24)
+    expect(host.querySelectorAll('.ae-bar[data-past]')).toHaveLength(0)
+    expect(host.querySelector('.ae-axis')?.textContent).not.toContain('I morgen')
+    expect(host.querySelector('[data-rise]')).toBeNull()
+
+    const errors = vi.spyOn(console, 'error').mockImplementation(() => {})
+    await act(async () => {
+      hydrateRoot(host, <ElprisBars data={elpriser} />)
+    })
+    expect(errors).not.toHaveBeenCalled()
+    expect(host.querySelectorAll('.ae-bar')).toHaveLength(34)
+    host.remove()
+  })
+})
+
+describe('the bars rise once', () => {
+  const chart = () => document.querySelector('.ae-bars')
+
+  it('waits below the fold, rises on coming into view, then stays still', () => {
+    vi.useFakeTimers({ toFake: ['Date', 'setInterval', 'clearInterval', 'setTimeout', 'clearTimeout'] })
+    setClock(at(TODAY, '14:10'))
+    render(<AltidEnergi elpriser={data()} />)
+    expect(chart()).toHaveAttribute('data-rise', 'wait')
+
+    act(() => observers[0].report(false))
+    expect(chart()).toHaveAttribute('data-rise', 'wait')
+
+    act(() => observers[0].report(true))
+    expect(chart()).toHaveAttribute('data-rise', 'go')
+
+    act(() => {
+      vi.advanceTimersByTime(2_000)
+    })
+    expect(chart()).not.toHaveAttribute('data-rise')
+
+    // Changing zone or passing the hour redraws the bars without another beat.
+    fireEvent.click(screen.getByRole('button', { name: 'Østdanmark' }))
+    expect(chart()).not.toHaveAttribute('data-rise')
+  })
+
+  it('already on screen when hydrated: nothing is taken away to rise again', () => {
+    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: 100, bottom: 400 } as DOMRect)
+    setClock(at(TODAY, '14:10'))
+    render(<AltidEnergi elpriser={data()} />)
+    expect(chart()).not.toHaveAttribute('data-rise')
+    expect(observers).toHaveLength(0)
   })
 })
 

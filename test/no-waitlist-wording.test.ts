@@ -26,9 +26,16 @@ const ALLOWED = new Set([
   'lib/signup-source.ts',
   // A sales deck for a partner, a number about history.
   'app/norlys/deck.html',
-  // Thor's mail sentence "få snart nye tilbud" is about offers, not a waitlist.
-  'components/site/AltidForsikring.tsx',
 ])
+
+// Exact phrases that hold a guarded word without being wording. Everything else
+// in the same file stays guarded.
+const withoutAllowedPhrases = (source: string) =>
+  source
+    // The newsletter form posts to this URL. The address is not wording.
+    .replaceAll('/api/waitlist', '')
+    // Thor's mail sentence is about offers, not a waitlist.
+    .replaceAll('få snart nye tilbud', '')
 
 function sourceFiles(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
@@ -77,8 +84,7 @@ describe('waitlist wording guard', () => {
     const hits = ['app', 'components', 'lib']
       .flatMap(sourceFiles)
       .filter((path) => !ALLOWED.has(path))
-      // The newsletter form posts to this URL. The address is not wording.
-      .filter((path) => WORDING.test(readFileSync(path, 'utf8').replaceAll('/api/waitlist', '')))
+      .filter((path) => WORDING.test(withoutAllowedPhrases(readFileSync(path, 'utf8'))))
     expect(hits).toEqual([])
   })
 

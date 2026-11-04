@@ -1,9 +1,12 @@
 /* Altid Energi: today's real prices. Unlayered, so these beat the primitives. */
 
+/* The nav floats to 76 px. A jump to the section lands it at the top of the screen,
+   sky behind the nav, and the padding keeps the heading at least 32 px below. */
 .ae-sec {
   position: relative;
-  padding: clamp(48px, 5vw, 80px) var(--ah-gutter) 0;
+  padding: clamp(112px, 8vw, 144px) var(--ah-gutter) 0;
 }
+.ah-site #altid-energi { scroll-margin-top: 0; }
 /* Wider than the page's wrap on a big screen, so the chart keeps filling the section. */
 .ae-wrap { max-width: 1240px; margin-inline: auto; }
 @media (min-width: 1600px) {
@@ -125,12 +128,16 @@ html.js .ae-date { visibility: hidden; }
   .ae-side { flex-direction: column; align-items: flex-start; }
 }
 
+.ae-bars,
+.ae-axis { --ae-gap: clamp(2px, 0.5cqw, 6px); }
 .ae-bars {
   display: flex;
   align-items: stretch;
-  gap: clamp(2px, 0.5cqw, 6px);
+  gap: var(--ae-gap);
   height: clamp(210px, 38svh, 440px);
-  margin-top: clamp(16px, 2.4cqw, 28px);
+  /* Room for the marker above a full-height bar. */
+  padding-top: 18px;
+  margin-top: clamp(12px, 2cqw, 24px);
   cursor: ew-resize;
   /* Vertical scrolling stays with the page; a sideways drag scrubs. */
   touch-action: pan-y;
@@ -144,43 +151,94 @@ html.js .ae-date { visibility: hidden; }
   justify-content: flex-end;
   min-width: 0;
 }
-.ae-col[data-selected]::before {
+/* Marks sit in the gap between today and tomorrow, and run on into the axis. */
+.ae-col[data-daystart]::after,
+.ae-axis > [data-daystart]::before {
   content: '';
   position: absolute;
-  inset: 0 -1px;
-  border-radius: 8px 8px 0 0;
-  background: rgb(255 255 255 / 0.12);
+  left: calc(var(--ae-gap) / -2 - 0.5px);
+  width: 1px;
+  background: rgb(253 250 244 / 0.5);
 }
+.ae-col[data-daystart]::after { top: -14px; bottom: -8px; }
+.ae-axis > [data-daystart]::before { top: 0; bottom: 4px; }
+
 .ae-bar {
   position: relative;
   display: block;
+  flex: none;
   min-height: 3px;
   border-radius: clamp(3px, 0.6cqw, 8px) clamp(3px, 0.6cqw, 8px) 0 0;
+  transform-origin: 50% 100%;
 }
-/* Contrast on Deep forest, checked: all above 3:1, past hours too. */
-.ae-bar[data-level='low'] { background: rgb(253 250 244 / 0.72); }
+/* Solid colours only, never opacity over the panel, which muddies them. On Deep forest
+   Rose is 7.8:1, Honey 8.9:1, Mint 9.8:1, Signal 10.1:1. Past hours step back on purpose. */
+.ae-bar[data-level='low'] { background: var(--ah-mint); }
 .ae-bar[data-level='mid'] { background: var(--ah-honey); }
 .ae-bar[data-level='high'] { background: var(--ah-rose); }
 .ae-bar[data-level='best'] { background: var(--ah-signal); }
-.ae-bar[data-past] { opacity: 0.56; }
+.ae-bar[data-past] { background: rgb(253 250 244 / 0.16); }
+
+/* A filled dot over the running hour, a ring over the hour being read. */
+.ae-mark {
+  flex: none;
+  align-self: center;
+  width: min(100%, 14px);
+  aspect-ratio: 1;
+  margin-bottom: 5px;
+  border: 2px solid var(--ah-cream);
+  border-radius: 50%;
+}
+.ae-mark[data-now] { background: var(--ah-cream); }
+
+/* One beat when the chart comes into view, then still. The waiting state only exists
+   once the client has set it, so nothing is hidden without JS, on paper or when paused. */
+@keyframes ae-rise {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  html:not([data-motion='paused']) .ae-bars[data-rise='wait'] .ae-bar { transform: scaleY(0); }
+  html:not([data-motion='paused']) .ae-bars[data-rise='go'] .ae-bar {
+    animation: ae-rise 640ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--ae-i) * 18ms);
+  }
+}
 
 .ae-axis {
   display: flex;
-  gap: clamp(2px, 0.5cqw, 6px);
+  gap: var(--ae-gap);
   height: 26px;
   margin-top: 8px;
   font-size: 13px;
-  line-height: 18px;
+  line-height: 22px;
   white-space: nowrap;
 }
 .ae-axis > span {
+  position: relative;
   display: flex;
   flex: 1 1 0;
   justify-content: center;
   min-width: 0;
   color: rgb(253 250 244 / 0.8);
 }
-.ae-axis [data-now] {
+.ae-axis > span:first-child,
+.ae-axis > [data-daystart] { justify-content: flex-start; }
+.ae-axis > span:last-child { justify-content: flex-end; }
+.ae-now {
+  flex: none;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--ah-cream);
+  color: var(--ah-deep-forest);
+  font-weight: 700;
+}
+/* Starts at the divider, past the "Nu" pill when that stands right next to it. A column's
+   width is 100% here, so the shift is gone as soon as the columns are wide enough. */
+.ae-tomorrow-label {
+  flex: none;
+  margin-left: max(5px, calc(46px - var(--ae-after-now, 9) * 100%));
   color: var(--ah-cream);
   font-weight: 700;
 }
@@ -224,9 +282,10 @@ html.js .ae-date { visibility: hidden; }
   border-radius: 50%;
   background: var(--ah-cream);
 }
-/* There is no room for "kl." under bars this narrow. */
+/* There is no room for "kl." under bars this narrow, or for a time beside a wider label. */
 @container (max-width: 560px) {
-  .ae-kl { display: none; }
+  .ae-kl,
+  .ae-axis > [data-tight] > .ae-time { display: none; }
 }
 /* Without JS these do nothing, so they are not offered. */
 html:not(.js) .ae-range,

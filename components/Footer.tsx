@@ -51,8 +51,8 @@ export default function Footer({ sampleData = false }: { sampleData?: boolean })
       className="relative z-[1] mt-[-32px] rounded-t-[32px] px-6 pt-14 pb-8 sm:px-10 lg:px-16"
       style={{ background: '#163223', color: '#fff' }}
     >
-      <div className="mx-auto grid max-w-[1240px] grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-x-12">
-        <div className="col-span-2 md:col-span-1">
+      <div className="mx-auto grid max-w-[1240px] grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-[1.6fr_1fr_1fr] md:gap-x-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div className="col-span-2 md:col-span-3 lg:col-span-1">
           <Logo className="w-32 h-auto" variant="forest" />
           <div className="mt-6 flex items-center gap-2.5" aria-hidden>
             {SERVICE_ICONS.map((name) => (
