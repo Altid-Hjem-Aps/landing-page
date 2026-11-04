@@ -32,10 +32,11 @@
 
 html {
   scroll-behavior: smooth;
-  /* Belt-and-suspenders horizontal lock: html overflow-x:clip + body
-     overflow-x:hidden + overscroll-behavior-x:none. iOS Safari sometimes
-     ignores overflow-x:hidden on body alone and lets the user rubber-band
-     horizontally — this combination defeats that. */
+  /* Horizontal lock: overflow-x:clip on html and body plus
+     overscroll-behavior-x:none. iOS Safari sometimes lets the user rubber-band
+     horizontally without it. clip, not hidden: overflow hidden on body makes it
+     a scroll container, and position:sticky stops working in every pinned
+     scene on the front page. */
   overflow-x: clip;
   overscroll-behavior-x: none;
 }
@@ -44,7 +45,7 @@ body {
   font-family: var(--font-family-sans);
   background-color: var(--cream);
   color: var(--text-dark);
-  overflow-x: hidden;
+  overflow-x: clip;
   overscroll-behavior-x: none;
 }
 
@@ -238,3 +239,297 @@ body {
 /* Store pill order: App Store first by default (no JS, desktop, iOS); the head
    script in app/layout.tsx marks Android so Google Play comes first. */
 html[data-platform="android"] .store-badge-play { order: -1; }
+
+/* ------------------------------------------------------------------------
+   The front page (components/site). Tokens from brand book sheets 11 and 12.
+   .ah-chrome carries them for Nav and Footer on the pages outside .ah-site,
+   where no page background comes with them.
+   ------------------------------------------------------------------------ */
+.ah-site,
+.ah-chrome {
+  --ah-deep-forest: #003c16; /* hero, blocks */
+  --ah-dark-forest: #163223; /* text, footer */
+  --ah-cream: #fdfaf4;
+  --ah-signal: #90ff7c; /* action and one number only */
+  --ah-stone: #6f6a61; /* secondary text, on Cream only */
+  --ah-mint: #b7f2a7; /* bills */
+  --ah-honey: #ffd27a; /* takeaway and dreams */
+  --ah-lavender: #bdb0f9; /* meal plan */
+  --ah-sand: #f5efe3; /* shopping */
+  --ah-sky: #a3d5ff; /* Altid Energi */
+  --ah-rose: #ffbab8; /* Altid Forsikring */
+  --ah-font-display: var(--font-dm-sans), system-ui, sans-serif;
+  --ah-font-body: var(--font-onest), system-ui, sans-serif;
+  --ah-radius-card: 20px;
+  --ah-radius-block: clamp(32px, 4vw, 50px);
+  --ah-gutter: clamp(20px, 4vw, 64px);
+}
+
+.ah-site section[id] {
+  scroll-margin-top: 96px;
+}
+
+.ah-site :is(a, button, summary, input):focus-visible,
+.ah-chrome :is(a, button):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+@layer components {
+  .ah-site {
+    background: var(--ah-cream);
+    color: var(--ah-dark-forest);
+    font-family: var(--ah-font-body);
+  }
+
+  .ah-skip {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 110;
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: var(--ah-deep-forest);
+    color: var(--ah-cream);
+    font-weight: 500;
+    transform: translateY(-200%);
+  }
+  .ah-skip:focus-visible {
+    transform: none;
+  }
+
+  /* Type. Headlines DM Sans 700, big numbers DM Sans 800 with a smaller unit. */
+  .ah-h1,
+  .ah-h2,
+  .ah-h3 {
+    font-family: var(--ah-font-display);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .ah-h1 { font-size: clamp(40px, 6.4vw, 96px); }
+  .ah-h2 { font-size: clamp(32px, 4.6vw, 68px); }
+  .ah-h3 { font-size: clamp(22px, 2.2vw, 32px); }
+  .ah-num {
+    font-family: var(--ah-font-display);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+  }
+  .ah-unit { font-size: 0.42em; letter-spacing: -0.01em; }
+  .ah-body { font-size: clamp(16px, 1.3vw, 18px); font-weight: 400; line-height: 1.6; }
+  /* The opening quote hangs outside the text edge, as in the mails. */
+  .ah-hang { text-indent: -0.42em; }
+  .ah-caption { font-size: 13px; line-height: 1.5; color: var(--ah-stone); }
+
+  /* Section frame and one colour per block. Text on a pastel is Deep forest. */
+  .ah-sec {
+    position: relative;
+    padding: clamp(72px, 10vw, 160px) var(--ah-gutter);
+  }
+  .ah-wrap { max-width: 1240px; margin-inline: auto; }
+  .ah-bg-forest { background: var(--ah-deep-forest); color: var(--ah-cream); }
+  .ah-bg-cream { background: var(--ah-cream); color: var(--ah-dark-forest); }
+  .ah-bg-mint { background: var(--ah-mint); color: var(--ah-deep-forest); }
+  .ah-bg-honey { background: var(--ah-honey); color: var(--ah-deep-forest); }
+  .ah-bg-lavender { background: var(--ah-lavender); color: var(--ah-deep-forest); }
+  .ah-bg-sand { background: var(--ah-sand); color: var(--ah-deep-forest); }
+  .ah-bg-sky { background: var(--ah-sky); color: var(--ah-deep-forest); }
+  .ah-bg-rose { background: var(--ah-rose); color: var(--ah-deep-forest); }
+
+  /* Phone (primitives/Phone.tsx). Everything is in cqw of the phone's own width,
+     so any width stays in proportion; children of the screen can use cqw too. */
+  .ah-phone {
+    flex: none;
+    width: var(--ah-phone-w, 320px);
+    max-width: 100%;
+    container-type: inline-size;
+  }
+  .ah-phone-body {
+    padding: 2.4cqw;
+    border-radius: 15cqw;
+    background: var(--ah-dark-forest);
+    box-shadow:
+      inset 0 0 0 0.35cqw rgb(255 255 255 / 0.18),
+      0 8cqw 12cqw -5cqw rgb(0 30 12 / 0.55);
+  }
+  .ah-phone-screen {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1179 / 2556;
+    border-radius: 12.6cqw;
+    background: var(--ah-deep-forest);
+  }
+  .ah-phone-screen > img { object-fit: cover; object-position: top; }
+  .ah-phone-island {
+    position: absolute;
+    z-index: 2;
+    top: 2.8cqw;
+    left: 50%;
+    width: 30.3cqw;
+    height: 8.9cqw;
+    border-radius: 999px;
+    background: #000;
+    transform: translateX(-50%);
+  }
+  .ah-phone-content { position: absolute; inset: 0; }
+  .ah-phone--crop .ah-phone-body {
+    padding-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    box-shadow: inset 0 0 0 0.35cqw rgb(255 255 255 / 0.18);
+  }
+  .ah-phone--crop .ah-phone-screen {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  /* Icon circle with a light beam, as in the M0 mail hero (primitives/IconBeam.tsx). */
+  .ah-beam {
+    position: relative;
+    display: block;
+    flex: none;
+    width: var(--ah-icon-size, 88px);
+    height: var(--ah-icon-size, 88px);
+  }
+  .ah-beam-drift {
+    position: absolute;
+    inset: 0;
+    animation: ah-drift 9s ease-in-out infinite alternate;
+  }
+  .ah-beam-ray {
+    position: absolute;
+    top: 9%;
+    left: 50%;
+    width: calc(var(--ah-icon-size, 88px) * var(--ah-beam-length, 2.6));
+    height: 82%;
+    background: linear-gradient(90deg, var(--ah-beam-colour), transparent);
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+    opacity: 0.6;
+    transform: rotate(var(--ah-beam-angle, 180deg));
+    transform-origin: 0 50%;
+  }
+  .ah-beam-icon { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* Pause control (primitives/PauseMotion.tsx). Clear of the cookie banner: on
+     narrow screens the open banner fills the bottom, so the button moves up
+     under the nav while it is there. */
+  .ah-pause {
+    position: fixed;
+    z-index: 70;
+    bottom: 16px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    min-width: 44px;
+    height: 44px;
+    border: 1px solid rgb(22 50 35 / 0.14);
+    border-radius: 999px;
+    background: var(--ah-cream);
+    color: var(--ah-dark-forest);
+    cursor: pointer;
+  }
+  .ah-pause-icon { display: grid; place-items: center; width: 42px; height: 42px; flex: none; }
+  /* Hidden by clipping, not display:none, so it stays the button's accessible name. */
+  .ah-pause-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .ah-pause:hover .ah-pause-label,
+  .ah-pause:focus-visible .ah-pause-label {
+    position: static;
+    width: auto;
+    height: auto;
+    padding-right: 16px;
+    overflow: visible;
+    clip-path: none;
+  }
+  @media (max-width: 719.98px) {
+    body:has([aria-labelledby="cookie-banner-title"]) .ah-pause {
+      top: 92px;
+      bottom: auto;
+    }
+  }
+}
+
+/* The last lines of the footer stay clear of the pause button. Outside the layer,
+   so it beats the footer's padding utility. */
+@media (max-width: 719.98px) {
+  .ah-site footer { padding-bottom: 76px; }
+}
+
+@keyframes ah-drift {
+  from { transform: translate3d(-2%, -7%, 0); }
+  to { transform: translate3d(5%, 8%, 0); }
+}
+
+/* Static first. The base is plain flow where every scene is readable. Pins only
+   switch on with JS (html.js, set by the head script), motion allowed and a
+   screen tall enough to hold a pinned scene (primitives/Pin.tsx). A frame
+   (.ah-frame) is one of several stacked scenes in a pin: in flow in the static
+   case, on top of each other when pinned. */
+.ah-pin { position: relative; }
+.ah-pin-sticky { position: static; height: auto; }
+.ah-frame { position: relative; }
+
+@media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
+  html.js .ah-pin { height: var(--ah-pin-h); }
+  html.js .ah-pin-sticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: clip;
+  }
+  html.js .ah-frame { position: absolute; inset: 0; }
+
+  @media (max-width: 767.98px) {
+    html.js .ah-pin { height: var(--ah-pin-h-mobile); }
+    html.js .ah-pin--flow-mobile .ah-pin-sticky {
+      position: static;
+      height: auto;
+      overflow: visible;
+    }
+    html.js .ah-pin--flow-mobile .ah-frame { position: relative; inset: auto; }
+  }
+}
+
+/* .ah-m goes on every motion element. Framer writes its first frame inline, even
+   server-rendered, so a scene could stay hidden without these !important rules. */
+html:not(.js) .ah-m {
+  opacity: 1 !important;
+  transform: none !important;
+}
+@media (prefers-reduced-motion: reduce), (max-height: 500px) {
+  .ah-m {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+@media (max-width: 767.98px) {
+  .ah-pin--flow-mobile .ah-m {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Loops: stopped by the pause control and by reduced motion. */
+html[data-motion="paused"] *,
+html[data-motion="paused"] *::before,
+html[data-motion="paused"] *::after {
+  animation-play-state: paused !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .ah-site *,
+  .ah-site *::before,
+  .ah-site *::after {
+    animation: none !important;
+  }
+}

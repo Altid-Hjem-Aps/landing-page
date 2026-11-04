@@ -17,3 +17,9 @@ export function detectPlatform(userAgent: string, maxTouchPoints: number): Platf
 // failure (no navigator, a locked dataset) leaves the attribute unset, which
 // is the App Store first default.
 export const PLATFORM_SCRIPT = `try{var u=navigator.userAgent||'',t=navigator.maxTouchPoints||0,p='desktop';if(/android/i.test(u)){p='android'}else if(/iphone|ipad|ipod/i.test(u)||(/macintosh/i.test(u)&&t>1)){p='ios'}document.documentElement.dataset.platform=p}catch(e){}`
+
+// The front page's motion state, also before first paint. html.js switches the
+// pinned scenes on (app/globals.css), so without JS the page stays in static
+// flow. data-motion="paused" holds the visitor's choice from PauseMotion.
+export const MOTION_STORAGE_KEY = 'ah-motion'
+export const MOTION_SCRIPT = `document.documentElement.classList.add('js');try{if(localStorage.getItem('${MOTION_STORAGE_KEY}')==='paused')document.documentElement.dataset.motion='paused'}catch(e){}`

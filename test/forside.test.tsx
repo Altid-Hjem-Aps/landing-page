@@ -3,21 +3,14 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import { consentSentences } from 'altid-consent'
 import Home from '@/app/page'
 import BottomCta from '@/components/sections/BottomCta'
-import Faq from '@/components/sections/Faq'
-import HowItWorks from '@/components/sections/HowItWorks'
-import Services from '@/components/sections/Services'
-import Testimonials from '@/components/sections/Testimonials'
 
-// The front page as it stands after the flip, rendered whole where it matters.
-// Boundaries faked: the Amplitude SDK, the App Router, the Mux player and the
-// browser APIs jsdom lacks. The phones are stubbed: they change in their own PR.
+// The front page rendered whole. Boundaries faked: the Amplitude SDK, the App
+// Router, the price API (fetch) and the browser APIs jsdom lacks.
 vi.mock('@amplitude/analytics-browser', () => ({ track: vi.fn() }))
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
   usePathname: () => '/',
 }))
-vi.mock('@/components/IPhoneMockup', () => ({ default: () => null }))
-vi.mock('@/components/sections/why/EtHjemStage', () => ({ default: () => null }))
 
 // Literal on purpose: ALT-894's campaign links, not built from lib/store-links.
 const APP_STORE = 'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_altidhjem_dk&mt=8'
@@ -25,6 +18,7 @@ const PLAY =
   'https://play.google.com/store/apps/details?id=dk.altidhjem.app&referrer=utm_source%3Daltidhjem_dk%26utm_campaign%3Dah_1_altidhjem_dk'
 
 beforeEach(() => {
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 503, json: async () => ({}) }))
   vi.stubGlobal(
     'IntersectionObserver',
     class {
@@ -55,35 +49,37 @@ function allReadableText(root: HTMLElement): string {
 }
 
 describe('front page', () => {
-  it('keeps every section of today\'s page, in today\'s order', () => {
-    const { container } = render(<Home />)
-    const headings = Array.from(container.querySelectorAll('h1,h2')).map((h) => h.textContent)
-    expect(headings).toEqual([
-      'Hele hjemmets økonomi i én app',
-      expect.stringContaining('Der er gebyrer overalt'),
-      'Hvad finder du i appen?',
-      'Ét hjem. Alt for mange regninger.',
-      'Fire trin til fuldt overblik',
-      'Fair, gennemsigtigt og billigt',
-      'Ofte stillede spørgsmål',
-      'Læs mere om, hvordan Altid Hjem skaber ro i hverdagen',
-      'Hent Altid Hjem',
-    ])
+  it('has one h1 and the sections in the plan\'s order', async () => {
+    const { container } = render(await Home())
+    expect(Array.from(container.querySelectorAll('h1')).map((h) => h.textContent)).toEqual(['Hele hjemmet i én app'])
+    const ids = Array.from(container.querySelectorAll('main > section[id]')).map((s) => s.id)
+    const inOrder = ['okonomi', 'altid-mad', 'altid-energi', 'altid-forsikring', 'spoergsmaal', 'velkommen']
+    expect(ids.filter((id) => inOrder.includes(id))).toEqual(inOrder)
   })
 
-  it('has the store pills in the hero, founder, how-it-works and bottom sections, with the exact links', () => {
-    const { container } = render(<Home />)
+  it('every link in the nav lands on a section', async () => {
+    const { container } = render(await Home())
+    const nav = within(container.querySelector('nav') as HTMLElement)
+    const targets = nav
+      .getAllByRole('link')
+      .map((a) => a.getAttribute('href') as string)
+      .filter((href) => href.startsWith('/#'))
+    expect(targets.length).toBeGreaterThan(4)
+    for (const href of targets) expect(container.querySelector(href.slice(1)), href).not.toBeNull()
+  })
+
+  it('has store pills at the top and the bottom, with the exact links, and one target for "Hent appen"', async () => {
+    const { container } = render(await Home())
     const appStore = within(container).getAllByRole('link', { name: 'Hent i App Store' })
     const play = within(container).getAllByRole('link', { name: 'Hent i Google Play' })
-    expect(appStore).toHaveLength(4)
-    expect(play).toHaveLength(4)
+    expect(appStore.length).toBeGreaterThanOrEqual(2)
+    expect(play.length).toBe(appStore.length)
     appStore.forEach((a) => expect(a).toHaveAttribute('href', APP_STORE))
     play.forEach((a) => expect(a).toHaveAttribute('href', PLAY))
-    // The one target of "Hent appen" is the hero's pills.
     const anchors = container.querySelectorAll('#hent-appen')
     expect(anchors).toHaveLength(1)
     expect(within(anchors[0] as HTMLElement).getByRole('link', { name: 'Hent i App Store' })).toBeInTheDocument()
-    expect(container.querySelector('#top')?.contains(anchors[0])).toBe(true)
+    expect(container.querySelector('#velkommen')?.contains(anchors[0])).toBe(true)
   })
 
   it('counts a pill click with a beacon and lets the navigation go ahead', async () => {
@@ -93,31 +89,38 @@ describe('front page', () => {
       return true
     })
     vi.stubGlobal('navigator', { ...navigator, sendBeacon })
-    const { container } = render(<HowItWorks />)
+    const { container } = render(await Home())
     let prevented = true
     container.addEventListener('click', (e) => {
       prevented = e.defaultPrevented
       e.preventDefault()
     })
-    fireEvent.click(screen.getByRole('link', { name: 'Hent i Google Play' }))
+    const velkommen = within(container.querySelector('#hent-appen') as HTMLElement)
+    fireEvent.click(velkommen.getByRole('link', { name: 'Hent i Google Play' }))
     expect(prevented).toBe(false)
     const [url, blob] = sendBeacon.mock.calls[0]
     expect(url).toBe('/api/forside/store-click')
-    expect(JSON.parse(await blob.text())).toEqual({ store: 'play', position: 'how-it-works' })
+    expect(JSON.parse(await blob.text())).toEqual({ store: 'play', position: 'final' })
   })
 
-  it('has no dashes, launch wording or waitlist copy, and one form', () => {
-    const { container } = render(<Home />)
+  it('has no dashes, launch wording or waitlist copy', async () => {
+    const { container } = render(await Home())
     // The newsletter box quotes the decided consent sentence word for word, and
     // that sentence names Altid Mobil as a sender.
     const text = allReadableText(container).replace(consentSentences('hjem').all, '')
-    for (const banned of ['–', '—', 'venteliste', 'én regning', 'Kommer snart', 'Snart', 'Altid Alarm', 'Altid Opladning', 'Altid Mobil']) {
+    for (const banned of ['–', '—', 'venteliste', 'én regning', 'Kommer snart', 'Altid Alarm', 'Altid Opladning', 'Altid Mobil', 'Nordens']) {
       expect(text, `"${banned}" on the page`).not.toContain(banned)
     }
-    expect(container.querySelectorAll('form')).toHaveLength(1)
   })
 
-  it('has the newsletter under the bottom pills', () => {
+  it('says the prices cannot be fetched when the price API is down, and the page still renders', async () => {
+    const { container } = render(await Home())
+    const energi = within(container.querySelector('#altid-energi') as HTMLElement)
+    expect(energi.getByText(/Priserne kan ikke hentes lige nu/)).toBeInTheDocument()
+    expect(energi.getByRole('link', { name: 'Se dagens elpriser' })).toHaveAttribute('href', '/hvornar-er-strommen-billigst')
+  })
+
+  it('has the newsletter under the bottom pills on the SEO pages', () => {
     const { container } = render(<BottomCta anchor={false} />)
     expect(container.querySelector('#hent-appen')).toBeNull()
     expect(screen.getByRole('heading', { name: 'Hent Altid Hjem' })).toBeInTheDocument()
@@ -126,35 +129,6 @@ describe('front page', () => {
     expect(pill).toHaveStyle({ color: '#fff' })
     const form = container.querySelector('form') as HTMLFormElement
     expect(pill.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
-  })
-
-  it('shows only the services that are in the app', () => {
-    render(<Services />)
-    for (const name of ['Altid Energi', 'Altid Forsikring', 'Altid Mad']) expect(screen.getByAltText(name)).toBeInTheDocument()
-    for (const name of ['Altid Alarm', 'Altid Opladning', 'Altid Mobil']) expect(screen.queryByAltText(name)).toBeNull()
-  })
-
-  it('keeps the testimonials, without a list in the heading', () => {
-    const { container } = render(<Testimonials />)
-    expect(screen.getByText('Hør, hvad danskerne siger om Altid Hjem')).toBeInTheDocument()
-    expect(container.textContent).toContain('Folkeskolelærer')
-  })
-
-  it('says the app is out, and promises no service that is not in it', () => {
-    const { container } = render(<Faq />)
-    expect(screen.getByRole('button', { name: 'Hvor kan jeg hente Altid Hjem?' })).toBeInTheDocument()
-    const text = container.textContent ?? ''
-    expect(text).toMatch(/ligger i App Store og Google Play/)
-    expect(text).not.toMatch(/mobil|alarm|opladning|lanceres|snart|endnu/i)
-  })
-
-  it('footer shows the icons of the services in the app only', () => {
-    const { container } = render(<Home />)
-    const icons = Array.from(container.querySelectorAll('footer img')).map((i) => i.getAttribute('src'))
-    expect(icons).toEqual(expect.arrayContaining(['/services/icon-strom.svg', '/services/icon-mad.svg', '/services/icon-forsikring.svg']))
-    for (const gone of ['icon-alarm', 'icon-mobil', 'icon-opladning']) {
-      expect(icons.some((s) => s?.includes(gone)), gone).toBe(false)
-    }
   })
 })
 

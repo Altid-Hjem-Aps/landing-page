@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
   if (text === null) return refuse(413, 'body too large')
 
   const click = parseClick(text)
-  if (!click) return refuse(400, 'not {store: appstore|play, position: hero|founder|how-it-works|bottom}')
+  if (!click) return refuse(400, `not {store: ${STORES.join('|')}, position: ${STORE_POSITIONS.join('|')}}`)
 
   // Throws without REFERRAL_IP_SALT: a 500, not a click counted unlimited.
   const rateKey = ipRateKey('forside-store-click', clientIp(req.headers), process.env.REFERRAL_IP_SALT)

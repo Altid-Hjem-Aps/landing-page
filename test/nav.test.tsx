@@ -1,45 +1,35 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
+import { renderToString } from 'react-dom/server'
 import * as amplitude from '@amplitude/analytics-browser'
 import Nav from '@/components/Nav'
 
-// Amplitude is a browser SDK with network side effects — mock it.
+// Amplitude is a browser SDK with network side effects: mock it.
 vi.mock('@amplitude/analytics-browser', () => ({ track: vi.fn() }))
 vi.mock('@/components/Logo', () => ({ Logo: () => null }))
 
-// Nav navigates via the App Router off the front page — capture push calls.
-// usePathname (active-link highlighting) follows the stubbed window.location.
 const push = vi.fn()
-vi.mock('next/navigation', () => ({
-  useRouter: () => ({ push }),
-  usePathname: () => window.location.pathname,
-}))
+vi.mock('next/navigation', () => ({ useRouter: () => ({ push }) }))
 
-const realLocation = window.location
-
-// jsdom's window.location throws "Not implemented: navigation" on href
-// assignment — replace it with a plain object so the test can observe paths.
-function stubLocation(pathname: string) {
-  Object.defineProperty(window, 'location', {
-    configurable: true,
-    writable: true,
-    value: { pathname, href: `https://altidhjem.dk${pathname}`, hash: '' } as unknown as Location,
-  })
-}
-
-beforeEach(() => {
-  // jsdom does not implement matchMedia, which Nav's scroll effect reads.
-  window.matchMedia = vi.fn().mockReturnValue({ matches: false }) as unknown as typeof window.matchMedia
-})
+// Literal on purpose: ALT-894's campaign links, not built from lib/store-links.
+const APP_STORE = 'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_altidhjem_dk&mt=8'
+const PLAY =
+  'https://play.google.com/store/apps/details?id=dk.altidhjem.app&referrer=utm_source%3Daltidhjem_dk%26utm_campaign%3Dah_1_altidhjem_dk'
 
 afterEach(() => {
-  Object.defineProperty(window, 'location', {
-    configurable: true,
-    writable: true,
-    value: realLocation,
-  })
+  vi.unstubAllGlobals()
   vi.clearAllMocks()
 })
+
+function onDevice(userAgent: string) {
+  const sendBeacon = vi.fn((url: string, data: Blob) => {
+    void url
+    void data
+    return true
+  })
+  vi.stubGlobal('navigator', { userAgent, maxTouchPoints: 5, sendBeacon })
+  return sendBeacon
+}
 
 function placePills() {
   const pills = document.createElement('div')
@@ -49,133 +39,93 @@ function placePills() {
   return pills
 }
 
-describe('Nav CTA', () => {
-  it('on a page with the store pills: tracks the click and scrolls to them', () => {
-    stubLocation('/')
-    const pills = placePills()
-
-    render(<Nav />)
-    fireEvent.click(screen.getByRole('button', { name: 'Hent appen' }))
-
-    expect(amplitude.track).toHaveBeenCalledWith('Get App CTA Clicked', { source: 'nav' })
-    expect(pills.scrollIntoView).toHaveBeenCalled()
-    // Stayed on the page: no navigation.
-    expect(push).not.toHaveBeenCalled()
-
-    pills.remove()
-  })
-
-  it('on a page without pills: client-navigates to the front page\'s', () => {
-    stubLocation('/slet-konto')
-
-    render(<Nav />)
-    fireEvent.click(screen.getByRole('button', { name: 'Hent appen' }))
-
-    expect(amplitude.track).toHaveBeenCalledWith('Get App CTA Clicked', { source: 'nav' })
-    // router.push (not a full page load) so the tracked event isn't dropped.
-    expect(push).toHaveBeenCalledWith('/#hent-appen')
-  })
-})
-
-describe('Nav active state', () => {
-  const SIGNAL = 'rgb(144, 255, 124)'
-  const WHITE = 'rgb(255, 255, 255)'
-
-  // Hjem is the current site on every altidhjem.dk page.
-  it.each(['/', '/opsig-abonnementer', '/hvad-koster-en-tyverialarm', '/slet-konto'])(
-    'renders Hjem as the selected item on %s',
-    (path) => {
-      stubLocation(path)
-      render(<Nav />)
-      const hjem = screen.getAllByRole('link', { name: 'Hjem' })[0]
-      expect(hjem).toHaveStyle({ color: SIGNAL })
-      // The marker dot is the other half of the active affordance — assert it
-      // renders, so deleting it can't pass silently.
-      const dot = hjem.parentElement?.querySelector('span[aria-hidden]')
-      expect(dot).toBeTruthy()
-      expect(dot).toHaveStyle({ background: SIGNAL })
-    }
-  )
-
-  it('marks Hjem with aria-current: the page itself on /, the section elsewhere', () => {
-    stubLocation('/')
-    const { unmount } = render(<Nav />)
-    expect(screen.getAllByRole('link', { name: 'Hjem' })[0]).toHaveAttribute('aria-current', 'page')
-    unmount()
-
-    stubLocation('/opsig-abonnementer')
-    render(<Nav />)
-    expect(screen.getAllByRole('link', { name: 'Hjem' })[0]).toHaveAttribute('aria-current', 'true')
-  })
-
-  it('keeps the other brands white off the front page', () => {
-    stubLocation('/opsig-abonnementer')
-    render(<Nav />)
-    expect(screen.getAllByRole('link', { name: 'Mad' })[0]).toHaveStyle({ color: WHITE })
-    expect(screen.getAllByRole('link', { name: 'Forsikring' })[0]).toHaveStyle({ color: WHITE })
-    expect(screen.getAllByRole('link', { name: 'Energi' })[0]).toHaveStyle({ color: WHITE })
-    expect(screen.getAllByRole('link', { name: 'Hjem' })[0]).not.toHaveAttribute('aria-current', 'page')
-  })
-
-  it('marks Hjem active in the burger menu too', () => {
-    stubLocation('/opsig-abonnementer')
-    render(<Nav />)
-    fireEvent.click(screen.getByRole('button', { name: 'Åbn menu' }))
-    const hjemLinks = screen.getAllByRole('link', { name: 'Hjem' })
-    // desktop menu + open panel both render it; every instance is active
-    expect(hjemLinks.length).toBeGreaterThan(1)
-    for (const link of hjemLinks) {
-      expect(link).toHaveStyle({ color: SIGNAL })
-      expect(link).toHaveAttribute('aria-current', 'true')
-    }
-  })
-})
+const hentAppen = () => screen.getByRole('link', { name: 'Hent appen' })
 
 describe('Nav links', () => {
-  it('promises no service that is not in the app', () => {
-    stubLocation('/')
+  it('goes to the front page sections', () => {
     render(<Nav />)
-    fireEvent.click(screen.getByRole('button', { name: 'Åbn menu' }))
+    const hrefs = Object.fromEntries(
+      ['Økonomi', 'Altid Mad', 'Altid Energi', 'Altid Forsikring', 'Spørgsmål'].map((name) => [
+        name,
+        screen.getByRole('link', { name }).getAttribute('href'),
+      ]),
+    )
+    expect(hrefs).toEqual({
+      Økonomi: '/#okonomi',
+      'Altid Mad': '/#altid-mad',
+      'Altid Energi': '/#altid-energi',
+      'Altid Forsikring': '/#altid-forsikring',
+      Spørgsmål: '/#spoergsmaal',
+    })
+  })
+
+  it('promises no service that is not in the app', () => {
+    render(<Nav />)
     expect(screen.queryByText(/Kommer snart/i)).toBeNull()
     for (const name of ['Alarm', 'Opladning', 'Mobil']) expect(screen.queryByText(name)).toBeNull()
   })
 })
 
-describe('Spiir banner', () => {
-  it('is ABSENT by default: the front page must render without campaign content', () => {
-    stubLocation('/')
-    render(<Nav />)
-    expect(screen.queryByText(/Spiir/)).toBeNull()
-    // Only the nav's own controls: the CTA and the burger toggle.
-    expect(screen.getByRole('button', { name: 'Hent appen' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Åbn menu' })).toBeInTheDocument()
-    expect(screen.getAllByRole('button')).toHaveLength(2)
+describe('Hent appen', () => {
+  it('is a working link to the pills in the server HTML, on any device', () => {
+    onDevice('Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X)')
+    expect(renderToString(<Nav />)).toContain('href="/#hent-appen"')
   })
 
-  it('burger menu opens with the nav links and closes when a link is clicked', () => {
-    stubLocation('/')
+  it('on an iPhone goes straight to the App Store and counts as nav', async () => {
+    const sendBeacon = onDevice('Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X)')
     render(<Nav />)
-    const burger = screen.getByRole('button', { name: 'Åbn menu' })
-    fireEvent.click(burger)
-    expect(screen.getByRole('button', { name: 'Luk menu' })).toHaveAttribute('aria-expanded', 'true')
-    // Panel + desktop menu both render the links; the panel adds a second set.
-    expect(screen.getAllByRole('link', { name: 'Mad' }).length).toBeGreaterThan(1)
-    expect(screen.getAllByRole('link', { name: 'Mad' })[0]).toHaveAttribute('href', 'https://altidmad.dk')
-    expect(screen.getAllByRole('link', { name: 'Energi' }).length).toBeGreaterThan(1)
-    expect(screen.getAllByRole("link", { name: "Forsikring" }).length).toBeGreaterThan(1)
-    expect(screen.getAllByRole("link", { name: "Forsikring" })[0]).toHaveAttribute("href", "https://altidforsikring.dk")
-    fireEvent.click(screen.getAllByRole('link', { name: 'Energi' })[1])
-    expect(screen.getByRole('button', { name: 'Åbn menu' })).toHaveAttribute('aria-expanded', 'false')
+    expect(hentAppen()).toHaveAttribute('href', APP_STORE)
+    fireEvent.click(hentAppen())
+    const [url, blob] = sendBeacon.mock.calls[0]
+    expect(url).toBe('/api/forside/store-click')
+    expect(JSON.parse(await blob.text())).toEqual({ store: 'appstore', position: 'nav' })
+  })
+
+  it('on Android goes straight to Google Play', () => {
+    onDevice('Mozilla/5.0 (Linux; Android 15; Pixel 9) Chrome/130.0.0.0 Mobile Safari/537.36')
+    render(<Nav />)
+    expect(hentAppen()).toHaveAttribute('href', PLAY)
+  })
+
+  it('on a desktop scrolls to the pills on this page, and counts no store click', () => {
+    const sendBeacon = onDevice('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)')
+    vi.stubGlobal('navigator', { ...navigator, maxTouchPoints: 0 })
+    const pills = placePills()
+    render(<Nav />)
+    expect(hentAppen()).toHaveAttribute('href', '#hent-appen')
+    fireEvent.click(hentAppen())
+    expect(amplitude.track).toHaveBeenCalledWith('Get App CTA Clicked', { source: 'nav' })
+    expect(sendBeacon).not.toHaveBeenCalled()
+    pills.remove()
+  })
+
+  it('on a desktop page without pills goes to the front page\'s', () => {
+    onDevice('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)')
+    vi.stubGlobal('navigator', { ...navigator, maxTouchPoints: 0 })
+    render(<Nav />)
+    expect(hentAppen()).toHaveAttribute('href', '/#hent-appen')
+  })
+})
+
+describe('Campaign banner', () => {
+  it('is ABSENT by default: the front page must render without campaign content', () => {
+    render(<Nav />)
+    expect(screen.queryByText(/Spiir/)).toBeNull()
+    expect(screen.queryAllByRole('button')).toHaveLength(0)
   })
 
   it('renders above the nav when spiirBanner is set', () => {
-    stubLocation('/spiir-alternativ')
     render(<Nav spiirBanner />)
     expect(screen.getByText(/Brugte du Spiir\?/)).toBeInTheDocument()
   })
 
+  it('renders a page\'s own banner', () => {
+    render(<Nav banner={{ longPrefix: 'Lang tekst. ', shortPrefix: 'Kort tekst. ', source: 'elpris-banner' }} />)
+    expect(screen.getByText('Kort tekst.')).toBeInTheDocument()
+  })
+
   it('scrolls to the store pills on the page when clicked', () => {
-    stubLocation('/spiir-alternativ')
     const pills = placePills()
 
     render(<Nav spiirBanner />)
@@ -189,7 +139,6 @@ describe('Spiir banner', () => {
   })
 
   it('goes to the front page\'s pills if the page has none of its own', () => {
-    stubLocation('/spiir-alternativ')
     render(<Nav spiirBanner />)
     fireEvent.click(screen.getByText(/Brugte du Spiir\?/).closest('button') as HTMLElement)
 

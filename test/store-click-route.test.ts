@@ -61,9 +61,16 @@ describe('POST /api/forside/store-click', () => {
     expect(rateLimit).toHaveBeenCalledWith(ipKey, 60, 3600)
   })
 
+  // A position missing from the list drops that CTA's clicks without a trace.
+  it.each(['nav', 'hero', 'final'])('counts a click from the front page position %s', async (position) => {
+    const res = await post({ store: 'appstore', position })
+    expect(res.status).toBe(204)
+    expect(trackMock).toHaveBeenCalledWith('Store Badge Clicked', { store: 'appstore', position })
+  })
+
   it.each([
     ['an unknown store', { store: 'huawei', position: 'hero' }],
-    ['an unknown position', { store: 'appstore', position: 'nav' }],
+    ['an unknown position', { store: 'appstore', position: 'sidebar' }],
     ['a missing position', { store: 'appstore' }],
   ])('rejects %s with 400 and counts nothing', async (_, body) => {
     const res = await post(body)

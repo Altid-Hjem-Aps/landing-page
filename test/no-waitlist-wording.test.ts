@@ -26,6 +26,8 @@ const ALLOWED = new Set([
   'lib/signup-source.ts',
   // A sales deck for a partner, a number about history.
   'app/norlys/deck.html',
+  // Thor's mail sentence "få snart nye tilbud" is about offers, not a waitlist.
+  'components/site/AltidForsikring.tsx',
 ])
 
 function sourceFiles(dir: string): string[] {
@@ -50,9 +52,8 @@ const DASH_ALLOWED: Record<string, string> = {
   'app/api/waitlist/route.ts': 'a server log line',
   'app/api/cron/slack-waitlist/route.ts': 'the internal Slack message, not on the site',
   'app/preview/alt-87/page.tsx': 'an internal preview, not linked from anywhere',
-  // The two below are inside phone mockups, which change in their own PR.
-  'components/iphone/HomeScreen.tsx': 'phone mockup in the hero',
-  'components/sections/why/cards.ts': 'phone mockup in the WhatIs animation',
+  // Inside a phone mockup, which changes in its own PR.
+  'components/iphone/HomeScreen.tsx': 'phone mockup',
 }
 
 function dashedCopy(source: string): string[] {

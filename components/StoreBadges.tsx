@@ -16,7 +16,7 @@ import { storeLink, type Store, type StorePosition } from '@/lib/store-links'
 // The click is counted by our server (app/api/forside/store-click), not by the
 // browser SDK: the SDK only runs after cookie consent, and the click leaves the
 // page. sendBeacon outlives the navigation, which goes ahead untouched.
-function countClick(store: Store, position: StorePosition) {
+export function countClick(store: Store, position: StorePosition) {
   navigator.sendBeacon(
     '/api/forside/store-click',
     new Blob([JSON.stringify({ store, position })], { type: 'application/json' }),
