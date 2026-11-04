@@ -15,30 +15,28 @@ type Item = { q: string; a: string }
 const ITEMS: Item[] = [
   {
     q: 'Hvad er Altid Hjem?',
-    a: 'Altid Hjem er en app, der samler hjemmets faste udgifter ét sted – strøm, mobil, forsikring, mad, opladning og alarm. Du får ét overblik og ét login. Altid.',
+    a: 'Altid Hjem er en app, der samler hjemmets økonomi og faste udgifter ét sted: strøm, forsikring og mad. Du får ét overblik og ét login. Altid.',
   },
   {
-    q: 'Hvornår lanceres Altid Hjem?',
-    a: 'Vi lancerer snart. Skriv dig på ventelisten, så får du besked, så snart appen er klar – og du er blandt de første, der kan komme i gang.',
+    q: 'Er Altid Hjem klar?',
+    a: 'Ja. Altid Hjem ligger i App Store og Google Play, og du kan hente appen nu.',
   },
-  // Answers the question the hero's "Kommer snart i App Store / Google Play"
-  // pills provoke. Sits inside MOBILE_VISIBLE so it's readable without tapping
-  // "Vis flere", and names no launch date — the store listings aren't live yet.
+  // Sits inside MOBILE_VISIBLE so it's readable without tapping "Vis flere".
   {
     q: 'Hvor kan jeg hente Altid Hjem?',
-    a: 'Appen kommer til både App Store og Google Play. Du finder den ved at søge efter Altid Hjem. Du kan ikke hente den endnu, men skriver du dig på ventelisten, får du besked, så snart den er klar.',
+    a: 'I både App Store og Google Play. Du finder den ved at søge efter Altid Hjem, eller du kan bruge knapperne her på siden.',
   },
   {
     q: 'Hvor meget sparer jeg med Altid Hjem?',
-    a: 'Det afhænger af dine aftaler, men mange sparer langt over 1.000 kr. årligt alene på strøm. Hos Altid Energi har +15.000 kunder allerede sparet millioner – og med flere af hjemmets udgifter samlet vokser besparelsen.',
+    a: 'Det afhænger af dine aftaler, men mange sparer langt over 1.000 kr. årligt alene på strøm. Hos Altid Energi har over 15.000 kunder allerede sparet millioner, og med flere af hjemmets udgifter samlet vokser besparelsen.',
   },
   {
-    q: 'Er det gratis at skrive sig på ventelisten?',
-    a: 'Ja, det er helt gratis og uforpligtende. Du får besked, når appen er klar, og du kan til enhver tid afmelde dig igen.',
+    q: 'Er det gratis at bruge Altid Hjem?',
+    a: 'Ja, appen er gratis at hente, og det er gratis at oprette en konto. Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
   },
   {
     q: 'Hvilke tjenester kan jeg samle i appen?',
-    a: 'Med tiden vil du kunne samle strøm, mobil, forsikring, mad, elbilsopladning og alarm ét sted. Tjenesterne lanceres løbende og udvælges på baggrund af kvalitet, pris og gennemsigtighed. Flere kommer til.',
+    a: 'I appen finder du Altid Energi, Altid Forsikring og Altid Mad sammen med et overblik over hjemmets økonomi. Tjenesterne er udvalgt på baggrund af kvalitet, pris og gennemsigtighed.',
   },
   {
     q: 'Skal jeg selv opsige mine gamle aftaler?',

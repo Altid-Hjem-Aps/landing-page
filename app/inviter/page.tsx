@@ -2,11 +2,11 @@ import type { Metadata } from 'next'
 import InviterExperience from '@/components/InviterExperience'
 
 export const metadata: Metadata = {
-  title: 'Inviter venner – Altid Hjem',
-  description: 'Del dit personlige link og ryk frem i køen til Altid Hjem.',
+  title: 'Inviter venner | Altid Hjem',
+  description: 'Del dit personlige link, og få dine venner med på Altid Hjem.',
   openGraph: {
     title: 'Kom med på Altid Hjem',
-    description: 'Bedre råd til hjemmet. Tilmeld dig ventelisten med mit link.',
+    description: 'Bedre råd til hjemmet. Hent appen med mit link.',
     url: 'https://altidhjem.dk/inviter',
     siteName: 'Altid Hjem',
     type: 'website',
