@@ -6,7 +6,7 @@ import type { CSSProperties, RefObject } from 'react'
 /**
  * Shared tokens, primitives and animation plumbing for the SEO-page
  * mockups and calculators on altidhjem.dk. Mirrors the design language of
- * the existing page mockups (ForsikringHusstandMockup, ElprisAppMockup):
+ * the page cards:
  * white app-card on the cream page, forest ink, sage accents, red only for
  * flagged problems, and slow narrative phase timing.
  */
@@ -31,7 +31,6 @@ export const EASE_STANDARD = 'cubic-bezier(0.4, 0, 0.2, 1)'
 export const EASE_OVERSHOOT = 'cubic-bezier(0.34, 1.56, 0.64, 1)'
 
 export const DUR_FAST = 200
-export const DUR_POP = 320
 export const DUR_MED = 450
 export const DUR_SLOW = 650
 export const STAGGER_STEP = 60
@@ -154,7 +153,7 @@ export function useMockupStart(): MockupStartState {
   }
 }
 
-/** Narrative phase loop in the ForsikringHusstandMockup style: a SEQ of
+/** Narrative phase loop: a SEQ of
  * (phase, ms) steps advancing on slow, deliberate timing and looping via
  * modulo. Reduced motion pins the final phase; scrolling away (or hiding
  * the tab) pauses the loop and it resumes from the same phase, restarting

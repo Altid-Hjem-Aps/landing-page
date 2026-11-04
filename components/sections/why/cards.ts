@@ -9,13 +9,9 @@
 //                 emptied it is removed from the scene.
 //   3. COLLECT  — the whole pile flies one-by-one into the Altid Hjem APP
 //                 ICON, which is then pressed and opens the app interface.
-//   4. LOAD     — the household (3 members) loads with each member's services
-//                 attached; the current total monthly spend is shown.
-//   5. OPTIMISE — the Altid Assistent goes through the members one by one and
-//                 optimises every service; the saving ticks up in real time
-//                 (same logic as the /hvad-koster-forsikring household card).
-//   6. RECEIPT  — the interface collapses into the final summary card: the
-//                 changes across ALL six Altid subbrands + the yearly saving.
+//   4. APP      — the phone shows real frames of the app, cross-fading on the
+//                 same clock (the scenes are in lib/screen-captures.ts). The
+//                 last one holds until the story loops.
 
 export type SourceKind = 'letter' | 'mail' | 'eboks'
 
@@ -29,18 +25,6 @@ export type Bill = {
   x: number // hovering-pile offset from the pile centre (px)
   y: number
   rotate: number
-}
-
-export type MemberService = {
-  label: string
-  icon: string // /services/icon-*.svg
-  oldPrice: number
-  newPrice: number
-}
-export type Member = {
-  name: string
-  role: 'adult' | 'child'
-  services: MemberService[]
 }
 
 // Scenery positions (px offsets from the pile centre). The physical letters
@@ -87,63 +71,9 @@ export const ITEMS: Bill[] = [
 
 export const M = ITEMS.length
 
-// The household — same cast as the /hvad-koster-forsikring card. Every Altid
-// subbrand is represented: energi, mobil, forsikring, opladning, alarm, mad.
-export const MEMBERS: Member[] = [
-  {
-    name: 'Dig', role: 'adult',
-    services: [
-      { label: 'El',      icon: '/services/icon-strom.svg',      oldPrice: 949, newPrice: 749 },
-      { label: 'Mobil',   icon: '/services/icon-mobil.svg',      oldPrice: 249, newPrice: 129 },
-      { label: 'Bil',     icon: '/services/icon-forsikring.svg', oldPrice: 659, newPrice: 459 },
-      { label: 'Hus',     icon: '/services/icon-forsikring.svg', oldPrice: 549, newPrice: 379 },
-      { label: 'Ulykke',  icon: '/services/icon-forsikring.svg', oldPrice: 139, newPrice: 99 },
-      { label: 'Ladning', icon: '/services/icon-opladning.svg',  oldPrice: 699, newPrice: 399 },
-      { label: 'Alarm',   icon: '/services/icon-alarm.svg',      oldPrice: 449, newPrice: 299 },
-    ],
-  },
-  {
-    name: 'Marie', role: 'adult',
-    services: [
-      { label: 'Indbo',    icon: '/services/icon-forsikring.svg', oldPrice:  249, newPrice:  179 },
-      { label: 'Bredbånd', icon: '/services/icon-mobil.svg',      oldPrice:  299, newPrice:  199 },
-      { label: 'Mobil',    icon: '/services/icon-mobil.svg',      oldPrice:  149, newPrice:  99 },
-      // Groceries dominate a real family budget — Altid Mad alone saves
-      // ~1.240 kr./md. ≈ 14.900 kr./year (prices vetted against Danish sources).
-      { label: 'Mad',      icon: '/services/icon-mad.svg',        oldPrice: 5800, newPrice: 4700 },
-      { label: 'Rejse',    icon: '/services/icon-forsikring.svg', oldPrice:   99, newPrice:   59 },
-      { label: 'Ulykke',   icon: '/services/icon-forsikring.svg', oldPrice:  139, newPrice:  99 },
-    ],
-  },
-  {
-    name: 'Lukas', role: 'child',
-    services: [
-      { label: 'Mobil',    icon: '/services/icon-mobil.svg',      oldPrice:  99, newPrice:  59 },
-      { label: 'Ulykke',   icon: '/services/icon-forsikring.svg', oldPrice:  69, newPrice:  39 },
-      { label: 'Skolemad', icon: '/services/icon-mad.svg',        oldPrice: 540, newPrice: 402 },
-    ],
-  },
-]
-
-export const OLD_TOTAL = MEMBERS.reduce((s, m) => s + m.services.reduce((t, x) => t + x.oldPrice, 0), 0) // 11136
-export const NEW_TOTAL = MEMBERS.reduce((s, m) => s + m.services.reduce((t, x) => t + x.newPrice, 0), 0) // 8348 → saving 2788
-export const SAVING = OLD_TOTAL - NEW_TOTAL // 2788
-export const YEAR_SAVING = SAVING * 12 // 33456
-
-// The final receipt: the changes, one row per Altid subbrand, biggest first.
-export const RECEIPT_ROWS = [
-  { label: '2 madaftaler → Altid Mad',          save: 1238 },
-  { label: '7 forsikringer → Altid Forsikring', save: 590 },
-  { label: '3 mobilabonnementer + bredbånd → Altid Mobil', save: 310 },
-  { label: 'Opladning → Altid Opladning',       save: 300 },
-  { label: 'El-aftale → Altid Energi',          save: 200 },
-  { label: 'Alarm → Altid Alarm',               save: 150 },
-]
-
 // === Timeline (fractions of entranceProgress) ===
 export const DURATION = 38000
-/** How long the finished receipt (yearly saving) holds before the animation
- *  loops from the top. */
+/** How long the last frame holds before the animation loops from the top. */
 export const LOOP_PAUSE = 5000
 /** The fade the loop uses to blend the phone out / the sources scene in. */
 export const LOOP_FADE = 650
@@ -165,32 +95,7 @@ export const T = {
   pressEnd: 0.374,
   openStart: 0.377,    // …and the interface opens straight away
   openEnd: 0.417,
-  loadStart: 0.429,    // members appear
-  loadStagger: 0.046,
-  chipStagger: 0.012,
-  totalAt: 0.576,      // total monthly spend appears
-  totalWindow: 0.029,
-  doneAt: 0.85,
-  collapseStart: 0.862, // members fold away, bottom-up (slower, with a beat)
-  collapseStep: 0.011,
-  collapseWindow: 0.018,
-  receiptAt: 0.908,    // view switches to the summary card
-  rowStart: 0.917,
-  rowStep: 0.0105,
-  monthlyAt: 0.983,
-  yearAt: 0.987,
-  yearWindow: 0.011,
-  finishedAt: 0.999,
 }
-
-// Per-member optimisation windows (Dig, Marie, Lukas) — the assistant walks
-// through the household one member at a time; window length follows the
-// member's number of services. Deliberately unhurried (~9s in total).
-export const FIX: [number, number][] = [
-  [0.61, 0.715],
-  [0.715, 0.8],
-  [0.8, 0.845],
-]
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v))
 const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2)
@@ -271,73 +176,22 @@ export const iconPress = (p: number) =>
 /** The interface scaling open out of the icon. */
 export const openReveal = (p: number) => easeInOut(clamp01((p - T.openStart) / (T.openEnd - T.openStart)))
 
-// === Household loading ===
+// === The phone's frames ===
 
-export const memberReveal = (p: number, i: number) =>
-  easeInOut(clamp01((p - (T.loadStart + i * T.loadStagger)) / 0.028))
-export const chipReveal = (p: number, i: number, j: number) =>
-  easeInOut(clamp01((p - (T.loadStart + i * T.loadStagger + 0.013 + j * T.chipStagger)) / 0.018))
-/** The monthly-total line appearing (its value also counts up with this). */
-export const totalReveal = (p: number) => easeInOut(clamp01((p - T.totalAt) / T.totalWindow))
+/** Fraction of the clock a frame takes to fade in. */
+const SCENE_FADE = 0.012
 
-// === Optimisation (member by member, service by service) ===
-
-/** When service j of member i flips to its optimised state. */
-const flipTime = (i: number, j: number) => {
-  const [a, b] = FIX[i]
-  const n = MEMBERS[i].services.length
-  return a + ((j + 0.6) / n) * (b - a)
-}
-export const serviceFlip = (p: number, i: number, j: number) =>
-  easeInOut(clamp01((p - flipTime(i, j)) / 0.013))
-/** A member is done when its last service has flipped. */
-export const memberDone = (p: number, i: number) => serviceFlip(p, i, MEMBERS[i].services.length - 1)
-/** Which member the assistant is currently working on (-1 = none). */
-export const fixingMember = (p: number) => FIX.findIndex(([a, b]) => p >= a && p < b)
-
-/** Total saved so far — drives the real-time "Sparet i alt" counter. */
-export const savedSoFar = (p: number) =>
-  Math.round(
-    MEMBERS.reduce(
-      (s, m, i) => s + m.services.reduce((t, x, j) => t + (x.oldPrice - x.newPrice) * serviceFlip(p, i, j), 0),
-      0,
-    ),
-  )
-/** The monthly total, ticking down as services are optimised. */
-export const totalMonthly = (p: number) => Math.round(OLD_TOTAL * totalReveal(p)) - savedSoFar(p)
-/** The most recent flip's saving, shown briefly as a "+X kr." chip. */
-export const chipAmount = (p: number) => {
-  let amt = 0
-  MEMBERS.forEach((m, i) =>
-    m.services.forEach((x, j) => {
-      const t = flipTime(i, j)
-      if (p >= t && p < t + 0.03) amt = x.oldPrice - x.newPrice
-    }),
-  )
-  return amt
+/** Opacity of each frame at p. Later frames fade in on top of earlier ones, so
+ *  nothing behind them shows. A frame that is not ready stays out, which leaves
+ *  the current one in place; the first frame that is ready is there from the start. */
+export const sceneOpacities = (p: number, froms: readonly number[], ready: readonly boolean[]) => {
+  const first = ready.indexOf(true)
+  return froms.map((from, i) => (!ready[i] ? 0 : i === first ? 1 : clamp01((p - from) / SCENE_FADE)))
 }
 
-// === Collapse + receipt ===
+/** The point on the clock where a frame has fully landed, for stepping by hand. */
+export const sceneRest = (from: number) => from + SCENE_FADE
 
-/** How folded-away collapse slot `slot` is (0=Dig, 1=Marie, 2=Lukas, 3=the
- *  totals block). Removed bottom-up, exactly like the forsikring card. */
-export const collapseAmt = (p: number, slot: number) =>
-  easeInOut(clamp01((p - (T.collapseStart + (3 - slot) * T.collapseStep)) / T.collapseWindow))
-
-export const rowReveal = (p: number, i: number) => clamp01((p - (T.rowStart + i * T.rowStep)) / 0.01)
-export const monthlyReveal = (p: number) => clamp01((p - T.monthlyAt) / 0.01)
-export const yearBoxReveal = (p: number) => easeInOut(clamp01((p - T.yearAt) / 0.018))
-export const yearValue = (p: number) => Math.round(YEAR_SAVING * easeInOut(clamp01((p - T.yearAt) / T.yearWindow)))
-
-/** What the Altid Assistent is doing right now (card is only visible from the
- *  open phase onwards). */
-export const assistantStatus = (p: number): { text: string; done: boolean } => {
-  if (p >= T.finishedAt) return { text: 'Færdig – husstanden er optimeret', done: true }
-  if (p >= T.doneAt) return { text: 'Samler jeres besparelse', done: false }
-  const fixing = fixingMember(p)
-  if (fixing === 0) return { text: 'Optimerer dine aftaler', done: false }
-  if (fixing === 1) return { text: "Optimerer Marie's aftaler", done: false }
-  if (fixing === 2) return { text: "Optimerer Lukas' aftaler", done: false }
-  if (p >= T.totalAt) return { text: 'Beregner månedligt forbrug', done: false }
-  return { text: 'Indlæser husstanden', done: false }
-}
+/** The part of a frame that comes forward, once the frame has landed. */
+export const liftAmount = (p: number, from: number) =>
+  easeInOut(clamp01((p - (from + 2 * SCENE_FADE)) / 0.024))

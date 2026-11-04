@@ -4,6 +4,9 @@ import { consentSentences, consentVersion } from 'altid-consent'
 export const SAVINGS_DISCLAIMER =
   'Eksempelberegning. Besparelsen er vejledende og baseret på antagelser. Den faktiske besparelse afhænger af husstandens forbrug, adresse, aftaler, dækning og gældende priser.'
 
+// Once per page, near the first picture of the app.
+export const SCREENSHOT_CAPTION = 'Skærmbilleder fra appen med eksempeldata.'
+
 // Marketing consent. The wording, the family of brands and the version are
 // decided at Altid Hjem level and live in the altid-consent package: its
 // DECISIONS.md says why the box works the way it does, and its CHANGELOG.md

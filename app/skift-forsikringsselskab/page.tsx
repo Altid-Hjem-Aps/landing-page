@@ -3,7 +3,9 @@ import Link from 'next/link'
 import Nav from '@/components/Nav'
 import BottomCta from '@/components/sections/BottomCta'
 import Footer from '@/components/Footer'
-import SkiftTjeklisteMockup from '@/components/SkiftTjeklisteMockup'
+import AppScreenCard from '@/components/AppScreenCard'
+import { SCREENSHOT_CAPTION } from '@/lib/copy'
+import { SEO_FRAMES } from '@/lib/screen-captures'
 
 export const metadata: Metadata = {
   title: 'Skift forsikringsselskab sikkert | Altid Hjem',
@@ -179,15 +181,15 @@ export default function SkiftForsikringsselskab() {
                   Se også på husstandens samlede behov, ikke kun én police ad gangen. Vores guide til <A href="/hvad-koster-forsikring">hvad forsikring koster</A> hjælper dig med at vurdere pris i forhold til profil og dækning.
                 </p>
 
-                {/* Animeret side-komponent i gradient-rammen (forsikring-side-mønstret). */}
+                {/* Billede fra appen i gradient-rammen (forsikring-side-mønstret). */}
                 <div
                   className="rounded-3xl flex justify-center py-10 px-4 mt-6"
                   style={{ background: 'linear-gradient(160deg, rgba(168,224,99,0.12) 0%, rgba(26,61,34,0.05) 100%)' }}
                 >
-                  <SkiftTjeklisteMockup />
+                  <AppScreenCard frame={SEO_FRAMES.skift} />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Rækkefølgen beskytter dig: ny police på plads, før den gamle opsiges. Illustration, ikke et skærmbillede fra appen.
+                  {SCREENSHOT_CAPTION}
                 </p>
               </section>
               <section>

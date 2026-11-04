@@ -3,7 +3,9 @@ import Link from 'next/link'
 import Nav from '@/components/Nav'
 import BottomCta from '@/components/sections/BottomCta'
 import Footer from '@/components/Footer'
-import IndboTjekMockup from '@/components/IndboTjekMockup'
+import AppScreenCard from '@/components/AppScreenCard'
+import { SCREENSHOT_CAPTION } from '@/lib/copy'
+import { SEO_FRAMES } from '@/lib/screen-captures'
 
 export const metadata: Metadata = {
   title: 'Pris på indboforsikring i 2026 | Altid Hjem',
@@ -179,15 +181,15 @@ export default function HvadKosterIndboforsikring() {
                   Indhent sammenlignelige tilbud, og brug samme dækning og selvrisiko hver gang. Ellers risikerer I at sammenligne priser på produkter, der reelt ikke er ens.
                 </p>
 
-                {/* Animeret side-komponent i gradient-rammen (forsikring-side-mønstret). */}
+                {/* Billede fra appen i gradient-rammen (forsikring-side-mønstret). */}
                 <div
                   className="rounded-3xl flex justify-center py-10 px-4 mt-6"
                   style={{ background: 'linear-gradient(160deg, rgba(168,224,99,0.12) 0%, rgba(26,61,34,0.05) 100%)' }}
                 >
-                  <IndboTjekMockup />
+                  <AppScreenCard frame={SEO_FRAMES.indbo} />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Et samlet overblik over husstandens dækninger gør det lettere at se mulige overlap. Illustration, ikke et skærmbillede fra appen.
+                  {SCREENSHOT_CAPTION}
                 </p>
               </section>
               <section>

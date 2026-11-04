@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { motion, useInView, useMotionValue, useMotionValueEvent, useReducedMotion, useTransform, type MotionValue } from 'framer-motion'
+import { motion, useInView, useMotionValue, useMotionValueEvent, useTransform, type MotionValue } from 'framer-motion'
 import { ChaosCard, Envelope, CHAOS_W, CHAOS_H, ENVELOPE_W, ENVELOPE_H } from './ChaosCard'
 import { AppIcon } from './AppIcons'
-import { HouseholdScreen } from './HouseholdCard'
-import PhoneShell, { TabBar, HomeIndicator } from '@/components/iphone/PhoneShell'
+import AppFrame, { decodeFrame } from '@/components/AppFrame'
+import PhoneShell, { PHONE_SCREEN_WIDTH } from '@/components/iphone/PhoneShell'
+import { SCREENS, STORY_LABEL, STORY_SCENES, type Region } from '@/lib/screen-captures'
 import {
   ITEMS,
   ENVELOPES,
@@ -19,11 +20,15 @@ import {
   iconAppearOpacity,
   iconPress,
   openReveal,
+  sceneOpacities,
+  sceneRest,
+  liftAmount,
   introFade,
   flapOpen,
   LOOP_PAUSE,
   LOOP_FADE,
   INTRO_FADE_END,
+  T,
   type Bill,
 } from './cards'
 
@@ -32,8 +37,8 @@ const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2,
 
 // The full "Ét hjem" story on one self-running clock (storyboard in cards.ts:
 // sources opened and removed one by one → the pile is collected into the
-// Altid Hjem app icon → the icon is pressed and the interface opens → the
-// assistant optimises the household → yearly-saving receipt, pause, loop).
+// Altid Hjem app icon → the icon is pressed and the phone opens → real frames of
+// the app cross-fade, ending on "Du er 3.000 kr. foran", pause, loop).
 //
 // The stage fills its parent box and scales the composition to the box's own
 // width — the same component drives the homepage WhatIs section and the
@@ -55,7 +60,17 @@ export default function EtHjemStage({ compact = false }: {
    *  how wide the box is — for narrow hosts like the exit-intent dialog. */
   compact?: boolean
 }) {
-  const prefersReducedMotion = useReducedMotion()
+  // Read after mount, like the hero: the server cannot know it, and the dots it
+  // adds must not differ between the server's HTML and the first client render.
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return
+    const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const sync = () => setPrefersReducedMotion(mql.matches)
+    sync()
+    mql.addEventListener('change', sync)
+    return () => mql.removeEventListener('change', sync)
+  }, [])
   const stageRef = useRef<HTMLDivElement>(null)
   // Live (not once:true): the effect below tears the rAF clock down when the
   // stage scrolls out of view — otherwise the 38s loop runs for the rest of
@@ -116,12 +131,31 @@ export default function EtHjemStage({ compact = false }: {
   const SOURCES_READY = INTRO_FADE_END
   const entranceProgress = useMotionValue(SOURCES_READY)
   const stageOpacity = useMotionValue(1)
+  // Which frames can be shown, one bit per scene. Asked for when the stage comes
+  // into view, and again next time for any that failed: a failed frame stays out
+  // meanwhile, and the phone keeps the one before it.
+  const readyMask = useMotionValue(0)
+  const decodingRef = useRef(new Set<number>())
   useEffect(() => {
-    if (prefersReducedMotion) {
-      // No animation: show the finished receipt end-state statically.
-      entranceProgress.set(1)
-      return
-    }
+    if (!inView) return
+    STORY_SCENES.forEach((scene, i) => {
+      if (readyMask.get() & (1 << i) || decodingRef.current.has(i)) return
+      decodingRef.current.add(i)
+      void decodeFrame(scene.id).then((ok) => {
+        decodingRef.current.delete(i)
+        if (ok) readyMask.set(readyMask.get() | (1 << i))
+      })
+    })
+  }, [inView, readyMask])
+
+  // No animation: the last frame, at rest. Dots step through the others, and
+  // scrolling away and back leaves the frame the visitor chose.
+  useEffect(() => {
+    if (prefersReducedMotion) entranceProgress.set(1)
+  }, [prefersReducedMotion, entranceProgress])
+
+  useEffect(() => {
+    if (prefersReducedMotion) return
     if (!inView) return
     let clockRaf = 0
     let fadeRaf = 0
@@ -142,9 +176,13 @@ export default function EtHjemStage({ compact = false }: {
     // so the 0-start is never visible as a jump).
     const play = (from: number) => {
       entranceProgress.set(from)
-      const startT = performance.now()
+      let t = from
+      let last = performance.now()
       const tick = (now: number) => {
-        const t = Math.min(from + (now - startT) / DURATION, 1)
+        // requestAnimationFrame stops on a hidden tab: the clamp makes the story
+        // carry on from where it stopped instead of jumping ahead.
+        t = Math.min(t + Math.min(now - last, 100) / DURATION, 1)
+        last = now
         entranceProgress.set(t)
         if (t < 1) clockRaf = requestAnimationFrame(tick)
         else
@@ -182,7 +220,7 @@ export default function EtHjemStage({ compact = false }: {
       {/* The loop fades this whole stage out at the end and back in at the top */}
       <motion.div className="absolute inset-0" style={{ opacity: stageOpacity }}>
         <div className="absolute inset-0 flex items-center justify-center">
-          <CardStage progress={entranceProgress} />
+          <CardStage progress={entranceProgress} readyMask={readyMask} stepByHand={prefersReducedMotion} />
         </div>
 
         {/* Scenery + flying bills overlay (all positioned from the stage centre) */}
@@ -204,9 +242,12 @@ export default function EtHjemStage({ compact = false }: {
 }
 
 // === The Altid Hjem app icon: appears at the centre while the pile fades
-//     into it, gets pressed — and the PHONE opens from it. The "Min husstand"
-//     screen plays inside and the story ends on its yearly-saving receipt. ===
-function CardStage({ progress }: { progress: MotionValue<number> }) {
+//     into it, gets pressed — and the PHONE opens from it, on frames of the app. ===
+function CardStage({ progress, readyMask, stepByHand }: {
+  progress: MotionValue<number>
+  readyMask: MotionValue<number>
+  stepByHand: boolean
+}) {
   const shellScale = useTransform(progress, (p) => 0.3 + 0.7 * openReveal(p))
   const shellOpacity = useTransform(progress, (p) => openReveal(p))
   // The icon is there from before the bills arrive, takes the press, then
@@ -218,23 +259,110 @@ function CardStage({ progress }: { progress: MotionValue<number> }) {
 
   // Grid stack: phone and icon share the same centre.
   return (
-    <div style={{ display: 'grid', placeItems: 'center' }}>
-      <motion.div style={{ gridArea: '1 / 1', scale: shellScale, opacity: shellOpacity }}>
-        <PhoneShell hovered sheen={false}>
-          <div className="flex flex-col" style={{ position: 'relative', flex: 1, minHeight: 0 }}>
-            <HouseholdScreen progress={progress} />
-          </div>
-          <TabBar active="hjem" />
-          <HomeIndicator />
-        </PhoneShell>
-      </motion.div>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <motion.img
-        src="/app-badge.png"
-        alt=""
-        className="pointer-events-none"
-        style={{ gridArea: '1 / 1', width: 110, height: 110, opacity: iconOpacity, scale: iconScale, filter: 'drop-shadow(0 16px 32px rgba(15,55,30,0.25))' }}
-      />
+    <div className="relative">
+      <div style={{ display: 'grid', placeItems: 'center' }}>
+        <motion.div
+          role="img"
+          aria-label={STORY_LABEL}
+          style={{ gridArea: '1 / 1', scale: shellScale, opacity: shellOpacity }}
+        >
+          <PhoneShell sheen={false}>
+            {STORY_SCENES.map((scene, i) => (
+              <StoryFrame key={scene.id} index={i} progress={progress} readyMask={readyMask} />
+            ))}
+          </PhoneShell>
+        </motion.div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <motion.img
+          src="/app-badge.png"
+          alt=""
+          className="pointer-events-none"
+          style={{ gridArea: '1 / 1', width: 110, height: 110, opacity: iconOpacity, scale: iconScale, filter: 'drop-shadow(0 16px 32px rgba(15,55,30,0.25))' }}
+        />
+      </div>
+      {stepByHand && <StoryDots progress={progress} />}
+    </div>
+  )
+}
+
+const SCENE_FROMS = STORY_SCENES.map((scene) => scene.from)
+const readyFlags = (mask: number) => STORY_SCENES.map((_, i) => (mask & (1 << i)) !== 0)
+
+function StoryFrame({ index, progress, readyMask }: {
+  index: number
+  progress: MotionValue<number>
+  readyMask: MotionValue<number>
+}) {
+  const scene = STORY_SCENES[index]
+  const opacity = useTransform([progress, readyMask], ([p, mask]: number[]) =>
+    sceneOpacities(p, SCENE_FROMS, readyFlags(mask))[index],
+  )
+  return (
+    <motion.div className="absolute inset-0" style={{ opacity }}>
+      <AppFrame id={scene.id} />
+      {scene.lift && <LiftedPart scene={scene.id} region={scene.lift} from={scene.from} progress={progress} />}
+    </motion.div>
+  )
+}
+
+// The same picture, clipped to one part of it and exactly on top of it, so it
+// lines up with the frame until it comes forward.
+function LiftedPart({ scene, region, from, progress }: {
+  scene: (typeof STORY_SCENES)[number]['id']
+  region: Region
+  from: number
+  progress: MotionValue<number>
+}) {
+  const k = PHONE_SCREEN_WIDTH / SCREENS[scene].width
+  const y = useTransform(progress, (p) => -1.5 * liftAmount(p, from))
+  const scale = useTransform(progress, (p) => 1 + 0.06 * liftAmount(p, from))
+  const shadow = useTransform(progress, (p) => `0 10px 24px rgba(0,0,0,${0.4 * liftAmount(p, from)})`)
+  return (
+    <motion.div
+      className="absolute overflow-hidden"
+      style={{
+        left: region.x * k,
+        top: region.y * k,
+        width: region.width * k,
+        height: region.height * k,
+        borderRadius: region.radius * k,
+        y,
+        scale,
+        boxShadow: shadow,
+      }}
+    >
+      <div className="absolute" style={{ left: -region.x * k, top: -region.y * k, width: PHONE_SCREEN_WIDTH }}>
+        <AppFrame id={scene} />
+      </div>
+    </motion.div>
+  )
+}
+
+// Reduced motion: the story does not play, and these step through its frames.
+function StoryDots({ progress }: { progress: MotionValue<number> }) {
+  const [current, setCurrent] = useState(STORY_SCENES.length - 1)
+  return (
+    <div className="absolute left-0 right-0 top-full flex justify-center">
+      {STORY_SCENES.map((scene, i) => (
+        <button
+          key={scene.id}
+          type="button"
+          aria-label={`Skærm ${i + 1}`}
+          aria-current={current === i}
+          onClick={() => {
+            setCurrent(i)
+            // The last frame's rest is the end of the clock, with its lift.
+            progress.set(i === STORY_SCENES.length - 1 ? 1 : sceneRest(Math.max(scene.from, T.openEnd)))
+          }}
+          className="flex items-center justify-center"
+          style={{ width: 44, height: 44 }}
+        >
+          <span
+            className="block rounded-full"
+            style={{ width: current === i ? 11 : 8, height: current === i ? 11 : 8, background: current === i ? '#163223' : 'rgba(22,50,35,0.55)' }}
+          />
+        </button>
+      ))}
     </div>
   )
 }

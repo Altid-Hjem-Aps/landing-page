@@ -3,7 +3,9 @@ import Link from 'next/link'
 import Nav from '@/components/Nav'
 import BottomCta from '@/components/sections/BottomCta'
 import Footer from '@/components/Footer'
-import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
+import AppScreenCard from '@/components/AppScreenCard'
+import { SCREENSHOT_CAPTION } from '@/lib/copy'
+import { SEO_FRAMES } from '@/lib/screen-captures'
 
 export const metadata: Metadata = {
   title: 'Hvad koster forsikring i 2026? Se priser | Altid Hjem',
@@ -257,16 +259,15 @@ export default function HvadKosterForsikring() {
                   opsige det, I ikke har brug for.
                 </p>
 
-                {/* Animeret kort: husstandens forsikringer som ét overblik. Ingen beløb, ingen assistent. */}
+                {/* Billede fra appen: spørgsmålet, der starter tjekket. */}
                 <div
                   className="rounded-3xl flex justify-center py-10 px-4"
                   style={{ background: 'linear-gradient(160deg, rgba(168,224,99,0.12) 0%, rgba(26,61,34,0.05) 100%)' }}
                 >
-                  <ForsikringHusstandMockup />
+                  <AppScreenCard frame={SEO_FRAMES.forsikring} />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Et samlet overblik gør det lettere at se mulige dobbeltdækninger. Illustration, ikke et
-                  skærmbillede fra appen.
+                  {SCREENSHOT_CAPTION}
                 </p>
               </section>
 

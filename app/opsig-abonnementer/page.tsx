@@ -3,7 +3,9 @@ import Link from 'next/link'
 import Nav from '@/components/Nav'
 import BottomCta from '@/components/sections/BottomCta'
 import Footer from '@/components/Footer'
-import AbonnementMockup from '@/components/AbonnementMockup'
+import AppScreenCard from '@/components/AppScreenCard'
+import { SCREENSHOT_CAPTION, SAVINGS_DISCLAIMER } from '@/lib/copy'
+import { SEO_FRAMES } from '@/lib/screen-captures'
 
 export const metadata: Metadata = {
   title: 'Opsig abonnementer, I ikke bruger | Altid Hjem',
@@ -179,15 +181,15 @@ export default function OpsigAbonnementer() {
                   Reglerne afhænger af aftaletype og vilkår, så denne guide er generel og ikke en juridisk garanti. Kontakt udbyderen, hvis slutdatoen eller en fortsat betaling er uklar.
                 </p>
 
-                {/* Animeret side-komponent i gradient-rammen (forsikring-side-mønstret). */}
+                {/* Billede fra appen i gradient-rammen (forsikring-side-mønstret). */}
                 <div
                   className="rounded-3xl flex justify-center py-10 px-4 mt-6"
                   style={{ background: 'linear-gradient(160deg, rgba(168,224,99,0.12) 0%, rgba(26,61,34,0.05) 100%)' }}
                 >
-                  <AbonnementMockup />
+                  <AppScreenCard frame={SEO_FRAMES.abonnementer} />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Et samlet overblik over husstandens faste aftaler gør det sværere for glemte abonnementer at gemme sig. Illustration, ikke et skærmbillede fra appen.
+                  Et samlet overblik over husstandens faste aftaler gør det sværere for glemte abonnementer at gemme sig. {SCREENSHOT_CAPTION} {SAVINGS_DISCLAIMER}
                 </p>
               </section>
               <section>
