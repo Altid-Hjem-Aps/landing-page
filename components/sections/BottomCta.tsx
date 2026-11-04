@@ -10,7 +10,7 @@ interface BottomCtaProps {
   subtitle: string
 }
 
-// The SEO pages' closing section: the article, then the store badges, then the
+// The SEO pages' closing section: the article, then the store pills, then the
 // newsletter. id hent-appen is where the campaign banner in the nav scrolls to.
 export default function BottomCta({ eyebrow, heading, subtitle }: BottomCtaProps) {
   return (
@@ -35,7 +35,7 @@ export default function BottomCta({ eyebrow, heading, subtitle }: BottomCtaProps
           <p className={`${BODY} mx-auto lg:mx-0`} style={{ color: '#fff', maxWidth: 420 }}>
             {subtitle}
           </p>
-          <StoreBadges position="bottom" className="mt-8 justify-center lg:justify-start" />
+          <StoreBadges position="bottom" variant="dark" className="mt-8 justify-center lg:justify-start" />
         </div>
         <div className="relative flex justify-center lg:justify-end">
           <NewsletterForm />
