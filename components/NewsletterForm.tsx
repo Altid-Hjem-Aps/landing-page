@@ -4,8 +4,9 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { INITIAL_CONSENT } from 'altid-consent'
 import { ConsentBlock } from 'altid-consent/react'
 
-// The newsletter signup (lib/newsletter.ts stores it). Sits on the forest
-// surface under the store pills, deliberately quieter than they are.
+// The newsletter signup (lib/newsletter.ts stores it). Sits under the store pills,
+// deliberately quieter than they are: on a forest surface by default, on Mint with
+// variant="light".
 
 const NEWSLETTER = {
   title: 'Få nyheder fra Altid Hjem',
@@ -20,12 +21,42 @@ const NEWSLETTER = {
 } as const
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const CONSENT_COLORS = { text: 'rgba(255,255,255,0.72)', muted: 'rgba(255,255,255,0.72)', accent: '#90ff7c' }
+
+const VARIANTS = {
+  dark: {
+    consentDark: true,
+    consent: { text: 'rgba(255,255,255,0.72)', muted: 'rgba(255,255,255,0.72)', accent: '#90ff7c' },
+    success: 'text-white',
+    title: 'text-white',
+    label: 'text-white/80',
+    input: 'border-white/40 text-white focus-visible:border-[#90ff7c]',
+    button: 'border-white/60 text-white hover:bg-white/10',
+    problem: 'text-[#ffbab8]',
+  },
+  light: {
+    consentDark: false,
+    consent: { text: '#003c16', muted: '#003c16', accent: '#163223' },
+    success: 'text-[#003c16]',
+    title: 'text-[#003c16]',
+    label: 'text-[#003c16]',
+    input: 'border-[#163223] text-[#003c16] focus-visible:border-[#003c16]',
+    button: 'border-[#163223] text-[#003c16] hover:bg-[#163223]/10',
+    // 7:1 and up on Mint and on Cream.
+    problem: 'text-[#8a1c12]',
+  },
+}
 
 type Status = 'idle' | 'sending' | 'done'
 type Problem = { message: string; field?: 'email' | 'consent' } | null
 
-export default function NewsletterForm({ className = '' }: { className?: string }) {
+export default function NewsletterForm({
+  className = '',
+  variant = 'dark',
+}: {
+  className?: string
+  variant?: keyof typeof VARIANTS
+}) {
+  const look = VARIANTS[variant]
   const [email, setEmail] = useState('')
   const [consent, setConsent] = useState(INITIAL_CONSENT)
   const [status, setStatus] = useState<Status>('idle')
@@ -84,7 +115,7 @@ export default function NewsletterForm({ className = '' }: { className?: string 
         ref={successRef}
         tabIndex={-1}
         role="status"
-        className={`text-[16px] leading-[1.6] text-white outline-none ${className}`}
+        className={`text-[16px] leading-[1.6] ${look.success} outline-none ${className}`}
       >
         {NEWSLETTER.success}
       </p>
@@ -94,8 +125,18 @@ export default function NewsletterForm({ className = '' }: { className?: string 
   const sending = status === 'sending'
   return (
     <form onSubmit={submit} noValidate className={`w-full max-w-[440px] text-left ${className}`}>
-      <h3 className="text-[17px] font-medium leading-snug text-white">{NEWSLETTER.title}</h3>
-      <label htmlFor={emailId} className="mt-4 block text-[14px] leading-snug text-white/80">
+      <h3 className={`text-[17px] font-medium leading-snug ${look.title}`}>{NEWSLETTER.title}</h3>
+      {/* The form needs JS to post. Without it a mail link stands in for the fields below. */}
+      <noscript>
+        <p className={`mt-3 text-[16px] leading-[1.6] ${look.title}`}>
+          Skriv til{' '}
+          <a href="mailto:hej@altidhjem.dk" className="underline underline-offset-2">
+            hej@altidhjem.dk
+          </a>
+        </p>
+      </noscript>
+      <div className="ah-newsletter-fields">
+      <label htmlFor={emailId} className={`mt-4 block text-[14px] leading-snug ${look.label}`}>
         {NEWSLETTER.emailLabel}
       </label>
       <div className="mt-1.5 flex flex-col gap-2.5 sm:flex-row">
@@ -110,12 +151,12 @@ export default function NewsletterForm({ className = '' }: { className?: string 
           onChange={(e) => setEmail(e.target.value)}
           aria-invalid={problem?.field === 'email'}
           aria-describedby={problem?.field === 'email' ? statusId : undefined}
-          className="min-h-[48px] w-full min-w-0 flex-1 rounded-[14px] border border-white/40 bg-transparent px-4 text-[16px] text-white focus-visible:border-[#90ff7c]"
+          className={`min-h-[48px] w-full min-w-0 flex-1 rounded-[14px] border bg-transparent px-4 text-[16px] ${look.input}`}
         />
         <button
           type="submit"
           disabled={sending}
-          className="min-h-[48px] shrink-0 cursor-pointer rounded-[14px] border border-white/60 bg-transparent px-6 text-[16px] font-medium text-white transition-colors hover:bg-white/10 disabled:cursor-default disabled:opacity-70"
+          className={`min-h-[48px] shrink-0 cursor-pointer rounded-[14px] border bg-transparent px-6 text-[16px] font-medium transition-colors disabled:cursor-default disabled:opacity-70 ${look.button}`}
         >
           {sending ? NEWSLETTER.buttonPending : NEWSLETTER.button}
         </button>
@@ -123,16 +164,17 @@ export default function NewsletterForm({ className = '' }: { className?: string 
       <div ref={consentRef}>
         <ConsentBlock
           brand="hjem"
-          dark
-          colors={CONSENT_COLORS}
+          dark={look.consentDark}
+          colors={look.consent}
           spacing={{ marginTop: 14, marginBottom: 0 }}
           value={consent}
           onChange={setConsent}
         />
       </div>
-      <p id={statusId} aria-live="polite" className="mt-2.5 min-h-[1.25rem] text-[14px] font-medium leading-snug text-[#ffbab8]">
+      <p id={statusId} aria-live="polite" className={`mt-2.5 min-h-[1.25rem] text-[14px] font-medium leading-snug ${look.problem}`}>
         {problem?.message}
       </p>
+      </div>
     </form>
   )
 }

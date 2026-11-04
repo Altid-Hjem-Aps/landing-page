@@ -1,0 +1,109 @@
+/* Velkommen. Cream washes to Mint, and the fan is cut by the section's end, which
+   the footer overlaps with its rounded top. */
+
+.vk-sec {
+  position: relative;
+  overflow: clip;
+  padding-top: clamp(56px, 8vw, 120px);
+  background: linear-gradient(180deg, var(--ah-cream) 0, var(--ah-cream) 8%, var(--ah-mint) 58%);
+  color: var(--ah-deep-forest);
+}
+
+.vk-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-inline: var(--ah-gutter);
+  text-align: center;
+}
+.vk-title {
+  font-family: var(--ah-font-display);
+  font-weight: 700;
+  font-size: clamp(48px, 9vw, 136px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.vk-sub {
+  margin-top: 16px;
+  font-size: clamp(18px, 1.8vw, 24px);
+  line-height: 1.4;
+}
+.vk-get {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 28px;
+  scroll-margin-top: 112px;
+}
+
+.vk-qr { display: none; }
+@media (min-width: 900px) {
+  .vk-qr { display: flex; gap: 14px; margin-top: 22px; }
+}
+.vk-qr-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 14px 10px;
+  border-radius: var(--ah-radius-card);
+  background: var(--ah-cream);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ah-deep-forest);
+  transition: opacity 0.15s;
+}
+.vk-qr-card:hover { opacity: 0.85; }
+
+.vk-form { margin-top: clamp(36px, 4vw, 52px); }
+/* The fields cannot post without JS; the form's noscript line stands in. */
+html:not(.js) .ah-newsletter-fields { display: none; }
+
+.vk-fan {
+  --vk-w: clamp(240px, 62vw, 300px);
+  position: relative;
+  height: calc(var(--vk-w) * 1.36);
+  margin-top: clamp(32px, 4vw, 56px);
+}
+.vk-phone {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--vk-w);
+  margin-left: calc(var(--vk-w) / -2);
+}
+.vk-phone > * { --ah-phone-w: 100%; }
+.vk-phone--centre { z-index: 2; }
+.vk-phone--left {
+  top: 15%;
+  width: calc(var(--vk-w) * 0.86);
+  margin-left: calc(var(--vk-w) * -1.02);
+}
+.vk-phone--right {
+  top: 15%;
+  width: calc(var(--vk-w) * 0.86);
+  margin-left: calc(var(--vk-w) * 0.16);
+}
+.vk-phone--left > * { rotate: -9deg; }
+.vk-phone--right > * { rotate: 9deg; }
+
+.vk-icon { position: absolute; z-index: 3; --ah-icon-size: clamp(52px, 6.4vw, 96px); }
+.vk-icon--strom { display: none; }
+.vk-icon--okonomi { display: none; }
+.vk-icon--madplan { top: 34%; left: 3%; }
+.vk-icon--forsikring { top: 22%; right: 3%; }
+
+.vk-caption { margin-top: 20px; }
+
+@media (min-width: 900px) {
+  .vk-fan {
+    --vk-w: clamp(300px, 27vw, 400px);
+    height: calc(var(--vk-w) * 1.28);
+  }
+  .vk-phone--left { margin-left: calc(var(--vk-w) * -1.24); }
+  .vk-phone--right { margin-left: calc(var(--vk-w) * 0.38); }
+  .vk-icon--strom { display: block; top: 2%; left: 16%; }
+  .vk-icon--okonomi { display: block; top: 6%; right: 15%; }
+  .vk-icon--madplan { top: 46%; left: 7%; }
+  .vk-icon--forsikring { top: 44%; right: 7%; }
+}

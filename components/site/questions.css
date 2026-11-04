@@ -1,0 +1,186 @@
+/* Section 2, the fan (Questions.tsx). Base: four mail blocks stacked in plain flow.
+   Pinned: a deck on top of each other, turned by Framer. Under 768 px: a swipe row.
+   Everything in a card is in cqw of the card, as the deck scales it. */
+
+/* A jump from a card lands at once. A smooth scroll would play every pin on the way. */
+html:has(.ah-fan-sec) {
+  scroll-behavior: auto;
+}
+
+.ah-fan-list {
+  display: grid;
+  justify-items: center;
+  gap: clamp(32px, 7vw, 88px);
+  margin: 0;
+  padding: clamp(56px, 9vw, 120px) var(--ah-gutter) 32px;
+  list-style: none;
+}
+.ah-fan-item {
+  width: 100%;
+  max-width: 980px;
+}
+.ah-fan-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: var(--ah-radius-block);
+  color: var(--ah-deep-forest);
+  container-type: inline-size;
+}
+/* The default ring is the text colour, which disappears on Deep forest. */
+.ah-site .ah-fan-card:focus-visible {
+  outline-color: var(--ah-cream);
+}
+.ah-fan-words {
+  flex: 1;
+  padding: 28px 28px 24px;
+}
+.ah-fan-title {
+  font-family: var(--ah-font-display);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.ah-fan-body {
+  margin-top: 12px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.ah-fan-phone {
+  position: relative;
+  align-self: flex-end;
+  width: 76cqw;
+  /* Past the card's edge: there is no room to rise through the top on a phone. */
+  margin-right: -4cqw;
+  --ah-phone-w: 100%;
+}
+/* Shown from 768 px, where the phone leaves room beside the words. */
+.ah-fan-arrow { display: none; }
+.ah-fan-dim,
+.ah-fan-phone-dim {
+  display: none;
+}
+.ah-fan-caption {
+  padding: 8px var(--ah-gutter) 40px;
+  text-align: center;
+}
+
+/* The crop the deck needs is too tall for a phone. Beats the Phone's inline ratio. */
+@media (max-width: 767.98px) {
+  .ah-fan-phone .ah-phone-screen { aspect-ratio: 1179 / 1400 !important; }
+}
+
+/* The mail block: words on one side, the phone rising through the top edge. */
+@media (min-width: 768px) {
+  .ah-fan-card {
+    display: block;
+    height: auto;
+    aspect-ratio: 1072 / 680;
+  }
+  .ah-fan-words {
+    position: absolute;
+    inset: 0 auto 0 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 52cqw;
+    padding: 0 3cqw 0 6.4cqw;
+  }
+  .ah-fan-card--left .ah-fan-words {
+    inset: 0 0 0 auto;
+    padding: 0 5.4cqw 0 4cqw;
+  }
+  .ah-fan-title { font-size: 4.5cqw; }
+  .ah-fan-body {
+    margin-top: 1.8cqw;
+    font-size: clamp(16px, 1.9cqw, 18px);
+  }
+  .ah-fan-phone {
+    position: absolute;
+    right: 5cqw;
+    bottom: 0;
+    width: 40cqw;
+    margin: 0;
+  }
+  .ah-fan-card--left .ah-fan-phone {
+    right: auto;
+    left: 5cqw;
+  }
+  .ah-fan-arrow {
+    display: grid;
+    place-items: center;
+    width: max(44px, 5.2cqw);
+    height: max(44px, 5.2cqw);
+    margin-top: 2.6cqw;
+    border-radius: 50%;
+    background: var(--ah-cream);
+    transition: transform 200ms ease;
+  }
+  .ah-fan-arrow svg { width: 44%; height: 44%; }
+  .ah-fan-card:hover .ah-fan-arrow { transform: translateX(4px); }
+  .ah-fan-list { padding-top: clamp(96px, 11vw, 140px); }
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
+  /* The deck. */
+  @media (min-width: 768px) {
+    html.js .ah-fan-list {
+      --fan-w: min(88vw, 108svh, 1100px);
+      /* Held to what the screen has room for, so the first and last card stay whole. */
+      --fan-rail: min(calc(var(--fan-w) * 0.08), calc((100vw - var(--fan-w)) / 3 - 8px));
+      position: absolute;
+      inset: 0;
+      display: block;
+      padding: 0;
+    }
+    html.js .ah-fan-item {
+      position: absolute;
+      top: calc(50% + 24px);
+      left: 50%;
+      width: var(--fan-w);
+      max-width: none;
+      /* Centred with margins: the transform belongs to Framer. */
+      margin: calc(var(--fan-w) * -0.317) 0 0 calc(var(--fan-w) / -2);
+    }
+    html.js .ah-fan-dim,
+    html.js .ah-fan-phone-dim {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: block;
+      background: var(--ah-deep-forest);
+      pointer-events: none;
+    }
+    html.js .ah-fan-dim { border-radius: var(--ah-radius-block); }
+    html.js .ah-fan-phone-dim { border-radius: 15% 15% 0 0 / 7% 7% 0 0; }
+    html.js .ah-fan-caption {
+      position: absolute;
+      inset: auto 0 16px;
+      padding-block: 0;
+    }
+  }
+
+  /* The swipe row: native sideways scrolling, a peek of the next card, no pin. */
+  @media (max-width: 767.98px) {
+    html.js .ah-fan-list {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      padding: 72px var(--ah-gutter) 28px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--ah-gutter);
+      scrollbar-width: none;
+    }
+    html.js .ah-fan-list::-webkit-scrollbar { display: none; }
+    html.js .ah-fan-item {
+      flex: none;
+      width: min(82vw, 340px);
+      scroll-snap-align: start;
+    }
+  }
+}

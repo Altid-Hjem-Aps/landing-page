@@ -1,0 +1,248 @@
+/* Altid Mad: one plate as a planet, twelve in orbit, then the number.
+   Unlayered, so these beat the primitives. Base is plain flow, pinned below. */
+
+.am-sec {
+  position: relative;
+  background: linear-gradient(180deg, var(--ah-cream) 0, var(--ah-lavender) min(90svh, 900px));
+  color: var(--ah-deep-forest);
+}
+
+.am-head {
+  position: relative;
+  z-index: 5;
+  padding: clamp(56px, 7vw, 96px) var(--ah-gutter) 0;
+}
+.am-lead {
+  max-width: 28ch;
+  margin-top: 14px;
+  font-size: clamp(18px, 1.7vw, 24px);
+  line-height: 1.4;
+}
+
+/* size container: plates, radii and the planet's size are all in cq units. */
+.am-orbit {
+  --am-rx: 38cqw;
+  --am-ry: 33cqw;
+  --am-cy: 50%;
+  --am-plate: 25cqw;
+  --am-planet: 92cqw;
+  position: relative;
+  container-type: size;
+  height: min(112vw, 480px);
+  overflow: clip;
+}
+.am-plate {
+  position: absolute;
+  width: var(--am-plate);
+  margin: calc(var(--am-plate) / -2) 0 0 calc(var(--am-plate) / -2);
+}
+.am-plate-depth { transform-origin: center; }
+.am-plate img,
+.am-planet img,
+.am-home-plate img { display: block; width: 100%; height: auto; }
+
+/* The file's own shadow is cut flat at the bottom, which shows at this size. So the
+   plate is clipped to its rim (65.8 % of the file) and gets a shadow of its own. */
+.am-planet {
+  position: absolute;
+  z-index: 2;
+  top: var(--am-planet-cy, var(--am-cy));
+  left: 50%;
+  width: var(--am-planet);
+  margin: calc(var(--am-planet) / -2) 0 0 calc(var(--am-planet) / -2);
+}
+.am-planet::before {
+  content: '';
+  position: absolute;
+  inset: 17.1%;
+  border-radius: 50%;
+  box-shadow: calc(var(--am-planet) * 0.02) calc(var(--am-planet) * 0.04) calc(var(--am-planet) * 0.08) rgb(48 24 110 / 0.34);
+}
+.am-planet-plate img { clip-path: circle(32.9% at 49.8% 49.8%); }
+
+/* Under 768 px nothing is pinned; the plates only breathe. JS only, because the
+   pause control that stops it needs JS too. */
+@media (max-width: 767.98px) {
+  html.js .am-plate-bob {
+    animation: am-bob 7s ease-in-out infinite alternate;
+  }
+}
+@keyframes am-bob {
+  from { transform: translate3d(0, -5%, 0); }
+  to { transform: translate3d(0, 5%, 0); }
+}
+
+.am-number {
+  position: relative;
+  z-index: 4;
+  padding: 0 var(--ah-gutter);
+}
+.am-number-wrap { container-type: inline-size; }
+.am-figure {
+  font-size: 28.4cqw;
+  white-space: nowrap;
+  transform-origin: left bottom;
+}
+.am-figure .ah-unit { margin-left: -0.12em; }
+.am-spar { margin-top: 0.7em; }
+.am-footnote {
+  max-width: 72ch;
+  margin-top: 10px;
+  font-size: clamp(15px, 1.2vw, 17px);
+  line-height: 1.5;
+}
+.am-footnote a {
+  display: inline-block;
+  padding-block: 11px;
+  margin-block: -11px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Static flow on a screen wide enough: the same scene with more room. */
+@media (min-width: 768px) {
+  .am-orbit {
+    --am-rx: 38cqw;
+    --am-ry: 13cqw;
+    --am-plate: 15cqw;
+    --am-planet: min(60cqw, 140cqh);
+    height: clamp(420px, 50vw, 640px);
+  }
+}
+
+/* Pinned: head on top, the orbit fills the stage, the number stands at the bottom. */
+@media (prefers-reduced-motion: no-preference) and (min-height: 501px) and (min-width: 768px) {
+  html.js .am-stage { position: relative; height: 100%; }
+  html.js .am-plate,
+  html.js .am-planet { will-change: transform; }
+  html.js .am-head { padding-top: clamp(92px, 11svh, 112px); }
+  html.js .am-orbit {
+    --am-cy: 60%;
+    --am-planet-cy: 78%;
+    --am-rx: min(41cqw, 780px);
+    --am-ry: min(10cqw, 17cqh);
+    --am-plate: min(14cqw, 25cqh);
+    --am-planet: min(92cqw, 116cqh);
+    height: auto;
+  }
+  html.js .am-number {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: clamp(20px, 5svh, 56px);
+    pointer-events: none;
+  }
+  html.js .am-number a { pointer-events: auto; }
+  html.js .am-number-wrap { width: 100%; }
+  html.js .am-figure { font-size: min(28.4cqw, 38svh); }
+}
+
+/* The lower row, in the mail's blocks. */
+.am-lower {
+  display: grid;
+  gap: 40px;
+  --am-lower-end: clamp(32px, 4vw, 64px);
+  padding: clamp(40px, 6vw, 88px) var(--ah-gutter) var(--am-lower-end);
+  box-sizing: content-box;
+}
+.am-sand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 36px 24px 0;
+  overflow: clip;
+  border-radius: var(--ah-radius-block);
+  color: var(--ah-deep-forest);
+}
+.am-sand-copy { padding-left: 0.5em; }
+.am-sand-title {
+  font-family: var(--ah-font-display);
+  font-size: clamp(30px, 3.4vw, 46px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.am-sand-body {
+  max-width: 30ch;
+  margin-top: 14px;
+  font-size: clamp(18px, 1.5vw, 21px);
+  line-height: 1.5;
+}
+.am-caption { margin-top: 16px; }
+
+.am-sand-phone {
+  --ah-phone-w: min(72vw, 340px);
+  position: relative;
+  align-self: center;
+  width: var(--ah-phone-w);
+}
+/* Tops are worked out from the rows' place on the screen at crop 0.81. */
+.am-row {
+  position: absolute;
+  aspect-ratio: 676 / 132;
+  overflow: hidden;
+  border: 1px solid rgb(0 60 22 / 0.14);
+  border-radius: 20px;
+  background: #fff;
+}
+.am-row img {
+  position: absolute;
+  max-width: none;
+  height: auto;
+}
+.am-row--ticked {
+  top: 75%;
+  left: -14%;
+  width: 104%;
+  transform: rotate(-2.4deg);
+}
+.am-row--open {
+  top: 88.9%;
+  right: -14%;
+  width: 104%;
+  transform: rotate(1.8deg);
+}
+
+/* Flat crop on the section's bottom edge, on top of the padding the Sand block keeps. */
+.am-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  align-self: end;
+  text-align: center;
+  margin-bottom: calc(var(--am-lower-end) * -1);
+}
+.am-home-phone {
+  --ah-phone-w: min(66vw, 320px);
+  position: relative;
+  width: var(--ah-phone-w);
+}
+.am-home-plate {
+  position: absolute;
+  top: 24%;
+  left: -24%;
+  width: 52%;
+}
+
+@media (min-width: 1100px) {
+  .am-lower {
+    grid-template-columns: minmax(0, 2.5fr) minmax(0, 1fr);
+    gap: clamp(24px, 3vw, 48px);
+    align-items: end;
+  }
+}
+@media (min-width: 768px) {
+  .am-sand {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: clamp(32px, 4vw, 56px) clamp(40px, 5vw, 72px) 0 clamp(40px, 4.4vw, 64px);
+    min-height: 600px;
+  }
+  .am-sand-copy { align-self: center; flex: 1 1 0; min-width: 0; }
+  .am-sand-phone { --ah-phone-w: clamp(240px, 24vw, 340px); flex: none; }
+  .am-home-phone { --ah-phone-w: clamp(220px, 22vw, 320px); }
+}

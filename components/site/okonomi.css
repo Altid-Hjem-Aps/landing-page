@@ -1,0 +1,264 @@
+/* Section 3, Økonomi (Okonomi.tsx). Base: the stage as a normal Cream block and the
+   painting in full colour. Pinned: the stage scales up on Deep forest. */
+
+.ah-oko { background: var(--ah-cream); }
+
+/* The Cream that takes over behind the stage at the end of the pin. */
+.ah-oko-page {
+  position: absolute;
+  inset: 0;
+  background: var(--ah-cream);
+}
+
+.ah-oko-stage {
+  --table: 110px;
+  --stand-w: clamp(220px, 60vw, 320px);
+  position: relative;
+  display: grid;
+  gap: 40px;
+  justify-items: center;
+  overflow: clip;
+  padding: 104px 24px var(--table);
+  border-radius: var(--ah-radius-block);
+  background: var(--ah-cream);
+  color: var(--ah-dark-forest);
+}
+.ah-oko-words {
+  position: relative;
+  justify-self: stretch;
+  max-width: 720px;
+  padding-left: 0.3em;
+}
+.ah-oko-words .ah-body { max-width: 520px; margin-top: 16px; }
+
+/* The surface the phone stands on. */
+.ah-oko-table {
+  position: absolute;
+  inset: auto 0 0;
+  height: calc(var(--table) * 1.5);
+  background: var(--ah-honey);
+}
+.ah-oko-stand {
+  position: relative;
+  width: var(--stand-w);
+  container-type: inline-size;
+  /* Stands a little way into the table, so the surface runs behind it. */
+  margin-bottom: calc(var(--table) * -0.08);
+}
+.ah-oko-contact {
+  position: absolute;
+  inset: auto -8cqw -3cqw;
+  height: 9cqw;
+  border-radius: 50%;
+  background: rgb(0 30 12 / 0.45);
+  filter: blur(3.5cqw);
+}
+
+/* Each tile rests a little wider than the phone, as in the mail's takeaway block.
+   The rest tilt is the rotate property, which the !important transform rule of the
+   static flow leaves alone. */
+.ah-oko-tiles {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ah-oko-tile {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  padding: 2.8cqw 3.6cqw;
+  border-radius: 4.6cqw;
+  color: var(--ah-deep-forest);
+}
+.ah-oko-tile-name {
+  font-family: var(--ah-font-display);
+  font-size: 4.4cqw;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.ah-oko-tile-amount {
+  margin-top: 0.8cqw;
+  font-size: 3.8cqw;
+  line-height: 1.3;
+}
+.ah-oko-tile--transport { top: 54.4cqw; left: -4cqw; width: 64cqw; height: 33.6cqw; background: var(--ah-sky); rotate: 0.8deg; }
+.ah-oko-tile--takeaway { top: 55.6cqw; left: 61cqw; width: 46cqw; height: 32.4cqw; background: var(--ah-lavender); rotate: 1.2deg; }
+.ah-oko-tile--toj { top: 87.5cqw; left: -5cqw; width: 58cqw; height: 20.5cqw; background: var(--ah-rose); rotate: -0.8deg; }
+/* The tile's colour on the screen: the Sand token is lost where it meets the Cream wall. */
+.ah-oko-tile--andet { top: 88cqw; left: 53.5cqw; width: 52cqw; height: 20.5cqw; background: #d6d0c5; rotate: 0.8deg; }
+
+.ah-oko-captions {
+  position: absolute;
+  /* The left inset keeps the words clear of the fixed pause button. */
+  inset: auto 16px 12px 56px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1em;
+}
+
+@media (min-width: 768px) {
+  .ah-oko-stage {
+    --table: clamp(96px, 15svh, 170px);
+    --stand-w: clamp(240px, 32vw, 360px);
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    padding: 96px clamp(40px, 9vw, 150px) calc(var(--table) * 0.72) clamp(40px, 7vw, 120px);
+  }
+  .ah-oko-words { justify-self: start; padding-left: 0; }
+  .ah-oko-stand { align-self: end; }
+  .ah-oko-captions { inset: auto clamp(40px, 7vw, 120px) 16px; }
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
+  html.js .ah-oko-stage {
+    position: absolute;
+    inset: 12px;
+    /* Words on top, the phone on the table below them, all held to the viewport. */
+    --stand-w: min(62vw, calc((100svh - 388px) / 2.112));
+    --table: clamp(76px, 12svh, 110px);
+    align-content: end;
+    padding-top: 84px;
+    /* Clear of the two caption lines at the foot of the table. */
+    padding-bottom: 60px;
+    gap: 20px;
+  }
+  /* A landing from the fan or the nav shows the stage finished, not half grown. */
+  .ah-site section#okonomi { scroll-margin-top: -12svh; }
+
+  @media (min-width: 768px) {
+    html.js .ah-oko-stage {
+      --stand-w: min(34vw, calc((100svh - 164px) / 2.112), 440px);
+      --table: clamp(96px, 15svh, 170px);
+      gap: 40px;
+      align-content: stretch;
+      padding: 84px clamp(40px, 11vw, 240px) calc(var(--table) * 0.42) clamp(40px, 7vw, 150px);
+    }
+    .ah-site section#okonomi { scroll-margin-top: -50svh; }
+  }
+}
+
+/* Drømme. */
+.ah-oko-dream-sec {
+  padding: clamp(112px, 15vw, 200px) clamp(12px, 2vw, 48px) clamp(72px, 10vw, 150px);
+}
+.ah-oko-dream {
+  --paint-w: min(100%, 560px);
+  position: relative;
+  max-width: 1720px;
+  margin-inline: auto;
+  padding: 0 12px 40px;
+  border-radius: var(--ah-radius-block);
+}
+.ah-oko-art {
+  position: relative;
+  margin-top: -64px;
+}
+.ah-oko-painting {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--ah-dark-forest);
+  border-radius: clamp(24px, 3vw, 40px);
+  background: var(--ah-cream);
+}
+.ah-oko-painting img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ah-oko-colour {
+  position: absolute;
+  inset: 0;
+}
+.ah-oko-chip {
+  position: absolute;
+  z-index: 2;
+  top: 11%;
+  right: -6px;
+  padding: 0.5em 0.8em;
+  border-radius: 999px;
+  background: var(--ah-cream);
+  color: var(--ah-dark-forest);
+  font-family: var(--ah-font-display);
+  font-size: clamp(20px, 2.6vw, 38px);
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+.ah-oko-dream-phone {
+  position: absolute;
+  z-index: 2;
+  right: 12px;
+  bottom: -64px;
+  --ah-phone-w: 34%;
+}
+.ah-oko-dream-words {
+  max-width: 560px;
+  margin-top: 96px;
+  padding: 0 12px;
+}
+.ah-oko-dream-line {
+  font-family: var(--ah-font-display);
+  font-size: clamp(30px, 3.1vw, 54px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.ah-oko-dream-words .ah-body { margin-top: 16px; }
+.ah-oko-dream-caption { margin-top: 24px; }
+
+.ah-oko-trust {
+  max-width: 1240px;
+  margin: clamp(72px, 10vw, 150px) auto 0;
+  padding-inline: clamp(8px, 2vw, 24px);
+  color: var(--ah-deep-forest);
+  font-family: var(--ah-font-display);
+  font-size: clamp(36px, 6.2vw, 96px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+.ah-oko-trust span { display: block; }
+
+@media (min-width: 768px) {
+  .ah-oko-dream {
+    display: grid;
+    grid-template-columns: min(44vw, 72svh) minmax(0, 1fr);
+    gap: clamp(40px, 8.4vw, 170px);
+    padding: 0 clamp(24px, 2.6vw, 56px) 0 clamp(32px, 5vw, 96px);
+  }
+  .ah-oko-art {
+    margin-top: -9svh;
+    margin-bottom: clamp(32px, 5vw, 72px);
+  }
+  .ah-oko-chip {
+    top: 9%;
+    right: -0.9em;
+  }
+  .ah-oko-dream-phone {
+    right: -15%;
+    bottom: -8%;
+    --ah-phone-w: 36%;
+  }
+  .ah-oko-dream-words {
+    align-self: center;
+    margin-top: 0;
+    padding: 40px 0 clamp(32px, 5vw, 72px);
+  }
+}
+
+/* Low landscape screens: the svh sizes would make the painting tiny. */
+@media (min-width: 768px) and (max-height: 500px) {
+  .ah-oko-dream { grid-template-columns: 44vw minmax(0, 1fr); }
+  .ah-oko-art { margin-top: -48px; }
+}
+
+/* Static flow: the painting in full colour. Framer writes the wipe inline. */
+html:not(.js) .ah-oko-colour {
+  clip-path: none !important;
+}
+@media (prefers-reduced-motion: reduce), (max-height: 500px) {
+  .ah-oko-colour { clip-path: none !important; }
+}

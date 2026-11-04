@@ -1,0 +1,385 @@
+/* Hero (Hero.tsx). The rules outside the media query at the bottom are the static
+   flow: no JS, reduced motion, landscape phone. Pinned layout lives only in it. */
+
+.ah-hero-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: clip;
+  padding: 112px var(--ah-gutter) 72px;
+  text-align: center;
+}
+.ah-hero-settle { display: flex; flex-direction: column; align-items: center; }
+.ah-hero-title { color: var(--ah-cream); }
+.ah-hero-sub {
+  max-width: 34em;
+  margin-top: 20px;
+  color: var(--ah-cream);
+  font-size: clamp(16px, 1.3vw, 18px);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+@media (min-width: 768px) {
+  .ah-hero-sub-tail { display: block; }
+}
+.ah-hero-pills { justify-content: center; margin-top: 24px; }
+.ah-hero-trust {
+  margin-top: 14px;
+  color: var(--ah-cream);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Hardware: the edge catches the light from the top and is gone by the bottom. */
+.ah-hero-phone { position: relative; width: min(320px, 78vw); }
+.ah-hero-phone .ah-phone { position: relative; width: 100%; }
+.ah-hero-phone .ah-phone-body {
+  position: relative;
+  background: linear-gradient(180deg, #123f25 0, #07301a 30%, #03331a 100%);
+  box-shadow: none;
+}
+.ah-hero-phone .ah-phone-body::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 0.42cqw;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    #f4ffee 0,
+    rgb(214 255 200 / 0.8) 5%,
+    rgb(183 242 167 / 0.32) 22%,
+    rgb(183 242 167 / 0.12) 55%,
+    rgb(183 242 167 / 0.05) 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+/* Side buttons, lit from above like the rest of the edge. */
+.ah-hero-phone .ah-phone-body::before {
+  content: '';
+  position: absolute;
+  top: 40cqw;
+  left: -0.5cqw;
+  width: 0.55cqw;
+  height: 13cqw;
+  border-radius: 1cqw 0 0 1cqw;
+  background: rgb(183 242 167 / 0.3);
+  box-shadow: 0 17cqw 0 rgb(183 242 167 / 0.22), 0 -13cqw 0 -0.05cqw rgb(183 242 167 / 0.34);
+}
+.ah-hero-phone .ah-phone-screen {
+  background: linear-gradient(180deg, #06501f 0, #02451a 22%, var(--ah-deep-forest) 55%);
+}
+
+.ah-hero-layer { display: none; position: absolute; inset: 0; }
+.ah-hero-layer img { object-fit: cover; object-position: top; }
+.ah-hero-layer--first { display: block; }
+
+/* The door of light, centred on the phone's top edge and behind the phone. */
+.ah-hero-light-anchor {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(320px, 78vw);
+  margin-left: calc(min(320px, 78vw) / -2);
+  transform-origin: 50% 0;
+  pointer-events: none;
+}
+.ah-hero-light { position: absolute; top: 0; left: 50%; width: 150%; aspect-ratio: 2.4; translate: -50% -50%; }
+.ah-hero-light-open {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(closest-side, rgb(183 242 167 / 0.34), rgb(183 242 167 / 0.1) 60%, transparent);
+}
+.ah-hero-halo { display: none; }
+
+.ah-hero-figure { position: relative; display: flex; justify-content: center; margin-top: 56px; }
+.ah-hero-icon { display: none; }
+
+.ah-hero-slot { width: 100%; max-width: 1040px; }
+.ah-hero-steps { display: flex; flex-direction: column; gap: 72px; margin-top: 96px; list-style: none; padding: 0; }
+.ah-hero-step { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.ah-hero-word {
+  color: var(--ah-cream);
+  font-family: var(--ah-font-display);
+  font-size: clamp(48px, 7vw, 96px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.ah-hero-step-caption {
+  color: var(--ah-cream);
+  font-size: clamp(16px, 1.3vw, 18px);
+  line-height: 1.6;
+}
+.ah-hero-step-phone { --ah-phone-w: min(300px, 72vw); margin-top: 20px; }
+
+.ah-hero-card {
+  width: min(100%, 560px);
+  margin: 72px auto 0;
+  overflow: hidden;
+  border-radius: 24px;
+  box-shadow:
+    0 0 0 1px rgb(183 242 167 / 0.6),
+    0 28px 70px -12px rgb(0 18 7 / 0.75);
+}
+.ah-hero-card img { display: block; width: 100%; height: auto; }
+.ah-hero-screens-caption { margin-top: 24px; }
+
+.ah-hero-statement { margin-top: 96px; }
+.ah-hero-statement-text {
+  color: var(--ah-cream);
+  font-size: clamp(48px, 9vw, 120px);
+}
+/* One sentence per line. Blocks inside the words' own spans keep the text intact. */
+.ah-hero-statement-text > span:nth-child(3)::before,
+.ah-hero-statement-text > span:nth-child(5)::before {
+  content: '';
+  display: block;
+}
+
+@media (max-width: 375.98px) {
+  .ah-hero-statement-text { font-size: 13vw; }
+}
+
+@keyframes ah-hero-open {
+  from { opacity: 0.2; transform: scale(0.62, 0.5); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ah-hero-rise {
+  from { transform: translateY(3.5%); }
+  to { transform: none; }
+}
+@keyframes ah-hero-settle {
+  from { opacity: 0.3; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
+  html.js .ah-hero-stage {
+    /* The phone at its giant size, and where it lands (.ah-hero-slot). */
+    --ah-big-w: min(760px, 76vw, 92svh);
+    --ah-big-top: clamp(112px, 18svh, 210px);
+    --ah-small-w: min(360px, 74vw, calc((100svh - 82px - var(--ah-under)) / 2.112));
+    --ah-small-top: calc(82px + max(0px, (100svh - 82px - var(--ah-under) - var(--ah-small-w) * 2.112) / 2));
+    --ah-under: 210px;
+
+    display: block;
+    height: 100%;
+    padding: 0;
+  }
+
+  /* Page load, one beat, on wrappers Framer does not write to. The resting state
+     is the base, so nothing depends on it. */
+  html.js .ah-hero-light-open { animation: ah-hero-open 1.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  html.js .ah-hero-rise { animation: ah-hero-rise 1.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  html.js .ah-hero-settle { animation: ah-hero-settle 0.9s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+  /* The giant phone, cut by the bottom edge. */
+  html.js .ah-hero-figure { display: block; position: absolute; inset: 0; margin: 0; }
+  html.js :is(.ah-hero-phone, .ah-hero-light-anchor) {
+    position: absolute;
+    top: var(--ah-big-top);
+    left: 50%;
+    width: var(--ah-big-w);
+    margin-left: calc(var(--ah-big-w) / -2);
+    transform-origin: 50% 0;
+  }
+  html.js .ah-hero-layer { display: block; }
+  html.js .ah-hero-layer--first { display: none; }
+
+  /* Hot band, then bloom. Static gradients: only opacity moves. */
+  html.js .ah-hero-light { width: 300%; aspect-ratio: 1.55; }
+  html.js .ah-hero-light-open {
+    background:
+      radial-gradient(18.5% 6.4% at 50% 50%, #fbfff8 0, rgb(244 255 238 / 0.98) 38%, rgb(226 253 216 / 0.82) 58%, rgb(200 248 186 / 0.42) 78%, rgb(183 242 167 / 0.12) 92%, transparent 100%),
+      radial-gradient(30% 15% at 50% 50%, rgb(190 245 175 / 0.6) 0, rgb(160 235 150 / 0.42) 38%, rgb(120 215 125 / 0.2) 68%, rgb(90 190 110 / 0.06) 90%, transparent 100%),
+      radial-gradient(50% 44% at 50% 50%, rgb(60 165 90 / 0.4) 0, rgb(35 135 72 / 0.26) 40%, rgb(15 100 50 / 0.1) 72%, transparent 100%);
+  }
+
+  html.js .ah-hero-halo {
+    display: block;
+    position: absolute;
+    top: calc(var(--ah-small-top) + var(--ah-small-w) * 1.056);
+    left: 50%;
+    width: calc(var(--ah-small-w) * 3.2);
+    aspect-ratio: 1 / 1.25;
+    translate: -50% -50%;
+    background: radial-gradient(closest-side, rgb(120 225 130 / 0.3), rgb(70 180 100 / 0.14) 55%, transparent);
+  }
+
+  /* Landing spot. Words and card are placed against it. */
+  html.js .ah-hero-slot {
+    position: absolute;
+    z-index: 3;
+    top: var(--ah-small-top);
+    left: 50%;
+    width: var(--ah-small-w);
+    max-width: none;
+    height: calc(var(--ah-small-w) * 2.112);
+    margin-left: calc(var(--ah-small-w) / -2);
+  }
+  html.js .ah-hero-steps { position: absolute; inset: 0; display: block; margin: 0; }
+  html.js .ah-hero-step { position: absolute; display: block; }
+  html.js .ah-hero-step-phone { display: none; }
+  html.js .ah-hero-word { opacity: var(--ah-active); will-change: opacity; }
+
+  /* Under 960 px one word at a time under the phone. */
+  html.js .ah-hero-step {
+    top: calc(100% + 10px);
+    left: 50%;
+    width: calc(100vw - 32px);
+    margin-left: calc(50vw * -1 + 16px);
+  }
+  html.js .ah-hero-word { font-size: clamp(44px, 9vw, 84px); }
+  html.js .ah-hero-step-caption { margin-top: 2px; font-size: clamp(16px, 2.1vw, 20px); }
+
+  html.js .ah-hero-card {
+    --ah-card-w: min(calc(100vw - 32px), 560px);
+    position: absolute;
+    top: 7%;
+    left: 50%;
+    width: var(--ah-card-w);
+    margin: 0 0 0 calc(var(--ah-card-w) / -2);
+    will-change: transform, opacity;
+  }
+
+  html.js .ah-hero-screens-caption {
+    position: absolute;
+    right: 0;
+    bottom: 10px;
+    left: 0;
+    margin: 0;
+  }
+
+  html.js .ah-hero-statement {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    margin: 0;
+    padding: 0 16px;
+    pointer-events: none;
+  }
+
+  /* Once faded out the pills must not take clicks or focus. */
+  html.js .ah-hero-intro { visibility: var(--ah-intro-visibility); will-change: transform, opacity; }
+
+  /* 768 px and up: the text sits inside the giant phone. */
+  @media (min-width: 768px) {
+    html.js .ah-hero-intro {
+      position: absolute;
+      z-index: 2;
+      top: calc(var(--ah-big-top) + var(--ah-big-w) * 0.158);
+      left: 50%;
+      width: calc(var(--ah-big-w) * 0.86);
+      margin-left: calc(var(--ah-big-w) * -0.43);
+    }
+    html.js .ah-hero-title { font-size: calc(var(--ah-big-w) * 0.112); line-height: 1.08; }
+    html.js .ah-hero-sub {
+      max-width: 31em;
+      margin-top: calc(var(--ah-big-w) * 0.03);
+      font-size: clamp(16px, calc(var(--ah-big-w) * 0.0265), 20px);
+    }
+    html.js .ah-hero-pills { margin-top: calc(var(--ah-big-w) * 0.034); }
+
+    html.js .ah-hero-icon { display: block; position: absolute; z-index: 0; }
+    html.js .ah-hero-phone { z-index: 1; }
+    html.js .ah-hero-stage {
+      --ah-side: calc((100vw - var(--ah-big-w)) / 2);
+      /* Measured from the phone, so the circles stay with it on a very wide screen. */
+      --ah-near: min(var(--ah-side), 340px);
+    }
+    html.js .ah-hero-icon {
+      --ah-icon-size: clamp(56px, calc(var(--ah-near) * var(--ah-icon-k)), 140px);
+    }
+    html.js .ah-hero-icon--strom { --ah-icon-k: 0.26; top: 25svh; left: calc(var(--ah-side) - var(--ah-near) * 0.6); }
+    html.js .ah-hero-icon--madplan { --ah-icon-k: 0.4; top: 58svh; left: calc(var(--ah-side) - var(--ah-near) * 0.9); }
+    html.js .ah-hero-icon--okonomi { --ah-icon-k: 0.42; top: 19svh; right: calc(var(--ah-side) - var(--ah-near) * 0.88); }
+    html.js .ah-hero-icon--forsikring { --ah-icon-k: 0.3; top: 64svh; right: calc(var(--ah-side) - var(--ah-near) * 0.62); }
+  }
+
+  /* From 960 px: words beside the phone, all three stay on the page. */
+  @media (min-width: 960px) {
+    html.js .ah-hero-stage {
+      --ah-under: 44px;
+      --ah-small-w: min(320px, calc((100svh - 132px) / 2.112));
+      --ah-small-top: calc(88px + (100svh - 132px - var(--ah-small-w) * 2.112) / 2);
+      --ah-word-gap: clamp(40px, 7.2vw, 128px);
+    }
+    /* "Forbind." is the widest word, about 3.85em: it has to fit its side. */
+    html.js .ah-hero-word {
+      opacity: calc(0.15 + 0.85 * var(--ah-active));
+      font-size: min(128px, calc((50vw - var(--ah-small-w) / 2 - var(--ah-word-gap) - 24px) / 3.85));
+      line-height: 1.05;
+    }
+    html.js .ah-hero-step { width: calc(50vw - var(--ah-small-w) / 2 - var(--ah-word-gap) - 16px); margin: 0; text-align: right; }
+    html.js .ah-hero-step:nth-child(1) { top: 12%; right: calc(100% + var(--ah-word-gap)); left: auto; }
+    html.js .ah-hero-step:nth-child(2) { top: 44%; left: calc(100% + var(--ah-word-gap)); text-align: left; }
+    html.js .ah-hero-step:nth-child(3) { top: 68%; right: calc(100% + var(--ah-word-gap)); left: auto; }
+    html.js .ah-hero-step-caption { margin-top: 8px; font-size: clamp(17px, 1.4vw, 21px); }
+    html.js .ah-hero-card { --ah-card-w: calc(var(--ah-small-w) + 2 * min(var(--ah-word-gap) - 10px, var(--ah-small-w) * 0.28)); top: 9%; }
+  }
+
+  @media (min-width: 1200px) {
+    html.js .ah-hero-stage { --ah-big-w: min(760px, 54vw, 92svh); }
+  }
+
+  /* Under 768 px: text above the phone, phone cut by the bottom edge. */
+  @media (max-width: 767.98px) {
+    html.js .ah-hero-stage {
+      --ah-big-w: min(82vw, 360px);
+      --ah-under: 150px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 92px 16px 0;
+    }
+    html.js .ah-hero-intro { flex: none; }
+    html.js .ah-hero-title { font-size: 40px; }
+    html.js .ah-hero-sub { margin-top: 10px; font-size: 16px; line-height: 1.5; }
+    html.js .ah-hero-pills { margin-top: 14px; column-gap: 8px; row-gap: 8px; }
+    html.js .ah-hero-trust { margin-top: 10px; }
+
+    html.js .ah-hero-figure {
+      position: relative;
+      inset: auto;
+      flex: 1 0 40svh;
+      align-self: stretch;
+    }
+    html.js .ah-hero-phone { top: 0; z-index: 1; }
+    html.js .ah-hero-layer--first { display: block; }
+
+    /* Only a thin rim of light here: Cream text sits right above it. */
+    html.js .ah-hero-light { width: 150%; aspect-ratio: 3; }
+    html.js .ah-hero-light-open {
+      background:
+        radial-gradient(44% 24% at 50% 50%, rgb(230 255 222 / 0.75) 0, rgb(183 242 167 / 0.4) 60%, transparent 100%),
+        radial-gradient(50% 50% at 50% 50%, rgb(90 190 110 / 0.24) 0, transparent 100%);
+    }
+
+    html.js .ah-hero-icon {
+      display: block;
+      position: absolute;
+      z-index: 2;
+      --ah-icon-size: 52px;
+    }
+    html.js .ah-hero-icon .ah-beam-ray { width: calc(var(--ah-icon-size) * 1.5); }
+    html.js .ah-hero-icon--madplan { top: -16px; left: calc(50% - var(--ah-big-w) / 2 - 18px); }
+    html.js .ah-hero-icon--okonomi { top: -16px; right: calc(50% - var(--ah-big-w) / 2 - 18px); }
+    html.js .ah-hero-icon--strom { top: 128px; left: calc(50% - var(--ah-big-w) / 2 - 22px); --ah-icon-size: 44px; }
+    html.js .ah-hero-icon--forsikring { top: 168px; right: calc(50% - var(--ah-big-w) / 2 - 22px); --ah-icon-size: 44px; }
+
+    html.js .ah-hero-screens-caption { padding-left: 64px; padding-right: 16px; }
+  }
+
+  /* Pills wrap to two rows here, as the store pills do at 375 px and below. */
+  @media (max-width: 375.98px) {
+    html.js .ah-hero-title { font-size: 36px; }
+    html.js .ah-hero-sub-tail { display: none; }
+  }
+}

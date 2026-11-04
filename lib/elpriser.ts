@@ -171,7 +171,10 @@ export async function getSupplierPrices(supplierId: string): Promise<SupplierDay
       `${API}/Prices?supplierId=${encodeURIComponent(supplierId)}&from=${today}T00:00:00&to=${dayAfter}T00:00:00`,
       { next: { revalidate: 1800 }, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) },
     )
-    if (!res.ok) return null
+    if (!res.ok) {
+      console.error(`elpriser: Strømligning answered ${res.status} for ${supplierId}`)
+      return null
+    }
     const data = (await res.json()) as { prices?: ApiPrice[] }
 
     const buckets = new Map<string, Bucket>()
@@ -202,7 +205,10 @@ export async function getSupplierPrices(supplierId: string): Promise<SupplierDay
     }
 
     const hours = dayHours(buckets, today)
-    if (!hours.length) return null
+    if (!hours.length) {
+      console.error(`elpriser: no prices for ${today} from Strømligning for ${supplierId}`)
+      return null
+    }
     const tomorrowHours = dayHours(buckets, tomorrow)
     return {
       date: today,
@@ -210,7 +216,8 @@ export async function getSupplierPrices(supplierId: string): Promise<SupplierDay
       tomorrowHours: tomorrowHours.length ? tomorrowHours : null,
       tomorrowDate: tomorrow,
     }
-  } catch {
+  } catch (err) {
+    console.error(`elpriser: fetching prices failed for ${supplierId}`, err)
     return null
   }
 }

@@ -1,0 +1,293 @@
+/* Altid Energi: today's real prices. Unlayered, so these beat the primitives. */
+
+.ae-sec {
+  position: relative;
+  padding: clamp(48px, 5vw, 80px) var(--ah-gutter) 0;
+}
+/* Wider than the page's wrap on a big screen, so the chart keeps filling the section. */
+.ae-wrap { max-width: 1240px; margin-inline: auto; }
+@media (min-width: 1600px) {
+  .ae-wrap { max-width: 1600px; }
+}
+.ae-title {
+  max-width: 19ch;
+  margin-bottom: clamp(20px, 2.4vw, 32px);
+}
+
+.ae-panel {
+  container-type: inline-size;
+  padding: clamp(20px, 3.4vw, 48px);
+  border-radius: var(--ah-radius-block);
+  background: var(--ah-deep-forest);
+  color: var(--ah-cream);
+}
+@media (max-width: 767.98px) {
+  .ae-panel {
+    margin-inline: calc(var(--ah-gutter) * -0.6);
+    padding: 22px 14px 14px;
+    border-radius: 32px;
+  }
+}
+.ae-panel--failure {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.ae-failure { font-size: clamp(26px, 3.4vw, 44px); }
+
+.ae-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px 32px;
+}
+/* The height is held so the answer arriving after hydration moves nothing below it. */
+.ae-answer {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 1.52em;
+  font-family: var(--ah-font-display);
+  font-size: clamp(40px, 8.6cqw, 104px);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+.ae-today em {
+  color: var(--ah-signal);
+  font-style: normal;
+}
+.ae-tomorrow {
+  margin-top: 0.22em;
+  font-size: 0.34em;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+/* What a visitor without JS gets instead of an answer. */
+.ae-date { font-size: 0.5em; font-weight: 700; }
+html.js .ae-date { visibility: hidden; }
+
+.ae-zones {
+  display: flex;
+  flex: none;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+}
+.ae-zones button {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  color: var(--ah-cream);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.ae-zones button[aria-pressed='true'] {
+  background: var(--ah-cream);
+  color: var(--ah-deep-forest);
+}
+
+.ae-side {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  align-self: stretch;
+}
+.ae-readout {
+  font-family: var(--ah-font-display);
+  font-size: clamp(18px, 2.2cqw, 24px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+}
+@container (max-width: 900px) {
+  .ae-top { flex-direction: column; flex-wrap: nowrap; gap: 14px; }
+  .ae-answer { flex: none; width: 100%; }
+  .ae-side {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+@container (max-width: 560px) {
+  .ae-answer { min-height: 2.45em; font-size: 15.4cqw; line-height: 1; }
+  .ae-today em { display: block; }
+  .ae-tomorrow { margin-top: 0.3em; }
+  .ae-side { flex-direction: column; align-items: flex-start; }
+}
+
+.ae-bars {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(2px, 0.5cqw, 6px);
+  height: clamp(210px, 38svh, 440px);
+  margin-top: clamp(16px, 2.4cqw, 28px);
+  cursor: ew-resize;
+  /* Vertical scrolling stays with the page; a sideways drag scrubs. */
+  touch-action: pan-y;
+  user-select: none;
+}
+.ae-col {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: 0;
+}
+.ae-col[data-selected]::before {
+  content: '';
+  position: absolute;
+  inset: 0 -1px;
+  border-radius: 8px 8px 0 0;
+  background: rgb(255 255 255 / 0.12);
+}
+.ae-bar {
+  position: relative;
+  display: block;
+  min-height: 3px;
+  border-radius: clamp(3px, 0.6cqw, 8px) clamp(3px, 0.6cqw, 8px) 0 0;
+}
+/* Contrast on Deep forest, checked: all above 3:1, past hours too. */
+.ae-bar[data-level='low'] { background: rgb(253 250 244 / 0.72); }
+.ae-bar[data-level='mid'] { background: var(--ah-honey); }
+.ae-bar[data-level='high'] { background: var(--ah-rose); }
+.ae-bar[data-level='best'] { background: var(--ah-signal); }
+.ae-bar[data-past] { opacity: 0.56; }
+
+.ae-axis {
+  display: flex;
+  gap: clamp(2px, 0.5cqw, 6px);
+  height: 26px;
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.ae-axis > span {
+  display: flex;
+  flex: 1 1 0;
+  justify-content: center;
+  min-width: 0;
+  color: rgb(253 250 244 / 0.8);
+}
+.ae-axis [data-now] {
+  color: var(--ah-cream);
+  font-weight: 700;
+}
+
+/* The thumb's travel is lined up with the centres of the first and last bars. */
+.ae-range {
+  --thumb: 28px;
+  display: block;
+  width: calc(100% - (100% / var(--ae-n)) + var(--thumb));
+  height: 44px;
+  margin: 0 0 0 calc(100% / var(--ae-n) / 2 - var(--thumb) / 2);
+  background: transparent;
+  color: var(--ah-cream);
+  cursor: ew-resize;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.ae-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(253 250 244 / 0.42);
+}
+.ae-range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(253 250 244 / 0.42);
+}
+.ae-range::-webkit-slider-thumb {
+  width: var(--thumb);
+  height: var(--thumb);
+  margin-top: -12px;
+  border-radius: 50%;
+  background: var(--ah-cream);
+  appearance: none;
+  -webkit-appearance: none;
+}
+.ae-range::-moz-range-thumb {
+  width: var(--thumb);
+  height: var(--thumb);
+  border: 0;
+  border-radius: 50%;
+  background: var(--ah-cream);
+}
+/* There is no room for "kl." under bars this narrow. */
+@container (max-width: 560px) {
+  .ae-kl { display: none; }
+}
+/* Without JS these do nothing, so they are not offered. */
+html:not(.js) .ae-range,
+html:not(.js) .ae-zones { display: none; }
+
+.ae-source {
+  max-width: 70ch;
+  margin-top: 14px;
+  color: var(--ah-deep-forest);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ae-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ae-lower {
+  display: grid;
+  align-items: end;
+  gap: 32px;
+  margin-top: clamp(48px, 6vw, 88px);
+}
+.ae-sentence {
+  max-width: 24ch;
+  font-size: clamp(22px, 2.4vw, 32px);
+  line-height: 1.35;
+}
+.ae-link--sky { margin-top: 12px; font-size: 18px; }
+.ae-phone {
+  --ah-phone-w: min(72vw, 300px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.ae-phone-caption { text-align: center; }
+
+@media (min-width: 768px) {
+  .ae-lower {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 48px;
+    align-items: center;
+  }
+  .ae-copy { padding-bottom: 40px; }
+  .ae-phone {
+    --ah-phone-w: clamp(280px, 27vw, 380px);
+    position: relative;
+    align-self: end;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 24px;
+  }
+  .ae-phone-caption {
+    max-width: 15ch;
+    padding-bottom: 24px;
+    text-align: right;
+  }
+}
