@@ -33,7 +33,7 @@ export default function Home() {
         <Trust />
         <Faq />
         <Blog />
-        <BottomCta />
+        <BottomCta anchor={false} />
       </main>
       <Footer />
     </>

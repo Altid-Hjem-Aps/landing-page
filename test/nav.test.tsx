@@ -41,49 +41,47 @@ afterEach(() => {
   vi.clearAllMocks()
 })
 
+function placePills() {
+  const pills = document.createElement('div')
+  pills.id = 'hent-appen'
+  pills.scrollIntoView = vi.fn()
+  document.body.appendChild(pills)
+  return pills
+}
+
 describe('Nav CTA', () => {
-  it('on the front page: tracks the click and expands the waitlist form in place', () => {
+  it('on a page with the store pills: tracks the click and scrolls to them', () => {
     stubLocation('/')
-    const expandListener = vi.fn()
-    window.addEventListener('expand-waitlist', expandListener)
+    const pills = placePills()
 
     render(<Nav />)
-    fireEvent.click(screen.getByRole('button', { name: /ventelisten/i }))
+    fireEvent.click(screen.getByRole('button', { name: 'Hent appen' }))
 
-    expect(amplitude.track).toHaveBeenCalledWith('Waitlist CTA Clicked', { source: 'nav' })
-    expect(expandListener).toHaveBeenCalledTimes(1)
-    // Stayed on the page — no navigation.
+    expect(amplitude.track).toHaveBeenCalledWith('Get App CTA Clicked', { source: 'nav' })
+    expect(pills.scrollIntoView).toHaveBeenCalled()
+    // Stayed on the page: no navigation.
     expect(push).not.toHaveBeenCalled()
 
-    window.removeEventListener('expand-waitlist', expandListener)
+    pills.remove()
   })
 
-  it('off the front page: client-navigates home with the auto-expand hash', () => {
+  it('on a page without pills: client-navigates to the front page\'s', () => {
     stubLocation('/slet-konto')
-    const expandListener = vi.fn()
-    window.addEventListener('expand-waitlist', expandListener)
 
     render(<Nav />)
-    fireEvent.click(screen.getByRole('button', { name: /ventelisten/i }))
+    fireEvent.click(screen.getByRole('button', { name: 'Hent appen' }))
 
-    expect(amplitude.track).toHaveBeenCalledWith('Waitlist CTA Clicked', { source: 'nav' })
-    // router.push (not a full page load) so the tracked event isn't dropped,
-    // with #venteliste so the hero form expands on arrival.
-    expect(push).toHaveBeenCalledWith('/#venteliste')
-    expect(expandListener).not.toHaveBeenCalled()
-
-    window.removeEventListener('expand-waitlist', expandListener)
+    expect(amplitude.track).toHaveBeenCalledWith('Get App CTA Clicked', { source: 'nav' })
+    // router.push (not a full page load) so the tracked event isn't dropped.
+    expect(push).toHaveBeenCalledWith('/#hent-appen')
   })
 })
 
 describe('Nav active state', () => {
   const SIGNAL = 'rgb(144, 255, 124)'
-  const MUTED = 'rgb(111, 106, 97)'
   const WHITE = 'rgb(255, 255, 255)'
 
-  // Hjem is the current site on every altidhjem.dk page. Before this was
-  // fixed it fell through to MUTED off the front page — the same grey as the
-  // unlaunched services, so the site you were on looked disabled.
+  // Hjem is the current site on every altidhjem.dk page.
   it.each(['/', '/opsig-abonnementer', '/hvad-koster-en-tyverialarm', '/slet-konto'])(
     'renders Hjem as the selected item on %s',
     (path) => {
@@ -110,15 +108,12 @@ describe('Nav active state', () => {
     expect(screen.getAllByRole('link', { name: 'Hjem' })[0]).toHaveAttribute('aria-current', 'true')
   })
 
-  it('keeps the other brands white and the unlaunched services muted off the front page', () => {
+  it('keeps the other brands white off the front page', () => {
     stubLocation('/opsig-abonnementer')
     render(<Nav />)
     expect(screen.getAllByRole('link', { name: 'Mad' })[0]).toHaveStyle({ color: WHITE })
     expect(screen.getAllByRole('link', { name: 'Forsikring' })[0]).toHaveStyle({ color: WHITE })
     expect(screen.getAllByRole('link', { name: 'Energi' })[0]).toHaveStyle({ color: WHITE })
-    // "Kommer snart" services are not links and stay muted.
-    expect(screen.queryAllByRole('link', { name: 'Alarm' })).toHaveLength(0)
-    expect(screen.getAllByText('Alarm')[0]).toHaveStyle({ color: MUTED })
     expect(screen.getAllByRole('link', { name: 'Hjem' })[0]).not.toHaveAttribute('aria-current', 'page')
   })
 
@@ -136,13 +131,23 @@ describe('Nav active state', () => {
   })
 })
 
+describe('Nav links', () => {
+  it('promises no service that is not in the app', () => {
+    stubLocation('/')
+    render(<Nav />)
+    fireEvent.click(screen.getByRole('button', { name: 'Åbn menu' }))
+    expect(screen.queryByText(/Kommer snart/i)).toBeNull()
+    for (const name of ['Alarm', 'Opladning', 'Mobil']) expect(screen.queryByText(name)).toBeNull()
+  })
+})
+
 describe('Spiir banner', () => {
-  it('is ABSENT by default — the front page must render without campaign content', () => {
+  it('is ABSENT by default: the front page must render without campaign content', () => {
     stubLocation('/')
     render(<Nav />)
     expect(screen.queryByText(/Spiir/)).toBeNull()
-    // Only the nav's own controls: the waitlist CTA and the burger toggle.
-    expect(screen.getByRole('button', { name: /ventelisten/i })).toBeInTheDocument()
+    // Only the nav's own controls: the CTA and the burger toggle.
+    expect(screen.getByRole('button', { name: 'Hent appen' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Åbn menu' })).toBeInTheDocument()
     expect(screen.getAllByRole('button')).toHaveLength(2)
   })
@@ -154,8 +159,6 @@ describe('Spiir banner', () => {
     fireEvent.click(burger)
     expect(screen.getByRole('button', { name: 'Luk menu' })).toHaveAttribute('aria-expanded', 'true')
     // Panel + desktop menu both render the links; the panel adds a second set.
-    // Mad, Energi and Forsikring are all live now; the remaining services stay inactive text.
-    expect(screen.queryAllByRole('link', { name: 'Alarm' })).toHaveLength(0)
     expect(screen.getAllByRole('link', { name: 'Mad' }).length).toBeGreaterThan(1)
     expect(screen.getAllByRole('link', { name: 'Mad' })[0]).toHaveAttribute('href', 'https://altidmad.dk')
     expect(screen.getAllByRole('link', { name: 'Energi' }).length).toBeGreaterThan(1)
@@ -171,30 +174,25 @@ describe('Spiir banner', () => {
     expect(screen.getByText(/Brugte du Spiir\?/)).toBeInTheDocument()
   })
 
-  it('scrolls to the on-page form when one exists, so the signup keeps its source tag', () => {
+  it('scrolls to the store pills on the page when clicked', () => {
     stubLocation('/spiir-alternativ')
-    // /spiir-alternativ has BottomCta's form on the page (id venteliste2).
-    const onPageForm = document.createElement('div')
-    onPageForm.id = 'venteliste2'
-    onPageForm.scrollIntoView = vi.fn()
-    document.body.appendChild(onPageForm)
+    const pills = placePills()
 
     render(<Nav spiirBanner />)
     fireEvent.click(screen.getByText(/Brugte du Spiir\?/).closest('button') as HTMLElement)
 
-    expect(amplitude.track).toHaveBeenCalledWith('Waitlist CTA Clicked', { source: 'spiir-banner' })
-    expect(onPageForm.scrollIntoView).toHaveBeenCalled()
-    // Crucially: NO navigation to the front page, whose form tags 'forside'.
+    expect(amplitude.track).toHaveBeenCalledWith('Get App CTA Clicked', { source: 'spiir-banner' })
+    expect(pills.scrollIntoView).toHaveBeenCalled()
     expect(push).not.toHaveBeenCalled()
 
-    onPageForm.remove()
+    pills.remove()
   })
 
-  it('falls back to navigating home if the page has no form of its own', () => {
+  it('goes to the front page\'s pills if the page has none of its own', () => {
     stubLocation('/spiir-alternativ')
     render(<Nav spiirBanner />)
     fireEvent.click(screen.getByText(/Brugte du Spiir\?/).closest('button') as HTMLElement)
 
-    expect(push).toHaveBeenCalledWith('/#venteliste')
+    expect(push).toHaveBeenCalledWith('/#hent-appen')
   })
 })
