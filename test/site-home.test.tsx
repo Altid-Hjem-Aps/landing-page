@@ -1,4 +1,4 @@
-import { readdirSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -820,7 +820,10 @@ describe('motion', () => {
     const { container } = render(<Home />)
     const video = container.querySelector('video') as HTMLVideoElement
     expect(video).not.toHaveAttribute('autoplay')
+    // The first frame sits behind the video as an inline background.
     expect(video).not.toHaveAttribute('poster')
+    expect(readFileSync('app/page.tsx', 'utf8')).toContain("import './site-tunnel-poster.css'")
+    expect(readFileSync('app/site-tunnel-poster.css', 'utf8')).toMatch(/\.h-tunnel-wrap \{\s+background: center \/ cover no-repeat url\(data:image\/webp;base64,/)
     expect(video.play).toHaveBeenCalled()
     fireEvent.click(screen.getByRole('button', { name: PAUSE }))
     expect(video.pause).toHaveBeenCalled()
@@ -879,6 +882,12 @@ describe('the nav sheet', () => {
     expect(within(dialog).getByRole('link', { name: 'Hent i App Store' })).toHaveAttribute('href', APP_STORE)
     fireEvent.click(within(dialog).getByRole('button', { name: 'Luk menu' }))
     expect(dialog).not.toHaveAttribute('open')
+  })
+
+  it('takes focus itself on opening, so a tap draws no ring on the close button', () => {
+    const { container } = render(<Home />)
+    fireEvent.click(screen.getByRole('button', { name: 'Åbn menu' }))
+    expect(document.activeElement).toBe(container.querySelector('dialog'))
   })
 
   it('closes when a link in it is followed', () => {

@@ -4,8 +4,10 @@ import Link from 'next/link'
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import {
   COOKIE_CONSENT_CHANGED,
+  COOKIE_CONSENT_KEY,
   OPEN_COOKIE_SETTINGS,
   hasCookieChoice,
+  readCookieChoice,
   saveCookieChoice,
   subscribeCookieChoice,
   type CookieChoice,
@@ -35,11 +37,17 @@ export default function CookieBanner() {
       if (choice === 'all') startAnalytics()
       else stopAnalytics()
     }
+    // A withdrawal in another open tab holds here too.
+    const otherTab = (e: StorageEvent) => {
+      if (e.key === COOKIE_CONSENT_KEY && readCookieChoice() !== 'all') stopAnalytics()
+    }
     window.addEventListener(OPEN_COOKIE_SETTINGS, reopen)
     window.addEventListener(COOKIE_CONSENT_CHANGED, apply)
+    window.addEventListener('storage', otherTab)
     return () => {
       window.removeEventListener(OPEN_COOKIE_SETTINGS, reopen)
       window.removeEventListener(COOKIE_CONSENT_CHANGED, apply)
+      window.removeEventListener('storage', otherTab)
     }
   }, [])
 

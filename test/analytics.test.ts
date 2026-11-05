@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-const sdk = vi.hoisted(() => ({ init: vi.fn(), setOptOut: vi.fn() }))
+const sdk = vi.hoisted(() => ({ init: vi.fn((_key: string, _config: { serverUrl: string }) => ({ promise: Promise.resolve() })), setOptOut: vi.fn() }))
 vi.mock('@amplitude/analytics-browser', () => sdk)
 
 beforeEach(() => {
@@ -53,6 +53,13 @@ describe('analytics loader', () => {
     window.localStorage.setItem('ah-cookie-consent', JSON.stringify({ choice: 'necessary', at: Date.now() }))
     await vi.dynamicImportSettled()
     expect(sdk.init).not.toHaveBeenCalled()
+  })
+
+  it('follows the answer on this page when the choice cannot be stored', async () => {
+    window.localStorage.clear()
+    const { startAnalytics } = await import('@/lib/analytics')
+    startAnalytics()
+    await vi.waitFor(() => expect(sdk.init).toHaveBeenCalledTimes(1))
   })
 
   it('initialises once when consent is withdrawn and given again while the SDK is loading', async () => {

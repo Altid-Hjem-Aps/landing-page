@@ -4,7 +4,8 @@ import { readCookieChoice } from '@/lib/cookie-consent'
 // Before that, amplitude.track() calls from components are held in the SDK's
 // pre-init queue and never leave the browser unless init() is called.
 let started = false
-let initialised = false
+// Resolves with the SDK once init() has finished.
+let ready: Promise<typeof import('@amplitude/analytics-browser')> | undefined
 
 // Fetched only after consent: the SDK is about a quarter of the front page's script,
 // and a first visit has not chosen yet. A failed download is forgotten, so the next
@@ -22,11 +23,10 @@ export function startAnalytics() {
   const apiKey = process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY
   if (!apiKey) return
   started = true
-  void loadSdk().then(({ init }) => {
+  void loadSdk().then((amplitude) => {
     // The visitor may have withdrawn while the SDK was on its way, here or in another tab.
-    if (!started || initialised || readCookieChoice() !== 'all') return
-    initialised = true
-    init(apiKey, {
+    if (!started || ready || readCookieChoice() === 'necessary') return
+    const { promise } = amplitude.init(apiKey, {
       serverUrl: 'https://api.eu.amplitude.com/2/httpapi',
       fetchRemoteConfig: false,
       autocapture: {
@@ -42,6 +42,7 @@ export function startAnalytics() {
         webVitals: true,
       },
     })
+    ready = promise.then(() => amplitude)
   })
 }
 
@@ -49,15 +50,14 @@ export function startAnalytics() {
 // browser (its AMP_* cookies and localStorage keys), so nothing links a
 // later visit to this one.
 export function stopAnalytics() {
-  if (initialised) {
-    void loadSdk().then(({ setOptOut }) => {
-      setOptOut(true)
-      // Opting out writes the SDK's identifiers back to the browser.
-      removeAmplitudeStorage()
-    })
-  }
+  // After init(): before that the SDK only queues the opt-out. Opting out writes the SDK's
+  // identifiers back to the browser, so they are removed again afterwards.
+  void ready?.then(({ setOptOut }) => {
+    setOptOut(true)
+    removeAmplitudeStorage()
+  })
   started = false
-  initialised = false
+  ready = undefined
   removeAmplitudeStorage()
 }
 
