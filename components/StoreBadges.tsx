@@ -16,14 +16,19 @@ import { storeLink, type Store, type StorePosition } from '@/lib/store-links'
 // The click is counted by our server (app/api/forside/store-click), not by the
 // browser SDK: the SDK only runs after cookie consent, and the click leaves the
 // page. sendBeacon outlives the navigation, which goes ahead untouched.
-function countClick(store: Store, position: StorePosition) {
-  navigator.sendBeacon(
+export function countClick(store: Store, position: StorePosition) {
+  navigator.sendBeacon?.(
     '/api/forside/store-click',
     new Blob([JSON.stringify({ store, position })], { type: 'application/json' }),
   )
 }
 
-const PILL = 'inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-[20px] border py-3 px-3 sm:px-4 text-sm leading-none whitespace-nowrap transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-[3px]'
+const PILL = 'inline-flex shrink-0 items-center gap-2 border py-3 leading-none whitespace-nowrap transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-[3px]'
+const SIZES = {
+  md: 'min-h-[44px] rounded-[20px] px-3 sm:px-4 text-sm',
+  // 48 px on a phone, 52 from sm: the front page's hero and sheet.
+  lg: 'site-pill min-h-[48px] sm:min-h-[52px] rounded-full px-[11px] sm:px-5 text-[14px] sm:text-[17px]',
+}
 
 const VARIANTS = {
   light: {
@@ -37,12 +42,28 @@ const VARIANTS = {
     pill: { borderColor: 'rgba(255, 255, 255, 0.6)', color: '#fff' },
     name: '#fff',
   },
-}
+  // The new front page (ALT-1420), the mail breaker's fills. Alex asked on 1 Nov for
+  // the CTA to pop. On Deep forest: Signal green and Cream. On Cream: Deep forest and
+  // an outline.
+  forest: {
+    focus: 'focus-visible:outline-[#90ff7c]',
+    pill: { background: '#90ff7c', borderColor: '#90ff7c', color: '#003c16' },
+    play: { background: '#fdfaf4', borderColor: '#fdfaf4', color: '#003c16' },
+    name: '#003c16',
+  },
+  cream: {
+    focus: 'focus-visible:outline-[#003c16]',
+    pill: { background: '#003c16', borderColor: '#003c16', color: '#fdfaf4' },
+    play: { background: 'transparent', borderColor: 'rgba(0, 60, 22, 0.4)', color: '#003c16' },
+    name: 'inherit',
+  },
+} satisfies Record<string, { focus: string; pill: React.CSSProperties; play?: React.CSSProperties; name: string }>
 
 const STORES: { store: Store; name: string; className?: string; path: string }[] = [
   {
     store: 'appstore',
     name: 'App Store',
+    className: 'store-badge-appstore',
     path: 'M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.09v-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z',
   },
   {
@@ -57,12 +78,14 @@ export default function StoreBadges({
   position,
   className = '',
   variant = 'light',
+  size = 'md',
 }: {
   position: StorePosition
   className?: string
   variant?: keyof typeof VARIANTS
+  size?: keyof typeof SIZES
 }) {
-  const look = VARIANTS[variant]
+  const look: { focus: string; pill: React.CSSProperties; play?: React.CSSProperties; name: string } = VARIANTS[variant]
   return (
     <div className={`flex flex-row flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-3 ${className}`}>
       {STORES.map(s => (
@@ -70,15 +93,15 @@ export default function StoreBadges({
           key={s.store}
           href={storeLink(s.store)}
           onClick={() => countClick(s.store, position)}
-          className={`${PILL} ${look.focus} ${s.className ?? ''}`}
-          style={look.pill}
+          className={`${PILL} ${SIZES[size]} ${look.focus} ${s.className ?? ''}`}
+          style={s.store === 'play' && look.play ? look.play : look.pill}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 shrink-0" fill="currentColor">
             <path d={s.path} />
           </svg>
           <span>
             Hent i{' '}
-            <span className="font-medium" style={{ color: look.name }}>
+            <span className={size === 'lg' ? 'font-semibold' : 'font-medium'} style={{ color: look.name }}>
               {s.name}
             </span>
           </span>

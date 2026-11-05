@@ -93,7 +93,7 @@ export default function NewsletterForm({ className = '' }: { className?: string 
 
   const sending = status === 'sending'
   return (
-    <form onSubmit={submit} noValidate className={`w-full max-w-[440px] text-left ${className}`}>
+    <form method="post" onSubmit={submit} noValidate className={`w-full max-w-[440px] text-left ${className}`}>
       <h3 className="text-[17px] font-medium leading-snug text-white">{NEWSLETTER.title}</h3>
       <label htmlFor={emailId} className="mt-4 block text-[14px] leading-snug text-white/80">
         {NEWSLETTER.emailLabel}

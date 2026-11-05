@@ -1,0 +1,37 @@
+[
+  {
+    "slug": "pizza",
+    "name": "Hjemmelavet pizza med tomat og mozzarella",
+    "source": "catalog-images/01a0e34b-4c42-7707-8c22-9ab9df5a5d60/w800.webp"
+  },
+  {
+    "slug": "butter-chicken",
+    "name": "Butter chicken med ris og naan",
+    "source": "catalog-images/01a0e34b-4c3a-7cd2-b9ea-cba85015f024/w800.webp"
+  },
+  {
+    "slug": "kyllingewok",
+    "name": "Kyllingewok med æggenudler, broccoli og spidskål",
+    "source": "catalog-images/01a0e34b-4c56-7c5b-b2c3-367db0b01090/w800.webp"
+  },
+  {
+    "slug": "stegt-flaesk",
+    "name": "Stegt flæsk med kartofler og persillesovs",
+    "source": "catalog-images/01a0e34b-4c51-7b9e-ba5e-be0522e37c86/w800.webp"
+  },
+  {
+    "slug": "svamperisotto",
+    "name": "Svamperisotto med brune champignon",
+    "source": "catalog-images/01a0e34b-4c52-7243-9c05-354a3b029622/w800.webp"
+  },
+  {
+    "slug": "tacos",
+    "name": "Klassiske tacos med oksefars",
+    "source": "catalog-images/01a0e34b-4c52-74a1-a4df-e2d91e3cf427/w800.webp"
+  },
+  {
+    "slug": "kylling-i-karry",
+    "name": "Kylling i karry med æble, gulerod og ris",
+    "source": "catalog-images/01a140ff-42e7-7bc5-8e9e-c6940223c7f9/w800.webp"
+  }
+]

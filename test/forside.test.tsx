@@ -1,15 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen, within } from '@testing-library/react'
-import { consentSentences } from 'altid-consent'
-import Home from '@/app/page'
+import Footer from '@/components/Footer'
 import BottomCta from '@/components/sections/BottomCta'
 import Faq from '@/components/sections/Faq'
 import HowItWorks from '@/components/sections/HowItWorks'
 import Services from '@/components/sections/Services'
 import Testimonials from '@/components/sections/Testimonials'
 
-// The front page as it stands after the flip, rendered whole where it matters.
-// Boundaries faked: the Amplitude SDK, the App Router, the Mux player and the
+// BottomCta and the footer are on the SEO pages. Faq, HowItWorks, Services and Testimonials
+// are on no page since the new front page; they stay until Thor has accepted it.
+// The new front page itself is test/site-home.test.tsx. Boundaries faked: the Amplitude SDK, the App Router and the
 // browser APIs jsdom lacks. The phones are stubbed: they change in their own PR.
 vi.mock('@amplitude/analytics-browser', () => ({ track: vi.fn() }))
 vi.mock('next/navigation', () => ({
@@ -47,45 +47,7 @@ afterEach(() => {
   vi.clearAllMocks()
 })
 
-function allReadableText(root: HTMLElement): string {
-  const attrs = Array.from(root.querySelectorAll('[alt],[aria-label],[title]')).flatMap((el) =>
-    ['alt', 'aria-label', 'title'].map((a) => el.getAttribute(a) ?? ''),
-  )
-  return [root.textContent ?? '', ...attrs].join('\n')
-}
-
-describe('front page', () => {
-  it('keeps every section of today\'s page, in today\'s order', () => {
-    const { container } = render(<Home />)
-    const headings = Array.from(container.querySelectorAll('h1,h2')).map((h) => h.textContent)
-    expect(headings).toEqual([
-      'Hele hjemmets økonomi i én app',
-      expect.stringContaining('Der er gebyrer overalt'),
-      'Hvad finder du i appen?',
-      'Ét hjem. Alt for mange regninger.',
-      'Fire trin til fuldt overblik',
-      'Fair, gennemsigtigt og billigt',
-      'Ofte stillede spørgsmål',
-      'Læs mere om, hvordan Altid Hjem skaber ro i hverdagen',
-      'Hent Altid Hjem',
-    ])
-  })
-
-  it('has the store pills in the hero, founder, how-it-works and bottom sections, with the exact links', () => {
-    const { container } = render(<Home />)
-    const appStore = within(container).getAllByRole('link', { name: 'Hent i App Store' })
-    const play = within(container).getAllByRole('link', { name: 'Hent i Google Play' })
-    expect(appStore).toHaveLength(4)
-    expect(play).toHaveLength(4)
-    appStore.forEach((a) => expect(a).toHaveAttribute('href', APP_STORE))
-    play.forEach((a) => expect(a).toHaveAttribute('href', PLAY))
-    // The one target of "Hent appen" is the hero's pills.
-    const anchors = container.querySelectorAll('#hent-appen')
-    expect(anchors).toHaveLength(1)
-    expect(within(anchors[0] as HTMLElement).getByRole('link', { name: 'Hent i App Store' })).toBeInTheDocument()
-    expect(container.querySelector('#top')?.contains(anchors[0])).toBe(true)
-  })
-
+describe('the sections from the flip', () => {
   it('counts a pill click with a beacon and lets the navigation go ahead', async () => {
     const sendBeacon = vi.fn((url: string, data: Blob) => {
       void url
@@ -104,17 +66,6 @@ describe('front page', () => {
     const [url, blob] = sendBeacon.mock.calls[0]
     expect(url).toBe('/api/forside/store-click')
     expect(JSON.parse(await blob.text())).toEqual({ store: 'play', position: 'how-it-works' })
-  })
-
-  it('has no dashes, launch wording or waitlist copy, and one form', () => {
-    const { container } = render(<Home />)
-    // The newsletter box quotes the decided consent sentence word for word, and
-    // that sentence names Altid Mobil as a sender.
-    const text = allReadableText(container).replace(consentSentences('hjem').all, '')
-    for (const banned of ['–', '—', 'venteliste', 'én regning', 'Kommer snart', 'Snart', 'Altid Alarm', 'Altid Opladning', 'Altid Mobil']) {
-      expect(text, `"${banned}" on the page`).not.toContain(banned)
-    }
-    expect(container.querySelectorAll('form')).toHaveLength(1)
   })
 
   it('has the newsletter under the bottom pills', () => {
@@ -148,8 +99,8 @@ describe('front page', () => {
     expect(text).not.toMatch(/mobil|alarm|opladning|lanceres|snart|endnu/i)
   })
 
-  it('footer shows the icons of the services in the app only', () => {
-    const { container } = render(<Home />)
+  it('SEO footer shows the icons of the services in the app only', () => {
+    const { container } = render(<Footer />)
     const icons = Array.from(container.querySelectorAll('footer img')).map((i) => i.getAttribute('src'))
     expect(icons).toEqual(expect.arrayContaining(['/services/icon-strom.svg', '/services/icon-mad.svg', '/services/icon-forsikring.svg']))
     for (const gone of ['icon-alarm', 'icon-mobil', 'icon-opladning']) {

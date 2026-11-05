@@ -6,6 +6,11 @@ import { subscribeSavings, TICKER_GAP } from '@/lib/savingsTicker'
 import { REVEAL_SPRING as SPRING } from '@/lib/motion'
 import { H2, EYEBROW, BODY } from '@/lib/typography'
 
+// DISABLED 8 Sep 2026, not on any page: Altid Energi received a formal notice from
+// the Danish Consumer Ombudsman (Forbrugerombudsmanden) about the running "total
+// saved" counter, and asked Altid Hjem to hide it too while they work on an
+// alternative. Do not put this back on a page before that is settled.
+//
 // The VALUE shown here comes from the shared ticker (lib/savingsTicker.ts),
 // which starts TICKER_GAP below altidenergi.dk's live formula and catches up
 // in random-looking bursts — the SAME value stream the hero stat renders, so

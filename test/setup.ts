@@ -1,4 +1,8 @@
 import '@testing-library/jest-dom/vitest'
+import { vi } from 'vitest'
+
+// next/font/google only exists inside the Next compiler; the package's own entry is empty.
+vi.mock('next/font/google', () => ({ DM_Sans: () => ({ variable: 'font-dm-sans', className: 'font-dm-sans' }) }))
 
 // Node 26's web-storage integration makes jsdom leave window.localStorage
 // undefined unless the process runs with --localstorage-file. Components

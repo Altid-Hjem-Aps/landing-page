@@ -1,3 +1,4 @@
+import { STORE_POSITIONS } from '@/lib/store-links'
 import { createHmac } from 'node:crypto'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { NextRequest } from 'next/server'
@@ -61,9 +62,15 @@ describe('POST /api/forside/store-click', () => {
     expect(rateLimit).toHaveBeenCalledWith(ipKey, 60, 3600)
   })
 
+  it.each(STORE_POSITIONS)('accepts the position %s', async (position) => {
+    const res = await post({ store: 'appstore', position })
+    expect(res.status).toBeLessThan(300)
+    expect(trackMock).toHaveBeenCalledWith('Store Badge Clicked', { store: 'appstore', position })
+  })
+
   it.each([
     ['an unknown store', { store: 'huawei', position: 'hero' }],
-    ['an unknown position', { store: 'appstore', position: 'nav' }],
+    ['an unknown position', { store: 'appstore', position: 'sidebar' }],
     ['a missing position', { store: 'appstore' }],
   ])('rejects %s with 400 and counts nothing', async (_, body) => {
     const res = await post(body)
