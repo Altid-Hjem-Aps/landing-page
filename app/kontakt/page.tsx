@@ -2,26 +2,18 @@ import type { Metadata } from 'next'
 import LegalPageLayout, { LegalAddress, LEGAL_H2, LEGAL_LABEL, LEGAL_LINK, LEGAL_RULE } from '@/components/LegalPageLayout'
 
 export const metadata: Metadata = {
-  title: 'Support – Altid Hjem',
+  title: 'Support | Altid Hjem',
   description: 'Har du brug for hjælp til Altid Hjem-appen? Skriv til os på hej@altidhjem.dk, så vender vi tilbage hurtigst muligt.',
 }
-
-const energiLink = (
-  <a href="https://altidenergi.dk" target="_blank" rel="noopener noreferrer" className={LEGAL_LINK}>altidenergi.dk</a>
-)
 
 const faq = [
   {
     q: 'Jeg kan ikke logge ind',
-    a: <>Skriv til os på <a href="mailto:hej@altidhjem.dk" className={LEGAL_LINK}>hej@altidhjem.dk</a> – så hjælper vi dig videre.</>,
+    a: <>Skriv til os på <a href="mailto:hej@altidhjem.dk" className={LEGAL_LINK}>hej@altidhjem.dk</a>, så hjælper vi dig videre.</>,
   },
   {
-    q: 'Spørgsmål til elforbrug og priser',
-    a: <>Dit elforbrug og dine elpriser hører under Altid Energi. Du finder hjælp og kontakt på {energiLink}.</>,
-  },
-  {
-    q: 'Spørgsmål til opladning',
-    a: <>Spørgsmål til opladning hører under Altid Energi. Du finder hjælp og kontakt på {energiLink}.</>,
+    q: 'Spørgsmål til min elregning, mit forbrug eller opladning',
+    a: <>Vores venner hos Altid Energi hjælper dig bedst med spørgsmål om din elregning, dit forbrug eller opladning. Du kan skrive til <a href="mailto:hej@altidenergi.dk" className={LEGAL_LINK}>hej@altidenergi.dk</a> eller ringe på <a href="tel:+4544440440" className={`${LEGAL_LINK} whitespace-nowrap`}>44 440 440</a>. De sidder klar ved telefonen mandag til fredag fra kl. 9.00 til 15.30.</>,
   },
 ]
 
