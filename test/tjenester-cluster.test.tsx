@@ -137,9 +137,9 @@ describe('LadeboksCalculator', () => {
   })
 })
 
-describe('blog strip routes', () => {
-  it('every internal blog card href maps to an existing page', () => {
-    const src = fs.readFileSync(path.join(process.cwd(), 'components/sections/Blog.tsx'), 'utf-8')
+describe('footer routes', () => {
+  it('every internal footer link maps to an existing page', () => {
+    const src = fs.readFileSync(path.join(process.cwd(), 'components/Footer.tsx'), 'utf-8')
     const hrefs = [...src.matchAll(/href: '(\/[^']+)'/g)].map((m) => m[1])
     expect(hrefs.length).toBeGreaterThanOrEqual(5)
     for (const href of hrefs) {

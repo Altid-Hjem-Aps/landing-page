@@ -6,14 +6,14 @@ import Footer from '@/components/Footer'
 import AbonnementMockup from '@/components/AbonnementMockup'
 
 export const metadata: Metadata = {
-  title: 'Opsig abonnementer, I ikke bruger – Altid Hjem',
+  title: 'Opsig abonnementer, I ikke bruger | Altid Hjem',
   description:
-    'Find alle husstandens abonnementer, tjek binding og opsig korrekt. Få en enkel guide til at rydde op, og skriv jer på ventelisten hos Altid Hjem.',
+    'Find alle husstandens abonnementer, tjek binding og opsig korrekt. Få en enkel guide til at rydde op, og hent Altid Hjem gratis.',
   alternates: { canonical: 'https://altidhjem.dk/opsig-abonnementer' },
   openGraph: {
     title: 'Sådan opsiger I husstandens abonnementer',
     description:
-      'Find alle husstandens abonnementer, tjek binding og opsig korrekt. Få en enkel guide til at rydde op, og skriv jer på ventelisten hos Altid Hjem.',
+      'Find alle husstandens abonnementer, tjek binding og opsig korrekt. Få en enkel guide til at rydde op, og hent Altid Hjem gratis.',
     url: 'https://altidhjem.dk/opsig-abonnementer',
     type: 'article',
   },
@@ -67,15 +67,15 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem er en dansk app på vej, som er bygget til at samle hjemmets faste udgifter ét sted.',
-      'Målet er ét overblik, ét login til el, mobil, forsikring, opladning, alarm og mad, og ventelisten er åben på altidhjem.dk.',
+      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted.',
+      'Du får ét overblik, ét login, og du kan hente den gratis i App Store og Google Play.',
     ],
   },
   {
-    q: 'Koster det noget at skrive sig på ventelisten?',
+    q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej, det er gratis at skrive sig på ventelisten til Altid Hjem.',
-      'Tilmeldingen er ikke det samme som at købe et abonnement.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
+      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
     ],
   },
 ]
@@ -187,7 +187,7 @@ export default function OpsigAbonnementer() {
                   <AbonnementMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Altid Hjem skal kunne samle husstandens faste aftaler, så glemte abonnementer ikke kan gemme sig. Illustration, ikke et skærmbillede fra appen.
+                  Et samlet overblik over husstandens faste aftaler gør det sværere for glemte abonnementer at gemme sig. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
               <section>
@@ -217,16 +217,16 @@ export default function OpsigAbonnementer() {
               </section>
               <section>
                 <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvad Altid Hjem skal kunne
+                  Hvad Altid Hjem kan i dag
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem er bygget til at samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad. Tanken er ét overblik, ét login, så aftalerne bliver lettere at finde og vurdere.
+                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så I får ét overblik, ét login. Forbinder I banken, ser I jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket.
                 </p>
                 <p className="mb-3">
-                  Altid Energi er allerede i drift og er Danmarks første gebyrfrie energiselskab med mere end 15.000 danske kunder. Mobil, opladning, alarm og forsikring er på vej og skal kunne indgå i Altid Hjem.
+                  Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder.
                 </p>
                 <p>
-                  Altid Hjem skal gøre det sværere for faste aftaler at gemme sig i forskellige apps og indbakker. Læs også om forskellen på Altid Hjem og traditionelle <A href="/spiir-alternativ">budget- og kontooverblik-apps</A>.
+                  Læs også om forskellen på Altid Hjem og traditionelle <A href="/spiir-alternativ">budget- og kontooverblik-apps</A>.
                 </p>
               </section>
 
@@ -268,13 +268,11 @@ export default function OpsigAbonnementer() {
           </div>
         </div>
 
-        <div id="venteliste">
-          <BottomCta
-            eyebrow='Glemte abonnementer trives i mørket'
-            subtitle='Skriv dig gratis på ventelisten og få tidlig adgang, når Altid Hjem lanceres'
-            source='opsig-abonnementer'
-          />
-        </div>
+        <BottomCta
+          eyebrow='Glemte abonnementer gemmer sig'
+          heading='Hent Altid Hjem, og find jeres abonnementer'
+          subtitle='Forbind banken, så ser I jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket.'
+        />
       </main>
       <Footer />
     </>

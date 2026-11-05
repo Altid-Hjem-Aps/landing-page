@@ -1,0 +1,224 @@
+/* The closing section. White to blue in the reference, here Cream to Mint to green with
+   the same stops. Every number is the reference's at 1440 wide (u) or 390 wide (um). */
+
+/* On a phone the footer is taller than the reference's by --vk-over, because the
+   newsletter sits in it. So the section holds still and the footer slides over it for
+   that last stretch, and the page ends on the same picture: pills at the top, phone
+   between them and the footer. Without JS or with reduced motion it is plain flow. */
+.vk-wrap { position: relative; }
+.vk-sec {
+  position: relative;
+  overflow: hidden;
+  height: calc(825 * var(--u));
+  background: linear-gradient(#fdfaf4 24%, #b7f2a7 61%, #6fd65e 100%);
+  color: var(--ah-dark-forest);
+}
+.vk-grid {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(90deg, rgb(22 50 35 / 0.035) 0 1px, rgb(22 50 35 / 0) 1px calc(149.3 * var(--u))) calc(85 * var(--u)) 0,
+    repeating-linear-gradient(rgb(22 50 35 / 0.035) 0 1px, rgb(22 50 35 / 0) 1px calc(150 * var(--u))) 0 calc(46 * var(--u));
+  pointer-events: none;
+}
+
+.vk-anchor {
+  position: relative;
+  z-index: 3;
+  padding-top: calc(104 * var(--u));
+  text-align: center;
+}
+.vk-title {
+  font-family: var(--ah-font-display);
+  font-size: calc(79.2 * var(--u));
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.vk-title span {
+  display: block;
+  white-space: nowrap;
+}
+.vk-pills {
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: calc(16 * var(--u));
+  margin-top: calc(40 * var(--u));
+}
+.vk-pills a {
+  justify-content: center;
+  width: calc(202 * var(--u));
+  min-width: max-content;
+  height: calc(60 * var(--u));
+  min-height: 44px;
+  padding: 0 calc(16 * var(--u));
+  border-radius: calc(15.84 * var(--u));
+  font-size: max(13px, calc(16 * var(--u)));
+}
+.vk-pills svg {
+  width: calc(20 * var(--u));
+  height: calc(20 * var(--u));
+}
+
+/* Icons in the place of the coins. */
+.vk-coin {
+  position: absolute;
+  z-index: 2;
+  width: calc(115 * var(--u));
+  height: calc(115 * var(--u));
+}
+.vk-coin--madplan { top: calc(393 * var(--u)); left: calc(187 * var(--u)); }
+.vk-coin--strom { top: calc(537 * var(--u)); left: calc(346 * var(--u)); }
+.vk-coin--okonomi { top: calc(465 * var(--u)); left: calc(1080 * var(--u)); }
+.vk-coin--forsikring { top: calc(681 * var(--u)); left: calc(994 * var(--u)); }
+
+/* A line at the phone's top edge: what comes into view starts the beat. Phone and cards
+   hang from it, the section clips them. */
+.vk-stage {
+  position: absolute;
+  top: calc(534 * var(--u));
+  left: 0;
+  width: 100%;
+  height: 1px;
+  pointer-events: none;
+}
+.vk-phone {
+  --ah-phone-w: calc(288 * var(--u));
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: calc(50% - 144 * var(--u));
+}
+.vk-card {
+  position: absolute;
+  top: calc(385 * var(--u));
+  width: calc(260 * var(--u));
+  height: calc(476 * var(--u));
+  margin: calc(-238 * var(--u)) 0 0 calc(-130 * var(--u));
+}
+.vk-card--left { left: calc(503 * var(--u)); }
+.vk-card--right { left: calc(863 * var(--u)); }
+.vk-card-tilt {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: calc(31.68 * var(--u));
+  background: var(--ah-cream);
+}
+.vk-card--left .vk-card-tilt { rotate: -20deg; }
+.vk-card--right .vk-card-tilt { rotate: 20deg; }
+.vk-card-tilt img { object-fit: cover; object-position: top; }
+
+@keyframes vk-float-a {
+  from { transform: translateY(calc(-6 * var(--u))); }
+  to { transform: translateY(calc(6 * var(--u))); }
+}
+@keyframes vk-tilt {
+  from { transform: rotate(-0.5deg); }
+  to { transform: rotate(0.5deg); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .vk-coin,
+  html.js .vk-card {
+    animation: vk-float-a 2.6s ease-in-out infinite alternate;
+  }
+  html.js .vk-coin--strom,
+  html.js .vk-coin--okonomi,
+  html.js .vk-card--right {
+    animation-delay: -1.7s;
+  }
+  html.js .vk-card-tilt { animation: vk-tilt 3.4s ease-in-out infinite alternate; }
+
+  html.js .vk-phone,
+  html.js .vk-card {
+    transition:
+      scale 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.6s ease-out;
+  }
+  html.js .vk-stage:not([data-in]) .vk-phone,
+  html.js .vk-stage:not([data-in]) .vk-card {
+    opacity: 0;
+    scale: 0.63;
+  }
+}
+
+/* Phone */
+@media (max-width: 767.98px) {
+  .vk-sec { height: calc(736 * var(--um)); }
+  .vk-grid {
+    background:
+      repeating-linear-gradient(90deg, rgb(22 50 35 / 0.035) 0 1px, rgb(22 50 35 / 0) 1px calc(80 * var(--um))) calc(20 * var(--um)) 0,
+      repeating-linear-gradient(rgb(22 50 35 / 0.035) 0 1px, rgb(22 50 35 / 0) 1px calc(80 * var(--um))) 0 calc(40 * var(--um));
+  }
+  .vk-anchor { padding-top: calc(78 * var(--um)); }
+  .vk-title {
+    padding: 0 calc(16 * var(--um));
+    /* Three lines as in the reference, which holds pills, icons and phone in their places. */
+    font-size: calc(41 * var(--um));
+    line-height: 1.22;
+  }
+  .vk-title span { white-space: normal; }
+  .vk-pills {
+    flex-direction: column;
+    gap: calc(8 * var(--um));
+    margin-top: calc(47 * var(--um));
+  }
+  .vk-pills a {
+    width: calc(172 * var(--um));
+    min-width: 0;
+    height: calc(51 * var(--um));
+    padding: 0;
+    border-radius: calc(8.58 * var(--um));
+    font-size: calc(13 * var(--um));
+  }
+  .vk-pills svg { width: calc(17 * var(--um)); height: calc(17 * var(--um)); }
+
+  /* Three in the reference: the first is left out here. */
+  .vk-coin--madplan { display: none; }
+  .vk-coin {
+    width: calc(86 * var(--um));
+    height: calc(86 * var(--um));
+  }
+  .vk-coin--strom { top: calc(392 * var(--um)); left: calc(20 * var(--um)); }
+  .vk-coin--okonomi {
+    top: calc(396 * var(--um));
+    left: calc(289 * var(--um));
+    width: calc(62 * var(--um));
+    height: calc(62 * var(--um));
+  }
+  .vk-coin--forsikring { top: calc(532 * var(--um)); left: calc(300 * var(--um)); }
+
+  .vk-stage { top: calc(490 * var(--um)); }
+  .vk-phone {
+    --ah-phone-w: calc(187 * var(--um));
+    left: calc(50% - 93.5 * var(--um));
+  }
+  .vk-card {
+    top: calc(212 * var(--um));
+    width: calc(148 * var(--um));
+    height: calc(272 * var(--um));
+    margin: calc(-136 * var(--um)) 0 0 calc(-74 * var(--um));
+  }
+  .vk-card--left { left: calc(63 * var(--um)); }
+  .vk-card--right { left: calc(325 * var(--um)); }
+  .vk-card-tilt { border-radius: calc(18 * var(--um)); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes vk-float-m {
+      from { transform: translateY(calc(-3 * var(--um))); }
+      to { transform: translateY(calc(3 * var(--um))); }
+    }
+    html.js .vk-coin,
+    html.js .vk-card { animation-name: vk-float-m; }
+  }
+  @media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
+    html.js .vk-wrap {
+      --vk-over: calc(72 * var(--um));
+      height: calc(736 * var(--um) + var(--vk-over));
+    }
+    html.js .vk-sec {
+      position: sticky;
+      top: calc(100svh - 604 * var(--um) - 736 * var(--um));
+    }
+  }
+}

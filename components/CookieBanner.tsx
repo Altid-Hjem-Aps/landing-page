@@ -15,7 +15,7 @@ import { startAnalytics, stopAnalytics } from '@/lib/analytics'
 // Both answers get the same button, size and colour on purpose: Datatilsynet
 // requires saying no to be as easy as saying yes, so neither may be nudged.
 const BUTTON =
-  'flex-1 rounded-[14px] px-5 py-3 text-[15px] font-medium transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#90ff7c]'
+  'min-h-[44px] flex-1 basis-0 rounded-[14px] px-3 py-2 text-[14px] font-medium transition-opacity sm:px-5 sm:py-3 sm:text-[15px] hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#90ff7c]'
 const BUTTON_STYLE: React.CSSProperties = { background: '#90ff7c', color: '#003c16' }
 
 // The stored answer is external state (localStorage), read through
@@ -55,13 +55,13 @@ export default function CookieBanner() {
       role="dialog"
       aria-modal="false"
       aria-labelledby="cookie-banner-title"
-      className="fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-[560px] rounded-[20px] p-5 sm:p-6 shadow-2xl"
+      className="fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-[560px] rounded-[20px] p-4 sm:p-6 shadow-2xl"
       style={{ background: '#163223', color: '#ffffff' }}
     >
-      <h2 id="cookie-banner-title" className="text-[17px] font-medium">
+      <h2 id="cookie-banner-title" className="text-[15px] font-medium sm:text-[17px]">
         Må vi bruge cookies?
       </h2>
-      <p className="mt-2 text-[14px] leading-[1.6]" style={{ color: 'rgba(255,255,255,0.8)' }}>
+      <p className="mt-1.5 text-[13px] leading-[1.45] sm:mt-2 sm:text-[14px] sm:leading-[1.6]" style={{ color: 'rgba(255,255,255,0.8)' }}>
         Vi vil gerne bruge cookies til statistik, så vi kan se, hvordan siden bliver brugt, og gøre den bedre. Det sker
         kun, hvis du siger ja. De cookies, siden skal bruge for at virke, bruger vi altid. Du kan ændre dit valg under
         Cookieindstillinger nederst på siden. Læs mere i vores{' '}
@@ -70,7 +70,7 @@ export default function CookieBanner() {
         </Link>
         .
       </p>
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+      <div className="mt-3 flex flex-row gap-2 sm:mt-4">
         <button type="button" className={BUTTON} style={BUTTON_STYLE} onClick={() => choose('necessary')}>
           Kun nødvendige
         </button>

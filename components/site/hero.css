@@ -1,0 +1,915 @@
+/* The hero (Hero.tsx). The base is plain flow, what no JS, reduced motion and very
+   short screens get. The stage below it holds the first frame of the scroll scene;
+   after hydration Hero.tsx writes every value inline. Numbers are the reference's
+   px at 1440x900 and 390x844, multiplied by --hu so the stage fits the window. */
+
+.ah-hero {
+  position: relative;
+  background: var(--ah-page);
+  color: var(--ah-cream);
+}
+
+.ah-hero-head {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px var(--ah-gutter);
+}
+.ah-hero-logo { display: block; width: 96px; }
+.ah-hero-logo svg { display: block; width: 100%; height: auto; }
+.ah-hero-get {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ah-cream);
+}
+
+/* Static flow */
+.ah-hero-stage { padding-bottom: 72px; }
+.ah-hero-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 56px;
+  padding-inline: var(--ah-gutter);
+}
+.ah-hero-text { text-align: center; }
+.ah-hero-small {
+  font-size: 17px;
+  line-height: 1.4;
+  color: rgb(253 250 244 / 0.72);
+}
+.ah-hero-title {
+  margin-top: 14px;
+  font-family: var(--ah-font-display);
+  font-size: clamp(38px, 7vw, 68px);
+  font-weight: 700;
+  line-height: 1.15;
+}
+.ah-hero-title span { display: block; }
+.ah-hero-pills { justify-content: center; margin-top: 28px; }
+.ah-hero-fig {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+}
+.ah-hero-phone {
+  width: min(80vw, 320px);
+  container-type: inline-size;
+}
+.ah-hero-body {
+  position: relative;
+  padding: 3.9cqw;
+  border-radius: 16.6cqw;
+  background: #00130a;
+  box-shadow: inset 0 0 0 1.2cqw #39503f;
+}
+.ah-hero-screen {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 896 / 1938;
+  border-radius: 12.4cqw;
+  background: var(--ah-dark-forest);
+}
+.ah-hero-layer { position: absolute; inset: 0; }
+.ah-hero-layer img { object-fit: cover; object-position: top; }
+
+.ah-hero-eclipse,
+.ah-hero-halos,
+.ah-hero-coin,
+.ah-hero-rim,
+.ah-hero-layer--money,
+.ah-hero-dim,
+.ah-hero-sheet,
+.ah-hero-island,
+.ah-hero-stripes,
+.ah-hero-circle,
+.ah-hero-mask { display: none; }
+
+.ah-hero-steps {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 56px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ah-hero-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+.ah-hero-word {
+  font-family: var(--ah-font-display);
+  font-size: clamp(56px, 9vw, 96px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.ah-hero-word--2 { color: var(--ah-signal); }
+.ah-hero-step-phone { --ah-phone-w: min(70vw, 300px); }
+
+.ah-hero-card {
+  width: min(86vw, 420px);
+  padding: 8px;
+  border-radius: 20px;
+  background: linear-gradient(150deg, #90ff7c, #b7f2a7);
+}
+.ah-hero-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px 14px;
+  color: var(--ah-deep-forest);
+}
+.ah-hero-card-icon { display: block; flex: none; width: 44px; height: 44px; border-radius: 50%; }
+.ah-hero-card-sum {
+  font-family: var(--ah-font-display);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.ah-hero-card-note { font-size: 14px; line-height: 1.3; }
+/* The bars from the screen: the lower part of the crop, the number is above it. */
+.ah-hero-card-face {
+  overflow: hidden;
+  aspect-ratio: 344 / 92;
+  border-radius: 14px;
+  background: #163223;
+}
+.ah-hero-card-face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: bottom;
+}
+.ah-hero-caption { text-align: center; }
+
+.ah-hero-statement { text-align: center; }
+.ah-hero-statement-text {
+  font-family: var(--ah-font-display);
+  font-size: clamp(40px, 7vw, 76px);
+  font-weight: 700;
+  line-height: 1.18;
+}
+.ah-hero-statement-line { display: block; text-wrap: balance; }
+.ah-hero-statement-accent { color: var(--ah-signal); }
+
+.ah-hero-benefits {
+  display: grid;
+  gap: 24px;
+  justify-items: center;
+  width: 100%;
+  max-width: 1040px;
+}
+@media (min-width: 768px) {
+  .ah-hero-benefits { grid-template-columns: repeat(3, 1fr); }
+}
+.ah-hero-benefit {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 302.6 / 384.8;
+  padding: 29px;
+  overflow: hidden;
+  border: 1px solid rgb(253 250 244 / 0.12);
+  border-radius: 31.68px;
+  background: linear-gradient(168deg, #e8f5dc 0%, #b7f2a7 16%, #6fd65e 33%, #24663a 50%, #163223 66%, #143022 100%);
+}
+.ah-hero-benefit-title {
+  position: relative;
+  font-family: var(--ah-font-display);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ah-cream);
+}
+.ah-hero-benefit-body {
+  position: relative;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.35;
+  color: rgb(253 250 244 / 0.74);
+}
+.ah-hero-art {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  width: 66%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  animation: ah-hero-float 7s ease-in-out infinite alternate;
+}
+.ah-hero-art-svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 8px 14px rgb(0 38 14 / 0.4)); }
+.ah-hero-art-stack { position: relative; width: 100%; height: 100%; }
+.ah-hero-art-icon { position: absolute; display: block; filter: drop-shadow(0 8px 12px rgb(0 38 14 / 0.35)); }
+.ah-hero-art-icon--1 { left: -2%; top: 0; width: 46%; }
+.ah-hero-art-icon--2 { right: -6%; top: 2%; width: 34%; }
+.ah-hero-art-icon--3 { left: 28%; top: 36%; width: 66%; }
+.ah-hero-art-icon--4 { left: -12%; top: 56%; width: 30%; }
+.ah-hero-art--calendar { width: 72%; }
+.ah-hero-art-calendar {
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 22%;
+  background: var(--ah-dark-forest);
+  box-shadow: 0 10px 18px rgb(0 38 14 / 0.4);
+}
+.ah-hero-art-calendar img {
+  display: block;
+  width: 118%;
+  max-width: none;
+  height: auto;
+  margin: -73% 0 0 -9%;
+}
+
+@keyframes ah-hero-float {
+  from { translate: 0 -2.5%; }
+  to { translate: 0 2.5%; }
+}
+
+/* The scene hides the text with visibility once it has faded. In plain flow nothing fades,
+   and the scene's progress must not take the heading away from a reader scrolling past. */
+@media (prefers-reduced-motion: reduce), (max-height: 500px) {
+  .ah-hero-text { visibility: visible !important; }
+}
+
+/* The scroll scene, first frame */
+@media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
+  html.js .ah-hero {
+    --hu: min(calc(min(100vw, 1920px) / 1440), calc(100svh / 900));
+    /* The stage stays put for 7 heights, as long as the section is in the flow. The
+       pin is one height longer and hangs out below; the next section's transparent
+       stage comes up over it. Not a negative margin: that would collapse with the
+       next section's own. */
+    height: 700svh;
+  }
+  html.js .ah-hero-head {
+    position: absolute;
+    inset: 0 0 auto;
+    align-items: flex-start;
+    padding: 0;
+  }
+  html.js .ah-hero-logo {
+    width: calc(96 * var(--hu));
+    margin: calc(26 * var(--hu)) 0 0 calc(60 * var(--hu));
+  }
+  html.js .ah-hero-get {
+    margin: calc(30 * var(--hu)) calc(67 * var(--hu)) 0 0;
+    font-size: max(14px, calc(14.11 * var(--hu)));
+    font-weight: 400;
+  }
+
+  html.js .ah-hero-stage {
+    position: absolute;
+    inset: 0;
+    isolation: isolate;
+    padding: 0;
+    background: var(--ah-page);
+  }
+  html.js .ah-hero-box {
+    position: absolute;
+    top: calc(50% - 450 * var(--hu));
+    left: calc(50% - 720 * var(--hu));
+    display: block;
+    width: calc(1440 * var(--hu));
+    height: calc(900 * var(--hu));
+    padding: 0;
+  }
+  html.js .ah-hero-fig {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    transform-origin: calc(720 * var(--hu)) calc(365 * var(--hu));
+  }
+
+  html.js .ah-hero-text {
+    position: absolute;
+    z-index: 3;
+    top: calc(329 * var(--hu));
+    left: calc(317 * var(--hu));
+    width: calc(806 * var(--hu));
+    /* The point everything in the screen shrinks towards. */
+    transform-origin: 50% calc((160.7 - 329) * var(--hu));
+  }
+  html.js .ah-hero-small {
+    height: calc(24 * var(--hu));
+    font-size: max(13px, calc(19.87 * var(--hu)));
+    line-height: calc(24 * var(--hu));
+    white-space: nowrap;
+    color: rgb(253 250 244 / 0.66);
+  }
+  html.js .ah-hero-title {
+    margin-top: calc(16 * var(--hu));
+    height: calc(166 * var(--hu));
+    font-size: calc(67.68 * var(--hu));
+    line-height: calc(81.216 * var(--hu));
+    background: linear-gradient(180deg, #fdfaf4, rgb(253 250 244 / 0.62));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  html.js .ah-hero-pills {
+    flex-wrap: nowrap;
+    gap: calc(16 * var(--hu));
+    margin-top: calc(40 * var(--hu));
+  }
+  html.js .ah-hero-pills a {
+    justify-content: center;
+    gap: calc(10 * var(--hu));
+    width: max(150px, calc(202 * var(--hu)));
+    height: max(44px, calc(60 * var(--hu)));
+    min-height: 0;
+    padding: 0;
+    border-radius: max(12px, calc(15.84 * var(--hu)));
+    background: var(--ah-page);
+    font-size: max(13px, calc(16 * var(--hu)));
+  }
+  html.js .ah-hero-pills svg { width: max(16px, calc(20 * var(--hu))); height: max(16px, calc(20 * var(--hu))); }
+
+  /* The light. Mint-white to Signal, as far out as the reference's blue goes. */
+  html.js .ah-hero-eclipse {
+    position: absolute;
+    top: 0;
+    left: calc(216 * var(--hu));
+    display: block;
+    width: calc(1008 * var(--hu));
+    height: calc(580 * var(--hu));
+    transform: translateY(calc(-262 * var(--hu)));
+    background:
+      radial-gradient(ellipse 30% 9.5% at 50% 70%, #fff 0%, #fff 58%, rgb(236 253 226 / 0.92) 76%, transparent 100%),
+      radial-gradient(ellipse 46% 30% at 50% 70%, rgb(214 250 200 / 0.98) 0%, rgb(144 255 124 / 0.56) 50%, transparent 100%);
+  }
+  html.js .ah-hero-eclipse::after {
+    content: '';
+    position: absolute;
+    inset: 12% 14% 34%;
+    background-image:
+      radial-gradient(circle, #fff 0 1.2px, transparent 2px),
+      radial-gradient(circle, #fff 0 1px, transparent 1.6px),
+      radial-gradient(circle, #fff 0 1.4px, transparent 2.2px),
+      radial-gradient(circle, #fff 0 1px, transparent 1.6px),
+      radial-gradient(circle, #fff 0 1.2px, transparent 2px),
+      radial-gradient(circle, #fff 0 1px, transparent 1.6px),
+      radial-gradient(circle, #fff 0 1.2px, transparent 2px),
+      radial-gradient(circle, #fff 0 1px, transparent 1.6px);
+    background-repeat: no-repeat;
+    background-size: 6px 6px;
+    background-position: 8% 62%, 22% 80%, 34% 46%, 49% 22%, 62% 34%, 71% 74%, 83% 42%, 93% 66%;
+    opacity: 0.7;
+    animation: ah-hero-twinkle 5s ease-in-out infinite alternate;
+  }
+  html.js .ah-hero-halos {
+    /* Laid out at the phone's small size and scaled up: only blur, so no detail is
+       lost, and far less to paint than a 3700 px wide layer. */
+    --base: calc(288 * var(--hu));
+    position: absolute;
+    top: 0;
+    left: calc(720 * var(--hu));
+    display: block;
+    width: 0;
+    height: 0;
+    transform-origin: 0 0;
+    transform: translateY(calc(144 * var(--hu))) scale(3.4479);
+  }
+  html.js .ah-hero-light {
+    position: absolute;
+    top: calc(var(--base) * -0.302);
+    left: calc(var(--base) * -0.826);
+    width: calc(var(--base) * 1.652);
+    height: calc(var(--base) * 1.5);
+    background: radial-gradient(ellipse 50% 42% at 50% 42%, rgb(84 214 92 / 0.86) 0%, rgb(44 150 62 / 0.62) 40%, rgb(0 60 22 / 0.6) 72%, transparent 100%);
+  }
+  html.js .ah-hero-glow {
+    position: absolute;
+    top: calc(var(--base) * -1.527);
+    left: calc(var(--base) * -1.875);
+    width: calc(var(--base) * 3.75);
+    height: calc(var(--base) * 5.066);
+    opacity: 0;
+  }
+  html.js .ah-hero-glow--a {
+    background:
+      radial-gradient(ellipse 23% 15% at 50% 49%, rgb(214 240 205 / 0.34) 0%, rgb(210 239 200 / 0.31) 45%, rgb(200 238 188 / 0.23) 60%, rgb(190 240 176 / 0.13) 72%, rgb(183 242 167 / 0.05) 85%, transparent 100%),
+      radial-gradient(ellipse 21% 11% at 50% 29%, rgb(183 242 167 / 0.72) 0%, rgb(144 255 124 / 0.2) 60%, transparent 100%),
+      radial-gradient(ellipse 20% 9% at 50% 69%, rgb(144 255 124 / 0.34) 0%, transparent 100%);
+  }
+  html.js .ah-hero-glow--b {
+    background:
+      radial-gradient(ellipse 21% 15% at 50% 58%, rgb(144 255 124 / 0.96) 0%, rgb(111 214 94 / 0.72) 54%, transparent 100%),
+      radial-gradient(ellipse 30% 22% at 50% 52%, rgb(111 214 94 / 0.34) 0%, transparent 100%);
+  }
+
+  html.js .ah-hero-coin {
+    position: absolute;
+    display: block;
+    width: calc(144 * var(--hu));
+    height: calc(144 * var(--hu));
+  }
+  html.js .ah-hero-coin--1 { top: calc(513 * var(--hu)); left: calc(72 * var(--hu)); }
+  html.js .ah-hero-coin--2 { top: calc(144 * var(--hu)); left: calc(173 * var(--hu)); opacity: 0.55; filter: blur(calc(2 * var(--hu))); }
+  html.js .ah-hero-coin--3 { top: calc(369 * var(--hu)); left: calc(1253 * var(--hu)); }
+  html.js .ah-hero-coin-img {
+    display: block;
+    width: 68%;
+    margin: 16%;
+    animation: ah-hero-coin 4.5s ease-in-out infinite alternate;
+  }
+  html.js .ah-hero-coin--2 .ah-hero-coin-img { width: 40%; margin: 20% 30%; animation-delay: -1.5s; }
+  html.js .ah-hero-coin--3 .ah-hero-coin-img { animation-delay: -3s; }
+
+  html.js .ah-hero-phone {
+    position: absolute;
+    top: 0;
+    left: calc(223.5 * var(--hu));
+    width: calc(993 * var(--hu));
+    transform-origin: 50% 0;
+    transform: translateY(calc(144 * var(--hu)));
+  }
+  html.js .ah-hero-body {
+    margin: 0 0.86cqw;
+    padding: 3.93cqw;
+    background: linear-gradient(#4b6b57, #4b6b57) 78% 0 / 1.5cqw 1.25cqw no-repeat, #00130a;
+    box-shadow:
+      inset 0 0 0 1.25cqw #355643,
+      inset 0 0 0 1.5cqw #0c2318;
+  }
+  /* The buttons on the sides, and the seam in the rail */
+  html.js .ah-hero-body::before,
+  html.js .ah-hero-body::after {
+    content: '';
+    position: absolute;
+    top: 34cqw;
+    width: 0.86cqw;
+    height: 14cqw;
+    background: #2d4a39;
+  }
+  html.js .ah-hero-body::before { left: -0.86cqw; border-radius: 0.4cqw 0 0 0.4cqw; box-shadow: 0 19cqw 0 #2d4a39, 0 35cqw 0 #2d4a39; }
+  html.js .ah-hero-body::after { right: -0.86cqw; border-radius: 0 0.4cqw 0.4cqw 0; }
+  html.js .ah-hero-rim {
+    position: absolute;
+    inset: 0;
+    display: block;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+  }
+  html.js .ah-hero-rim--a { box-shadow: 0 0 2cqw 0.8cqw rgb(144 255 124 / 0.5); }
+  html.js .ah-hero-rim--b { box-shadow: 0 0 3cqw 1.2cqw rgb(144 255 124 / 0.55); }
+  /* The bright line on the phone's edge: white at the top, Signal below */
+  html.js .ah-hero-rim::before {
+    content: '';
+    position: absolute;
+    inset: -0.45cqw;
+    padding: 0.95cqw;
+    border-radius: 17cqw;
+    background: linear-gradient(180deg, #fdfff9 0%, #eafde2 30%, #b7f2a7 62%, #90ff7c 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  }
+  html.js .ah-hero-rim--b::before {
+    background: linear-gradient(180deg, rgb(183 242 167 / 0.45) 0%, #b7f2a7 45%, #90ff7c 100%);
+  }
+  html.js .ah-hero-screen {
+    height: 193.8cqw;
+    aspect-ratio: auto;
+    background: linear-gradient(180deg, #072f18 0%, #0a4323 18%, #073a1d 25%, #01280f 33%, var(--ah-page) 44%, var(--ah-page) 100%);
+  }
+  html.js .ah-hero-layer--money,
+  html.js .ah-hero-layer--hjem { opacity: 0; }
+  html.js .ah-hero-layer--money { display: block; }
+  html.js .ah-hero-build {
+    position: absolute;
+    right: 0;
+    left: 0;
+    background: #163223;
+  }
+  html.js .ah-hero-build--a { top: 25.8%; height: 32.6%; }
+  html.js .ah-hero-build--b { top: 58.4%; bottom: 0; }
+  html.js .ah-hero-dim {
+    position: absolute;
+    inset: 0;
+    display: block;
+    background: var(--ah-page);
+    opacity: 0;
+  }
+  html.js .ah-hero-sheet {
+    --sheet-top: 86.1cqw;
+    position: absolute;
+    top: var(--sheet-top);
+    right: 1.3cqw;
+    bottom: 0;
+    left: 1.3cqw;
+    display: block;
+    overflow: hidden;
+    border-radius: 6.8cqw 6.8cqw 12cqw 12cqw;
+    background: var(--ah-dark-forest);
+    opacity: 0;
+  }
+  html.js .ah-hero-sheet img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: -11%;
+  }
+
+  /* The hardware island, and the live note it plays at the top of the page */
+  html.js .ah-hero-island {
+    position: absolute;
+    z-index: 2;
+    top: 2.85cqw;
+    left: 50%;
+    display: block;
+    width: 43.8cqw;
+    height: 8.25cqw;
+    margin-left: -21.9cqw;
+  }
+  html.js .ah-hero-island-idle {
+    position: absolute;
+    top: 0;
+    left: 8.05cqw;
+    width: 27.7cqw;
+    height: 100%;
+    border-radius: 99cqw;
+    background: #00130a;
+  }
+  html.js .ah-hero-island-live {
+    position: absolute;
+    inset: 0;
+    display: block;
+    border-radius: 99cqw;
+    background: #00130a;
+    animation: ah-hero-island 16s ease-in-out infinite;
+  }
+  html.js .ah-hero-note {
+    position: absolute;
+    top: 0;
+    left: 1.9cqw;
+    display: flex;
+    align-items: center;
+    gap: 1.7cqw;
+    height: 100%;
+    opacity: 0;
+    animation: ah-hero-note 16s linear infinite;
+  }
+  html.js .ah-hero-note--2 { animation-delay: 4s; }
+  html.js .ah-hero-note--3 { animation-delay: 8s; }
+  html.js .ah-hero-note--4 { animation-delay: 12s; }
+  html.js .ah-hero-note--1 { opacity: 1; }
+  html.js .ah-hero-note-icon { width: 4.2cqw; height: 4.2cqw; }
+  html.js .ah-hero-note-text {
+    font-size: 2.05cqw;
+    white-space: nowrap;
+    color: rgb(253 250 244 / 0.86);
+  }
+  html.js .ah-hero-note-ring {
+    position: absolute;
+    top: 50%;
+    right: 1.5cqw;
+    width: 5.2cqw;
+    height: 5.2cqw;
+    margin-top: -2.6cqw;
+    border: 0.35cqw solid rgb(144 255 124 / 0.25);
+    border-top-color: var(--ah-signal);
+    border-radius: 50%;
+    animation: ah-hero-ring 2.2s linear infinite;
+  }
+
+  html.js .ah-hero-steps,
+  html.js .ah-hero-step { display: contents; }
+  html.js .ah-hero-step-phone { display: none; }
+  html.js .ah-hero-word {
+    position: absolute;
+    z-index: 2;
+    margin: 0;
+    font-size: calc(119.52 * var(--hu));
+    line-height: calc(146 * var(--hu));
+    white-space: nowrap;
+    opacity: 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  html.js .ah-hero-word--1 {
+    top: calc(267.5 * var(--hu));
+    right: calc(924 * var(--hu));
+    background-image: linear-gradient(90deg, rgb(253 250 244 / 0.78), #fdfaf4);
+  }
+  html.js .ah-hero-word--2 {
+    top: calc(394 * var(--hu));
+    left: calc(969 * var(--hu));
+    background-image: linear-gradient(120deg, #b7f2a7, #90ff7c 60%, #6fd65e);
+  }
+  html.js .ah-hero-word--3 {
+    top: calc(683.5 * var(--hu));
+    left: 0;
+    width: 100%;
+    text-align: center;
+    background-image: linear-gradient(0deg, rgb(253 250 244 / 0.78), #fdfaf4);
+  }
+  html.js .ah-hero-card {
+    position: absolute;
+    z-index: 3;
+    top: calc(267.5 * var(--hu));
+    left: calc(540 * var(--hu));
+    width: calc(360 * var(--hu));
+    padding: calc(8 * var(--hu));
+    border-radius: calc(21 * var(--hu));
+    box-shadow: 0 calc(6 * var(--hu)) calc(26 * var(--hu)) rgb(0 38 14 / 0.4);
+    opacity: 0;
+  }
+  html.js .ah-hero-card-top {
+    gap: calc(12 * var(--hu));
+    padding: calc(11 * var(--hu)) calc(10 * var(--hu)) calc(13 * var(--hu));
+  }
+  html.js .ah-hero-card-icon { width: calc(46 * var(--hu)); height: calc(46 * var(--hu)); }
+  html.js .ah-hero-card-sum { font-size: calc(23 * var(--hu)); }
+  html.js .ah-hero-card-note { font-size: calc(14.1 * var(--hu)); }
+  html.js .ah-hero-card-face { border-radius: calc(14 * var(--hu)); }
+  html.js .ah-hero-caption {
+    position: absolute;
+    z-index: 2;
+    top: calc(862 * var(--hu));
+    left: 0;
+    width: 100%;
+    opacity: 0;
+  }
+  html.js .ah-hero-caption .ah-caption { font-size: 13px; }
+
+  html.js .ah-hero-statement {
+    position: absolute;
+    z-index: 4;
+    top: calc(303.5 * var(--hu));
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    pointer-events: none;
+  }
+  html.js .ah-hero-statement-text {
+    font-size: calc(119.52 * var(--hu));
+    line-height: calc(146 * var(--hu));
+    white-space: nowrap;
+    background: linear-gradient(180deg, #fdfaf4, rgb(253 250 244 / 0.72));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  html.js .ah-hero-statement-accent {
+    background: linear-gradient(90deg, #b7f2a7, #90ff7c 60%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Dim light bars, brightest at the edges, as measured on the reference */
+  html.js .ah-hero-stripes {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    background:
+      radial-gradient(ellipse 0.55% 120% at 3.54% 50%, rgb(183 242 167 / 0.13) 0%, transparent 100%),
+      radial-gradient(ellipse 0.55% 120% at 12.15% 50%, rgb(183 242 167 / 0.09) 0%, transparent 100%),
+      radial-gradient(ellipse 0.5% 120% at 18.06% 50%, rgb(183 242 167 / 0.055) 0%, transparent 100%),
+      radial-gradient(ellipse 0.5% 120% at 22.43% 50%, rgb(183 242 167 / 0.035) 0%, transparent 100%),
+      radial-gradient(ellipse 0.5% 120% at 25.56% 50%, rgb(183 242 167 / 0.02) 0%, transparent 100%),
+      radial-gradient(ellipse 0.5% 120% at 74.44% 50%, rgb(183 242 167 / 0.02) 0%, transparent 100%),
+      radial-gradient(ellipse 0.5% 120% at 77.57% 50%, rgb(183 242 167 / 0.035) 0%, transparent 100%),
+      radial-gradient(ellipse 0.5% 120% at 81.94% 50%, rgb(183 242 167 / 0.055) 0%, transparent 100%),
+      radial-gradient(ellipse 0.55% 120% at 87.85% 50%, rgb(183 242 167 / 0.09) 0%, transparent 100%),
+      radial-gradient(ellipse 0.55% 120% at 96.46% 50%, rgb(183 242 167 / 0.13) 0%, transparent 100%);
+    opacity: 0;
+  }
+  html.js .ah-hero-circle {
+    position: absolute;
+    z-index: 0;
+    top: calc(50% - 864 * var(--hu));
+    left: calc(50% - 576 * var(--hu));
+    display: block;
+    width: calc(1152 * var(--hu));
+    height: calc(1728 * var(--hu));
+    border-radius: 50%;
+    background: radial-gradient(closest-side, var(--ah-page) 62%, transparent 100%);
+    opacity: 0;
+  }
+
+  /* Cards stop shrinking at 0.72: on a tablet the words on them must stay readable. */
+  html.js .ah-hero-benefits {
+    --cu: max(var(--hu), 0.72px);
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: block;
+    max-width: none;
+    pointer-events: none;
+  }
+  html.js .ah-hero-benefit {
+    position: absolute;
+    top: calc(50% - 192.4 * var(--cu));
+    width: calc(302.6 * var(--cu));
+    max-width: none;
+    height: calc(384.8 * var(--cu));
+    aspect-ratio: auto;
+    padding: calc(29 * var(--cu));
+    border-radius: calc(31.68 * var(--cu));
+    opacity: 0;
+  }
+  html.js .ah-hero-benefit--1 { left: calc(50% - 453.8 * var(--cu)); }
+  html.js .ah-hero-benefit--2 { left: calc(50% - 150.8 * var(--cu)); }
+  html.js .ah-hero-benefit--3 { left: calc(50% + 151.7 * var(--cu)); }
+  html.js .ah-hero-benefit-title { font-size: calc(18 * var(--cu)); }
+  html.js .ah-hero-benefit-body {
+    margin-top: calc(10 * var(--cu));
+    font-size: max(11px, calc(12.96 * var(--cu)));
+  }
+
+  /* Under the text, over the phone: the phone sinks into the page */
+  html.js .ah-hero-mask {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    height: calc(288 * var(--hu));
+    background: linear-gradient(180deg, rgb(0 31 11 / 0), var(--ah-page) 75%);
+  }
+
+  @keyframes ah-hero-coin {
+    from { transform: translateY(calc(-6 * var(--hu))); }
+    to { transform: translateY(calc(6 * var(--hu))); }
+  }
+  @keyframes ah-hero-ring { to { transform: rotate(360deg); } }
+  @keyframes ah-hero-twinkle {
+    from { opacity: 0.45; transform: translateY(-1.5%); }
+    to { opacity: 0.85; transform: translateY(1.5%); }
+  }
+  /* A note stays up for most of its four seconds. Between notes the pill draws in
+     to the size of the hardware island. */
+  @keyframes ah-hero-island {
+    0%, 20%, 25%, 45%, 50%, 70%, 75%, 95%, 100% { clip-path: inset(0 0 round 99cqw); }
+    23%, 48%, 73%, 98% { clip-path: inset(0 18.4% round 99cqw); }
+  }
+  @keyframes ah-hero-note {
+    0%, 20% { opacity: 1; }
+    21.5%, 98.5% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  /* Phone: its own numbers */
+  @media (max-width: 767.98px) {
+    html.js .ah-hero {
+      --hu: min(calc(100vw / 390), calc(100svh / 760));
+      height: auto;
+    }
+    html.js .ah-hero-logo { width: calc(98 * var(--hu)); margin: calc(20 * var(--hu)) 0 0 calc(20 * var(--hu)); }
+    html.js .ah-hero-get { margin: calc(24 * var(--hu)) calc(20 * var(--hu)) 0 0; }
+    html.js .ah-hero-box {
+      top: 0;
+      left: calc(50% - 195 * var(--hu));
+      width: calc(390 * var(--hu));
+      height: calc(844 * var(--hu));
+    }
+    html.js .ah-hero-fig { transform-origin: calc(195 * var(--hu)) calc(321 * var(--hu)); }
+    html.js .ah-hero-text {
+      top: calc(118 * var(--hu));
+      left: calc(39 * var(--hu));
+      width: calc(312 * var(--hu));
+      transform-origin: 50% 50%;
+    }
+    html.js .ah-hero-small {
+      height: calc(39 * var(--hu));
+      font-size: calc(16.38 * var(--hu));
+      line-height: calc(19.5 * var(--hu));
+      white-space: normal;
+    }
+    html.js .ah-hero-title {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-top: calc(13 * var(--hu));
+      height: calc(136 * var(--hu));
+      font-size: calc(37.44 * var(--hu));
+      line-height: calc(45 * var(--hu));
+    }
+    html.js .ah-hero-pills {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      gap: calc(9 * var(--hu));
+      margin-top: calc(32 * var(--hu));
+    }
+    html.js .ah-hero-pills a {
+      width: calc(172 * var(--hu));
+      height: max(44px, calc(51 * var(--hu)));
+      border-radius: calc(14 * var(--hu));
+      font-size: calc(14 * var(--hu));
+    }
+    html.js .ah-hero-eclipse {
+      left: calc(59 * var(--hu));
+      width: calc(273 * var(--hu));
+      height: calc(157 * var(--hu));
+      transform: translateY(calc(447 * var(--hu)));
+    }
+    html.js .ah-hero-halos {
+      --base: calc(266 * var(--hu));
+      left: calc(195 * var(--hu));
+      transform: translateY(calc(557 * var(--hu))) scale(1.2519);
+    }
+    html.js .ah-hero-light { opacity: 0.6; }
+    html.js .ah-hero-eclipse {
+      background: radial-gradient(ellipse 46% 30% at 50% 70%, rgb(183 242 167 / 0.55) 0%, rgb(144 255 124 / 0.2) 60%, transparent 100%);
+    }
+    html.js .ah-hero-eclipse::after { display: none; }
+    html.js .ah-hero-glow--a { opacity: 1; }
+    html.js .ah-hero-rim--a { opacity: 1; }
+    html.js .ah-hero-glow--b {
+      background:
+        radial-gradient(ellipse 50% 44% at 50% 60%, rgb(111 214 94 / 0.82) 0%, rgb(60 170 74 / 0.6) 58%, transparent 100%);
+      top: calc(var(--base) * -0.34);
+      left: calc(var(--base) * -1);
+      width: calc(var(--base) * 2);
+      height: calc(var(--base) * 2.7);
+    }
+    html.js .ah-hero-glow--a {
+      background:
+        radial-gradient(ellipse 22% 13% at 50% 32%, rgb(144 255 124 / 0.32) 0%, transparent 100%),
+        radial-gradient(ellipse 22% 11% at 50% 68%, rgb(144 255 124 / 0.3) 0%, transparent 100%);
+    }
+    html.js .ah-hero-coin { width: calc(78 * var(--hu)); height: calc(78 * var(--hu)); }
+    html.js .ah-hero-coin--1 { top: calc(486 * var(--hu)); left: calc(8 * var(--hu)); }
+    html.js .ah-hero-coin--2 { display: none; }
+    html.js .ah-hero-coin--3 { top: calc(439 * var(--hu)); left: calc(250 * var(--hu)); }
+    html.js .ah-hero-phone {
+      left: calc(28.5 * var(--hu));
+      width: calc(333 * var(--hu));
+      transform: translateY(calc(557 * var(--hu)));
+    }
+    html.js .ah-hero-layer--money { opacity: 1; }
+    html.js .ah-hero-island { display: none; }
+    html.js .ah-hero-sheet { --sheet-top: 93.6cqw; }
+    html.js .ah-hero-word {
+      top: calc(601 * var(--hu));
+      left: 0;
+      right: auto;
+      width: 100%;
+      font-size: calc(74.88 * var(--hu));
+      line-height: calc(91 * var(--hu));
+      text-align: center;
+    }
+    html.js .ah-hero-word--1,
+    html.js .ah-hero-word--2,
+    html.js .ah-hero-word--3 { top: calc(601 * var(--hu)); left: 0; right: auto; }
+    html.js .ah-hero-card {
+      top: calc(235 * var(--hu));
+      left: calc(32.5 * var(--hu));
+      width: calc(325 * var(--hu));
+    }
+    html.js .ah-hero-caption { top: calc(712 * var(--hu)); }
+    html.js .ah-hero-statement {
+      top: calc(306 * var(--hu));
+      left: calc(16 * var(--hu));
+      width: calc(358 * var(--hu));
+    }
+    html.js .ah-hero-statement-text {
+      font-size: calc(57.72 * var(--hu));
+      line-height: calc(69 * var(--hu));
+      white-space: normal;
+    }
+    html.js .ah-hero-stripes,
+    html.js .ah-hero-circle { display: none; }
+    html.js .ah-hero-benefit,
+    html.js .ah-hero-benefit--1,
+    html.js .ah-hero-benefit--2,
+    html.js .ah-hero-benefit--3 {
+      top: calc(211.7 * var(--hu));
+      left: calc(50% - 144.25 * var(--hu));
+      width: calc(288.5 * var(--hu));
+      height: calc(419.6 * var(--hu));
+      padding: calc(30 * var(--hu));
+      border-radius: calc(33.15 * var(--hu));
+    }
+    /* Darker at the top than on the desktop, as the reference's cards are on a phone. */
+    html.js .ah-hero-benefit {
+      background: linear-gradient(168deg, #4fae60 0%, #37904c 20%, #235f37 40%, #163223 60%, #143022 100%);
+    }
+    html.js .ah-hero-benefit-title { font-size: calc(18.72 * var(--hu)); }
+    html.js .ah-hero-benefit-body { font-size: calc(13.49 * var(--hu)); }
+    html.js .ah-hero-mask { height: calc(78 * var(--hu)); }
+  }
+}

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import LegalPageLayout, { LegalAddress, LEGAL_H2, LEGAL_LABEL, LEGAL_LINK, LEGAL_RULE } from '@/components/LegalPageLayout'
 
 export const metadata: Metadata = {
-  title: 'Support – Altid Hjem',
+  title: 'Support | Altid Hjem',
   description: 'Har du brug for hjælp til Altid Hjem-appen? Skriv til os på hej@altidhjem.dk, så vender vi tilbage hurtigst muligt.',
 }
 
@@ -13,7 +13,7 @@ const energiLink = (
 const faq = [
   {
     q: 'Jeg kan ikke logge ind',
-    a: <>Skriv til os på <a href="mailto:hej@altidhjem.dk" className={LEGAL_LINK}>hej@altidhjem.dk</a> – så hjælper vi dig videre.</>,
+    a: <>Skriv til os på <a href="mailto:hej@altidhjem.dk" className={LEGAL_LINK}>hej@altidhjem.dk</a>, så hjælper vi dig videre.</>,
   },
   {
     q: 'Spørgsmål til elforbrug og priser',

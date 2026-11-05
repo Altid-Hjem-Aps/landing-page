@@ -6,7 +6,7 @@ import { page, button, preferences } from '@/lib/preference-page'
 
 // This route is the ONE preference centre for the whole group: altidmad.dk's
 // emails point their unsubscribe links here too, because the two sites share one
-// waitlist row per person. Anything built here reaches both audiences; the same
+// signup row per person. Anything built here reaches both audiences; the same
 // thing built on the Mad site's own /api/unsubscribe would be unreachable, since
 // no email ever links to it.
 
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
         'Dine valg er gemt',
         consent.mad || consent.group
           ? 'Du hører kun om det, du har sat kryds ved. Du kan altid ændre det via linket i vores mails.'
-          : 'Du har fravalgt al markedsføring. Du står stadig på ventelisten og får besked, når vi åbner.',
+          : 'Du har fravalgt al markedsføring. Du kan altid ændre det via linket i vores mails.',
       )
     }
 
@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
       const row = await getSignupByUnsubToken(token)
       return page(
         'Velkommen tilbage',
-        'Du er på ventelisten igen. Vælg herunder, hvad du gerne vil høre om — du får ingen markedsføring, før du har sat kryds.',
+        'Vælg herunder, hvad du gerne vil høre om. Du får ingen markedsføring, før du har sat kryds.',
         row ? preferences(token, row) : '',
       )
     }

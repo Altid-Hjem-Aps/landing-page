@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { fluid } from '@/lib/fluid'
 import { liveSavings } from '@/lib/liveSavings'
-import { RECEIPT_ROWS, SAVING, YEAR_SAVING } from '@/components/sections/why/cards'
 
 // The counter formula must stay in lockstep with altidenergi.dk's inline
 // script: startValue 2,080,000 anchored 2025-01-01 (Copenhagen), +6750 kr/day.
@@ -32,22 +31,5 @@ describe('fluid', () => {
       .match(/[\d.]+(?=rem)/g)!
       .map(Number)
     expect(min).toBeLessThanOrEqual(max)
-  })
-})
-
-// The animated receipt hard-codes per-subbrand savings that must equal the
-// saving derived from the household's member prices — and the yearly claim in
-// the green box is 12× that. A price edit that forgets the receipt fails here.
-describe('household story data invariants', () => {
-  it('receipt rows sum to the derived monthly saving', () => {
-    expect(RECEIPT_ROWS.reduce((s, r) => s + r.save, 0)).toBe(SAVING)
-  })
-
-  it('the yearly claim is 12x the monthly saving', () => {
-    expect(YEAR_SAVING).toBe(SAVING * 12)
-  })
-
-  it('receipt rows are ordered biggest saving first', () => {
-    expect(RECEIPT_ROWS.every((r, i, a) => i === 0 || a[i - 1].save >= r.save)).toBe(true)
   })
 })
