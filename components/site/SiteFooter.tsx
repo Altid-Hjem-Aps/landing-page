@@ -18,9 +18,9 @@ export default function SiteFooter() {
     <footer data-b="footer" className="ft">
       <div className="ft-inner">
         <div className="ft-brand">
-          <Link href="/" aria-label={FOOTER.home}>
+          <a href="#top" aria-label={FOOTER.home}>
             <Image src="/site/brand/lockup-white.svg" alt="" width={105} height={33} />
-          </Link>
+          </a>
           <p className="ft-company">{FOOTER.company}</p>
           <div className="ft-news">
             <NewsletterForm />

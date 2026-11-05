@@ -12,13 +12,19 @@ import { NAV } from './copy'
 export default function SiteNav() {
   const sheet = useRef<HTMLDialogElement>(null)
   const closeSheet = () => sheet.current?.close()
+  // Focus on the sheet itself: left to the browser it lands on the close button, and iOS
+  // then draws the keyboard ring around it after a finger tap.
+  const openSheet = () => {
+    sheet.current?.showModal()
+    sheet.current?.focus()
+  }
 
   return (
     <>
       <header className="nav">
         <div className="nav-pill">
           <a href="#top" className="nav-home" aria-label={NAV.home}>
-            <Image src="/site/brand/lockup-deep-forest.svg" alt="" width={86} height={27} loading="eager" />
+            <Image src="/site/brand/lockup-deep-forest.svg" alt="" width={96} height={30} loading="eager" />
           </a>
           <nav className="nav-main" aria-label={NAV.ariaMain}>
             <div className="nav-links">
@@ -32,7 +38,7 @@ export default function SiteNav() {
               {NAV.cta}
             </a>
           </nav>
-          <button type="button" className="nav-burger" aria-label={NAV.open} aria-haspopup="dialog" onClick={() => sheet.current?.showModal()}>
+          <button type="button" className="nav-burger" aria-label={NAV.open} aria-haspopup="dialog" onClick={openSheet}>
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
               <path d="M3 6.5h18M8 12h13M3 17.5h18" />
             </svg>
@@ -40,10 +46,10 @@ export default function SiteNav() {
         </div>
       </header>
 
-      <dialog ref={sheet} className="sheet" aria-label={NAV.ariaMenu} onClick={(e) => e.target === e.currentTarget && closeSheet()}>
+      <dialog ref={sheet} className="sheet" tabIndex={-1} aria-label={NAV.ariaMenu} onClick={(e) => e.target === e.currentTarget && closeSheet()}>
         <div className="sheet-body">
           <div className="sheet-top">
-            <Image src="/site/brand/lockup-deep-forest.svg" alt="Altid Hjem" width={86} height={27} />
+            <Image src="/site/brand/lockup-deep-forest.svg" alt="Altid Hjem" width={96} height={30} />
             <button type="button" className="sheet-close" aria-label={NAV.close} onClick={closeSheet}>
               <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                 <path d="M6 6l12 12M18 6L6 18" />

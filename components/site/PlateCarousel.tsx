@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type TouchEvent } from 'react'
 import { MAD } from './copy'
 import { useMotionPiece } from './MotionPrefs'
 
@@ -9,6 +9,7 @@ import { useMotionPiece } from './MotionPrefs'
 // others dim beside it. Each tab's label is its day; the selected one shows the dish.
 const ADVANCE_MS = 5000
 const START = 1
+const SWIPE_PX = 40
 const COUNT = MAD.plates.length
 
 export default function PlateCarousel() {
@@ -18,6 +19,7 @@ export default function PlateCarousel() {
   const [hovering, setHovering] = useState(false)
   const [focused, setFocused] = useState(false)
   const tabs = useRef<(HTMLButtonElement | null)[]>([])
+  const touchStart = useRef(0)
 
   const advancing = running && !picked && !hovering && !focused
   useEffect(() => {
@@ -30,6 +32,14 @@ export default function PlateCarousel() {
   const pick = (day: number) => {
     setSelected(day)
     setPicked(true)
+  }
+
+  // On a phone the plates beside the selected one are cut by the screen, so a swipe is
+  // what a thumb tries first.
+  const onTouchEnd = (event: TouchEvent) => {
+    const distance = event.changedTouches[0].clientX - touchStart.current
+    if (Math.abs(distance) < SWIPE_PX) return
+    pick((selected + (distance < 0 ? 1 : COUNT - 1)) % COUNT)
   }
 
   const onKeyDown = (event: KeyboardEvent, day: number) => {
@@ -49,6 +59,10 @@ export default function PlateCarousel() {
       onPointerLeave={() => setHovering(false)}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
+      onTouchStart={(event) => {
+        touchStart.current = event.touches[0].clientX
+      }}
+      onTouchEnd={onTouchEnd}
     >
       <div className="plates-row" role="tablist" aria-label={MAD.weekLabel} style={{ '--sel': selected } as CSSProperties}>
         {MAD.days.map((day, i) => (

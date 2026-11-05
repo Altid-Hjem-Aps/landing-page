@@ -349,6 +349,25 @@ describe('the week of plates', () => {
     expect(week().getByRole('tabpanel')).toHaveAttribute('aria-labelledby', selectedDay().id)
   })
 
+  it('follows a swipe, stops advancing, and ignores a short drag or a tap', () => {
+    const { container } = render(<Home />)
+    const swipe = (from: number, to: number) => {
+      fireEvent.touchStart(strip(container), { touches: [{ clientX: from }] })
+      fireEvent.touchEnd(strip(container), { changedTouches: [{ clientX: to }] })
+    }
+    swipe(300, 280)
+    expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
+    swipe(300, 200)
+    expect(selectedDay()).toHaveAttribute('aria-label', 'Onsdag')
+    swipe(200, 300)
+    swipe(200, 300)
+    expect(selectedDay()).toHaveAttribute('aria-label', 'Mandag')
+    swipe(200, 300)
+    expect(selectedDay()).toHaveAttribute('aria-label', 'Søndag')
+    wait(10000)
+    expect(selectedDay()).toHaveAttribute('aria-label', 'Søndag')
+  })
+
   it('advances by itself and wraps around', () => {
     render(<Home />)
     wait(5000)
