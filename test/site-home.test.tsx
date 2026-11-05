@@ -349,13 +349,20 @@ describe('the week of plates', () => {
     expect(week().getByRole('tabpanel')).toHaveAttribute('aria-labelledby', selectedDay().id)
   })
 
-  it('follows a swipe, stops advancing, and ignores a short drag or a tap', () => {
+  it('follows a swipe, stops advancing, and ignores a short drag or a page scroll', () => {
     const { container } = render(<Home />)
-    const swipe = (from: number, to: number) => {
-      fireEvent.touchStart(strip(container), { touches: [{ clientX: from }] })
-      fireEvent.touchEnd(strip(container), { changedTouches: [{ clientX: to }] })
+    const swipe = (from: number, to: number, down = 0) => {
+      fireEvent.touchStart(strip(container), { touches: [{ clientX: from, clientY: 400 }] })
+      fireEvent.touchEnd(strip(container), { changedTouches: [{ clientX: to, clientY: 400 + down }] })
     }
     swipe(300, 280)
+    expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
+    swipe(300, 240, 200)
+    expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
+    // A pinch: the second finger cancels the swipe.
+    fireEvent.touchStart(strip(container), { touches: [{ clientX: 300, clientY: 400 }] })
+    fireEvent.touchStart(strip(container), { touches: [{ clientX: 300, clientY: 400 }, { clientX: 100, clientY: 400 }] })
+    fireEvent.touchEnd(strip(container), { changedTouches: [{ clientX: 100, clientY: 400 }] })
     expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
     swipe(300, 200)
     expect(selectedDay()).toHaveAttribute('aria-label', 'Onsdag')

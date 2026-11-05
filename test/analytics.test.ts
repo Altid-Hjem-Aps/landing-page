@@ -8,6 +8,7 @@ beforeEach(() => {
   sdk.init.mockClear()
   sdk.setOptOut.mockClear()
   vi.stubEnv('NEXT_PUBLIC_AMPLITUDE_API_KEY', 'test-key')
+  window.localStorage.setItem('ah-cookie-consent', JSON.stringify({ choice: 'all', at: Date.now() }))
 })
 afterEach(() => {
   vi.unstubAllEnvs()
@@ -41,13 +42,37 @@ describe('analytics loader', () => {
     const { startAnalytics, stopAnalytics } = await import('@/lib/analytics')
     startAnalytics()
     stopAnalytics()
-    await vi.waitFor(() => expect(sdk.setOptOut).toHaveBeenCalledWith(true))
+    await vi.dynamicImportSettled()
     expect(sdk.init).not.toHaveBeenCalled()
+    expect(sdk.setOptOut).not.toHaveBeenCalled()
+  })
+
+  it('does not initialise when another tab withdrew while the SDK was loading', async () => {
+    const { startAnalytics } = await import('@/lib/analytics')
+    startAnalytics()
+    window.localStorage.setItem('ah-cookie-consent', JSON.stringify({ choice: 'necessary', at: Date.now() }))
+    await vi.dynamicImportSettled()
+    expect(sdk.init).not.toHaveBeenCalled()
+  })
+
+  it('initialises once when consent is withdrawn and given again while the SDK is loading', async () => {
+    const { startAnalytics, stopAnalytics } = await import('@/lib/analytics')
+    startAnalytics()
+    stopAnalytics()
+    startAnalytics()
+    await vi.waitFor(() => expect(sdk.init).toHaveBeenCalled())
+    expect(sdk.init).toHaveBeenCalledTimes(1)
+    expect(sdk.setOptOut).not.toHaveBeenCalled()
   })
 
   it('stopping opts out and removes Amplitude cookies and storage, leaving the rest', async () => {
     const { startAnalytics, stopAnalytics } = await import('@/lib/analytics')
     startAnalytics()
+    await vi.waitFor(() => expect(sdk.init).toHaveBeenCalled())
+    // The real SDK writes its identifiers back when it opts out.
+    sdk.setOptOut.mockImplementationOnce(() => {
+      document.cookie = 'AMP_abc123=device; Path=/'
+    })
     document.cookie = 'AMP_abc123=device; Path=/'
     document.cookie = 'AMP_MKTG_abc123=utm; Path=/'
     document.cookie = 'am_confirm=keep; Path=/'

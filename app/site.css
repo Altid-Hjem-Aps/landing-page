@@ -8,6 +8,7 @@
   --u: calc(min(100vw, 1440px) / 1440);
   --cream: #fdfaf4;
   --forest: #003c16;
+  --dark-forest: #163223;
   --stone: #6f6a61;
   --sand: #f5efe3;
   --signal: #90ff7c;
@@ -1213,7 +1214,7 @@
   .plates {
     position: relative;
     height: max(calc(var(--u) * 243), 226px);
-    touch-action: pan-y;
+    touch-action: pan-y pinch-zoom;
   }
   .plates-row {
     position: absolute;
@@ -2015,7 +2016,7 @@
     --ft-gap: min(calc(var(--u) * 88), calc(var(--pad) - 56px));
     margin-top: var(--ft-gap);
     border-radius: 32px 32px 0 0;
-    background: #163223;
+    background: var(--dark-forest);
     color: var(--cream);
   }
   .ft-inner {

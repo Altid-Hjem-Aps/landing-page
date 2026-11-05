@@ -1,12 +1,21 @@
+import { readCookieChoice } from '@/lib/cookie-consent'
+
 // Amplitude in the browser runs only after the visitor chose "Accepter alle".
 // Before that, amplitude.track() calls from components are held in the SDK's
 // pre-init queue and never leave the browser unless init() is called.
 let started = false
+let initialised = false
 
 // Fetched only after consent: the SDK is about a quarter of the front page's script,
-// and a first visit has not chosen yet.
+// and a first visit has not chosen yet. A failed download is forgotten, so the next
+// consent can try again.
 let sdk: Promise<typeof import('@amplitude/analytics-browser')> | undefined
-const loadSdk = () => (sdk ??= import('@amplitude/analytics-browser'))
+const loadSdk = () =>
+  (sdk ??= import('@amplitude/analytics-browser').catch((e) => {
+    sdk = undefined
+    started = false
+    throw e
+  }))
 
 export function startAnalytics() {
   if (started) return
@@ -14,8 +23,9 @@ export function startAnalytics() {
   if (!apiKey) return
   started = true
   void loadSdk().then(({ init }) => {
-    // The visitor may have withdrawn while the SDK was on its way.
-    if (!started) return
+    // The visitor may have withdrawn while the SDK was on its way, here or in another tab.
+    if (!started || initialised || readCookieChoice() !== 'all') return
+    initialised = true
     init(apiKey, {
       serverUrl: 'https://api.eu.amplitude.com/2/httpapi',
       fetchRemoteConfig: false,
@@ -39,8 +49,15 @@ export function startAnalytics() {
 // browser (its AMP_* cookies and localStorage keys), so nothing links a
 // later visit to this one.
 export function stopAnalytics() {
-  if (started) void loadSdk().then(({ setOptOut }) => setOptOut(true))
+  if (initialised) {
+    void loadSdk().then(({ setOptOut }) => {
+      setOptOut(true)
+      // Opting out writes the SDK's identifiers back to the browser.
+      removeAmplitudeStorage()
+    })
+  }
   started = false
+  initialised = false
   removeAmplitudeStorage()
 }
 

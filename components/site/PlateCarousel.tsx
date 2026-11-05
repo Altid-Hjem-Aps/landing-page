@@ -19,7 +19,7 @@ export default function PlateCarousel() {
   const [hovering, setHovering] = useState(false)
   const [focused, setFocused] = useState(false)
   const tabs = useRef<(HTMLButtonElement | null)[]>([])
-  const touchStart = useRef(0)
+  const touchStart = useRef<{ x: number; y: number } | null>(null)
 
   const advancing = running && !picked && !hovering && !focused
   useEffect(() => {
@@ -37,9 +37,14 @@ export default function PlateCarousel() {
   // On a phone the plates beside the selected one are cut by the screen, so a swipe is
   // what a thumb tries first.
   const onTouchEnd = (event: TouchEvent) => {
-    const distance = event.changedTouches[0].clientX - touchStart.current
-    if (Math.abs(distance) < SWIPE_PX) return
-    pick((selected + (distance < 0 ? 1 : COUNT - 1)) % COUNT)
+    const start = touchStart.current
+    touchStart.current = null
+    if (!start) return
+    const { clientX, clientY } = event.changedTouches[0]
+    const across = clientX - start.x
+    // A page scroll that starts on a plate drifts sideways too, and must not pick one.
+    if (Math.abs(across) < SWIPE_PX || Math.abs(across) < Math.abs(clientY - start.y)) return
+    pick((selected + (across < 0 ? 1 : COUNT - 1)) % COUNT)
   }
 
   const onKeyDown = (event: KeyboardEvent, day: number) => {
@@ -60,7 +65,8 @@ export default function PlateCarousel() {
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
       onTouchStart={(event) => {
-        touchStart.current = event.touches[0].clientX
+        // A second finger is a pinch, not a swipe.
+        touchStart.current = event.touches.length === 1 ? { x: event.touches[0].clientX, y: event.touches[0].clientY } : null
       }}
       onTouchEnd={onTouchEnd}
     >
