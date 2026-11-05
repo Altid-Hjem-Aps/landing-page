@@ -13,28 +13,27 @@ const BANNER_REVEAL = 8
 // which can fire ~30px of phantom scrollY without a real user gesture.
 const SCROLL_DELTA_DESKTOP = 6
 const SCROLL_DELTA_TOUCH = 30
+// An anchor jump (/#altid-forsikring from a mail, a nav link, Hent appen)
+// counts as settled once no scroll event has come for this long.
+const ANCHOR_SETTLE_MS = 150
 
-// The CVI navigation: Hjem is the current site, so its item is active on every
-// altidhjem.dk page (not just the front page); service links are muted until
-// their sites launch ('live' renders white). href points at the services
-// section so the link works from every page (homepage + SEO pages).
-type LinkTone = 'home' | 'live' | 'soon'
+// The navigation lists the four live services of the Altid Hjem app, each an
+// anchor on the front page (the ids are a contract: mails and shared links
+// point at them too). On the front page the links stay in the document
+// (#id); elsewhere they lead to the front page (/#id).
 interface NavLink {
   label: string
-  href: string
-  tone: LinkTone
+  id: string
 }
 const NAV_LINKS: NavLink[] = [
-  { label: 'Hjem', href: '/', tone: 'home' },
-  { label: 'Mad', href: 'https://altidmad.dk', tone: 'live' },
-  { label: 'Energi', href: 'https://altidenergi.dk', tone: 'live' },
-  { label: 'Forsikring', href: 'https://altidforsikring.dk', tone: 'live' },
-  // 'soon' services are muted with a "Kommer snart" sublabel (Figma 26:105)
-  // and flip to 'live' (white, no sublabel) when their site launches.
-  { label: 'Alarm', href: '/#tjenester', tone: 'soon' },
-  { label: 'Opladning', href: '/#tjenester', tone: 'soon' },
-  { label: 'Mobil', href: '/#tjenester', tone: 'soon' },
+  { label: 'Økonomi', id: 'okonomi' },
+  { label: 'Altid Mad', id: 'altid-mad' },
+  { label: 'Altid Energi', id: 'altid-energi' },
+  { label: 'Altid Forsikring', id: 'altid-forsikring' },
 ]
+// The hero's store badges.
+const GET_APP_ID = 'hent-appen'
+const GET_APP_LABEL = 'Hent appen'
 
 interface BannerConfig {
   /** Long lead-in — only shown from md (768px), where it fits on one line. */
@@ -43,7 +42,7 @@ interface BannerConfig {
   shortPrefix: string
   /** Amplitude source for banner clicks, e.g. 'spiir-banner'. */
   source: string
-  /** Banner CTA text — falls back to the default waitlist label. */
+  /** Banner CTA text; falls back to the get-the-app label. */
   cta?: string
 }
 
@@ -55,18 +54,16 @@ interface NavProps {
 }
 
 const SPIIR_BANNER: BannerConfig = {
-  longPrefix: 'Spiir er lukket — mist ikke overblikket over dine faste udgifter. ',
+  longPrefix: 'Spiir er lukket. Mist ikke overblikket over dine faste udgifter. ',
   shortPrefix: 'Brugte du Spiir? ',
   source: 'spiir-banner',
 }
 
 // Colours from the CVI frame (node 45:6428)
-const FOREST = '#163223'
-const SIGNAL = '#90ff7c'
-// Deliberately low-contrast: these links are INACTIVE until each service's
-// site launches (WCAG 1.4.3 exempts inactive components); they flip to
-// 'live'/white when switched on.
-const MUTED = '#6f6a61'
+// The app palette tokens (app/globals.css).
+const FOREST = 'var(--app-forest)'
+const SIGNAL = 'var(--app-signal)'
+const BRAND_GREEN = 'var(--app-brand-green)'
 
 export default function Nav({ spiirBanner = false, banner }: NavProps) {
   const router = useRouter()
@@ -89,14 +86,52 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
       window.matchMedia('(hover: none) and (pointer: coarse)').matches
     const delta = isTouch ? SCROLL_DELTA_TOUCH : SCROLL_DELTA_DESKTOP
 
+    // A jump to a section scrolls down without the visitor scrolling. While it
+    // runs (smooth scrolling sends many events) the nav stays visible and only
+    // follows the position, so the section lands under a visible nav instead
+    // of under the gap the hidden nav leaves.
+    let anchorJump = false
+    let settle: ReturnType<typeof setTimeout> | undefined
+    function armSettle() {
+      clearTimeout(settle)
+      settle = setTimeout(() => {
+        anchorJump = false
+        lastY.current = window.scrollY
+      }, ANCHOR_SETTLE_MS)
+    }
+    function holdForAnchorJump() {
+      anchorJump = true
+      lastY.current = window.scrollY
+      setHidden(false)
+      armSettle()
+    }
+    // A click on a link to a section of this page. Covers the case hashchange
+    // misses: the link to the section already in the URL scrolls again but
+    // fires no hashchange.
+    function onClick(e: MouseEvent) {
+      const link = e.target instanceof Element ? e.target.closest('a') : null
+      if (link && link.hash && link.pathname === window.location.pathname) holdForAnchorJump()
+    }
+    // Loaded with a hash: the browser's jump may still be on its way.
+    if (window.location.hash) {
+      anchorJump = true
+      armSettle()
+    }
+
     function onScroll() {
       const y = window.scrollY
-      const dy = y - lastY.current
 
-      // The banner reveal must not wait for the delta gate — it has to react
+      // The banner reveal must not wait for the delta gate: it has to react
       // to the very first scrolled pixel.
       setScrolled(y > BANNER_REVEAL)
 
+      if (anchorJump) {
+        lastY.current = y
+        armSettle()
+        return
+      }
+
+      const dy = y - lastY.current
       if (Math.abs(dy) < delta) return
 
       if (y < HIDE_THRESHOLD) {
@@ -111,107 +146,86 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    window.addEventListener('hashchange', holdForAnchorJump)
+    document.addEventListener('click', onClick, true)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('hashchange', holdForAnchorJump)
+      document.removeEventListener('click', onClick, true)
+      clearTimeout(settle)
+    }
   }, [])
 
   function handleCTA(source: string) {
-    amplitude.track('Waitlist CTA Clicked', { source })
-    // If the page has its own signup form (e.g. /spiir-alternativ's BottomCta,
-    // id 'venteliste2'), scroll to it — that preserves the page's signup_source.
-    // Otherwise: the homepage hero form (the 'expand-waitlist' listener only
-    // exists on '/'; everywhere else navigate home with the #venteliste hash).
-    const onPageForm = document.getElementById('venteliste2')
-    if (onPageForm) {
-      onPageForm.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    amplitude.track('Get App CTA Clicked', { source })
+    // The page's own store badges (the SEO pages' BottomCta) when it has them,
+    // otherwise the store badges on the front page.
+    const onPageBadges = document.getElementById(GET_APP_ID)
+    if (onPageBadges) {
+      onPageBadges.scrollIntoView({ behavior: 'smooth', block: 'center' })
       return
     }
-    if (window.location.pathname !== '/') {
-      router.push('/#venteliste')
-      return
-    }
-    window.dispatchEvent(new CustomEvent('expand-waitlist'))
+    router.push(`/#${GET_APP_ID}`)
   }
 
-  function linkColor(tone: LinkTone, active = false) {
-    // The active item matches its marker dot — signal label over the signal dot.
-    if (active) return SIGNAL
-    // 'home' never degrades to MUTED: that grey means "not launched yet", and
-    // the current site must never read as inactive.
-    if (tone === 'home' || tone === 'live') return '#fff'
-    return MUTED
+  // The three Hent appen controls lead to the hero's store badges. The badge
+  // click itself is the counted conversion; this only tells which control
+  // brought the visitor there (consent-gated browser SDK, the page stays).
+  function onGetApp(source: 'nav' | 'nav-pill' | 'nav-panel') {
+    setMenuOpen(false)
+    amplitude.track('Get App CTA Clicked', { source })
   }
 
-  // Marks the current section for assistive tech: the exact page on the front
-  // page, otherwise "current item in this set" (an SEO page is inside Hjem,
-  // but is not itself the Hjem link's target).
-  const homeAriaCurrent = pathname === '/' ? 'page' : 'true'
+  // Same document on the front page, the front page's anchor elsewhere.
+  const onFrontPage = pathname === '/'
+  const anchor = (id: string) => (onFrontPage ? `#${id}` : `/#${id}`)
 
   // Right-aligned desktop menu: links + CTA in ONE flex with a shared gap, so
   // the spacing between the words = the spacing between the last link and the
-  // CTA button (per Figma). The whole group is right-aligned (logo on the
-  // left, generous space in between).
+  // CTA button (per Figma). The gap is tighter than the old six short labels
+  // had, so the four brand names and the CTA fit at 1280px.
   const desktopMenu = (
-    <div className="hidden xl:flex items-center gap-[clamp(56px,5.5vw,105px)]">
-      {NAV_LINKS.map(({ label, href, tone }) => {
-        // Hjem is the current site: its nav item is active on every altidhjem.dk page.
-        const active = tone === 'home'
-        const external = href.startsWith('http')
-        return (
-          <span key={label} className="relative" style={tone === 'soon' ? { opacity: 0.6 } : undefined}>
-            {tone === 'soon' ? (
-              // Not a link: "Kommer snart" services are inactive until launch.
-              <span className="text-[16px] font-medium whitespace-nowrap cursor-default select-none" style={{ color: linkColor(tone) }}>
-                {label}
-              </span>
-            ) : (
-              <a
-                href={href}
-                target={external ? '_blank' : undefined}
-                rel={external ? 'noopener noreferrer' : undefined}
-                aria-current={active ? homeAriaCurrent : undefined}
-                className="text-[16px] font-medium transition-opacity hover:opacity-80 whitespace-nowrap"
-                style={{ color: linkColor(tone, active) }}
-              >
-                {label}
-              </a>
-            )}
-            {active && (
-              <span
-                aria-hidden
-                className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-[7px] h-[7px] rounded-full"
-                style={{ background: SIGNAL }}
-              />
-            )}
-            {tone === 'soon' && (
-              <span
-                className="absolute left-1/2 -translate-x-1/2 top-full mt-0.5 text-[9px] font-medium uppercase tracking-[0.08em] whitespace-nowrap"
-                style={{ color: MUTED }}
-              >
-                Kommer snart
-              </span>
-            )}
-          </span>
-        )
-      })}
-      <button
-        type="button"
-        onClick={() => handleCTA('nav')}
-        className="inline-flex items-center justify-center font-medium rounded-[20px] transition-opacity hover:opacity-90 whitespace-nowrap text-[16px] leading-tight w-[clamp(200px,15.83vw,304px)] py-[23px]"
+    <div className="hidden xl:flex items-center gap-[clamp(28px,3vw,64px)]">
+      {NAV_LINKS.map(({ label, id }) => (
+        <a
+          key={id}
+          href={anchor(id)}
+          className="text-[16px] font-medium text-white transition-opacity hover:opacity-80 whitespace-nowrap"
+        >
+          {label}
+        </a>
+      ))}
+      <a
+        href={anchor(GET_APP_ID)}
+        onClick={() => onGetApp('nav')}
+        className="inline-flex items-center justify-center font-medium rounded-[20px] transition-opacity hover:opacity-90 whitespace-nowrap text-[16px] leading-tight w-[clamp(180px,12vw,240px)] py-[23px]"
         style={{
           background: SIGNAL,
-          color: '#003c16',
+          color: BRAND_GREEN,
           transform: 'translateZ(0)',
           touchAction: 'manipulation',
           WebkitTapHighlightColor: 'transparent',
-          cursor: 'pointer',
         }}
       >
-        Skriv dig på ventelisten
-      </button>
+        {GET_APP_LABEL}
+      </a>
     </div>
   )
 
-  // Burger button — only below the xl breakpoint. Toggles between hamburger and cross.
+  // Below xl: a compact store pill next to the burger, so the phone nav
+  // always shows the way to the app.
+  const mobilePill = (
+    <a
+      href={anchor(GET_APP_ID)}
+      onClick={() => onGetApp('nav-pill')}
+      className="xl:hidden ml-auto inline-flex h-11 items-center rounded-[20px] px-4 text-[14px] font-medium whitespace-nowrap"
+      style={{ background: SIGNAL, color: BRAND_GREEN, touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+    >
+      {GET_APP_LABEL}
+    </a>
+  )
+
+  // Burger button, only below the xl breakpoint. Toggles between hamburger and cross.
   const burger = (
     <button
       type="button"
@@ -238,7 +252,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
     </button>
   )
 
-  // Drop-down panel with all links — shown while the burger is open (below xl only).
+  // Drop-down panel with all links, shown while the burger is open (below xl only).
   const mobilePanel = menuOpen && (
     <div
       className="xl:hidden absolute top-full left-0 right-0 overflow-hidden"
@@ -251,66 +265,39 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
       }}
     >
       <ul className="flex flex-col px-5 sm:px-8 pt-2">
-        {NAV_LINKS.map(({ label, href, tone }) => {
-          // Hjem is the current site: active on every altidhjem.dk page.
-          const active = tone === 'home'
-          const external = href.startsWith('http')
-          const inner = (
-            <>
+        {NAV_LINKS.map(({ label, id }) => (
+          <li key={id}>
+            <a
+              href={anchor(id)}
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 py-3.5 text-[17px] font-medium text-white"
+              style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+            >
               {label}
-              {active && <span aria-hidden className="w-[7px] h-[7px] rounded-full" style={{ background: SIGNAL }} />}
-              {tone === 'soon' && (
-                <span className="text-[10px] font-medium uppercase tracking-[0.08em]" style={{ color: MUTED }}>
-                  Kommer snart
-                </span>
-              )}
-            </>
-          )
-          const rowClass = 'flex items-center gap-2 py-3.5 text-[17px] font-medium'
-          const rowStyle = { color: linkColor(tone, active), borderBottom: '1px solid rgba(255,255,255,0.06)' }
-          return (
-            <li key={label}>
-              {tone === 'soon' ? (
-                // Inactive until launch — rendered as plain text, not a link.
-                <span className={`${rowClass} cursor-default select-none`} style={{ ...rowStyle, opacity: 0.6 }}>
-                  {inner}
-                </span>
-              ) : (
-                <a
-                  href={href}
-                  target={external ? '_blank' : undefined}
-                  rel={external ? 'noopener noreferrer' : undefined}
-                  aria-current={active ? homeAriaCurrent : undefined}
-                  onClick={() => setMenuOpen(false)}
-                  className={rowClass}
-                  style={rowStyle}
-                >
-                  {inner}
-                </a>
-              )}
-            </li>
-          )
-        })}
+            </a>
+          </li>
+        ))}
       </ul>
       <div className="px-5 sm:px-8 py-4">
-        <button
-          type="button"
-          onClick={() => { setMenuOpen(false); handleCTA('nav') }}
-          className="w-full text-base font-medium py-3.5 rounded-[20px]"
-          style={{ background: SIGNAL, color: '#003c16', touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+        <a
+          href={anchor(GET_APP_ID)}
+          onClick={() => onGetApp('nav-panel')}
+          className="block w-full text-center text-base font-medium py-3.5 rounded-[20px]"
+          style={{ background: SIGNAL, color: BRAND_GREEN, touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
         >
-          Skriv dig på ventelisten
-        </button>
+          {GET_APP_LABEL}
+        </a>
       </div>
     </div>
   )
 
   const navInner = (
     <>
-      <a href="/" aria-label="Altid Hjem — forside" className="shrink-0">
+      <a href="/" aria-label="Altid Hjem forside" className="shrink-0">
         <Logo className="h-11 w-auto" variant="forest" />
       </a>
       {desktopMenu}
+      {mobilePill}
       {burger}
       {mobilePanel}
     </>
@@ -324,7 +311,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
   if (!bannerConfig) {
     return (
       <nav
-        className="fixed top-0 left-0 right-0 z-[100] px-5 sm:px-8 lg:px-9 py-5"
+        className="focus-ring-dark fixed top-0 left-0 right-0 z-[100] px-5 sm:px-8 lg:px-9 py-5"
         style={{
           background: FOREST,
           borderBottom: '1px solid rgba(255,255,255,0.06)',
@@ -333,7 +320,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
           willChange: 'transform',
         }}
       >
-        <div className="max-w-[1848px] mx-auto flex items-center justify-between gap-6">
+        <div className="max-w-[1848px] mx-auto flex items-center justify-between gap-3 sm:gap-6">
           {navInner}
         </div>
       </nav>
@@ -379,14 +366,14 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
           <span className="md:hidden align-middle">{bannerConfig.shortPrefix}</span>
           <span
             className="inline-block align-middle ml-2 px-3 py-1 rounded-full font-medium"
-            style={{ background: SIGNAL, color: '#003c16' }}
+            style={{ background: SIGNAL, color: BRAND_GREEN }}
           >
-            {(bannerConfig.cta ?? 'Skriv dig på ventelisten').replace(/\s*→\s*$/, '')}
+            {(bannerConfig.cta ?? GET_APP_LABEL).replace(/\s*→\s*$/, '')}
           </span>
         </button>
       </div>
       <nav
-        className="relative z-0 px-5 sm:px-8 lg:px-9 py-5"
+        className="focus-ring-dark relative z-0 px-5 sm:px-8 lg:px-9 py-5"
         style={{
           background: FOREST,
           borderBottom: '1px solid rgba(255,255,255,0.06)',
@@ -395,7 +382,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
           willChange: 'transform',
         }}
       >
-        <div className="max-w-[1848px] mx-auto flex items-center justify-between gap-6">
+        <div className="max-w-[1848px] mx-auto flex items-center justify-between gap-3 sm:gap-6">
           {navInner}
         </div>
       </nav>

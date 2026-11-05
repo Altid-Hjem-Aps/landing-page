@@ -8,12 +8,12 @@ import SkiftTjeklisteMockup from '@/components/SkiftTjeklisteMockup'
 export const metadata: Metadata = {
   title: 'Skift forsikringsselskab sikkert – Altid Hjem',
   description:
-    'Skift forsikringsselskab i den rigtige rækkefølge. Få styr på opsigelse, dækning og selvrisiko, og skriv dig på ventelisten hos Altid Hjem.',
+    'Skift forsikringsselskab i den rigtige rækkefølge. Få styr på opsigelse, dækning og selvrisiko, og hent Altid Hjem gratis.',
   alternates: { canonical: 'https://altidhjem.dk/skift-forsikringsselskab' },
   openGraph: {
     title: 'Sådan skifter du forsikringsselskab',
     description:
-      'Skift forsikringsselskab i den rigtige rækkefølge. Få styr på opsigelse, dækning og selvrisiko, og skriv dig på ventelisten hos Altid Hjem.',
+      'Skift forsikringsselskab i den rigtige rækkefølge. Få styr på opsigelse, dækning og selvrisiko, og hent Altid Hjem gratis.',
     url: 'https://altidhjem.dk/skift-forsikringsselskab',
     type: 'article',
   },
@@ -67,15 +67,15 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem er en dansk app på vej, som er bygget til at samle hjemmets faste udgifter med ét overblik, ét login.',
-      'El findes allerede gennem Altid Energi, mens mobil, opladning, alarm og forsikring er på vej.',
+      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så du får ét overblik, ét login.',
+      'Du kan hente den gratis i App Store og Google Play.',
     ],
   },
   {
-    q: 'Koster det noget at skrive sig på ventelisten?',
+    q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej, det koster ikke noget at skrive sig på ventelisten til Altid Hjem.',
-      'Tilmeldingen giver dig mulighed for at følge med, mens appen bliver gjort klar.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
+      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
     ],
   },
 ]
@@ -229,16 +229,16 @@ export default function SkiftForsikringsselskab() {
               </section>
               <section>
                 <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvad Altid Hjem skal kunne
+                  Hvad Altid Hjem kan i dag
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem er bygget til at samle hjemmets faste udgifter til blandt andet el, mobil, forsikring, opladning, alarm og mad. Målet er ét overblik, ét login, så det skal blive lettere at se husstandens aftaler og forstå, hvad der ændrer sig ved et skift.
+                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så du får ét overblik, ét login.
                 </p>
                 <p className="mb-3">
-                  Forsikringsdelen er på vej og skal kunne gøre husstandens policer mere overskuelige. Altid Hjem er endnu ikke lanceret, men ventelisten er åben på altidhjem.dk.
+                  Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted. I kan hente den gratis i App Store og Google Play.
                 </p>
                 <p>
-                  Bag Altid Hjem står teamet bag Altid Energi, Danmarks første gebyrfrie energiselskab. Altid Energi er i drift i dag og har allerede mere end 15.000 danskere som kunder.
+                  Bag Altid Hjem står teamet bag Altid Energi, Danmarks første gebyrfrie energiselskab, der har mere end 15.000 danskere som kunder.
                 </p>
               </section>
 
@@ -280,13 +280,11 @@ export default function SkiftForsikringsselskab() {
           </div>
         </div>
 
-        <div id="venteliste">
-          <BottomCta
-            eyebrow='Skift uden huller i dækningen'
-            subtitle='Skriv dig gratis på ventelisten og få tidlig adgang, når Altid Hjem lanceres'
-            source='skift-forsikringsselskab'
-          />
-        </div>
+        <BottomCta
+          eyebrow='Alle jeres forsikringer ét sted'
+          heading='Hent Altid Hjem, og saml jeres forsikringer, før I skifter'
+          subtitle='Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted.'
+        />
       </main>
       <Footer />
     </>

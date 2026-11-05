@@ -67,15 +67,15 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem er en dansk app på vej, som skal kunne samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad.',
+      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så du får ét overblik, ét login.',
       'Den er bygget omkring ét overblik, ét login, mens Altid Energi allerede er live i dag.',
     ],
   },
   {
-    q: 'Koster det noget at skrive sig på ventelisten?',
+    q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej, det koster ikke noget at skrive sig på ventelisten til Altid Hjem.',
-      'Tilmeldingen giver mulighed for at følge med, mens appen bliver gjort klar.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
+      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
     ],
   },
 ]
@@ -220,13 +220,13 @@ export default function GennemsnitligtElforbrug() {
               </section>
               <section>
                 <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvad Altid Hjem skal kunne
+                  Hvad Altid Hjem kan i dag
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem er bygget til at samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad. Målet er ét overblik, ét login, så det bliver lettere at forstå aftalerne og følge deres betydning for husholdningen.
+                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så I får ét overblik, ét login.
                 </p>
                 <p className="mb-3">
-                  Altid Hjem er ikke lanceret endnu, og ventelisten er åben på altidhjem.dk. Mobil, opladning, alarm og forsikring er på vej og skal kunne indgå i overblikket, når tjenesterne bliver tilgængelige.
+                  Med Altid Energi følger I elforbruget dag, uge og måned i appen. I kan hente den gratis i App Store og Google Play.
                 </p>
                 <p>
                   Altid Energi er live i dag og er Danmarks første gebyrfrie energiselskab, uden faste gebyrer eller abonnement. Mere end 15.000 danskere er allerede kunder hos Altid Energi.
@@ -271,13 +271,11 @@ export default function GennemsnitligtElforbrug() {
           </div>
         </div>
 
-        <div id="venteliste">
-          <BottomCta
-            eyebrow='Kend jeres forbrug, før I optimerer det'
-            subtitle='Skriv dig gratis på ventelisten og få tidlig adgang, når Altid Hjem lanceres'
-            source='gennemsnitligt-elforbrug'
-          />
-        </div>
+        <BottomCta
+          eyebrow='Kend jeres forbrug'
+          heading='Hent Altid Hjem til hjemmets strøm og økonomi'
+          subtitle='Med Altid Energi følger I elforbruget dag, uge og måned i appen, som er gratis at hente.'
+        />
       </main>
       <Footer />
     </>

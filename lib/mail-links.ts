@@ -1,4 +1,5 @@
 import { createHmac } from 'node:crypto'
+import { APP_STORE_PROVIDER_TOKEN, APP_STORE_URL, PLAY_STORE_URL } from '@/lib/store-links'
 
 // Tracked links in the Altid Hjem launch mails (ALT-605).
 //
@@ -85,9 +86,9 @@ function overrideFor(mail: string, link: string): LinkOverride | undefined {
 
 export const UNKNOWN = 'unknown'
 
-export const APP_STORE_PROVIDER_TOKEN = '129212732'
-const APP_STORE_BASE = 'https://apps.apple.com/dk/app/altid-hjem/id6794330094'
-const PLAY_BASE = 'https://play.google.com/store/apps/details?id=dk.altidhjem.app'
+// The store URLs live in lib/store-links.ts; the values in sent mails do not
+// change (test/mail-link-route.test.ts pins them).
+export { APP_STORE_PROVIDER_TOKEN }
 
 export interface MailLink {
   /** A known mail code, or `unknown`. */
@@ -116,14 +117,14 @@ function storeForDevice(userAgent: string | null): Store {
 export function storeUrl(store: Store, mail: string, link: string): string {
   const campaign = `ah_1_mail_${mail}`
   if (store === 'appstore') {
-    return `${APP_STORE_BASE}?pt=${APP_STORE_PROVIDER_TOKEN}&ct=${campaign}&mt=8`
+    return `${APP_STORE_URL}?pt=${APP_STORE_PROVIDER_TOKEN}&ct=${campaign}&mt=8`
   }
   // A shared invite is not an email: Play reports it as its own share source.
   const referrer =
     mail === 'invite'
       ? `utm_source=invite&utm_medium=share&utm_campaign=invite&utm_content=${link}`
       : `utm_source=mail_${mail}&utm_medium=email&utm_campaign=${campaign}&utm_content=${link}`
-  return `${PLAY_BASE}&referrer=${encodeURIComponent(referrer)}`
+  return `${PLAY_STORE_URL}&referrer=${encodeURIComponent(referrer)}`
 }
 
 /** A code as typed. Mail programs that show plain text can capitalise a link

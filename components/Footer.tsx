@@ -7,6 +7,7 @@ const SEP = ' · '
 
 const footerLinks = [
   { href: '/kontakt', label: 'Support' },
+  { href: '/del', label: 'Del Altid Hjem' },
   { href: '/privatlivspolitik', label: 'Privatlivspolitik' },
 ]
 
@@ -18,14 +19,12 @@ const socialLinks = [
   { href: 'https://www.facebook.com/profile.php?id=61590767814024', label: 'Facebook' },
 ]
 
-// The six subbrand icons shown as a row next to the logo, like the Figma footer.
+// The icons of the services live in the app, shown as a row next to the logo
+// like the Figma footer. Services that are not in the app are left out.
 const SUBBRAND_ICONS = [
   '/services/icon-strom.svg',
   '/services/icon-mad.svg',
   '/services/icon-forsikring.svg',
-  '/services/icon-alarm.svg',
-  '/services/icon-mobil.svg',
-  '/services/icon-opladning.svg',
 ]
 
 const linkStyle: React.CSSProperties = { color: 'rgba(255,255,255,0.85)' }
@@ -60,12 +59,12 @@ const Copyright = () => (
 export default function Footer() {
   return (
     <footer
-      className="flex flex-wrap items-center justify-between gap-y-4 gap-x-8 px-6 sm:px-10 lg:px-[clamp(48px,3.7vw,72px)] py-6 sm:py-7"
+      className="focus-ring-dark flex flex-wrap items-center justify-between gap-y-4 gap-x-8 px-6 sm:px-10 lg:px-[clamp(48px,3.7vw,72px)] py-6 sm:py-7"
       style={{ background: '#163223', borderTop: '1px solid rgba(255,255,255,0.08)' }}
     >
       {/* Left — wordmark + subbrand icon row (sized to the Figma footer).
           On phones the row spans the full width (logo left, icons right) and
-          everything shrinks so all six icons fit without cropping. */}
+          everything shrinks so the icons fit without cropping. */}
       <div className="flex items-center gap-8 max-lg:w-full max-lg:justify-between max-lg:gap-4">
         <Logo className="h-9 sm:h-12 w-auto shrink-0" variant="forest" />
         <div className="flex items-center gap-2 sm:gap-5" aria-hidden>

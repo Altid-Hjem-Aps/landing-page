@@ -67,15 +67,15 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem er en dansk app på vej, som er bygget til at samle hjemmets faste udgifter i ét overblik, ét login.',
-      'Ventelisten er åben på altidhjem.dk.',
+      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så du får ét overblik, ét login.',
+      'Du kan hente den gratis i App Store og Google Play.',
     ],
   },
   {
-    q: 'Koster det noget at skrive sig på ventelisten?',
+    q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej, det koster ikke noget at skrive sig på ventelisten til Altid Hjem.',
-      'Tilmeldingen giver dig mulighed for at følge med, mens appen bliver klar.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
+      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
     ],
   },
 ]
@@ -187,7 +187,7 @@ export default function HvadKosterIndboforsikring() {
                   <IndboTjekMockup />
                 </div>
                 <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Altid Hjem skal kunne gennemgå husstandens dækninger og markere mulige overlap. Illustration, ikke et skærmbillede fra appen.
+                  Et samlet overblik over husstandens dækninger gør det lettere at se mulige overlap. Illustration, ikke et skærmbillede fra appen.
                 </p>
               </section>
               <section>
@@ -220,13 +220,13 @@ export default function HvadKosterIndboforsikring() {
               </section>
               <section>
                 <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvad Altid Hjem skal kunne
+                  Hvad Altid Hjem kan i dag
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem er bygget til at samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad i ét overblik, ét login. Forsikringsdelen skal kunne vise husstandens forsikringer samlet og gøre det lettere at opdage mulige overlap.
+                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så I får ét overblik, ét login. Skriv jeres forsikringer, priser og fornyelser ind, så har I dem samlet ét sted, og det bliver lettere selv at opdage mulige overlap.
                 </p>
                 <p>
-                  Altid Energi er allerede i drift som Danmarks første gebyrfrie energiselskab og har mere end 15.000 danske kunder. Mobil, opladning, alarm og forsikring er på vej, og ventelisten til Altid Hjem er åben på altidhjem.dk.
+                  Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder. I kan hente den gratis i App Store og Google Play.
                 </p>
               </section>
 
@@ -268,13 +268,11 @@ export default function HvadKosterIndboforsikring() {
           </div>
         </div>
 
-        <div id="venteliste">
-          <BottomCta
-            eyebrow='Betaler du for meget for din indboforsikring?'
-            subtitle='Skriv dig gratis på ventelisten og få tidlig adgang, når Altid Hjem lanceres'
-            source='hvad-koster-indboforsikring'
-          />
-        </div>
+        <BottomCta
+          eyebrow='Alle jeres forsikringer ét sted'
+          heading='Hent Altid Hjem, og saml husstandens forsikringer'
+          subtitle='Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted.'
+        />
       </main>
       <Footer />
     </>
