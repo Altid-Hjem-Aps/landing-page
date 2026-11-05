@@ -18,6 +18,7 @@ import SiteFooter from '@/components/site/SiteFooter'
 import SiteNav from '@/components/site/SiteNav'
 import WorksWith from '@/components/site/WorksWith'
 import './site.css'
+import './site-tunnel-poster.css'
 
 const IMAGE = { url: '/opengraph-image.png', width: 1200, height: 630, alt: META.imageAlt }
 

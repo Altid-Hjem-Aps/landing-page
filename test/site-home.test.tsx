@@ -794,7 +794,7 @@ describe('motion', () => {
     const { container } = render(<Home />)
     const video = container.querySelector('video') as HTMLVideoElement
     expect(video).not.toHaveAttribute('autoplay')
-    expect(video.getAttribute('poster')).toContain('tunnel-poster')
+    expect(video).not.toHaveAttribute('poster')
     expect(video.play).toHaveBeenCalled()
     fireEvent.click(screen.getByRole('button', { name: PAUSE }))
     expect(video.pause).toHaveBeenCalled()

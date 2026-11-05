@@ -15,7 +15,7 @@ export default function Hero() {
       <div className="h-panel" aria-hidden="true">
         <span className="h-sky" />
         <HeroTunnel />
-        <Image src="/site/render/clouds.webp" alt="" width={1424} height={338} className="h-clouds" loading="eager" fetchPriority="low" />
+        <Image src="/site/render/clouds.webp" alt="" width={1424} height={338} sizes="100vw" className="h-clouds" loading="eager" fetchPriority="low" />
       </div>
       <div className="h-text">
         <h1 className="t-h1 h-title">{HERO.title}</h1>

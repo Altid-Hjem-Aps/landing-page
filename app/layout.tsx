@@ -12,10 +12,12 @@ const onest = Onest({
 })
 
 // Afacad is the brand font for the subbrand wordmarks ("energi", "mobil", …)
-// in the service-card logo lockups.
+// in the service-card logo lockups. Not preloaded: the front page does not use it, and
+// a preload there competes with the first picture on a phone.
 const afacad = Afacad({
   subsets: ['latin'],
   weight: ['400', '500'],
+  preload: false,
   variable: '--font-afacad',
 })
 
