@@ -97,7 +97,7 @@ const POSTS: Post[] = [
     icon: '/services/icon-forsikring.svg',
     category: 'Forsikring',
     title: 'Hvad koster forsikring i 2026?',
-    excerpt: 'Se vejledende priser på de mest almindelige forsikringer, og find ud af, om du betaler for meget – eller er dækket dobbelt uden at vide det.',
+    excerpt: 'Se vejledende priser på de mest almindelige forsikringer, og find ud af, om du betaler for meget, eller om du er dækket dobbelt uden at vide det.',
     meta: '5 min læsning · 17. jun 2026',
   },
   {
@@ -105,15 +105,15 @@ const POSTS: Post[] = [
     icon: '/services/icon-strom.svg',
     category: 'Energi',
     title: 'Lad Altid Hjem holde øje med elprisen for dig',
-    excerpt: 'Det kræver tid at holde øje med elprisen hver dag. Det er netop én af de ting, vi bygger Altid Hjem-appen til. Appen følger elprisen for dig og giver konkrete råd.',
+    excerpt: 'Det kræver tid at holde øje med elprisen hver dag. I Altid Hjem-appen ser du elprisen time for time og kan få besked, når strømmen er billig.',
     meta: '5 min læsning · 25. jun 2026',
   },
   {
     href: '/spiir-alternativ',
     icon: '/app-badge.png',
     category: 'Overblik',
-    title: 'Spiir lukker – hvad bruger du nu?',
-    excerpt: 'Spiir lukkede 8. juni 2026. Altid Hjem giver dig overblik over hjemmets faste udgifter – el, mobil og forsikring samlet ét sted, i én app.',
+    title: 'Spiir lukker: hvad bruger du nu?',
+    excerpt: 'Spiir lukkede 8. juni 2026. Altid Hjem giver dig overblik over hjemmets faste udgifter: strøm, forsikring og madplan samlet ét sted, i én app.',
     meta: '4 min læsning · 10. jun 2026',
   },
   {
@@ -121,7 +121,7 @@ const POSTS: Post[] = [
     icon: '/services/icon-forsikring.svg',
     category: 'Forsikring',
     title: 'Er du forsikret dobbelt uden at vide det?',
-    excerpt: 'Mange danskere betaler for den samme dækning to gange – fx en rejseforsikring, der allerede er inkluderet i indboforsikringen. Se, hvordan du tjekker det.',
+    excerpt: 'Mange danskere betaler for den samme dækning to gange, fx en rejseforsikring, der allerede er inkluderet i indboforsikringen. Se, hvordan du tjekker det.',
     meta: '4 min læsning · 17. jun 2026',
   },
   {
@@ -129,7 +129,7 @@ const POSTS: Post[] = [
     icon: '/services/icon-strom.svg',
     category: 'Energi',
     title: 'Hvornår er strømmen billigst?',
-    excerpt: 'Følg elpriserne time for time i DK1 og DK2, og se hvornår strømmen er billigst i dag og i morgen – så du kan lægge forbruget, når prisen er lav.',
+    excerpt: 'Følg elpriserne time for time i DK1 og DK2, og se hvornår strømmen er billigst i dag og i morgen, så du kan lægge forbruget, når prisen er lav.',
     meta: '4 min læsning · 14. jun 2026',
   },
   {
@@ -137,7 +137,7 @@ const POSTS: Post[] = [
     icon: '/app-badge.png',
     category: 'Overblik',
     title: 'Få ro på hjemmets faste udgifter',
-    excerpt: 'Regninger, vilkår og aftaler spredt på mail, papir og e-Boks stjæler overblikket. Saml dem ét sted, og se præcis hvad du betaler for – og hvorfor.',
+    excerpt: 'Regninger, vilkår og aftaler spredt på mail, papir og e-Boks stjæler overblikket. Saml dem ét sted, og se præcis hvad du betaler for, og hvorfor.',
     meta: '3 min læsning · 10. jun 2026',
   },
 ]

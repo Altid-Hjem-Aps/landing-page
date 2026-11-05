@@ -1,41 +1,74 @@
-import Nav from '@/components/Nav'
-import Hero from '@/components/Hero'
-import Testimonials from '@/components/sections/Testimonials'
-import FounderVideo from '@/components/sections/FounderVideo'
-// DISABLED 8 Sep 2026: Altid Energi received a formal notice from the Danish
-// Consumer Ombudsman (Forbrugerombudsmanden) about the running "total saved"
-// counter, and asked Altid Hjem to hide it too while they work on an
-// alternative. The component, ticker and tests are kept intact — re-enable by
-// restoring this import and the <SavingsCounter /> below.
-// import SavingsCounter from '@/components/sections/SavingsCounter'
-import Services from '@/components/sections/Services'
-import HowItWorks from '@/components/sections/HowItWorks'
-// The "one home, too many bills" story — the bills→app-icon→phone animation.
-import WhatIs from '@/components/sections/WhatIs'
-import Trust from '@/components/sections/Trust'
-import Faq from '@/components/sections/Faq'
-import Blog from '@/components/sections/Blog'
-import BottomCta from '@/components/sections/BottomCta'
-import Footer from '@/components/Footer'
+import type { Metadata } from 'next'
+import AppBar from '@/components/site/AppBar'
+import { META, NAV } from '@/components/site/copy'
+import FaqSection from '@/components/site/FaqSection'
+import Features from '@/components/site/Features'
+import FinalCta from '@/components/site/FinalCta'
+import { dmSans } from '@/components/site/fonts'
+import Hero from '@/components/site/Hero'
+import { jsonLdScript } from '@/components/site/jsonLd'
+import Love from '@/components/site/Love'
+import MadDark from '@/components/site/MadDark'
+import MoreList from '@/components/site/MoreList'
+import { MotionPrefs } from '@/components/site/MotionPrefs'
+import PauseButton from '@/components/site/PauseButton'
+import Privacy from '@/components/site/Privacy'
+import Proof from '@/components/site/Proof'
+import SiteFooter from '@/components/site/SiteFooter'
+import SiteNav from '@/components/site/SiteNav'
+import WorksWith from '@/components/site/WorksWith'
+import './site.css'
+import './site-tunnel-poster.css'
+
+const IMAGE = { url: '/opengraph-image.png', width: 1200, height: 630, alt: META.imageAlt }
+
+// Full Open Graph and Twitter here: nested objects replace the layout's, they do not merge.
+export const metadata: Metadata = {
+  title: META.title,
+  description: META.description,
+  alternates: { canonical: 'https://www.altidhjem.dk' },
+  openGraph: {
+    title: META.title,
+    description: META.description,
+    url: 'https://www.altidhjem.dk',
+    siteName: 'Altid Hjem',
+    locale: 'da_DK',
+    type: 'website',
+    images: [IMAGE],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: META.title,
+    description: META.description,
+    images: [IMAGE],
+  },
+}
 
 export default function Home() {
   return (
-    <>
-      <Nav />
-      <main>
-        <Hero />
-        <Testimonials />
-        <FounderVideo />
-        {/* <SavingsCounter /> — see note at the import above. */}
-        <Services />
-        <WhatIs />
-        <HowItWorks />
-        <Trust />
-        <Faq />
-        <Blog />
-        <BottomCta />
-      </main>
-      <Footer />
-    </>
+    <div className={`site ${dmSans.variable}`}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript() }} />
+      <MotionPrefs>
+        <a href="#indhold" className="skip">
+          {NAV.skip}
+        </a>
+        <SiteNav />
+        <main id="indhold">
+          <Hero />
+          <WorksWith />
+          <Proof />
+          <Features />
+          <MadDark />
+          <MoreList />
+          <Privacy />
+          <Love />
+          <FaqSection />
+          <FinalCta />
+        </main>
+        <PauseButton />
+        <AppBar />
+      </MotionPrefs>
+      <SiteFooter />
+    </div>
   )
 }
