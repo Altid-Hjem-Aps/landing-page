@@ -51,7 +51,7 @@ export function parseInline(text: string): InlineSegment[] {
 }
 
 export const privacyPolicy: PrivacyPolicy = {
-  updated: '2026-11-03',
+  updated: '2026-11-05',
   sections: [
     {
       title: '1. Vi er den dataansvarlige',
@@ -144,7 +144,10 @@ export const privacyPolicy: PrivacyPolicy = {
         { type: 'paragraph', text: 'Du får højst fem notifikationer om ugen i alt. De er ikke reklame. Nyheder og tilbud sender vi kun som notifikation, hvis du har sagt ja til det. Retsgrundlag: Opfyldelse af aftale og legitim interesse (GDPR artikel 6, stk. 1, litra b og f).' },
         { type: 'paragraph', text: 'Du slår notifikationer fra under Profil › Notifikationer i appen eller i din telefons indstillinger. Påmindelserne fra Altid Mad kan du også slå fra hver for sig under Påmindelser i Altid Mad. Logger du ud, sletter vi koden til din telefon.' },
         { type: 'label', text: 'Analyse af, hvordan appen bliver brugt, så vi kan gøre den bedre' },
-        { type: 'paragraph', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi indsamler intet, før du har sagt ja, og du kan til enhver tid trække samtykket tilbage under Profil › Samtykker i appen.' },
+        { type: 'paragraph', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi indsamler intet til denne analyse, før du har sagt ja, og du kan til enhver tid trække samtykket tilbage under Profil › Samtykker i appen.' },
+        { type: 'label', text: 'Optælling af, hvor mange der bruger appen og tjenesterne' },
+        { type: 'paragraph', text: 'For at drive virksomheden og afregne med vores samarbejdspartnere tæller vi, hvor mange der åbner appen, og hvor mange husstande der bruger de enkelte tjenester. Det gælder alle brugere, også dem, der har sagt nej til analyse. Vi gemmer kun, at appen er åbnet, og at en tjeneste er brugt en bestemt dag, ikke hvad du har set eller trykket på. Tallene bruges kun som samlede tal og aldrig til at målrette noget til dig.' },
+        { type: 'paragraph', text: 'Retsgrundlag: Legitim interesse (GDPR artikel 6, stk. 1, litra f). Vores interesse er at vide, om tjenesterne bliver brugt, og at kunne afregne korrekt. Vi vurderer, at den går forud for din interesse, fordi oplysningerne er få, ikke siger noget om, hvad du gør i appen, og ikke bruges til noget om dig som person. Du kan altid gøre indsigelse, se afsnit 9.' },
         { type: 'label', text: 'Markedsføring og personaliserede tilbud fra Altid Hjem og datterselskaber' },
         { type: 'paragraph', text: 'Retsgrundlag: Samtykke (GDPR artikel 6, stk. 1, litra a). Du kan til enhver tid trække dit samtykke tilbage.' },
         { type: 'label', text: 'Opfyldelse af lovkrav' },
@@ -159,7 +162,7 @@ export const privacyPolicy: PrivacyPolicy = {
         { type: 'label', text: 'Dataansvarlige i Altid-koncernen' },
         { type: 'paragraph', text: 'Altid Hjem ApS (CVR 45637476) er dataansvarlig for de personoplysninger, du afgiver i Altid Hjem-appen, på vores websteder og ventelister samt til tjenesten Altid Forsikring, herunder kontaktoplysninger, adresse, dine samtykker og din brug af tjenesterne.' },
         { type: 'paragraph', text: 'Altid Energi ApS (CVR 44373580) er selvstændig dataansvarlig for de oplysninger, der vedrører dit elkundeforhold, fx forbrug, aftale og betaling. Altid Hjem viser disse oplysninger i appen på vegne af Altid Energi og efter dit samtykke.' },
-        { type: 'paragraph', text: 'Altid Mad er et selvstændigt selskab i Altid-koncernen. Når du tager Altid Mad-tjenesten i brug, bliver Altid Mad-selskabet dataansvarligt for de oplysninger, du afgiver til tjenesten, og du får besked om det, når du starter tjenesten.' },
+        { type: 'paragraph', text: 'Altid Mad er et selvstændigt selskab i Altid-koncernen. Når du tager Altid Mad-tjenesten i brug, bliver Altid Mad-selskabet dataansvarligt for de oplysninger, du afgiver til tjenesten, og du får besked om det, når du starter tjenesten. Altid Mad-selskabet fortæller os, om en husstand har brugt tjenesten en bestemt dag, men ikke hvad husstanden har lavet eller købt.' },
         { type: 'paragraph', text: 'Altid Forsikring er på nuværende tidspunkt en tjeneste under Altid Hjem ApS og ikke et selvstændigt selskab. Hvis tjenesten senere overgår til et andet selskab, opdaterer vi denne privatlivspolitik og informerer dig, før selskabet behandler dine oplysninger.' },
         { type: 'paragraph', text: 'For kommende tjenester, fx Altid Mobil, oplyser vi den dataansvarlige, før tjenesten lanceres.' },
         { type: 'label', text: 'Deling af oplysninger i koncernen' },
@@ -212,6 +215,7 @@ export const privacyPolicy: PrivacyPolicy = {
             { text: 'Bankoplysninger fra Subaio gemmer vi ikke hos os: de hentes, når du åbner appen, og går videre til din telefon. På din telefon ligger de senest hentede tal krypteret i højst 7 dage eller til næste lønningsdag, og de slettes, når du logger ud eller sletter din konto.' },
             { text: 'De valg, du selv har truffet om dine bankoplysninger (kontoroller, egne kategorier, skjulte abonnementer, svar på afregninger og udlæg), gemmer vi, indtil du fjerner dem eller sletter din konto. Sletter du din konto, beder vi samtidig Subaio om at slette dig hos dem. Beskeden sendes efter sletningen og forsøges igen, indtil Subaio har bekræftet.' },
             { text: 'Fælles drømme og fælles regler hører til husstanden. Sletter du din konto eller forlader husstanden, mens din partner bliver, bliver det, partneren allerede kunne se, i husstanden uden dit navn og din konto på. Er du alene i husstanden, slettes det sammen med husstanden.' },
+            { text: 'Optællingen af, at appen er åbnet, og hvilke tjenester der er brugt, gemmer vi per bruger i 13 måneder. Derefter gemmer vi kun samlede tal.' },
             { text: 'Brugsdata i Amplitude opbevarer vi, så længe du har givet samtykke. Trækker du samtykket tilbage under Profil › Samtykker, eller sletter du din konto, stopper indsamlingen med det samme, og vi beder automatisk Amplitude om at slette oplysningerne om dig. Sletningen er gennemført inden for 30 dage.' },
           ],
         },
