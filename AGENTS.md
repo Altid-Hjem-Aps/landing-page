@@ -25,3 +25,12 @@ The suite is a cost: every test runs on every PR and has to be read and kept. A 
 - Entry points: route handlers called with a real `NextRequest` (`test/bekraeft-route.test.ts`); pages and components rendered with Testing Library (`test/slet-konto.test.tsx`).
 - Boundary fakes: `fetch` and browser APIs via `vi.stubGlobal`, `@supabase/supabase-js` (`test/db-consent.test.ts`), the Amplitude SDK, env vars via `vi.stubEnv`, the clock via `vi.useFakeTimers`.
 - Run: `npx vitest run test/<subject>.test.ts`; CI (`.github/workflows/test.yml`) runs `npm ci`, `npm test`, `npm run build` on every PR and push to `main`.
+
+## Partner privacy (no exceptions)
+
+The hardest product rule in Altid Hjem. Breaking it breaks the household's trust in the app.
+
+- A customer's own accounts and own savings (Mine, Mine opsparing) and their transactions are never seen by their partner, directly or derived. Only Fælles and Fælles opsparing the owner chose to share cross between members.
+- This holds for everything that leaves the server, not only what a screen shows. Every design, endpoint or query that crosses members is checked against it.
+- Whenever we talk about shared accounts, inviting a partner or connecting a bank, we say it outright, in every channel: app copy, news sheets, push, mail, website, support replies. Standard sentence: "Dine egne konti og din egen opsparing ser {partner} aldrig." Never softer ("alt andet forbliver dit eget"), never only implied.
+- Fælles opsparing is shared by choice, so never write that savings in general are private.
