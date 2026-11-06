@@ -10,6 +10,15 @@ Build the **Altid Hjem landing page**.
 - Pre-launch: waitlist signup CTA
 - Post-launch: switch CTA to "download app"
 
+## Partner privacy (no exceptions)
+
+The hardest product rule in Altid Hjem. Breaking it breaks the household's trust in the app.
+
+- A customer's own accounts and own savings (Mine, Mine opsparing) and their transactions are never seen by their partner, directly or derived. Only Fælles and Fælles opsparing the owner chose to share cross between members.
+- This holds for everything that leaves the server, not only what a screen shows. Every design, endpoint or query that crosses members is checked against it.
+- Whenever we talk about shared accounts, inviting a partner or connecting a bank, we say it outright, in every channel: app copy, news sheets, push, mail, website, support replies. Standard sentence: "Dine egne konti og din egen opsparing ser {partner} aldrig." Never softer ("alt andet forbliver dit eget"), never only implied.
+- Fælles opsparing is shared by choice, so never write that savings in general are private.
+
 ## Tech Stack
 
 - **Frontend:** Next.js (App Router), TypeScript, Tailwind CSS
