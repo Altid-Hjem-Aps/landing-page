@@ -1,11 +1,7 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import {
-  useAutoCarousel,
-  useCarouselReveal,
-  CarouselPagination,
-} from "@/components/useAutoCarousel";
+import Link from 'next/link'
+import { useAutoCarousel, useCarouselReveal, CarouselPagination } from '@/components/useAutoCarousel'
 
 // Blog strip — the "read more" section linking to the SEO pages.
 // A centred snap carousel of large post cards (like the Figma frame, where the
@@ -14,160 +10,150 @@ import {
 // the post's topic. Loop/autoplay/pagination live in useAutoCarousel.
 
 type Post = {
-  href: string;
-  icon: string;
-  category: string;
-  title: string;
-  excerpt: string;
-  meta: string;
-};
+  href: string
+  icon: string
+  category: string
+  title: string
+  excerpt: string
+  meta: string
+}
 
 const POSTS: Post[] = [
   {
-    href: "/billigste-mobilabonnement",
-    icon: "/services/icon-mobil.svg",
-    category: "Mobil",
-    title: "Billigste mobilabonnement i 2026",
+    href: '/billigste-mobilabonnement',
+    icon: '/services/icon-mobil.svg',
+    category: 'Mobil',
+    title: 'Billigste mobilabonnement i 2026',
     excerpt:
-      "Abonnementer fås fra ca. 19 kr. om måneden, men husstandens samlede mobilregning er den, der batter. Se hvad priserne dækker, og hvor de gemmer sig.",
-    meta: "5 min læsning · 27. jul 2026",
+      'Abonnementer fås fra ca. 19 kr. om måneden, men husstandens samlede mobilregning er den, der batter. Se hvad priserne dækker, og hvor de gemmer sig.',
+    meta: '5 min læsning · 27. jul 2026',
   },
   {
-    href: "/hvad-koster-en-ladeboks",
-    icon: "/services/icon-opladning.svg",
-    category: "Opladning",
-    title: "Hvad koster en ladeboks?",
-    excerpt:
-      "Boks, installation, leje eller køb, og strømmen selv. Se de vejledende priser, og beregn din egen månedlige ladeudgift med beregneren på siden.",
-    meta: "Beregner · 27. jul 2026",
+    href: '/hvad-koster-en-ladeboks',
+    icon: '/services/icon-opladning.svg',
+    category: 'Opladning',
+    title: 'Hvad koster en ladeboks?',
+    excerpt: 'Boks, installation, leje eller køb, og strømmen selv. Se de vejledende priser, og beregn din egen månedlige ladeudgift med beregneren på siden.',
+    meta: 'Beregner · 27. jul 2026',
   },
   {
-    href: "/hvad-koster-en-tyverialarm",
-    icon: "/services/icon-alarm.svg",
-    category: "Alarm",
-    title: "Hvad koster en tyverialarm?",
-    excerpt:
-      "Fra gør-det-selv til professionelt installerede systemer og abonnementer. Se de vejledende priser, og hvad de afhænger af, før du vælger.",
-    meta: "5 min læsning · 27. jul 2026",
+    href: '/hvad-koster-en-tyverialarm',
+    icon: '/services/icon-alarm.svg',
+    category: 'Alarm',
+    title: 'Hvad koster en tyverialarm?',
+    excerpt: 'Fra gør-det-selv til professionelt installerede systemer og abonnementer. Se de vejledende priser, og hvad de afhænger af, før du vælger.',
+    meta: '5 min læsning · 27. jul 2026',
   },
   {
-    href: "/hvad-koster-indboforsikring",
-    icon: "/services/icon-forsikring.svg",
-    category: "Forsikring",
-    title: "Hvad koster indboforsikring?",
-    excerpt:
-      "Typisk 100-400 kr. om måneden, men to ens husstande kan betale vidt forskelligt. Se hvad prisen afhænger af, og hvor dobbeltdækning gemmer sig.",
-    meta: "4 min læsning · 27. jul 2026",
+    href: '/hvad-koster-indboforsikring',
+    icon: '/services/icon-forsikring.svg',
+    category: 'Forsikring',
+    title: 'Hvad koster indboforsikring?',
+    excerpt: 'Typisk 100-400 kr. om måneden, men to ens husstande kan betale vidt forskelligt. Se hvad prisen afhænger af, og hvor dobbeltdækning gemmer sig.',
+    meta: '4 min læsning · 27. jul 2026',
   },
   {
-    href: "/billigste-elselskab",
-    icon: "/services/icon-strom.svg",
-    category: "Energi",
-    title: "Billigste elselskab: se på gebyrerne",
-    excerpt:
-      "kWh-prisen er ikke hele sandheden. Gebyrer og tillæg er den del af elregningen, selskabet selv bestemmer, og den del du faktisk kan styre.",
-    meta: "5 min læsning · 27. jul 2026",
+    href: '/billigste-elselskab',
+    icon: '/services/icon-strom.svg',
+    category: 'Energi',
+    title: 'Billigste elselskab: se på gebyrerne',
+    excerpt: 'kWh-prisen er ikke hele sandheden. Gebyrer og tillæg er den del af elregningen, selskabet selv bestemmer, og den del du faktisk kan styre.',
+    meta: '5 min læsning · 27. jul 2026',
   },
   {
-    href: "/opsig-abonnementer",
-    icon: "/app-badge.png",
-    category: "Overblik",
-    title: "Opsig de abonnementer, I ikke bruger",
-    excerpt:
-      "Glemte abonnementer gemmer sig i kontoudtoget. Få metoden til at finde dem alle, opsige rigtigt og gøre gennemgangen til en årlig vane.",
-    meta: "5 min læsning · 27. jul 2026",
+    href: '/opsig-abonnementer',
+    icon: '/app-badge.png',
+    category: 'Overblik',
+    title: 'Opsig de abonnementer, I ikke bruger',
+    excerpt: 'Glemte abonnementer gemmer sig i kontoudtoget. Få metoden til at finde dem alle, opsige rigtigt og gøre gennemgangen til en årlig vane.',
+    meta: '5 min læsning · 27. jul 2026',
   },
   {
-    href: "/gennemsnitligt-elforbrug",
-    icon: "/services/icon-strom.svg",
-    category: "Energi",
-    title: "Er jeres elforbrug normalt?",
-    excerpt:
-      "En familie i hus bruger typisk 4.500-5.000 kWh om året, en lejlighed langt mindre. Se benchmark for jeres boligtype, og hvad der flytter tallet.",
-    meta: "5 min læsning · 27. jul 2026",
+    href: '/gennemsnitligt-elforbrug',
+    icon: '/services/icon-strom.svg',
+    category: 'Energi',
+    title: 'Er jeres elforbrug normalt?',
+    excerpt: 'En familie i hus bruger typisk 4.500-5.000 kWh om året, en lejlighed langt mindre. Se benchmark for jeres boligtype, og hvad der flytter tallet.',
+    meta: '5 min læsning · 27. jul 2026',
   },
   {
-    href: "/bedste-budget-app",
-    icon: "/app-badge.png",
-    category: "Overblik",
-    title: "Budget-app eller samlet overblik?",
+    href: '/bedste-budget-app',
+    icon: '/app-badge.png',
+    category: 'Overblik',
+    title: 'Budget-app eller samlet overblik?',
     excerpt:
-      "En budget-app viser forbruget bagud. Et samlet overblik styrer de faste aftaler fremad. Se ærligt, hvad de to værktøjer kan, og hvad de ikke kan.",
-    meta: "4 min læsning · 27. jul 2026",
+      'En budget-app viser forbruget bagud. Et samlet overblik styrer de faste aftaler fremad. Se ærligt, hvad de to værktøjer kan, og hvad de ikke kan.',
+    meta: '4 min læsning · 27. jul 2026',
   },
   {
-    href: "/skift-forsikringsselskab",
-    icon: "/services/icon-forsikring.svg",
-    category: "Forsikring",
-    title: "Skift forsikringsselskab uden huller",
-    excerpt:
-      "Rækkefølgen beskytter dig: ny police på plads, før den gamle opsiges. Få tjeklisten til et sikkert skifte, og undgå de klassiske fælder.",
-    meta: "4 min læsning · 27. jul 2026",
+    href: '/skift-forsikringsselskab',
+    icon: '/services/icon-forsikring.svg',
+    category: 'Forsikring',
+    title: 'Skift forsikringsselskab uden huller',
+    excerpt: 'Rækkefølgen beskytter dig: ny police på plads, før den gamle opsiges. Få tjeklisten til et sikkert skifte, og undgå de klassiske fælder.',
+    meta: '4 min læsning · 27. jul 2026',
   },
   {
-    href: "/hvad-koster-forsikring",
-    icon: "/services/icon-forsikring.svg",
-    category: "Forsikring",
-    title: "Hvad koster forsikring i 2026?",
+    href: '/hvad-koster-forsikring',
+    icon: '/services/icon-forsikring.svg',
+    category: 'Forsikring',
+    title: 'Hvad koster forsikring i 2026?',
     excerpt:
-      "Se vejledende priser på de mest almindelige forsikringer, og find ud af, om du betaler for meget, eller om du er dækket dobbelt uden at vide det.",
-    meta: "5 min læsning · 17. jun 2026",
+      'Se vejledende priser på de mest almindelige forsikringer, og find ud af, om du betaler for meget, eller om du er dækket dobbelt uden at vide det.',
+    meta: '5 min læsning · 17. jun 2026',
   },
   {
-    href: "/hvornar-er-strommen-billigst",
-    icon: "/services/icon-strom.svg",
-    category: "Energi",
-    title: "Lad Altid Hjem holde øje med elprisen for dig",
-    excerpt:
-      "Det kræver tid at holde øje med elprisen hver dag. I Altid Hjem-appen ser du elprisen time for time og kan få besked, når strømmen er billig.",
-    meta: "5 min læsning · 25. jun 2026",
+    href: '/hvornar-er-strommen-billigst',
+    icon: '/services/icon-strom.svg',
+    category: 'Energi',
+    title: 'Lad Altid Hjem holde øje med elprisen for dig',
+    excerpt: 'Det kræver tid at holde øje med elprisen hver dag. I Altid Hjem-appen ser du elprisen time for time og kan få besked, når strømmen er billig.',
+    meta: '5 min læsning · 25. jun 2026',
   },
   {
-    href: "/spiir-alternativ",
-    icon: "/app-badge.png",
-    category: "Overblik",
-    title: "Spiir lukker: hvad bruger du nu?",
-    excerpt:
-      "Spiir lukkede 8. juni 2026. Altid Hjem giver dig overblik over hjemmets faste udgifter: strøm, forsikring og madplan samlet ét sted, i én app.",
-    meta: "4 min læsning · 10. jun 2026",
+    href: '/spiir-alternativ',
+    icon: '/app-badge.png',
+    category: 'Overblik',
+    title: 'Spiir lukker: hvad bruger du nu?',
+    excerpt: 'Spiir lukkede 8. juni 2026. Altid Hjem giver dig overblik over hjemmets faste udgifter: strøm, forsikring og madplan samlet ét sted, i én app.',
+    meta: '4 min læsning · 10. jun 2026',
   },
   {
-    href: "/hvad-koster-forsikring",
-    icon: "/services/icon-forsikring.svg",
-    category: "Forsikring",
-    title: "Er du forsikret dobbelt uden at vide det?",
+    href: '/hvad-koster-forsikring',
+    icon: '/services/icon-forsikring.svg',
+    category: 'Forsikring',
+    title: 'Er du forsikret dobbelt uden at vide det?',
     excerpt:
-      "Mange danskere betaler for den samme dækning to gange, fx en rejseforsikring, der allerede er inkluderet i indboforsikringen. Se, hvordan du tjekker det.",
-    meta: "4 min læsning · 17. jun 2026",
+      'Mange danskere betaler for den samme dækning to gange, fx en rejseforsikring, der allerede er inkluderet i indboforsikringen. Se, hvordan du tjekker det.',
+    meta: '4 min læsning · 17. jun 2026',
   },
   {
-    href: "/hvornar-er-strommen-billigst",
-    icon: "/services/icon-strom.svg",
-    category: "Energi",
-    title: "Hvornår er strømmen billigst?",
-    excerpt:
-      "Følg elpriserne time for time i DK1 og DK2, og se hvornår strømmen er billigst i dag og i morgen, så du kan lægge forbruget, når prisen er lav.",
-    meta: "4 min læsning · 14. jun 2026",
+    href: '/hvornar-er-strommen-billigst',
+    icon: '/services/icon-strom.svg',
+    category: 'Energi',
+    title: 'Hvornår er strømmen billigst?',
+    excerpt: 'Følg elpriserne time for time i DK1 og DK2, og se hvornår strømmen er billigst i dag og i morgen, så du kan lægge forbruget, når prisen er lav.',
+    meta: '4 min læsning · 14. jun 2026',
   },
   {
-    href: "/spiir-alternativ",
-    icon: "/app-badge.png",
-    category: "Overblik",
-    title: "Få ro på hjemmets faste udgifter",
+    href: '/spiir-alternativ',
+    icon: '/app-badge.png',
+    category: 'Overblik',
+    title: 'Få ro på hjemmets faste udgifter',
     excerpt:
-      "Regninger, vilkår og aftaler spredt på mail, papir og e-Boks stjæler overblikket. Saml dem ét sted, og se præcis hvad du betaler for, og hvorfor.",
-    meta: "3 min læsning · 10. jun 2026",
+      'Regninger, vilkår og aftaler spredt på mail, papir og e-Boks stjæler overblikket. Saml dem ét sted, og se præcis hvad du betaler for, og hvorfor.',
+    meta: '3 min læsning · 10. jun 2026',
   },
-];
+]
 
 // The track renders the posts three times so the carousel can loop seamlessly
 // (see useAutoCarousel).
-const N = POSTS.length;
-const LOOP = [...POSTS, ...POSTS, ...POSTS];
+const N = POSTS.length
+const LOOP = [...POSTS, ...POSTS, ...POSTS]
 
 // Autoplay interval — the active dot's progress fill loads over this time,
 // then the carousel slides to the next card (Apple-gallery pagination).
-const AUTO_MS = 5000;
+const AUTO_MS = 5000
 
 function PostCard({ post, clone = false }: { post: Post; clone?: boolean }) {
   return (
@@ -177,8 +163,8 @@ function PostCard({ post, clone = false }: { post: Post; clone?: boolean }) {
       className="flex flex-col w-full transition-transform hover:-translate-y-0.5"
       style={{
         borderRadius: 24,
-        background: "#f5efe3",
-        padding: "clamp(24px,1.8vw,34px)",
+        background: '#f5efe3',
+        padding: 'clamp(24px,1.8vw,34px)',
       }}
     >
       {/* Category chip */}
@@ -191,86 +177,58 @@ function PostCard({ post, clone = false }: { post: Post; clone?: boolean }) {
           decoding="async"
           className="shrink-0"
           style={{
-            width: "clamp(34px,2.3vw,44px)",
-            height: "clamp(34px,2.3vw,44px)",
+            width: 'clamp(34px,2.3vw,44px)',
+            height: 'clamp(34px,2.3vw,44px)',
             borderRadius: 10,
           }}
         />
-        <span
-          className="text-[13px] font-medium uppercase"
-          style={{ color: "#163223", letterSpacing: "1.2px" }}
-        >
+        <span className="text-[13px] font-medium uppercase" style={{ color: '#163223', letterSpacing: '1.2px' }}>
           {post.category}
         </span>
       </div>
 
       <h3
         className="font-bold leading-[1.15] tracking-[-0.02em] text-[clamp(21px,1.6vw,28px)] mb-3.5"
-        style={{ color: "#003c16", fontFamily: "var(--display)" }}
+        style={{ color: '#003c16', fontFamily: 'var(--display)' }}
       >
         {post.title}
       </h3>
-      <p
-        className="font-normal text-[clamp(14px,0.85vw,16px)] leading-[1.7] mb-7"
-        style={{ color: "#6f6a61" }}
-      >
+      <p className="font-normal text-[clamp(14px,0.85vw,16px)] leading-[1.7] mb-7" style={{ color: '#6f6a61' }}>
         {post.excerpt}
       </p>
 
       {/* Footer — meta left, "read more" pill right */}
       <div className="mt-auto flex items-center justify-between gap-4">
-        <span
-          className="text-[clamp(13px,0.8vw,15px)]"
-          style={{ color: "#6f6a61" }}
-        >
+        <span className="text-[clamp(13px,0.8vw,15px)]" style={{ color: '#6f6a61' }}>
           {post.meta}
         </span>
         <span
           className="shrink-0 inline-flex items-center gap-2 rounded-full text-[clamp(13px,0.85vw,16px)] font-medium"
           style={{
-            background: "#003c16",
-            color: "#fdfaf4",
-            padding: "clamp(9px,0.7vw,13px) clamp(18px,1.3vw,25px)",
+            background: '#003c16',
+            color: '#fdfaf4',
+            padding: 'clamp(9px,0.7vw,13px) clamp(18px,1.3vw,25px)',
           }}
         >
           Læs mere
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            aria-hidden
-          >
-            <path
-              d="M2 7h10M8 3l4 4-4 4"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
       </div>
     </Link>
-  );
+  )
 }
 
 export default function Blog() {
-  const carousel = useAutoCarousel(N, AUTO_MS);
-  const { trackRef, onScroll, cancelGlide } = carousel;
-  const reveal = useCarouselReveal(
-    trackRef,
-    carousel.reduced,
-    N,
-    carousel.demoNudge,
-  );
+  const carousel = useAutoCarousel(N, AUTO_MS)
+  const { trackRef, onScroll, cancelGlide } = carousel
+  const reveal = useCarouselReveal(trackRef, carousel.reduced, N, carousel.demoNudge)
 
   return (
     <section className="py-20 sm:py-28">
       <div className="text-center mb-12 sm:mb-14 px-6">
-        <h2 className="t-h2">
-          Læs mere om, hvordan Altid Hjem skaber ro i hverdagen
-        </h2>
+        <h2 className="t-h2">Læs mere om, hvordan Altid Hjem skaber ro i hverdagen</h2>
       </div>
 
       {/* Snap carousel — large cards (≈720px @1920) that overflow the viewport,
@@ -284,13 +242,13 @@ export default function Blog() {
         onWheel={cancelGlide}
         onTouchStart={cancelGlide}
         className="flex gap-[clamp(16px,2.5vw,48px)] overflow-x-auto snap-x snap-mandatory pt-4 pb-14 px-[max(7vw,calc((100vw-520px)/2))] lg:px-[calc((100vw-clamp(560px,37.5vw,760px))/2)]"
-        style={{ scrollbarWidth: "none" }}
+        style={{ scrollbarWidth: 'none' }}
       >
         {LOOP.map((p, i) => {
           // Only the middle set lives in the accessibility tree — the clone
           // sets exist purely for the seamless loop and would otherwise give
           // keyboard/screen-reader users every post three times.
-          const clone = i < N || i >= 2 * N;
+          const clone = i < N || i >= 2 * N
           return (
             <div
               key={`${p.href}-${i}`}
@@ -300,18 +258,14 @@ export default function Blog() {
             >
               <PostCard post={p} clone={clone} />
             </div>
-          );
+          )
         })}
       </div>
 
       {/* Apple-gallery pagination: active dot = loading pill + pause toggle */}
       <div className="mt-1">
-        <CarouselPagination
-          count={N}
-          carousel={carousel}
-          itemLabel={(i) => `Gå til indlæg ${i + 1}`}
-        />
+        <CarouselPagination count={N} carousel={carousel} itemLabel={(i) => `Gå til indlæg ${i + 1}`} />
       </div>
     </section>
-  );
+  )
 }

@@ -1,34 +1,15 @@
-import Link from "next/link";
-import BankMarquee from "./BankMarquee";
-import { PRIVACY } from "./copy";
+import Link from 'next/link'
+import BankMarquee from './BankMarquee'
+import { PRIVACY } from './copy'
 
 function Lock() {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      width="30"
-      height="30"
-      fill="none"
-      aria-hidden="true"
-    >
-      <rect
-        x="4.5"
-        y="10.5"
-        width="15"
-        height="10"
-        rx="3"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-      <path
-        d="M8 10.5V8a4 4 0 0 1 8 0v2.5"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
+    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" aria-hidden="true">
+      <rect x="4.5" y="10.5" width="15" height="10" rx="3" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       <circle cx="12" cy="15.5" r="1.4" fill="currentColor" />
     </svg>
-  );
+  )
 }
 
 // The bank connection, made calm: a Deep forest panel, a lock with the MitID mark, what the
@@ -53,5 +34,5 @@ export default function Privacy() {
         </Link>
       </div>
     </section>
-  );
+  )
 }

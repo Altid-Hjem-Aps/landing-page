@@ -676,6 +676,10 @@
   }
   .h-press-title {
     display: block;
+
+    span {
+      display: block;
+    }
     font-size: 14px;
     font-weight: 500;
     line-height: 18px;
@@ -686,7 +690,7 @@
     .h-press-frame {
       position: absolute;
       left: calc(50% - var(--u) * 640);
-      bottom: calc(var(--u) * 96);
+      bottom: calc(var(--u) * 20);
       margin: 0;
     }
     .h-press {
@@ -1368,7 +1372,6 @@
   /* Four steps: the whole block stays put while the page scrolls through it; the title, all
      four steps and the phone are in view, and the scroll moves the highlight down the steps. */
   .st {
-    --phone: min(calc(var(--u) * 300), calc((100svh - 300px) * 1350 / 2760));
     height: calc(100svh + 4 * 55svh);
     padding-block: 0;
   }
@@ -1395,19 +1398,12 @@
   .st-left {
     align-self: start;
   }
-  /* A photo of people doing the step as a rounded card, and the phone standing in front of
-     its left edge, so the people stay in view on the right. */
+  /* The step's photo, seen from the user's side with the screen in the phone, as a card. */
   .st-visual {
     position: relative;
     align-self: start;
-    display: flex;
-    align-items: center;
-    height: calc(var(--phone) * 2760 / 1350 + var(--u) * 56);
+    height: min(calc(var(--u) * 660), calc(100svh - 230px));
     margin-top: calc(var(--u) * 24);
-  }
-  .st-photos {
-    position: absolute;
-    inset: 0 0 0 calc(var(--phone) / 2);
     border-radius: 24px;
     overflow: hidden;
     background: var(--sand);
@@ -1419,9 +1415,6 @@
     &[data-shown='true'] {
       opacity: 1;
     }
-  }
-  .st-phone {
-    position: relative;
   }
   .st-list {
     display: grid;
@@ -1486,9 +1479,6 @@
     margin-top: 18px;
     justify-content: flex-start;
   }
-  .st-phone .ph {
-    --w: var(--phone);
-  }
   .st-screen {
     opacity: 0;
     transition: opacity 0.45s;
@@ -1536,22 +1526,13 @@
     .st-more > div {
       padding-left: 0;
     }
-    /* The step's photo as a rounded strip, the phone standing on its lower edge, so faces stay
-       in view. */
+    /* The step's photo as a rounded card. */
     .st-inline {
       position: relative;
-      display: flex;
-      justify-content: center;
-      margin-top: 24px;
-      padding-top: calc(var(--u) * 200);
-
-      .ph {
-        --w: calc(var(--u) * 220);
-      }
-    }
-    .st-inline-photo {
-      height: calc(var(--u) * 260) !important;
+      aspect-ratio: 4 / 3;
+      margin-top: 20px;
       border-radius: 18px;
+      overflow: hidden;
     }
   }
 
@@ -1642,10 +1623,12 @@
      Deep forest side by side, the logos joined by dots across the seam, the app icon on the
      seam between this block and the FAQ. */
   /* The story and the FAQ together: the privacy panel's size out of view, the full window in
-     view (Zoomer.tsx sets --inset and --radius from the scroll). */
+     view (Zoomer.tsx scales it from the scroll). */
   .zoomer {
     margin-top: var(--pad);
-    clip-path: inset(0 var(--inset, 0px) round var(--radius, 0px));
+    overflow: clip;
+    transform-origin: 50% 50%;
+    will-change: transform;
   }
   .sy-panel {
     position: relative;
