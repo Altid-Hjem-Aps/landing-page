@@ -451,11 +451,12 @@
   }
 
   /* 1. Hero */
+  /* Clipped at the sides only, so the Ekstra Bladet card can float over the edge below. */
   .h {
     position: relative;
     display: flow-root;
     min-height: min(100vh, calc(var(--u) * 1095));
-    overflow: clip;
+    overflow-x: clip;
   }
   .h-text {
     position: relative;
@@ -752,13 +753,14 @@
     font-weight: 500;
     line-height: 18px;
   }
-  /* On a computer: floating, slightly turned, in the open space left of the phones at the
-     bottom of the hero. */
+  /* On a computer: floating, slightly turned, left of the phones, over the hero's lower edge. */
   @media (min-width: 1024px) {
+    /* Over the line between the hero and the next section, on its own layer above both. */
     .h-press-frame {
       position: absolute;
+      z-index: 6;
       left: calc(50% - var(--u) * 640);
-      bottom: calc(var(--u) * 20);
+      bottom: calc(var(--u) * -56);
       margin: 0;
     }
     .h-press {

@@ -5,8 +5,9 @@ import { useEffect, useRef } from 'react'
 import { QR } from './copy'
 
 // Bottom right of the first viewport, from 1024 px with a fine pointer (CSS). It belongs
-// to the hero and fades out over the first 900 px of scrolling, as the reference does.
-const GONE_AT = 900
+// to the hero and fades out over the first 360 px of scrolling, before the assistant's
+// notifications fly out of the phones into that corner.
+const GONE_AT = 360
 
 export default function QrCard() {
   const card = useRef<HTMLElement>(null)

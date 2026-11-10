@@ -22,17 +22,18 @@ type Lane = {
 
 // Bill i on the left, its notification on the right, starting as the bill reaches the phones.
 const LANES: Lane[] = [
-  { side: 'left', item: 0, start: 0, length: 520, from: [1, 10, -200], to: [0.82, 2, -20] },
-  { side: 'left', item: 1, start: 70, length: 520, from: [1, -14, 220], to: [0.82, -2, 40] },
-  { side: 'left', item: 2, start: 140, length: 520, from: [1, 6, 30], to: [0.82, 1, 0] },
-  { side: 'left', item: 3, start: 210, length: 520, from: [1, -10, -120], to: [0.82, -2, -10] },
-  { side: 'right', item: 0, start: 300, length: 520, from: [0.82, -2, -40], to: [1, -6, -180] },
-  { side: 'right', item: 1, start: 370, length: 520, from: [0.82, 2, -20], to: [1, 5, -110] },
-  { side: 'right', item: 2, start: 440, length: 520, from: [0.82, -1, -40], to: [1, -3, -190] },
-  { side: 'right', item: 3, start: 510, length: 520, from: [0.82, 2, 0], to: [1, 4, -40] },
+  { side: 'left', item: 0, start: -160, length: 520, from: [1, 10, -200], to: [0.82, 2, -20] },
+  { side: 'left', item: 1, start: -90, length: 520, from: [1, -14, 220], to: [0.82, -2, 40] },
+  { side: 'left', item: 2, start: -20, length: 520, from: [1, 6, 30], to: [0.82, 1, 0] },
+  { side: 'left', item: 3, start: 50, length: 520, from: [1, -10, -120], to: [0.82, -2, -10] },
+  // Out on the right, low: they leave the phones from their lower half and drift down.
+  { side: 'right', item: 0, start: 140, length: 520, from: [0.82, -2, 40], to: [1, -5, 130] },
+  { side: 'right', item: 1, start: 230, length: 520, from: [0.82, 2, 210], to: [1, 4, 330] },
+  { side: 'right', item: 2, start: 320, length: 520, from: [0.82, -1, 70], to: [1, -3, 160] },
+  { side: 'right', item: 3, start: 410, length: 520, from: [0.82, 2, 230], to: [1, 5, 320] },
 ]
 
-const REST_SCROLL = 620
+const REST_SCROLL = 520
 const FADE = 0.14
 
 const ease = (t: number) => t * t * (3 - 2 * t)
