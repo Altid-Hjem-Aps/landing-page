@@ -178,42 +178,12 @@ export const PRIVACY = {
 } as const
 
 export const STEPS = {
-  eyebrow: 'Sådan virker det',
   title: 'Fire trin til ét overblik',
-  listLabel: 'De fire trin',
   steps: [
-    {
-      n: '01',
-      tone: 'honey',
-      title: 'Hent appen gratis',
-      body: 'Du finder Altid Hjem i App Store og Google Play, og det er gratis at oprette en konto.',
-      src: '/site/app/hjem-top.webp',
-      alt: 'Forsiden i Altid Hjem: 8.166 kr. tilbage, søjler for resten af måneden og en besked om, at du er 3.000 kr. foran.',
-    },
-    {
-      n: '02',
-      tone: 'sky',
-      title: 'Forbind banken, hvis du vil',
-      body: 'Med MitID ser du, hvad der er tilbage til lønningsdag, og hvor pengene går hen. Det er frivilligt, og vi har kun læseadgang.',
-      src: '/site/app/okonomi-top.webp',
-      alt: 'Økonomi i appen: hvad der er brugt siden lønningsdag, fordelt på kategorier.',
-    },
-    {
-      n: '03',
-      tone: 'lavender',
-      title: 'Vælg det, der passer jer',
-      body: 'Få en madplan i Altid Mad, følg elprisen i Altid Energi, og få jeres forsikringer tjekket i Altid Forsikring.',
-      src: '/site/app/mad-meal_plan.webp',
-      alt: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.',
-    },
-    {
-      n: '04',
-      tone: 'mint',
-      title: 'Inviter din partner',
-      body: 'Så har I både jeres egne tal og et fælles overblik. Ét overblik, ét login.',
-      src: '/site/app/droemme-detail.webp',
-      alt: 'En fælles drøm i appen: 9.500 kr. tilbage til Familieferie på Mallorca, 1.100 kr. om måneden.',
-    },
+    { n: '01', tone: 'honey', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
+    { n: '02', tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
+    { n: '03', tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Madplan, elpris og forsikringstjek. Tag det, der passer jer.', src: '/site/app/mere-sheet.webp', alt: 'Menuen i appen: Energi, Mad, Forsikring og Økonomi.' },
+    { n: '04', tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik og hver jeres egne tal.', src: '/site/app/hjem-faelles.webp', alt: 'Forsiden med Fælles valgt: 12.853 kr. tilbage for husstanden.' },
   ],
 } as const
 

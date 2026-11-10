@@ -1,20 +1,21 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import StoreBadges from '@/components/StoreBadges'
 import { STEPS } from './copy'
+import Phone from './Phone'
 import StagedNote from './StagedNote'
 
-// The four steps in the list-and-phone layout of the earlier "Og der er mere": the step
-// nearest the middle of the screen lights up in its store colour as the page scrolls, and
-// the phone shows its screen. A click or the arrow keys pick a step too.
-const COUNT = STEPS.steps.length
-const SIZES = '(max-width: 767px) 224px, 290px'
+// Four steps. On a computer the phone stays put on the right while the steps scroll past on
+// the left, and it shows the step in the middle of the screen, which takes its store colour.
+// The phone is position: fixed inside a clip-path, the trick the dark section uses: sticky
+// does not work under the page's overflow-x: hidden. On a phone each step shows its own screen.
+const SIZES = '(max-width: 767px) 240px, 320px'
 
 export default function Steps() {
-  const [selected, setSelected] = useState(0)
-  const rows = useRef<(HTMLButtonElement | null)[]>([])
+  const [active, setActive] = useState(0)
+  const steps = useRef<(HTMLLIElement | null)[]>([])
 
   useEffect(() => {
     let frame = 0
@@ -23,9 +24,9 @@ export default function Steps() {
       const middle = window.innerHeight / 2
       let best = -1
       let distance = Infinity
-      rows.current.forEach((row, i) => {
-        if (!row) return
-        const box = row.getBoundingClientRect()
+      steps.current.forEach((step, i) => {
+        if (!step) return
+        const box = step.getBoundingClientRect()
         if (box.bottom < 0 || box.top > window.innerHeight) return
         const d = Math.abs(box.top + box.height / 2 - middle)
         if (d < distance) {
@@ -33,7 +34,7 @@ export default function Steps() {
           best = i
         }
       })
-      if (best >= 0) setSelected(best)
+      if (best >= 0) setActive(best)
     }
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(read)
@@ -48,76 +49,64 @@ export default function Steps() {
     }
   }, [])
 
-  const onKeyDown = (event: KeyboardEvent, index: number) => {
-    const target = { ArrowDown: (index + 1) % COUNT, ArrowUp: (index + COUNT - 1) % COUNT, Home: 0, End: COUNT - 1 }[event.key]
-    if (target === undefined) return
-    event.preventDefault()
-    setSelected(target)
-    rows.current[target]?.focus()
-  }
-
   return (
-    <section data-b="steps" className="sec m st" aria-labelledby="st-title">
-      <div className="m-grid">
-        <div className="m-left">
-          <p className="st-eyebrow">{STEPS.eyebrow}</p>
-          <h2 id="st-title" className="t-h2">
-            {STEPS.title}
-          </h2>
-          <div className="m-list" role="tablist" aria-label={STEPS.listLabel} aria-orientation="vertical">
-            {STEPS.steps.map((step, i) => (
-              <button
-                key={step.n}
-                ref={(el) => {
-                  rows.current[i] = el
-                }}
-                type="button"
-                role="tab"
-                id={`st-tab-${i}`}
-                aria-selected={i === selected}
-                aria-controls="st-panel"
-                tabIndex={i === selected ? 0 : -1}
-                className="m-row"
-                data-tone={step.tone}
-                data-selected={i === selected ? 'true' : undefined}
-                onClick={() => setSelected(i)}
-                onKeyDown={(event) => onKeyDown(event, i)}
-              >
-                <span className="st-n" aria-hidden="true">
-                  {step.n}
-                </span>
-                <span className="m-row-title">{step.title}</span>
-                <span className="m-row-body">{step.body}</span>
-              </button>
-            ))}
-          </div>
-          <StoreBadges position="how-it-works" variant="cream" size="lg" className="st-pills" />
-        </div>
-        <div id="st-panel" role="tabpanel" aria-labelledby={`st-tab-${selected}`} className="m-panel">
-          <div className="m-phone" data-staged="true">
-            <span className="m-shadow" aria-hidden="true" />
+    <section data-b="steps" className="sec st" aria-labelledby="st-title">
+      <h2 id="st-title" className="t-h2 st-title">
+        {STEPS.title}
+      </h2>
+      <div className="st-wrap">
+        <div className="st-pin" aria-hidden="true">
+          <div className="st-phone" data-staged="true">
             <div className="ph">
-              <span className="ph-body" aria-hidden="true" />
+              <span className="ph-body" />
               <div className="ph-screen">
                 {STEPS.steps.map((step, i) => (
                   <Image
                     key={step.n}
                     src={step.src}
-                    alt={i === selected ? step.alt : ''}
+                    alt=""
                     fill
                     sizes={SIZES}
-                    quality={90}
-                    className="m-screen"
-                    data-selected={i === selected ? 'true' : undefined}
+                    quality={85}
+                    className="st-screen"
+                    data-shown={i === active ? 'true' : undefined}
                     style={{ objectFit: 'cover', objectPosition: '50% 0%' }}
                   />
                 ))}
               </div>
             </div>
           </div>
-          <StagedNote className="m-note" />
         </div>
+        <ol className="st-list">
+          {STEPS.steps.map((step, i) => (
+            <li
+              key={step.n}
+              ref={(el) => {
+                steps.current[i] = el
+              }}
+              className="st-step"
+              data-tone={step.tone}
+              data-active={i === active ? 'true' : undefined}
+            >
+              <div className="st-card">
+                <span className="st-n" aria-hidden="true">
+                  {step.n}
+                </span>
+                <h3 className="st-card-title">{step.title}</h3>
+                <p className="st-card-body">{step.body}</p>
+                {i === 0 ? <StoreBadges position="how-it-works" variant="cream" size="lg" className="st-pills" /> : null}
+              </div>
+              <div className="st-inline">
+                <Phone src={step.src} alt={step.alt} sizes={SIZES} />
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p className="sr-only" aria-live="polite">
+          {STEPS.steps[active].alt}
+        </p>
       </div>
+      <StagedNote className="st-note" />
     </section>
   )
 }
