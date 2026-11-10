@@ -9,7 +9,6 @@ import { jsonLdScript } from '@/components/site/jsonLd'
 import Love from '@/components/site/Love'
 import MadDark from '@/components/site/MadDark'
 import Steps from '@/components/site/Steps'
-import WorksWith from '@/components/site/WorksWith'
 import { MotionPrefs } from '@/components/site/MotionPrefs'
 import PauseButton from '@/components/site/PauseButton'
 import Privacy from '@/components/site/Privacy'
@@ -54,7 +53,6 @@ export default function Home() {
         <SiteNav />
         <main id="indhold">
           <Hero />
-          <WorksWith />
           <Proof />
           <MadDark />
           <Steps />

@@ -46,8 +46,6 @@
   }
   /* On Deep forest the ring turns Signal green, on anything that sits directly on it. */
   .nav[data-on='dark'] :focus-visible,
-  .d-head :focus-visible,
-  .x :focus-visible,
   .ft :focus-visible {
     outline-color: var(--signal);
   }
@@ -818,7 +816,7 @@
     }
   }
 
-  /* 2. Works with */
+  /* Banks: the logo slider, inside the privacy panel */
   .w {
     padding-top: calc(var(--u) * 96);
     text-align: center;
@@ -990,10 +988,8 @@
       margin-top: 22px;
     }
   }
-  /* 5. Dark: Økonomi and the mail's feature blocks */
+  /* 5. Økonomi and the mail's feature blocks, on the page's light ground */
   .d {
-    background: var(--forest);
-    color: var(--cream);
     overflow: clip;
   }
   .d-head {
@@ -1003,7 +999,6 @@
   .d-title {
     width: min(100% - 34px, 11.5em);
     margin-inline: auto;
-    color: #fff;
   }
   .d-title-dim {
     display: block;
@@ -1015,7 +1010,7 @@
     margin: 16px auto 0;
 
     p {
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--stone);
     }
     a {
       text-decoration: underline;
@@ -1026,7 +1021,7 @@
     font-size: 16px;
     line-height: 22px;
     margin-top: 4px;
-    color: rgba(255, 255, 255, 0.64);
+    color: var(--stone);
   }
   .d-cards {
     display: grid;
@@ -1050,7 +1045,15 @@
     line-height: 1.2;
     letter-spacing: -0.035em;
     color: #163223;
-    white-space: pre-line;
+  }
+  /* The mail's rule: each line is its own block, and a line that opens with a quote hangs the
+     quote in the margin (text-indent -0.4em), so the words line up with the line above. */
+  .d-line {
+    display: block;
+
+    &[data-hang='true'] {
+      text-indent: -0.4em;
+    }
   }
   .d-card-body {
     margin-top: calc(var(--title) * 0.73);
@@ -1363,7 +1366,7 @@
   /* Four steps: the whole block stays put while the page scrolls through it; the title, all
      four steps and the phone are in view, and the scroll moves the highlight down the steps. */
   .st {
-    --phone: min(calc(var(--u) * 323), calc((100svh - 250px) * 1350 / 2760));
+    --phone: min(calc(var(--u) * 300), calc((100svh - 300px) * 1350 / 2760));
     height: calc(100svh + 4 * 55svh);
     padding-block: 0;
   }
@@ -1373,12 +1376,13 @@
     position: sticky;
     top: 0;
     display: grid;
-    grid-template-columns: calc(var(--u) * 600) var(--phone);
+    grid-template-columns: calc(var(--u) * 640) 1fr;
     grid-template-rows: auto 1fr;
     column-gap: calc(var(--u) * 60);
     justify-content: space-between;
     height: 100svh;
-    width: min(100% - 2 * var(--u) * 120, calc(var(--u) * 1150));
+    /* The same width as the colour blocks above. */
+    width: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
     margin-inline: auto;
     padding-top: max(96px, calc(50svh - 330px));
   }
@@ -1389,9 +1393,33 @@
   .st-left {
     align-self: start;
   }
-  .st-phone {
+  /* A photo of people doing the step as a rounded card, and the phone standing in front of
+     its left edge, so the people stay in view on the right. */
+  .st-visual {
+    position: relative;
     align-self: start;
+    display: flex;
+    align-items: center;
+    height: calc(var(--phone) * 2760 / 1350 + var(--u) * 56);
     margin-top: calc(var(--u) * 24);
+  }
+  .st-photos {
+    position: absolute;
+    inset: 0 0 0 calc(var(--phone) / 2);
+    border-radius: 24px;
+    overflow: hidden;
+    background: var(--sand);
+  }
+  .st-photo {
+    opacity: 0;
+    transition: opacity 0.6s;
+
+    &[data-shown='true'] {
+      opacity: 1;
+    }
+  }
+  .st-phone {
+    position: relative;
   }
   .st-list {
     display: grid;
@@ -1489,7 +1517,7 @@
       margin-inline: calc(var(--u) * 17);
       padding-top: 0;
     }
-    .st-phone {
+    .st-visual {
       display: none;
     }
     .st-list {
@@ -1506,68 +1534,103 @@
     .st-more > div {
       padding-left: 0;
     }
+    /* The step's photo as a rounded strip, the phone standing on its lower edge, so faces stay
+       in view. */
     .st-inline {
+      position: relative;
       display: flex;
       justify-content: center;
       margin-top: 24px;
+      padding-top: calc(var(--u) * 200);
 
       .ph {
-        --w: calc(var(--u) * 240);
+        --w: calc(var(--u) * 220);
       }
     }
-  }
-
-  /* 8. Privacy */
-  .x-panel {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
-    height: calc(var(--u) * 650);
-    margin-inline: auto;
-    border-radius: 24px;
-    overflow: hidden;
-    background: var(--forest);
-  }
-  .x-house {
-    position: absolute;
-    left: 50%;
-    top: calc(var(--u) * -68);
-    width: calc(var(--u) * 551);
-    height: calc(var(--u) * 786);
-    transform: translateX(-50%);
-    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.05));
-  }
-  .x-text {
-    position: absolute;
-    top: calc(var(--u) * 254);
-    left: 50%;
-    font-size: var(--body);
-    width: min(100% - 34px, 30.8em);
-    transform: translateX(-50%);
-    text-align: center;
-
-    h2 {
-      color: #fff;
+    .st-inline-photo {
+      height: calc(var(--u) * 260) !important;
+      border-radius: 18px;
     }
-    p {
-      margin-top: 16px;
-      color: rgba(255, 255, 255, 0.72);
+  }
+
+  /* 8. Privacy: a calm Mint panel with a lock, three facts and the banks sliding past. */
+  .x-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
+    margin-inline: auto;
+    padding: calc(var(--u) * 88) 0 calc(var(--u) * 64);
+    border-radius: 24px;
+    background: var(--tint);
+    text-align: center;
+    overflow: hidden;
+  }
+  .x-lock {
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--forest);
+    box-shadow: 0 10px 30px rgba(0, 60, 22, 0.12);
+  }
+  .x-title {
+    margin-top: 28px;
+  }
+  .x-body {
+    width: min(100% - 34px, 30em);
+    margin-top: 16px;
+    color: var(--forest);
+  }
+  .x-points {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    width: min(100% - 34px, 50em);
+    margin-top: 28px;
+
+    li {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.7);
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--forest);
+    }
+  }
+  /* The banks on a white band across the panel. */
+  .x-banks {
+    width: 100%;
+    margin-top: calc(var(--u) * 56);
+    padding-block: 28px 32px;
+    background: #fff;
+
+    .w {
+      padding-top: 0;
+    }
+    .w-title {
+      font-size: 17px;
+      font-weight: 600;
+      font-family: var(--text);
+      line-height: 1.3;
+      letter-spacing: 0;
     }
   }
   .x-link {
     display: inline-block;
-    margin-top: 12px;
+    margin-top: 28px;
     font-size: 16px;
     line-height: 22px;
-    color: rgba(255, 255, 255, 0.72);
+    color: var(--forest);
     text-decoration: underline;
     text-underline-offset: 3px;
-
-    &:focus-visible {
-      outline-color: var(--signal);
-    }
   }
   @media (max-width: 767px) {
     .x {
@@ -1575,20 +1638,10 @@
     }
     .x-panel {
       width: calc(var(--u) * 356);
-      height: calc(var(--u) * 537);
+      padding-top: 48px;
     }
-    .x-house {
-      top: calc(var(--u) * 20);
-      width: calc(var(--u) * 308);
-      height: calc(var(--u) * 439);
-    }
-    .x-text {
-      top: calc(var(--u) * 180);
-      width: calc(var(--u) * 309);
-    }
-    .x-text p {
-      font-size: 17px;
-      line-height: 22px;
+    .x-points li {
+      font-size: 15px;
     }
   }
 

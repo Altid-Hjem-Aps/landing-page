@@ -1,9 +1,8 @@
 import { BANKS } from './copy'
 import Marquee from './Marquee'
 
-// Under the hero, as the reference's "works with" row: the logos of Danish banks the app
-// connects to, looping slowly. Square-ish logos get a little more height so they read as
-// large as the long ones.
+// The logos of the Danish banks the app connects to, looping slowly. Square-ish logos get a
+// little more height so they read as large as the long ones. Sits inside the privacy panel.
 const row = (hidden: boolean) =>
   BANKS.logos.map((bank) => (
     <li key={bank.name} className="w-bank" data-tall={bank.ratio < 3.5 ? 'true' : undefined}>
@@ -12,11 +11,11 @@ const row = (hidden: boolean) =>
     </li>
   ))
 
-export default function WorksWith() {
+export default function BankMarquee() {
   return (
-    <section data-b="works" className="w">
-      <h2 className="w-title">{BANKS.title}</h2>
+    <div className="w">
+      <p className="w-title">{BANKS.title}</p>
       <Marquee label={BANKS.title} className="w-mq" first={row(false)} second={row(true)} />
-    </section>
+    </div>
   )
 }
