@@ -80,9 +80,9 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Kan Altid Hjem hjælpe mig med elprisen?',
     a: [
-      'Ja. Altid Hjem bygges til at holde øje med elprisen for dig og give konkrete anbefalinger, så du ved, hvornår det bedst kan betale sig at bruge strøm.',
-      'Målet er at gøre det lettere at spare penge uden selv at skulle tjekke elpriser hele tiden.',
-      'Skriv dig gratis på ventelisten, så får du besked, når Altid Hjem er klar.',
+      'Ja. I Altid Hjem ser du elprisen time for time og kan få besked, når strømmen er billig.',
+      'Så slipper du for selv at tjekke elpriser hele tiden.',
+      'Du kan hente appen gratis i App Store og Google Play.',
     ],
   },
 ]
@@ -314,9 +314,9 @@ export default async function HvornarErStrommenBilligst() {
         </div>
 
         <BottomCta
-          eyebrow="Træt af selv at holde øje med elpriserne?"
-          subtitle="Altid Hjem-appen følger elprisen for dig og siger til, når strømmen er billig. Skriv dig gratis på ventelisten i dag"
-          source="elpriser"
+          eyebrow='Elprisen uden selv at holde øje'
+          heading='Hent Altid Hjem, og få besked, når strømmen er billig'
+          subtitle='I appen ser du elprisen time for time, så du slipper for selv at tjekke den hver dag.'
         />
       </main>
       <Footer />

@@ -1,0 +1,209 @@
+/* The front page's footer (Footer.tsx, front). Numbers are the reference's at 1440 wide
+   (u) or 390 wide (um). The green behind the corners is where the closing section ends. */
+
+.ft-front {
+  position: relative;
+  z-index: 1;
+  background: #6fd65e;
+}
+.ft-panel {
+  padding: calc(56 * var(--u)) calc(60 * var(--u)) calc(29 * var(--u));
+  border-radius: calc(31.68 * var(--u)) calc(31.68 * var(--u)) 0 0;
+  background: var(--ah-dark-forest);
+  color: var(--ah-cream);
+}
+.ft-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(24 * var(--u));
+}
+.ft-big {
+  font-family: var(--ah-font-display);
+  font-size: calc(47.52 * var(--u));
+  font-weight: 700;
+  line-height: 1.2;
+}
+.ft-mail {
+  color: var(--ah-mint);
+  text-decoration: underline;
+  text-decoration-thickness: 0.05em;
+  text-underline-offset: 0.12em;
+}
+
+/* One row: heading, field and button, consent. The form's own classes are Tailwind's,
+   so this unlayered block wins. */
+.ft-news {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0 calc(40 * var(--u));
+  width: 100%;
+  max-width: none;
+  margin-top: calc(28 * var(--u));
+}
+.ft-news h3 {
+  padding-top: calc(10 * var(--u));
+  font-family: var(--ah-font-display);
+  font-size: max(15px, calc(18 * var(--u)));
+  font-weight: 700;
+}
+.ft-news .ah-newsletter-fields {
+  display: grid;
+  grid-template-columns: calc(460 * var(--u)) minmax(0, 1fr);
+  align-items: start;
+  gap: 0 calc(32 * var(--u));
+}
+html:not(.js) .ft-news .ah-newsletter-fields { display: none; }
+.ft-news .ah-newsletter-fields > label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.ft-news .ah-newsletter-row { margin-top: 0; }
+.ft-news .ah-newsletter-row input { min-height: max(44px, calc(46 * var(--u))); }
+.ft-news .ah-newsletter-row button { min-height: max(44px, calc(46 * var(--u))); }
+.ft-news .ah-newsletter-fields > div:nth-of-type(2) > * { margin-top: 0 !important; }
+.ft-news [aria-live] {
+  grid-column: 1 / -1;
+  min-height: 0;
+  margin-top: calc(4 * var(--u));
+}
+.ft-news [aria-live]:empty { margin: 0; }
+
+.ft-down {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: calc(24 * var(--u));
+  margin-top: calc(20 * var(--u));
+  padding-top: calc(20 * var(--u));
+  border-top: 1px solid rgb(253 250 244 / 0.1);
+}
+.ft-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 calc(16 * var(--u));
+  color: rgb(253 250 244 / 0.72);
+  font-size: max(13px, calc(14.112 * var(--u)));
+}
+.ft-legal a,
+.ft-legal button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+}
+.ft-legal a:hover,
+.ft-legal button:hover,
+.ft-more a:hover { text-decoration: underline; text-underline-offset: 2px; }
+.ft-social {
+  display: flex;
+  flex: none;
+  gap: calc(4 * var(--u));
+  list-style: none;
+}
+.ft-social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max(44px, calc(61 * var(--u)));
+  height: max(44px, calc(61 * var(--u)));
+  border-radius: calc(12.1 * var(--u));
+  background: rgb(253 250 244 / 0.07);
+  color: var(--ah-cream);
+}
+.ft-social a:hover { background: rgb(253 250 244 / 0.14); }
+.ft-social svg {
+  width: max(18px, calc(23 * var(--u)));
+  height: max(18px, calc(23 * var(--u)));
+}
+.ft-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 calc(16 * var(--u));
+  color: rgb(253 250 244 / 0.72);
+  font-size: max(12px, calc(12.5 * var(--u)));
+  line-height: 1.5;
+}
+.ft-more a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.ft-more p {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin-left: auto;
+}
+
+/* Phone. The newsletter keeps its consent text, so the rest is tightened: field and button
+   on one line, links in two columns, every target still 44 px. */
+@media (max-width: 767.98px) {
+  .ft-panel {
+    padding: calc(28 * var(--um)) calc(16 * var(--um)) calc(20 * var(--um));
+    border-radius: calc(24.96 * var(--um)) calc(24.96 * var(--um)) 0 0;
+    text-align: center;
+  }
+  .ft-top {
+    flex-direction: column;
+    gap: calc(4 * var(--um));
+  }
+  .ft-big { font-size: calc(33.15 * var(--um)); }
+  .ft-news {
+    display: block;
+    margin-top: calc(22 * var(--um));
+    text-align: left;
+  }
+  .ft-news h3 {
+    padding: 0;
+    font-size: calc(17 * var(--um));
+    text-align: center;
+    margin-bottom: calc(10 * var(--um));
+  }
+  .ft-news > noscript > p { text-align: center; }
+  .ft-news .ah-newsletter-fields { display: block; }
+  .ft-news .ah-newsletter-row { flex-direction: row; }
+  .ft-news .ah-newsletter-row button { padding-inline: calc(18 * var(--um)); }
+  .ft-news .ah-newsletter-fields > div:nth-of-type(2) > * { margin-top: calc(10 * var(--um)) !important; }
+  .ft-down {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: calc(12 * var(--um));
+    margin-top: calc(14 * var(--um));
+    padding-top: calc(14 * var(--um));
+  }
+  .ft-legal {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 calc(8 * var(--um));
+    font-size: calc(14 * var(--um));
+    justify-items: center;
+  }
+  .ft-legal p { order: 1; grid-column: 1 / -1; margin-top: calc(4 * var(--um)); }
+  .ft-social { justify-content: center; gap: calc(12 * var(--um)); }
+  .ft-social a {
+    width: 44px;
+    height: 44px;
+    border-radius: calc(12.48 * var(--um));
+  }
+  .ft-social svg { width: calc(21 * var(--um)); height: calc(21 * var(--um)); }
+  .ft-more {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 calc(8 * var(--um));
+    justify-items: center;
+    margin-top: calc(8 * var(--um));
+    font-size: calc(12.5 * var(--um));
+  }
+  .ft-more p { grid-column: 1 / -1; justify-content: center; min-height: 0; margin: calc(4 * var(--um)) 0 0; }
+
+  @media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
+    html.js .ft-front { margin-top: calc(-72 * var(--um)); }
+  }
+}

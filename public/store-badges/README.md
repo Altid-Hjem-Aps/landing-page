@@ -1,4 +1,4 @@
-Official store badges, unmodified.
+Official store badges, unmodified. Used only by `components/StoreButtons.tsx` (`/invitation` and the partner invite fallback). The front page and SEO pages use the site's own pills (`components/StoreBadges.tsx`): Thor chose those over the official badges on 4 Nov 2026, and Apple's and Google's brand rules on that were not checked.
 
 - `app-store-da.svg`: "Hent i App Store" (black), Apple Marketing Tools, `https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/da-dk?format=svg`. Guidelines: https://developer.apple.com/app-store/marketing/guidelines/
 - `google-play-da.png`: "Hent den på Google Play" (646x250, includes the required clear space), `https://play.google.com/intl/en_us/badges/static/images/badges/da_badge_web_generic.png`. Guidelines: https://play.google.com/intl/en_us/badges/

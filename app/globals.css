@@ -32,10 +32,11 @@
 
 html {
   scroll-behavior: smooth;
-  /* Belt-and-suspenders horizontal lock: html overflow-x:clip + body
-     overflow-x:hidden + overscroll-behavior-x:none. iOS Safari sometimes
-     ignores overflow-x:hidden on body alone and lets the user rubber-band
-     horizontally — this combination defeats that. */
+  /* Horizontal lock: overflow-x:clip on html and body plus
+     overscroll-behavior-x:none. iOS Safari sometimes lets the user rubber-band
+     horizontally without it. clip, not hidden: overflow hidden on body makes it
+     a scroll container, and position:sticky stops working in every pinned
+     scene on the front page. */
   overflow-x: clip;
   overscroll-behavior-x: none;
 }
@@ -44,7 +45,7 @@ body {
   font-family: var(--font-family-sans);
   background-color: var(--cream);
   color: var(--text-dark);
-  overflow-x: hidden;
+  overflow-x: clip;
   overscroll-behavior-x: none;
 }
 
@@ -119,27 +120,8 @@ body {
   50% { transform: translateY(-9px); }
 }
 
-/* Altid Opladning card — the "altid" wordmark starts as an outline and charges
-   up bar-by-bar (a clip-rect rising from the bottom in discrete steps), like a
-   battery filling. */
-.altid-charge-fill {
-  transform: scaleY(0);
-  transform-origin: bottom;
-  transform-box: fill-box;
-}
-.altid-charge.is-charging .altid-charge-fill {
-  animation: altid-charge-up 2.6s steps(7) forwards;
-}
-.altid-charge.is-filled .altid-charge-fill {
-  transform: scaleY(1);
-}
-@keyframes altid-charge-up {
-  from { transform: scaleY(0); }
-  to { transform: scaleY(1); }
-}
-
-/* Altid Energi icon — the light bulb lights up (warm-yellow overlay fades in
-   with a glow) once the Opladning charge finishes, then fades back to normal. */
+/* Altid Energi icon: the light bulb lights up (warm-yellow overlay fades in
+   with a glow), then fades back to normal. */
 .energi-bulb-overlay {
   opacity: 0;
   filter: drop-shadow(0 0 3px rgba(255,214,74,0.9)) drop-shadow(0 0 6px rgba(255,214,74,0.55));
@@ -151,27 +133,6 @@ body {
   0% { opacity: 0; }
   18%, 78% { opacity: 1; }
   100% { opacity: 0; }
-}
-
-/* Altid Mobil icon — the phone buzzes/vibrates once, a bit after the bulb. */
-.mobil-phone {
-  transform-box: fill-box;
-  transform-origin: center;
-}
-.mobil-phone.is-vibrating {
-  animation: phone-vibrate 0.8s ease-in-out;
-}
-@keyframes phone-vibrate {
-  0%, 100% { transform: translateX(0) rotate(0deg); }
-  10% { transform: translateX(-1.3px) rotate(-5deg); }
-  20% { transform: translateX(1.3px) rotate(5deg); }
-  30% { transform: translateX(-1.1px) rotate(-4deg); }
-  40% { transform: translateX(1.1px) rotate(4deg); }
-  50% { transform: translateX(-0.8px) rotate(-3deg); }
-  60% { transform: translateX(0.8px) rotate(3deg); }
-  70% { transform: translateX(-0.5px) rotate(-2deg); }
-  80% { transform: translateX(0.4px) rotate(1deg); }
-  90% { transform: translateX(-0.2px) rotate(-0.5deg); }
 }
 
 @keyframes phone-wobble {
@@ -272,5 +233,186 @@ body {
   .hjem-motion-scope {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* Store pill order: App Store first by default (no JS, desktop, iOS); the head
+   script in app/layout.tsx marks Android so Google Play comes first. */
+html[data-platform="android"] .store-badge-play { order: -1; }
+
+/* ------------------------------------------------------------------------
+   The front page (components/site). Tokens from brand book sheets 11 and 12.
+   .ah-chrome carries them for Nav and Footer on the pages outside .ah-site,
+   where no page background comes with them.
+   ------------------------------------------------------------------------ */
+.ah-site,
+.ah-chrome {
+  --ah-deep-forest: #003c16; /* blocks, and the dark page where light falls on it */
+  --ah-page: #001f0b; /* the dark page where no light falls */
+  --ah-dark-forest: #163223; /* text, footer */
+  --ah-cream: #fdfaf4;
+  --ah-signal: #90ff7c; /* action and one number only */
+  --ah-stone: #6f6a61; /* secondary text, on Cream only */
+  --ah-mint: #b7f2a7; /* bills */
+  --ah-honey: #ffd27a; /* takeaway and dreams */
+  --ah-lavender: #bdb0f9; /* meal plan */
+  --ah-sand: #f5efe3; /* shopping */
+  --ah-sky: #a3d5ff; /* Altid Energi */
+  --ah-rose: #ffbab8; /* Altid Forsikring */
+  --ah-font-display: var(--font-dm-sans), system-ui, sans-serif;
+  --ah-font-body: var(--font-onest), system-ui, sans-serif;
+  --ah-radius-card: 20px;
+  --ah-radius-block: clamp(32px, 4vw, 50px);
+  --ah-gutter: clamp(20px, 4vw, 64px);
+  /* One px of the reference's layouts, at 1440 wide (capped at 1920) and at 390 wide. */
+  --u: calc(min(100vw, 1920px) / 1440);
+  --um: calc(100vw / 390);
+}
+
+.ah-site section[id] {
+  scroll-margin-top: 96px;
+}
+
+.ah-site :is(a, button, summary, input):focus-visible,
+.ah-chrome :is(a, button):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+@layer components {
+  .ah-site {
+    background: var(--ah-cream);
+    color: var(--ah-dark-forest);
+    font-family: var(--ah-font-body);
+  }
+
+  .ah-skip {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 110;
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: var(--ah-deep-forest);
+    color: var(--ah-cream);
+    font-weight: 500;
+    transform: translateY(-200%);
+  }
+  .ah-skip:focus-visible {
+    transform: none;
+  }
+
+  .ah-caption { font-size: 13px; line-height: 1.5; color: var(--ah-stone); }
+
+  /* Phone (primitives/Phone.tsx). Everything is in cqw of the phone's own width,
+     so any width stays in proportion; children of the screen can use cqw too. */
+  .ah-phone {
+    flex: none;
+    width: var(--ah-phone-w, 320px);
+    max-width: 100%;
+    container-type: inline-size;
+  }
+  .ah-phone-body {
+    padding: 2.4cqw;
+    border-radius: 15cqw;
+    background: var(--ah-dark-forest);
+    box-shadow:
+      inset 0 0 0 0.35cqw rgb(255 255 255 / 0.18),
+      0 8cqw 12cqw -5cqw rgb(0 30 12 / 0.55);
+  }
+  .ah-phone-screen {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1179 / 2556;
+    border-radius: 12.6cqw;
+    background: var(--ah-deep-forest);
+  }
+  .ah-phone-screen > img { object-fit: cover; object-position: top; }
+
+  /* Pause control (primitives/PauseMotion.tsx). Small, round, fixed bottom left. */
+  .ah-pause {
+    position: fixed;
+    z-index: 50; /* Under the cookie banner, so it never covers its buttons. */
+    bottom: 16px;
+    left: 16px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgb(22 50 35 / 0.14);
+    border-radius: 999px;
+    background: var(--ah-cream);
+    color: var(--ah-dark-forest);
+    cursor: pointer;
+    transition: background-color 0.15s;
+  }
+  .ah-pause:hover { background: var(--ah-sand); }
+}
+
+html:not(.js) .ah-pause { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .ah-pause { display: none; }
+}
+
+/* NewsletterForm: the fields cannot post without JS, on any page. The form's
+   noscript line stands in. Outside .ah-site, as the SEO pages have the form too. */
+html:not(.js) .ah-newsletter-fields { display: none; }
+
+/* Static first. The base is plain flow where every scene is readable. Pins only
+   switch on with JS (html.js, set by the head script), motion allowed and a
+   screen tall enough to hold a pinned scene (primitives/Pin.tsx). */
+.ah-pin { position: relative; }
+.ah-pin-sticky { position: static; height: auto; }
+
+@media (prefers-reduced-motion: no-preference) and (min-height: 501px) {
+  html.js .ah-pin { height: var(--ah-pin-h); }
+  html.js .ah-pin-sticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: clip;
+  }
+
+  @media (max-width: 767.98px) {
+    html.js .ah-pin { height: var(--ah-pin-h-mobile); }
+    html.js .ah-pin--flow-mobile .ah-pin-sticky {
+      position: static;
+      height: auto;
+      overflow: visible;
+    }
+  }
+}
+
+/* .ah-m goes on every motion element. Framer writes its first frame inline, even
+   server-rendered, so a scene could stay hidden without these !important rules. */
+html:not(.js) .ah-m {
+  opacity: 1 !important;
+  transform: none !important;
+}
+@media (prefers-reduced-motion: reduce), (max-height: 500px) {
+  .ah-m {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+@media (max-width: 767.98px) {
+  .ah-pin--flow-mobile .ah-m {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Loops: stopped by the pause control and by reduced motion. */
+html[data-motion="paused"] *,
+html[data-motion="paused"] *::before,
+html[data-motion="paused"] *::after {
+  animation-play-state: paused !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .ah-site *,
+  .ah-site *::before,
+  .ah-site *::after {
+    animation: none !important;
   }
 }

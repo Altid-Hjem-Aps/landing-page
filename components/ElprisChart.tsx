@@ -140,7 +140,7 @@ export default function ElprisChart({ data, nowHour, netselskaber }: Props) {
         // stiltiende at vise andre tal, end brugeren bad om.
         const valgt = netselskaber.find((n) => n.id === netselskabId)?.navn ?? 'netselskabet'
         const standard = netselskaber.find((n) => n.id === defaultNetId)?.navn ?? 'standard'
-        setNetFejl(`Kunne ikke hente ${valgt} — viser ${standard} i stedet.`)
+        setNetFejl(`Kunne ikke hente ${valgt}. Viser ${standard} i stedet.`)
         setNetselskabId(defaultNetId)
       })
     return () => {
@@ -227,7 +227,7 @@ export default function ElprisChart({ data, nowHour, netselskaber }: Props) {
           <Pill active={area === 'dk2'} onClick={() => vaelgArea('dk2')}>Øst (DK2)</Pill>
         </div>
         <p className="text-sm" style={{ color: 'rgba(26,61,34,0.6)' }}>
-          Priserne for {AREA_LABEL[area]} kan ikke hentes lige nu — prøv igen om lidt, eller
+          Priserne for {AREA_LABEL[area]} kan ikke hentes lige nu. Prøv igen om lidt, eller
           skift område ovenfor.
         </p>
       </div>
@@ -315,7 +315,7 @@ export default function ElprisChart({ data, nowHour, netselskaber }: Props) {
               {n.label}
             </p>
             <p className="text-3xl font-bold leading-none tabular-nums" style={{ color: n.farve ?? 'var(--forest)' }}>
-              {n.value === null ? '–' : formatKr(n.value)}
+              {n.value === null ? '-' : formatKr(n.value)}
             </p>
             {n.tid && (
               <p className="text-[11px] mt-1" style={{ color: 'rgba(26,61,34,0.45)' }}>
@@ -361,7 +361,7 @@ export default function ElprisChart({ data, nowHour, netselskaber }: Props) {
           {formatKr(shown.price)}<span className="text-base font-semibold">/kWh</span>
         </p>
         <p className="text-xs mt-1" style={{ color: 'rgba(26,61,34,0.55)' }}>
-          inkl. {includedList} (anslået) — heraf spotpris {formatKr(shown.spot)}/kWh
+          inkl. {includedList} (anslået), heraf spotpris {formatKr(shown.spot)}/kWh
         </p>
       </div>
 
@@ -616,7 +616,7 @@ export default function ElprisChart({ data, nowHour, netselskaber }: Props) {
         {infoOpen && (
           <p className="mt-2 text-xs" style={{ color: 'rgba(26,61,34,0.5)' }}>
             Hold musen over (eller tryk på) en kolonne for at se timens pris. Søjlerne viser
-            spotprisen plus dit netselskabs transport ({valgtNavn} — dyrere kl. 17-21) samt de
+            spotprisen plus dit netselskabs transport ({valgtNavn}, dyrere kl. 17-21) samt de
             komponenter, du slår til: elafgift (EU-minimum fra 2026, ca. 1 øre/kWh inkl. moms),
             transmission (Energinets system- og nettarif, ca. 14 øre/kWh inkl. moms) og 25 % moms.
             Den lyse top er timens højeste kvarterspris (strøm handles i 15-minutters
