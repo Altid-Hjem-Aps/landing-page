@@ -14,7 +14,8 @@ import { useMotionPiece } from './MotionPrefs'
 type Phase = 'bill' | 'note' | 'tap' | 'done' | 'leave'
 
 // How long each phase lasts, in ms.
-const TIMES: Record<Phase, number> = { bill: 2700, note: 1700, tap: 450, done: 1900, leave: 600 }
+// The bills phase ends as the last bill goes into the phones (0.7 s apart, 3.4 s each).
+const TIMES: Record<Phase, number> = { bill: 4500, note: 2800, tap: 600, done: 2600, leave: 900 }
 const NEXT: Record<Phase, Phase> = { bill: 'note', note: 'tap', tap: 'done', done: 'leave', leave: 'bill' }
 
 function Bill({ index }: { index: number }) {
