@@ -418,13 +418,6 @@
     min-height: min(100vh, calc(var(--u) * 1095));
     overflow: clip;
   }
-  /* A Deep forest block carries the statement, as on the first store screenshot. */
-  .h-panel {
-    position: absolute;
-    inset: 8px 8px 0;
-    border-radius: 24px;
-    background: var(--forest);
-  }
   .h-text {
     position: relative;
     z-index: 2;
@@ -470,20 +463,94 @@
       background: #ffc56b;
     }
   }
-  .h-cluster {
+  .h-bottom {
     position: relative;
-    width: calc(var(--u) * 960);
-    margin: calc(var(--u) * 40) auto 0;
+    z-index: 1;
+    margin: calc(var(--u) * 24) 8px 0;
+    height: calc(var(--u) * 607);
+  }
+  .h-phones {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+  }
+  /* The tilt of the frame on the page we match, as a perspective and three rotations. */
+  .h-phone {
+    --tilt: perspective(calc(var(--u) * 830)) rotateX(-1deg) rotateY(-10deg) rotateZ(7deg);
+    position: absolute;
+    left: calc(50% + var(--u) * -215);
+    top: calc(var(--u) * 19);
+    transform: var(--tilt);
 
-    img {
-      display: block;
-      width: 100%;
-      height: auto;
+    .ph {
+      --w: calc(var(--u) * 320);
+    }
+  }
+  .h-second {
+    position: absolute;
+    left: calc(50% + var(--u) * -8);
+    top: calc(var(--u) * 170);
+    width: calc(var(--u) * 259);
+    height: calc(var(--u) * 318);
+
+    .ph {
+      --w: calc(var(--u) * 226);
+      left: calc(var(--u) * 14);
+      transform: perspective(calc(var(--u) * 970)) rotateY(34deg) rotateZ(-5deg);
+    }
+  }
+  /* The ring of services: its far half and far icons under the phones, the near ones over. */
+  .h-orbit {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .h-orbit-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .h-orbit-back {
+    z-index: 0;
+  }
+  .h-orbit-front {
+    z-index: 2;
+  }
+  .h-ring {
+    fill: none;
+    stroke: rgba(0, 60, 22, 0.14);
+    stroke-width: 1.5;
+  }
+  .h-orb {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: grid;
+    place-items: center;
+    width: calc(var(--u) * 64);
+    height: calc(var(--u) * 64);
+    border-radius: 50%;
+    color: var(--forest);
+    box-shadow:
+      0 0 0 calc(var(--u) * 4) #fff,
+      0 calc(var(--u) * 8) calc(var(--u) * 20) rgba(0, 30, 10, 0.18);
+    transform-origin: 50% 50%;
+    will-change: transform;
+
+    svg {
+      width: 44%;
+      height: 44%;
     }
   }
   @media (prefers-reduced-motion: no-preference) {
-    .h-cluster {
+    .h-phone .ph,
+    .h-second {
       animation: site-rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    .h-second {
+      animation-delay: 0.15s;
     }
   }
   .h-note {
@@ -578,9 +645,35 @@
         column-gap: 8px;
       }
     }
-    .h-cluster {
-      width: calc(var(--u) * 380);
-      margin: calc(var(--u) * 28) auto 0;
+    .h-bottom {
+      margin: calc(var(--u) * 12) 8px 0;
+      height: calc(var(--u) * 384);
+    }
+    .h-phone {
+      left: calc(var(--u) * 6);
+      top: calc(var(--u) * 12);
+
+      .ph {
+        --w: calc(var(--u) * 250);
+      }
+    }
+    .h-second {
+      left: calc(var(--u) * 178);
+      top: calc(var(--u) * 102);
+      width: calc(var(--u) * 183);
+      height: calc(var(--u) * 225);
+
+      .ph {
+        --w: calc(var(--u) * 160);
+        left: calc(var(--u) * 10);
+      }
+    }
+    .h-orb {
+      width: calc(var(--u) * 44);
+      height: calc(var(--u) * 44);
+      box-shadow:
+        0 0 0 calc(var(--u) * 3) #fff,
+        0 calc(var(--u) * 6) calc(var(--u) * 14) rgba(0, 30, 10, 0.18);
     }
   }
 
@@ -769,33 +862,62 @@
     flex: none;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 24px;
+    gap: 12px;
     width: min(88vw, 640px);
-    min-height: 220px;
+    min-height: 260px;
     margin: 0;
-    padding: 32px;
+    padding: 28px 32px 32px;
     border-radius: 24px;
-    background: var(--sand);
+    background: var(--tint, var(--sand));
     text-align: left;
     scroll-snap-align: center;
   }
+  .v-mark {
+    height: 48px;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 96px;
+    line-height: 1;
+    color: var(--forest);
+  }
   .v-quote {
+    flex: 1;
     font-family: var(--display);
     font-weight: 700;
     font-size: clamp(20px, 18px + 0.5vw, 26px);
     line-height: 1.2;
     letter-spacing: -0.01em;
     color: var(--forest);
-    text-indent: -0.42em;
   }
   .v-who {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
     font-size: 16px;
-    color: var(--stone);
+    line-height: 20px;
+    color: rgba(0, 60, 22, 0.8);
+  }
+  .v-avatar {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--forest);
+    color: var(--cream);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 16px;
   }
   .v-name {
+    display: block;
     font-weight: 600;
     color: var(--forest);
+  }
+  .v-job {
+    display: block;
   }
   @media (max-width: 767px) {
     .p-title {
@@ -1375,25 +1497,6 @@
     text-align: center;
     color: rgba(253, 250, 244, 0.7);
   }
-  .stripes {
-    display: flex;
-    flex-direction: column;
-    height: calc(var(--u) * 44);
-    background: var(--cream);
-
-    span {
-      display: block;
-      background: var(--forest);
-    }
-    span:nth-child(1) { height: 12%; margin-bottom: 2px; }
-    span:nth-child(2) { height: 10%; margin-bottom: 3px; }
-    span:nth-child(3) { height: 8%; margin-bottom: 3px; }
-    span:nth-child(4) { height: 6%; margin-bottom: 4px; }
-    span:nth-child(5) { height: 5%; margin-bottom: 4px; }
-    span:nth-child(6) { height: 4%; margin-bottom: 4px; }
-    span:nth-child(7) { height: 3%; margin-bottom: 5px; }
-    span:nth-child(8) { height: 2%; }
-  }
   @media (max-width: 767px) {
     .plates {
       height: max(calc(var(--u) * 208), 208px);
@@ -1649,6 +1752,76 @@
     }
   }
 
+  /* Four steps: the old front page's how-it-works, as solid store-colour cards. */
+  .st {
+    text-align: center;
+  }
+  .st-eyebrow {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .st-title {
+    width: min(100% - 34px, 12em);
+    margin: 16px auto 0;
+  }
+  .st-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: calc(var(--u) * 24);
+    width: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
+    margin: calc(var(--u) * 64) auto 0;
+    text-align: left;
+  }
+  .st-card {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(var(--u) * 340);
+    padding: calc(var(--u) * 36);
+    border-radius: 24px;
+    background: var(--tint);
+    color: var(--forest);
+  }
+  .st-n {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(44px, 36px + 1.4vw, 64px);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+  }
+  .st-card-title {
+    margin-top: auto;
+    padding-top: 32px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(20px, 18px + 0.4vw, 24px);
+    line-height: 1.15;
+  }
+  .st-card-body {
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+  .st-pills {
+    margin-top: calc(var(--u) * 48);
+  }
+  @media (max-width: 1023px) {
+    .st-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 559px) {
+    .st-list {
+      grid-template-columns: 1fr;
+    }
+    .st-card {
+      min-height: 0;
+      padding: 28px;
+    }
+  }
+
   /* 8. Privacy */
   .x-panel {
     position: relative;
@@ -1801,7 +1974,7 @@
   }
   @media (max-width: 767px) {
     .l {
-      padding: 0;
+      padding: 0 0 calc(var(--u) * 96);
     }
     .l-collage {
       inset: calc(var(--u) * 85) 0 auto;

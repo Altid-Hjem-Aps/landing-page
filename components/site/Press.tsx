@@ -16,6 +16,7 @@ export default function Press() {
       </blockquote>
       <a className="pr-cta" href={PRESS.href} target="_blank" rel="noopener noreferrer">
         {PRESS.cta}
+        <span className="sr-only">{PRESS.newTab}</span>
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
           <path d="M4 10l6-6M5 4h5v5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>

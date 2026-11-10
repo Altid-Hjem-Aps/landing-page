@@ -29,8 +29,8 @@ export const HERO = {
   line: 'Hent Altid Hjem gratis i dag, og få overblik over jeres mad, strøm, forsikring og økonomi.',
   // {average} and {count} come from the App Store (AppRating.tsx).
   rating: '{average} ud af 5 · {count} i App Store',
-  altCluster:
-    'Tre telefoner med Altid Hjem: madplanen i Altid Mad, månedens forbrug i Økonomi fordelt på transport, restaurant og takeaway, andet og tøj, og forsikringerne i Altid Forsikring.',
+  altPhone: 'Forsiden i Altid Hjem: 8.166 kr. tilbage, søjler for resten af måneden og en besked om, at du er 3.000 kr. foran.',
+  altSecond: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.',
 } as const
 
 export const WORKS = {
@@ -44,8 +44,8 @@ export const WORKS = {
 } as const
 
 export const PROOF = {
-  // Apple featured the app as App of the Day (Thor, 10 Nov 2026). Apple's own English wording.
-  award: { lines: ['App of the Day', 'App Store'] },
+  // Apple featured the app as App of the Day in Finance (Thor, 10 Nov 2026). Apple's own English wording.
+  award: { lines: ['App of the Day', 'Finance'] },
   title: 'Hør, hvorfor over 4.000 danskere har appen',
   voicesLabel: 'Udtalelser',
   voiceLabel: (i: number) => `Gå til udtalelse ${i + 1}`,
@@ -232,12 +232,24 @@ export const PRIVACY = {
   link: 'Læs privatlivspolitikken',
 } as const
 
+export const STEPS = {
+  eyebrow: 'Sådan virker det',
+  title: 'Fire trin til ét overblik',
+  steps: [
+    { n: '01', tone: 'honey', title: 'Hent appen gratis', body: 'Du finder Altid Hjem i App Store og Google Play, og det er gratis at oprette en konto.' },
+    { n: '02', tone: 'sky', title: 'Forbind banken, hvis du vil', body: 'Med MitID ser du, hvad der er tilbage til lønningsdag, og hvor pengene går hen. Det er frivilligt, og vi har kun læseadgang.' },
+    { n: '03', tone: 'lavender', title: 'Vælg det, der passer jer', body: 'Få en madplan i Altid Mad, følg elprisen i Altid Energi, og få jeres forsikringer tjekket i Altid Forsikring.' },
+    { n: '04', tone: 'mint', title: 'Inviter din partner', body: 'Så har I både jeres egne tal og et fælles overblik. Ét overblik, ét login.' },
+  ],
+} as const
+
 export const PRESS = {
   eyebrow: 'Omtalt i',
   outlet: 'Ekstra Bladet',
   date: '25. juli 2026',
   quote: '“Spar stort på dine dagligvarer: Ny app sammenligner priser”',
   cta: 'Læs artiklen',
+  newTab: ' (åbner i en ny fane)',
   href: 'https://ekstrabladet.dk/forbrug/Teknologi/spar-stort-paa-dine-dagligvarer-ny-app-sammenligner-priser/11232767',
 } as const
 

@@ -51,11 +51,6 @@ export default function MadDark() {
         </div>
         <StagedNote className="d-note" />
       </section>
-      <div className="stripes" aria-hidden="true">
-        {Array.from({ length: 8 }, (_, i) => (
-          <span key={i} />
-        ))}
-      </div>
     </>
   )
 }
