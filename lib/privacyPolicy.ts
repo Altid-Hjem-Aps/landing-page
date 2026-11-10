@@ -51,7 +51,7 @@ export function parseInline(text: string): InlineSegment[] {
 }
 
 export const privacyPolicy: PrivacyPolicy = {
-  updated: '2026-11-05',
+  updated: '2026-11-10',
   sections: [
     {
       title: '1. Vi er den dataansvarlige',
@@ -128,7 +128,7 @@ export const privacyPolicy: PrivacyPolicy = {
         { type: 'label', text: 'Samling og visning af dine bolig- og forbrugsdata i et overblik' },
         { type: 'paragraph', text: 'Retsgrundlag: Opfyldelse af aftale og legitim interesse (GDPR artikel 6, stk. 1, litra b og f).' },
         { type: 'label', text: 'Personligt overblik over din og husstandens økonomi, og beskeder og forslag til at forbedre den, ud fra dine bankoplysninger' },
-        { type: 'paragraph', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi bruger ikke bankoplysningerne til kreditvurdering, individuel prisfastsættelse eller markedsføring, træner ingen modeller på dem og sælger dem ikke. Betaler du en forsikring, kan appen tilbyde dig at blive skrevet op til et forsikringstjek. Vi sender ingen bankoplysninger videre. Du kan trække samtykket tilbage ved at slette din konto i appen, og så beder vi Subaio om at slette dig hos dem.' },
+        { type: 'paragraph', text: 'Retsgrundlag: Dit samtykke (GDPR artikel 6, stk. 1, litra a). Vi bruger ikke bankoplysningerne til kreditvurdering, individuel prisfastsættelse eller markedsføring, træner ingen modeller på dem og sælger dem ikke. Betaler du en forsikring, kan appen tilbyde dig at blive skrevet op til et forsikringstjek. Betaler du for strøm, kan appen vise, hvad du cirka kunne spare hos Altid Energi. Beregningen sker på din telefon. Vi sender ingen bankoplysninger videre. Du kan trække samtykket tilbage ved at slette din konto i appen, og så beder vi Subaio om at slette dig hos dem.' },
         { type: 'label', text: 'Kommunikation og support' },
         { type: 'paragraph', text: 'Retsgrundlag: Legitim interesse (GDPR artikel 6, stk. 1, litra f).' },
         { type: 'label', text: 'Notifikationer om de tjenester, du bruger' },
