@@ -1641,8 +1641,11 @@
   /* Story: the old site's Trust block in the new type, edge to edge. Altid Energi blue and
      Deep forest side by side, the logos joined by dots across the seam, the app icon on the
      seam between this block and the FAQ. */
-  .sy {
+  /* The story and the FAQ together: the privacy panel's size out of view, the full window in
+     view (Zoomer.tsx sets --inset and --radius from the scroll). */
+  .zoomer {
     margin-top: var(--pad);
+    clip-path: inset(0 var(--inset, 0px) round var(--radius, 0px));
   }
   .sy-panel {
     position: relative;

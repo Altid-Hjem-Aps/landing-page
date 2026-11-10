@@ -9,6 +9,7 @@ import { jsonLdScript } from '@/components/site/jsonLd'
 import MadDark from '@/components/site/MadDark'
 import Steps from '@/components/site/Steps'
 import Story from '@/components/site/Story'
+import Zoomer from '@/components/site/Zoomer'
 import { MotionPrefs } from '@/components/site/MotionPrefs'
 import PauseButton from '@/components/site/PauseButton'
 import Privacy from '@/components/site/Privacy'
@@ -57,8 +58,10 @@ export default function Home() {
           <MadDark />
           <Steps />
           <Privacy />
-          <Story />
-          <FaqSection />
+          <Zoomer>
+            <Story />
+            <FaqSection />
+          </Zoomer>
           <Blog />
           <FinalCta />
         </main>
