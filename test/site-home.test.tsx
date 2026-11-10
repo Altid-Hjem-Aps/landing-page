@@ -26,9 +26,9 @@ const PLAY =
 const STAGED = 'Skærmbilleder fra appen med eksempeldata.'
 const PAUSE = 'Sæt bevægelsen på pause'
 const PLAY_MOTION = 'Start bevægelsen igen'
-// The service row, the proof marquee, the plates, the list, the cards marquee.
-const ALL_RUNNING = ['true', 'true', 'true', 'true', 'true']
-const ALL_STOPPED = ['false', 'false', 'false', 'false', 'false']
+// The service row, the plates, the list.
+const ALL_RUNNING = ['true', 'true', 'true']
+const ALL_STOPPED = ['false', 'false', 'false']
 
 type Observed = { element: Element; callback: IntersectionObserverCallback }
 
@@ -84,6 +84,7 @@ beforeEach(() => {
   HTMLMediaElement.prototype.pause = vi.fn()
   // jsdom has no layout. The nav asks what lies under it: the hero's dark block by default.
   document.elementsFromPoint = vi.fn(() => [document.querySelector('.h-title')].filter((el) => el !== null))
+  // The hero is light now: the dark blocks come further down.
   HTMLDialogElement.prototype.showModal = function showModal() {
     this.setAttribute('open', '')
   }
@@ -124,12 +125,13 @@ describe('the page', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Hele hjemmets økonomi i én app')
     expect(Array.from(container.querySelectorAll('h2')).map((h) => h.textContent)).toEqual([
       'Samlet i én app',
-      'Svar på de spørgsmål, I kender fra køkkenbordet',
+      'Hør, hvorfor over 4.000 danskere har appen',
       'Se, hvor I står, før måneden er gået',
       'Ikke mere “hvad skal vi spise?”',
       'Og der er mere',
       'Jeres tal er jeres',
       'Lavet med omhu til danske hjem',
+      'Læs mere om, hvordan Altid Hjem skaber ro i hverdagen',
       'Spørgsmål og svar',
       'Hent Altid Hjem i dag',
       'Appen',
@@ -260,7 +262,7 @@ describe('the page', () => {
   it('shows the staged sentence in every section with staged numbers', () => {
     const { container } = render(<Home />)
     const staged = Array.from(container.querySelectorAll('section')).filter((s) => s.querySelector('[data-staged="true"]'))
-    expect(staged.length).toBeGreaterThanOrEqual(7)
+    expect(staged.length).toBeGreaterThanOrEqual(6)
     for (const section of staged) expect(section.textContent, section.getAttribute('data-b') ?? '').toContain(STAGED)
   })
 
@@ -298,7 +300,7 @@ describe('the marquees', () => {
   it('are one list each for a screen reader and the tab key: the clone is hidden and out of the tab order', () => {
     const { container } = render(<Home />)
     const marquees = Array.from(container.querySelectorAll('.mq'))
-    expect(marquees).toHaveLength(3)
+    expect(marquees).toHaveLength(1)
     for (const marquee of marquees) {
       const [list, clone] = Array.from(marquee.querySelectorAll('.mq-list'))
       expect(clone).toHaveAttribute('aria-hidden', 'true')
@@ -310,34 +312,42 @@ describe('the marquees', () => {
     }
   })
 
-  it('has ten proof tiles, each a real app screen with its question laid over it', () => {
+  it('shows the testimonials in their own words, without stars or the sign-up quote', () => {
     const { container } = render(<Home />)
-    const tiles = Array.from(container.querySelector('.p-mq .mq-list')?.querySelectorAll('li') ?? [])
-    expect(tiles).toHaveLength(10)
-    expect(tiles.map((t) => t.querySelector('.p-cap')?.textContent).slice(0, 5)).toEqual([
-      '“Hvad skal vi spise?”',
-      '“Hvornår skal opvasken sættes over?”',
-      '“Skat, hvornår skal vi på ferie igen?”',
-      '“Bruger vi for meget på takeaway?”',
-      '“Hvor handler vi billigst ind?”',
-    ])
-    for (const tile of tiles) expect(tile.querySelector('img')?.getAttribute('src')).toContain('site%2Fapp%2F')
+    const slider = within(container.querySelector('[data-b="proof"]') as HTMLElement).getByRole('region', { name: 'Udtalelser' })
+    const cards = Array.from(slider.querySelectorAll('figure:not([aria-hidden])'))
+    expect(cards.map((c) => c.querySelector('.v-name')?.textContent)).toEqual(['Lone', 'Magnus Svendsen', 'Michael'])
+    for (const card of cards) expect(card.querySelector('blockquote')?.textContent).toMatch(/^“.+”$/)
+    expect(slider.textContent).not.toMatch(/skrevet mig op|stjerne/i)
+    expect(slider.querySelector('[aria-label*="stjerner"]')).toBeNull()
   })
 
   it('names the App Store award in the laurel', () => {
     const { container } = render(<Home />)
     const laurels = container.querySelectorAll('.p-laurel')
     expect(laurels).toHaveLength(1)
-    expect(laurels[0]).toHaveTextContent('Dagens appi kategorien Finansi App Store')
-    expect(laurels[0].querySelector('.sr-only')).toHaveTextContent('i App Store')
+    expect(laurels[0]).toHaveTextContent('App of the DayApp Store')
+    expect(laurels[0].querySelectorAll('svg[aria-hidden="true"]')).toHaveLength(3)
   })
 
-  it('has five question cards naming their service, with no stars and no names', () => {
+  it('links the blog posts to the SEO pages, as on the old front page', () => {
     const { container } = render(<Home />)
-    const cards = Array.from(container.querySelector('.l-mq .mq-list')?.querySelectorAll('li') ?? [])
-    expect(cards).toHaveLength(5)
-    expect(cards.map((c) => c.querySelector('.l-card-service')?.textContent)).toEqual(['Altid Mad', 'Altid Energi', 'Økonomi', 'Altid Forsikring', 'Økonomi'])
-    for (const card of cards) expect(within(card as HTMLElement).getByRole('heading', { level: 3 }).textContent).toMatch(/^“.+”$/)
+    const posts = Array.from(container.querySelectorAll('a[href^="/"]')).filter((a) => a.textContent?.includes('Læs mere'))
+    expect(posts.length).toBeGreaterThan(0)
+    const pages = new Set(readdirSync('app').filter((name) => !name.includes('.')).map((name) => `/${name}`))
+    for (const post of posts) expect(pages).toContain(post.getAttribute('href'))
+  })
+
+  it('shows the Ekstra Bladet mention with its date and a link to the article', () => {
+    const { container } = render(<Home />)
+    const press = container.querySelector('[data-b="press"]') as HTMLElement
+    expect(press).toHaveTextContent('Omtalt i')
+    expect(within(press).getByRole('img', { name: 'Ekstra Bladet' })).toBeInTheDocument()
+    expect(press).toHaveTextContent('25. juli 2026')
+    expect(press.querySelector('blockquote')).toHaveTextContent('“Spar stort på dine dagligvarer: Ny app sammenligner priser”')
+    const link = within(press).getByRole('link', { name: 'Læs artiklen' })
+    expect(link).toHaveAttribute('href', 'https://ekstrabladet.dk/forbrug/Teknologi/spar-stort-paa-dine-dagligvarer-ny-app-sammenligner-priser/11232767')
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer')
   })
 })
 
@@ -710,19 +720,12 @@ describe('the QR card', () => {
 })
 
 describe('reduced motion on the scroll-driven pieces', () => {
-  it('leaves everything at rest, and the hero cards ignore scrolling', () => {
+  it('leaves everything at rest', () => {
     reduced = true
     const { container } = render(<Home />)
     expect((container.querySelector('.rings') as HTMLElement).style.getPropertyValue('--ring-p')).toBe('0.5')
     expect((container.querySelector('.f-float') as HTMLElement).style.transform).toBe('')
     expect(container.querySelector('[data-pan]')).toBeNull()
-    const card = container.querySelector('.h-lane-card') as HTMLElement
-    const before = card.style.transform
-    expect(before).not.toContain('-481')
-    Object.defineProperty(window, 'scrollY', { value: 300, configurable: true })
-    fireEvent.scroll(window)
-    expect(card.style.transform).toBe(before)
-    Object.defineProperty(window, 'scrollY', { value: 0, configurable: true })
   })
 })
 
@@ -815,7 +818,7 @@ describe('motion', () => {
     expect(control).toHaveAttribute('data-idle', 'false')
     setOnScreen('[data-running]', false)
     expect(control).toHaveAttribute('data-idle', 'true')
-    setOnScreen('.p-mq', true)
+    setOnScreen('.plates', true)
     expect(control).toHaveAttribute('data-idle', 'false')
   })
 
@@ -842,18 +845,18 @@ describe('motion', () => {
   it('a pause survives scrolling away and back', () => {
     const { container } = render(<Home />)
     fireEvent.click(screen.getByRole('button', { name: PAUSE }))
-    setOnScreen('.p-mq', false)
-    setOnScreen('.p-mq', true)
+    setOnScreen('.plates', false)
+    setOnScreen('.plates', true)
     expect(runningPieces(container)).toEqual(ALL_STOPPED)
   })
 
   it('stops a piece off screen without touching the others, and resumes it', () => {
     const { container } = render(<Home />)
-    setOnScreen('.p-mq', false)
-    expect(container.querySelector('.p-mq')).toHaveAttribute('data-running', 'false')
-    expect(container.querySelector('.l-mq')).toHaveAttribute('data-running', 'true')
-    setOnScreen('.p-mq', true)
-    expect(container.querySelector('.p-mq')).toHaveAttribute('data-running', 'true')
+    setOnScreen('.plates', false)
+    expect(container.querySelector('.plates')).toHaveAttribute('data-running', 'false')
+    expect(container.querySelector('.w-mq')).toHaveAttribute('data-running', 'true')
+    setOnScreen('.plates', true)
+    expect(container.querySelector('.plates')).toHaveAttribute('data-running', 'true')
   })
 
   it('stops everything in a hidden tab', () => {
@@ -881,10 +884,13 @@ describe('motion', () => {
 })
 
 describe('the glass nav', () => {
-  it('turns light over a dark block and back over a light one', async () => {
+  it('is light glass over the hero, turns dark over a dark block and light again over a card in it', async () => {
     const { container } = render(<Home />)
     const nav = container.querySelector('header.nav') as HTMLElement
-    expect(nav).toHaveAttribute('data-on', 'dark')
+    expect(nav).toHaveAttribute('data-on', 'light')
+    vi.mocked(document.elementsFromPoint).mockReturnValue([container.querySelector('.d-head') ?? (container.querySelector('#altid-mad') as Element)])
+    fireEvent.scroll(window)
+    await waitFor(() => expect(nav).toHaveAttribute('data-on', 'dark'))
     vi.mocked(document.elementsFromPoint).mockReturnValue([container.querySelector('.d-card') as Element])
     fireEvent.scroll(window)
     await waitFor(() => expect(nav).toHaveAttribute('data-on', 'light'))

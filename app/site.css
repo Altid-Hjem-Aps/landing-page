@@ -45,7 +45,6 @@
     outline-offset: 3px;
   }
   /* On Deep forest the ring turns Signal green, on anything that sits directly on it. */
-  .h :focus-visible,
   .nav[data-on='dark'] :focus-visible,
   .d-head :focus-visible,
   .plates :focus-visible,
@@ -435,12 +434,10 @@
   .h-title {
     width: min(100% - 34px, 8.75em);
     margin-inline: auto;
-    color: var(--cream);
   }
   .h-line {
     width: min(100% - 34px, 25em);
     margin: 16px auto 0;
-    color: rgba(253, 250, 244, 0.85);
   }
   .h-pills {
     margin-top: calc(var(--u) * 40);
@@ -453,7 +450,7 @@
     margin-top: 16px;
     font-size: 15px;
     line-height: 18px;
-    color: rgba(253, 250, 244, 0.72);
+    color: var(--stone);
   }
   /* Five stars in Honey over five faint ones, cut at the average. */
   .h-stars {
@@ -461,7 +458,7 @@
     flex: none;
     width: 106px;
     height: 18px;
-    background: rgba(253, 250, 244, 0.24);
+    background: rgba(0, 60, 22, 0.14);
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 106 18'%3E%3Cg fill='%23000'%3E%3Cpath id='s' d='M9 0l2.6 5.6 6.1.7-4.5 4.2 1.2 6L9 13.5 3.6 16.5l1.2-6L.3 6.3l6.1-.7z'/%3E%3Cuse href='%23s' x='22'/%3E%3Cuse href='%23s' x='44'/%3E%3Cuse href='%23s' x='66'/%3E%3Cuse href='%23s' x='88'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 100% 100%;
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 106 18'%3E%3Cg fill='%23000'%3E%3Cpath id='s' d='M9 0l2.6 5.6 6.1.7-4.5 4.2 1.2 6L9 13.5 3.6 16.5l1.2-6L.3 6.3l6.1-.7z'/%3E%3Cuse href='%23s' x='22'/%3E%3Cuse href='%23s' x='44'/%3E%3Cuse href='%23s' x='66'/%3E%3Cuse href='%23s' x='88'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 100% 100%;
 
@@ -470,87 +467,23 @@
       position: absolute;
       inset: 0 auto 0 0;
       width: var(--fill);
-      background: var(--honey);
+      background: #ffc56b;
     }
   }
-  .h-bottom {
+  .h-cluster {
     position: relative;
-    z-index: 1;
-    margin: calc(var(--u) * 24) 8px 0;
-    height: calc(var(--u) * 607);
-  }
-  .h-lanes {
-    position: absolute;
-    inset: calc(var(--u) * -91) 0 auto;
-    height: calc(var(--u) * 606);
-  }
-  .h-lane-clip {
-    position: absolute;
-    top: 0;
-    width: calc(var(--u) * 641);
-    height: 100%;
-    overflow: clip;
-  }
-  .h-lane-left {
-    left: calc(50% - var(--u) * 712);
-  }
-  .h-lane-right {
-    right: calc(50% - var(--u) * 712);
-  }
-  .h-lane-card {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 0;
-    height: 0;
-    will-change: transform;
+    width: calc(var(--u) * 960);
+    margin: calc(var(--u) * 40) auto 0;
 
     img {
-      position: absolute;
-      left: 0;
-      top: 0;
-      max-width: none;
+      display: block;
+      width: 100%;
       height: auto;
-      transform: translate(-50%, -50%);
-      filter: drop-shadow(0 6px 14px rgba(0, 60, 22, 0.14));
-    }
-  }
-  .h-phones {
-    position: absolute;
-    inset: 0;
-  }
-  /* The tilt of the frame on the page we match, as a perspective and three rotations. */
-  .h-phone {
-    --tilt: perspective(calc(var(--u) * 830)) rotateX(-1deg) rotateY(-10deg) rotateZ(7deg);
-    position: absolute;
-    left: calc(50% + var(--u) * -215);
-    top: calc(var(--u) * 19);
-    transform: var(--tilt);
-
-    .ph {
-      --w: calc(var(--u) * 320);
-    }
-  }
-  .h-second {
-    position: absolute;
-    left: calc(50% + var(--u) * -8);
-    top: calc(var(--u) * 170);
-    width: calc(var(--u) * 259);
-    height: calc(var(--u) * 318);
-
-    .ph {
-      --w: calc(var(--u) * 226);
-      left: calc(var(--u) * 14);
-      transform: perspective(calc(var(--u) * 970)) rotateY(34deg) rotateZ(-5deg);
     }
   }
   @media (prefers-reduced-motion: no-preference) {
-    .h-phone .ph,
-    .h-second {
+    .h-cluster {
       animation: site-rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-    }
-    .h-second {
-      animation-delay: 0.15s;
     }
   }
   .h-note {
@@ -561,8 +494,7 @@
     margin-inline: auto;
     padding: 2px 10px;
     border-radius: 10px;
-    background: var(--forest);
-    color: rgba(253, 250, 244, 0.72);
+    background: var(--cream);
   }
   .qr-frame {
     display: none;
@@ -588,8 +520,8 @@
     height: 88px;
     padding: 6px 12px 6px 8px;
     border-radius: 16px;
-    background: var(--cream);
-    color: var(--forest);
+    background: var(--forest);
+    color: #fff;
     pointer-events: auto;
 
     figure {
@@ -625,7 +557,7 @@
   .qr-line {
     font-size: 12px;
     line-height: 15px;
-    color: rgba(0, 60, 22, 0.72);
+    color: rgba(255, 255, 255, 0.72);
   }
   @media (max-width: 767px) {
     .h {
@@ -646,31 +578,9 @@
         column-gap: 8px;
       }
     }
-    .h-lanes {
-      display: none;
-    }
-    .h-bottom {
-      margin: calc(var(--u) * 12) 8px 0;
-      height: calc(var(--u) * 384);
-    }
-    .h-phone {
-      left: calc(var(--u) * 6);
-      top: calc(var(--u) * 12);
-
-      .ph {
-        --w: calc(var(--u) * 250);
-      }
-    }
-    .h-second {
-      left: calc(var(--u) * 178);
-      top: calc(var(--u) * 102);
-      width: calc(var(--u) * 183);
-      height: calc(var(--u) * 225);
-
-      .ph {
-        --w: calc(var(--u) * 160);
-        left: calc(var(--u) * 10);
-      }
+    .h-cluster {
+      width: calc(var(--u) * 380);
+      margin: calc(var(--u) * 28) auto 0;
     }
   }
 
@@ -741,6 +651,61 @@
     }
   }
 
+  /* Press: the mention altidmad.dk shows, in its press block's layout. */
+  .pr {
+    width: min(100% - 34px, calc(var(--u) * 1100));
+    margin: calc(var(--u) * 40) auto 0;
+  }
+  .pr-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--stone);
+
+    img {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+    }
+  }
+  .pr-date {
+    margin-top: 24px;
+    font-size: 18px;
+    color: var(--stone);
+  }
+  .pr-quote {
+    margin-top: 8px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(30px, 22px + 2vw, 52px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--forest);
+    text-wrap: balance;
+  }
+  .pr-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    margin-top: 28px;
+    padding: 0 26px;
+    border: 1px solid rgba(0, 60, 22, 0.25);
+    border-radius: 999px;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--forest);
+    transition: background-color 0.15s;
+
+    &:hover {
+      background: var(--sand);
+    }
+  }
+
   /* 3. Proof */
   .p {
     text-align: center;
@@ -749,95 +714,94 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     color: var(--forest);
     font-family: var(--display);
     font-weight: 700;
-    font-size: 17px;
-    line-height: 19px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
 
-    > svg {
-      width: 36px;
-      height: 61px;
-    }
     > span {
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 104px;
+      gap: 2px;
     }
   }
+  .p-laurel-branch {
+    width: 44px;
+    height: auto;
+  }
   .p-apple {
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
   .p-award-line {
     white-space: nowrap;
+    font-size: 20px;
+    line-height: 22px;
+
+    & + & {
+      font-size: 14px;
+      line-height: 18px;
+    }
   }
   .p-title {
     width: min(100% - 34px, 16em);
     margin: 40px auto 0;
   }
-  .p-mq {
-    margin: calc(var(--u) * 80) calc(var(--u) * 32) 0;
-    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  /* The testimonial slider: centred snap cards, the old front page's behaviour. */
+  .v {
+    margin-top: calc(var(--u) * 64);
   }
-  .p-tile {
-    position: relative;
-    flex: none;
-    width: calc(var(--u) * 236);
-    height: calc(var(--u) * 420);
-    margin-right: calc(var(--u) * 32);
-    border-radius: 16px;
-    overflow: hidden;
-    background: var(--sand);
+  .v-track {
+    display: flex;
+    gap: calc(var(--u) * 32);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding: 8px max(6vw, calc((100% - 640px) / 2)) 32px;
 
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 40% 0 0;
-      background: linear-gradient(transparent, rgba(0, 28, 10, 0.78) 62%);
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
-  .p-cap {
-    position: absolute;
-    z-index: 1;
-    inset: auto calc(var(--u) * 16) calc(var(--u) * 16);
-    color: #fff;
+  .v-card {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+    width: min(88vw, 640px);
+    min-height: 220px;
+    margin: 0;
+    padding: 32px;
+    border-radius: 24px;
+    background: var(--sand);
+    text-align: left;
+    scroll-snap-align: center;
+  }
+  .v-quote {
     font-family: var(--display);
     font-weight: 700;
-    font-size: clamp(13px, 11.8px + 0.5vw, 19px);
-    line-height: 1.15;
+    font-size: clamp(20px, 18px + 0.5vw, 26px);
+    line-height: 1.2;
     letter-spacing: -0.01em;
-    text-align: left;
+    color: var(--forest);
+    text-indent: -0.42em;
   }
-  .p-note {
-    position: absolute;
-    inset: auto 0 calc(var(--pad) - 28px);
+  .v-who {
+    font-size: 16px;
+    color: var(--stone);
+  }
+  .v-name {
+    font-weight: 600;
+    color: var(--forest);
   }
   @media (max-width: 767px) {
     .p-title {
       margin-top: 22px;
     }
-    .p-mq {
-      margin: calc(var(--u) * 24) 0 0;
-    }
-    .p-tile {
-      width: calc(var(--u) * 142);
-      height: calc(var(--u) * 253);
-      margin-right: calc(var(--u) * 17);
-    }
-    .p-cap {
-      inset: auto 10px 10px;
-    }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .p-mq {
-      mask-image: none;
-      -webkit-mask-image: none;
-    }
-  }
-
   /* 4. Features */
   .f {
     padding-top: 0;
@@ -1828,46 +1792,6 @@
       padding-top: calc(var(--u) * 690 + 40px);
     }
   }
-  .l-mq {
-    --mq-time: 50s;
-    margin: calc(var(--u) * 80) calc(var(--u) * 32) 0;
-    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-  }
-  .l-card {
-    flex: none;
-    width: 384px;
-    height: 358px;
-    margin-right: 32px;
-    padding: 32px;
-    border-radius: 24px;
-    background: var(--sand);
-    white-space: normal;
-  }
-  .l-card-icon {
-    display: block;
-    height: 24px;
-    color: var(--forest);
-  }
-  .l-card-q {
-    margin-top: 12px;
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 23px;
-    color: var(--forest);
-  }
-  .l-card-service {
-    margin-top: 8px;
-    font-size: 18px;
-    line-height: 23px;
-    color: var(--stone);
-  }
-  .l-card-a {
-    margin-top: 16px;
-    font-size: 18px;
-    line-height: 23px;
-    color: var(--forest);
-  }
   .l-note {
     position: absolute;
     inset: auto 0 calc(var(--u) * 100);
@@ -1899,14 +1823,6 @@
     }
     .l-head {
       padding-top: calc(var(--u) * 615);
-    }
-    .l-mq {
-      margin: calc(var(--u) * 42) 0 0;
-      mask-image: none;
-      -webkit-mask-image: none;
-    }
-    .l-card {
-      margin-right: 17px;
     }
     .l-note {
       inset: auto 17px calc(var(--u) * 40);

@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import { LOVE, MAD, NOTES } from './copy'
-import Marquee from './Marquee'
 import ServiceIcon, { type ServiceIconName } from './ServiceIcon'
 
 type Tile =
@@ -44,18 +43,6 @@ function TileView({ tile }: { tile: Tile }) {
   )
 }
 
-const cards = (hidden: boolean) =>
-  LOVE.cards.map((card) => (
-    <li key={card.q} className="l-card">
-      <span className="l-card-icon">
-        <ServiceIcon name={card.icon} size={20} />
-      </span>
-      {hidden ? <p className="l-card-q">{card.q}</p> : <h3 className="l-card-q">{card.q}</h3>}
-      <p className="l-card-service">{card.service}</p>
-      <p className="l-card-a">{card.a}</p>
-    </li>
-  ))
-
 export default function Love() {
   return (
     <section data-b="love" className="sec l">
@@ -72,7 +59,6 @@ export default function Love() {
         <h2 className="t-h2">{LOVE.title}</h2>
         <p className="t-body">{LOVE.body}</p>
       </header>
-      <Marquee label={LOVE.cardsLabel} className="l-mq" first={cards(false)} second={cards(true)} scrollsByKey />
       <p className="l-note">
         {NOTES.staged} {NOTES.plates}
       </p>

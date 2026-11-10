@@ -29,8 +29,8 @@ export const HERO = {
   line: 'Hent Altid Hjem gratis i dag, og få overblik over jeres mad, strøm, forsikring og økonomi.',
   // {average} and {count} come from the App Store (AppRating.tsx).
   rating: '{average} ud af 5 · {count} i App Store',
-  altPhone: 'Forsiden i Altid Hjem: 8.166 kr. tilbage, søjler for resten af måneden og en besked om, at du er 3.000 kr. foran.',
-  altSecond: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.',
+  altCluster:
+    'Tre telefoner med Altid Hjem: madplanen i Altid Mad, månedens forbrug i Økonomi fordelt på transport, restaurant og takeaway, andet og tøj, og forsikringerne i Altid Forsikring.',
 } as const
 
 export const WORKS = {
@@ -44,21 +44,11 @@ export const WORKS = {
 } as const
 
 export const PROOF = {
-  // Apple featured the app as App of the Day in the Finance category (Thor, 10 Nov 2026).
-  award: { lines: ['Dagens app', 'i kategorien Finans'], where: 'i App Store' },
-  title: 'Svar på de spørgsmål, I kender fra køkkenbordet',
-  tiles: [
-    { q: '“Hvad skal vi spise?”', src: '/site/app/mad-meal_plan.webp', alt: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.' },
-    { q: '“Hvornår skal opvasken sættes over?”', src: '/site/app/energi-home.webp', alt: 'Altid Energi i appen: elprisen er 1,48 kr. pr. kWh, med søjler time for time.' },
-    { q: '“Skat, hvornår skal vi på ferie igen?”', src: '/site/app/droemme-detail.webp', alt: 'En drøm i appen: 9.500 kr. tilbage til Familieferie på Mallorca, 1.100 kr. om måneden.' },
-    { q: '“Bruger vi for meget på takeaway?”', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
-    { q: '“Hvor handler vi billigst ind?”', src: '/site/app/mad-trip.webp', alt: 'Indkøb i Altid Mad: 108 varer tilbage, fordelt på butikker, med pris på hver vare.' },
-    { q: '“Hvornår bliver bilforsikringen trukket?”', src: '/site/app/regninger-top.webp', alt: 'Regninger i appen: 2.345 kr., 21.842 kr. i faste regninger om måneden og kalenderen for november.' },
-    { q: '“Hvor meget har vi tilbage?”', src: '/site/app/hjem-top.webp', alt: 'Forsiden i Altid Hjem: 8.166 kr. tilbage, søjler for resten af måneden og en besked om, at du er 3.000 kr. foran.' },
-    { q: '“Har du lagt ud for mig?”', src: '/site/app/hjem-scrolled.webp', alt: 'Forsiden i Altid Hjem: kortet 2 ting til dig i dag, måneden og de seneste bevægelser.' },
-    { q: '“Hvad betaler vi egentlig for vores forsikringer?”', src: '/site/app/b-flow-3_insurances_chosen.webp', alt: 'Forsikringstjekket i appen: Hvilke forsikringer vil I have tilbud på? Indbo og Bil er valgt.' },
-    { q: '“Hvad har vi brugt på strøm?”', src: '/site/app/energi-usage.webp', alt: 'Altid Energi i appen: 240 kr. på saldoen og forbruget dag for dag.' },
-  ],
+  // Apple featured the app as App of the Day (Thor, 10 Nov 2026). Apple's own English wording.
+  award: { lines: ['App of the Day', 'App Store'] },
+  title: 'Hør, hvorfor over 4.000 danskere har appen',
+  voicesLabel: 'Udtalelser',
+  voiceLabel: (i: number) => `Gå til udtalelse ${i + 1}`,
 } as const
 
 export const FEATURES = {
@@ -242,17 +232,18 @@ export const PRIVACY = {
   link: 'Læs privatlivspolitikken',
 } as const
 
+export const PRESS = {
+  eyebrow: 'Omtalt i',
+  outlet: 'Ekstra Bladet',
+  date: '25. juli 2026',
+  quote: '“Spar stort på dine dagligvarer: Ny app sammenligner priser”',
+  cta: 'Læs artiklen',
+  href: 'https://ekstrabladet.dk/forbrug/Teknologi/spar-stort-paa-dine-dagligvarer-ny-app-sammenligner-priser/11232767',
+} as const
+
 export const LOVE = {
   title: 'Lavet med omhu til danske hjem',
   body: 'Altid Hjem kommer fra holdet bag Altid Energi og samler det, I ellers skal holde styr på hver for sig: jeres mad, strøm, forsikring og økonomi.',
-  cardsLabel: 'Spørgsmål, appen svarer på',
-  cards: [
-    { q: '“Hvad skal vi spise?”', service: 'Altid Mad', icon: 'mad', a: 'Få en komplet madplan på få minutter, tilpasset dig og din familie. Har I mere lyst til noget andet, skifter I retten med ét tryk.' },
-    { q: '“Hvornår skal opvasken sættes over?”', service: 'Altid Energi', icon: 'energi', a: 'Følg elprisen time for time, og få besked, når strømmen er billigst. I kan også se jeres forbrug måned for måned.' },
-    { q: '“Hvor meget har vi tilbage?”', service: 'Økonomi', icon: 'okonomi', a: 'Se, hvad der er tilbage til lønningsdag, og om I er foran eller bagud. Tryk på en kategori, og se, hvor pengene gik hen.' },
-    { q: '“Hvad betaler vi egentlig for vores forsikringer?”', service: 'Altid Forsikring', icon: 'forsikring', a: 'Få gennemgået jeres forsikringer, og se, om der er penge at spare. Gratis og helt uforpligtende.' },
-    { q: '“Hvornår bliver bilforsikringen trukket?”', service: 'Økonomi', icon: 'okonomi', a: 'Se alle jeres faste udgifter i en kalender, så I aldrig bliver overraskede af store regninger. Bolig, transport, børn og abonnementer med pris pr. måned.' },
-  ],
   collageAlt: {
     painting: 'Maleriet af en kystby fra drømmen om en familieferie.',
     coins: 'En stak mønter fra forsiden i appen.',

@@ -8,6 +8,7 @@ import { dmSans } from '@/components/site/fonts'
 import Hero from '@/components/site/Hero'
 import { jsonLdScript } from '@/components/site/jsonLd'
 import Love from '@/components/site/Love'
+import Press from '@/components/site/Press'
 import MadDark from '@/components/site/MadDark'
 import MoreList from '@/components/site/MoreList'
 import { MotionPrefs } from '@/components/site/MotionPrefs'
@@ -17,6 +18,7 @@ import Proof from '@/components/site/Proof'
 import SiteFooter from '@/components/site/SiteFooter'
 import SiteNav from '@/components/site/SiteNav'
 import WorksWith from '@/components/site/WorksWith'
+import Blog from '@/components/sections/Blog'
 import './site.css'
 
 const IMAGE = { url: '/opengraph-image.png', width: 1200, height: 630, alt: META.imageAlt }
@@ -55,12 +57,14 @@ export default function Home() {
         <main id="indhold">
           <Hero />
           <WorksWith />
+          <Press />
           <Proof />
           <Features />
           <MadDark />
           <MoreList />
           <Privacy />
           <Love />
+          <Blog />
           <FaqSection />
           <FinalCta />
         </main>
