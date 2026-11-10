@@ -34,24 +34,33 @@ export const HERO = {
     { src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
     { src: '/site/app/regninger-top.webp', alt: 'Regninger i appen: 2.345 kr., 21.842 kr. i faste regninger om måneden og kalenderen for november.' },
   ],
-  // The cards flying past the hero phones: a paper bill in, the assistant's note out. Bills as in
+  // The hero's story, one at a time: a paper bill in, the assistant's note out with an action,
+  // then what was done. Bills as in
   // Thor's earlier bills mockup (made-up companies SikkerPlus and TeleNu); the notes are samples.
   lanes: [
     {
       bill: { title: 'Indboforsikring', from: 'SikkerPlus', date: '12. november', amount: '249 kr.', mail: false },
       note: 'Jeg har fundet en indboforsikring, der kan være billigere. Vil du se tilbuddet?',
+      action: 'Vis tilbud',
+      done: 'Tilbuddet ligger klar til dig i appen.',
     },
     {
       bill: { title: 'Mobilregning', from: 'TeleNu', date: '5. november', amount: '249 kr.', mail: true },
       note: 'Der findes et mobilabonnement med samme data, der er billigere. Skal jeg vise det?',
+      action: 'Ja tak',
+      done: 'Sammenligningen ligger klar til dig i appen.',
     },
     {
       bill: { title: 'Bilforsikring', from: 'SikkerPlus', date: '3. november', amount: '659 kr.', mail: false },
-      note: 'Bilforsikringen trækkes 3. november. Der er penge nok på kontoen.',
+      note: 'Bilforsikringen på 659 kr. trækkes 3. november. Skal jeg minde dig om det dagen før?',
+      action: 'Ja tak',
+      done: 'Du får en påmindelse 2. november.',
     },
     {
       bill: { title: 'Ulykkesforsikring', from: 'SikkerPlus', date: '6. november', amount: '139 kr.', mail: true },
       note: 'I har to ulykkesforsikringer, der dækker det samme. Vil I se, hvilken I kan opsige?',
+      action: 'Vis mig',
+      done: 'Overblikket ligger klar til jer i appen.',
     },
   ] as const,
   secondScreens: [
@@ -151,15 +160,15 @@ export const PRIVACY = {
 } as const
 
 // Step photos, from the user's side, with the app's screens put into the phones: Pexels License,
-// no credit required. pov-1 Vitaly Gariev 36713154, pov-2 Vitaly Gariev 36713195, pov-3 Vitaly
-// Gariev 36697521, pov-4 cottonbro studio 6473733 (its screen covered by ours).
+// no credit required. hand-1 Jakub Zerdzicki 36552174, hand-2 Vitaly Gariev 36713195, hand-3
+// Jakub Zerdzicki 27413499, hand-4 Vitaly Gariev 36713160.
 export const STEPS = {
   title: 'Fire trin til ét overblik',
   steps: [
-    { n: '01', photo: '/site/people/pov-1.webp', photoFocus: '53% 50%', tone: 'honey', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
-    { n: '02', photo: '/site/people/pov-2.webp', photoFocus: '46% 50%', tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
-    { n: '03', photo: '/site/people/pov-3.webp', photoFocus: '72% 50%', tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Madplan, elpris og forsikringstjek. Tag det, der passer jer.', src: '/site/app/mere-sheet.webp', alt: 'Menuen i appen: Energi, Mad, Forsikring og Økonomi.' },
-    { n: '04', photo: '/site/people/pov-4.webp', photoFocus: '53% 34%', tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik og hver jeres egne tal.', src: '/site/app/hjem-faelles.webp', alt: 'Forsiden med Fælles valgt: 12.853 kr. tilbage for husstanden.' },
+    { n: '01', photo: '/site/people/hand-1.webp', photoFocus: '46% 50%', tone: 'honey', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
+    { n: '02', photo: '/site/people/hand-2.webp', photoFocus: '46% 50%', tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
+    { n: '03', photo: '/site/people/hand-3.webp', photoFocus: '51% 59%', tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Madplan, elpris og forsikringstjek. Tag det, der passer jer.', src: '/site/app/mere-sheet.webp', alt: 'Menuen i appen: Energi, Mad, Forsikring og Økonomi.' },
+    { n: '04', photo: '/site/people/hand-4.webp', photoFocus: '53% 48%', tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik og hver jeres egne tal.', src: '/site/app/hjem-faelles.webp', alt: 'Forsiden med Fælles valgt: 12.853 kr. tilbage for husstanden.' },
   ],
 } as const
 

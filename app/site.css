@@ -515,31 +515,28 @@
     inset: calc(var(--u) * -91) 0 auto;
     height: calc(var(--u) * 606);
   }
-  .h-lane-clip {
+  /* Paused or off screen: whatever is moving holds still. */
+  .h-lanes[data-running='false'] * {
+    animation-play-state: paused !important;
+  }
+  /* The bill slides in from the left and slips behind the first phone. */
+  .hl-bill-fly {
     position: absolute;
-    top: 0;
-    width: calc(var(--u) * 641);
-    height: 100%;
+    left: calc(50% - var(--u) * 600);
+    top: calc(var(--u) * 210);
+    animation: site-hl-bill 1.9s cubic-bezier(0.3, 0.6, 0.3, 1) both;
   }
-  .h-lane-left {
-    left: calc(50% - var(--u) * 712);
-  }
-  .h-lane-right {
-    right: calc(50% - var(--u) * 712);
-  }
-  .h-lane-card {
+  /* The assistant's note comes out from behind the second phone on the right, above the QR card. */
+  .hl-note-fly {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 0;
-    height: 0;
-    will-change: transform;
+    left: calc(50% + var(--u) * 250);
+    top: calc(var(--u) * 190);
 
-    > div {
-      position: absolute;
-      left: 0;
-      top: 0;
-      translate: -50% -50%;
+    &[data-phase='note'] {
+      animation: site-hl-note-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+    &[data-phase='leave'] {
+      animation: site-hl-note-out 0.6s ease-in both;
     }
   }
   /* A paper bill, as in the bills mockup: Faktura, who from, a few grey lines, the amount. */
@@ -659,6 +656,43 @@
     margin-top: 2px;
     font-size: 14px;
     line-height: 1.35;
+  }
+  .hl-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .hl-action {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--forest);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cream);
+    transition: scale 0.15s, background-color 0.15s;
+
+    &[data-pressed='true'] {
+      scale: 0.9;
+      background: #0b5a26;
+    }
+  }
+  .hl-action-quiet {
+    background: rgba(0, 60, 22, 0.08);
+    color: var(--forest);
+  }
+  .hl-done {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    margin-top: 10px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--signal);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--forest);
+    animation: site-hl-done 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
   .h-phones {
     position: absolute;
@@ -1886,8 +1920,10 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
+  /* White, so the whole block reads as one shape while it shrinks and grows. */
   .q-main {
     position: relative;
+    background: #fff;
   }
   .q-inner {
     position: absolute;
@@ -2419,5 +2455,55 @@ body:has(.site) {
   }
   to {
     transform: none;
+  }
+}
+
+@keyframes site-hl-bill {
+  0% {
+    translate: calc(var(--u) * -260) calc(var(--u) * -50);
+    rotate: -12deg;
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  72% {
+    translate: calc(var(--u) * 300) calc(var(--u) * 40);
+    rotate: -3deg;
+    scale: 0.92;
+    opacity: 1;
+  }
+  100% {
+    translate: calc(var(--u) * 470) calc(var(--u) * 70);
+    rotate: 0deg;
+    scale: 0.7;
+    opacity: 0;
+  }
+}
+
+@keyframes site-hl-note-in {
+  from {
+    translate: calc(var(--u) * -240) calc(var(--u) * -30);
+    scale: 0.7;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    scale: 1;
+    opacity: 1;
+  }
+}
+
+@keyframes site-hl-note-out {
+  to {
+    translate: calc(var(--u) * 40) calc(var(--u) * -40);
+    opacity: 0;
+  }
+}
+
+@keyframes site-hl-done {
+  from {
+    scale: 0.6;
+    opacity: 0;
   }
 }
