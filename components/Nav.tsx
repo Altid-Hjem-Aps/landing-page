@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import * as amplitude from '@amplitude/analytics-browser'
 import { Logo } from '@/components/Logo'
+import { STORE_ANCHOR } from '@/lib/store-links'
 
 const HIDE_THRESHOLD = 80
 // The campaign banner is hidden at the top and only slides in once the user
@@ -15,10 +16,9 @@ const SCROLL_DELTA_DESKTOP = 6
 const SCROLL_DELTA_TOUCH = 30
 
 // The CVI navigation: Hjem is the current site, so its item is active on every
-// altidhjem.dk page (not just the front page); service links are muted until
-// their sites launch ('live' renders white). href points at the services
-// section so the link works from every page (homepage + SEO pages).
-type LinkTone = 'home' | 'live' | 'soon'
+// altidhjem.dk page (not just the front page); the other services link to their
+// own sites.
+type LinkTone = 'home' | 'live'
 interface NavLink {
   label: string
   href: string
@@ -29,11 +29,6 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Mad', href: 'https://altidmad.dk', tone: 'live' },
   { label: 'Energi', href: 'https://altidenergi.dk', tone: 'live' },
   { label: 'Forsikring', href: 'https://altidforsikring.dk', tone: 'live' },
-  // 'soon' services are muted with a "Kommer snart" sublabel (Figma 26:105)
-  // and flip to 'live' (white, no sublabel) when their site launches.
-  { label: 'Alarm', href: '/#tjenester', tone: 'soon' },
-  { label: 'Opladning', href: '/#tjenester', tone: 'soon' },
-  { label: 'Mobil', href: '/#tjenester', tone: 'soon' },
 ]
 
 interface BannerConfig {
@@ -43,7 +38,7 @@ interface BannerConfig {
   shortPrefix: string
   /** Amplitude source for banner clicks, e.g. 'spiir-banner'. */
   source: string
-  /** Banner CTA text — falls back to the default waitlist label. */
+  /** Banner CTA text: falls back to "Hent appen". */
   cta?: string
 }
 
@@ -55,7 +50,7 @@ interface NavProps {
 }
 
 const SPIIR_BANNER: BannerConfig = {
-  longPrefix: 'Spiir er lukket — mist ikke overblikket over dine faste udgifter. ',
+  longPrefix: 'Spiir er lukket. Mist ikke overblikket over dine faste udgifter. ',
   shortPrefix: 'Brugte du Spiir? ',
   source: 'spiir-banner',
 }
@@ -63,10 +58,6 @@ const SPIIR_BANNER: BannerConfig = {
 // Colours from the CVI frame (node 45:6428)
 const FOREST = '#163223'
 const SIGNAL = '#90ff7c'
-// Deliberately low-contrast: these links are INACTIVE until each service's
-// site launches (WCAG 1.4.3 exempts inactive components); they flip to
-// 'live'/white when switched on.
-const MUTED = '#6f6a61'
 
 export default function Nav({ spiirBanner = false, banner }: NavProps) {
   const router = useRouter()
@@ -115,30 +106,21 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
   }, [])
 
   function handleCTA(source: string) {
-    amplitude.track('Waitlist CTA Clicked', { source })
-    // If the page has its own signup form (e.g. /spiir-alternativ's BottomCta,
-    // id 'venteliste2'), scroll to it — that preserves the page's signup_source.
-    // Otherwise: the homepage hero form (the 'expand-waitlist' listener only
-    // exists on '/'; everywhere else navigate home with the #venteliste hash).
-    const onPageForm = document.getElementById('venteliste2')
-    if (onPageForm) {
-      onPageForm.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    amplitude.track('Get App CTA Clicked', { source })
+    // Scroll to the store pills on this page (the hero on the front page,
+    // BottomCta on the SEO pages). A page without pills goes to the front
+    // page's: router.push, not a full load, so the tracked event isn't dropped.
+    const pills = document.getElementById(STORE_ANCHOR)
+    if (pills) {
+      pills.scrollIntoView({ behavior: 'smooth', block: 'center' })
       return
     }
-    if (window.location.pathname !== '/') {
-      router.push('/#venteliste')
-      return
-    }
-    window.dispatchEvent(new CustomEvent('expand-waitlist'))
+    router.push(`/#${STORE_ANCHOR}`)
   }
 
-  function linkColor(tone: LinkTone, active = false) {
-    // The active item matches its marker dot — signal label over the signal dot.
-    if (active) return SIGNAL
-    // 'home' never degrades to MUTED: that grey means "not launched yet", and
-    // the current site must never read as inactive.
-    if (tone === 'home' || tone === 'live') return '#fff'
-    return MUTED
+  function linkColor(active: boolean) {
+    // The active item matches its marker dot: signal label over the signal dot.
+    return active ? SIGNAL : '#fff'
   }
 
   // Marks the current section for assistive tech: the exact page on the front
@@ -157,38 +139,23 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
         const active = tone === 'home'
         const external = href.startsWith('http')
         return (
-          <span key={label} className="relative" style={tone === 'soon' ? { opacity: 0.6 } : undefined}>
-            {tone === 'soon' ? (
-              // Not a link: "Kommer snart" services are inactive until launch.
-              <span className="text-[16px] font-medium whitespace-nowrap cursor-default select-none" style={{ color: linkColor(tone) }}>
-                {label}
-              </span>
-            ) : (
-              <a
-                href={href}
-                target={external ? '_blank' : undefined}
-                rel={external ? 'noopener noreferrer' : undefined}
-                aria-current={active ? homeAriaCurrent : undefined}
-                className="text-[16px] font-medium transition-opacity hover:opacity-80 whitespace-nowrap"
-                style={{ color: linkColor(tone, active) }}
-              >
-                {label}
-              </a>
-            )}
+          <span key={label} className="relative">
+            <a
+              href={href}
+              target={external ? '_blank' : undefined}
+              rel={external ? 'noopener noreferrer' : undefined}
+              aria-current={active ? homeAriaCurrent : undefined}
+              className="text-[16px] font-medium transition-opacity hover:opacity-80 whitespace-nowrap"
+              style={{ color: linkColor(active) }}
+            >
+              {label}
+            </a>
             {active && (
               <span
                 aria-hidden
                 className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-[7px] h-[7px] rounded-full"
                 style={{ background: SIGNAL }}
               />
-            )}
-            {tone === 'soon' && (
-              <span
-                className="absolute left-1/2 -translate-x-1/2 top-full mt-0.5 text-[9px] font-medium uppercase tracking-[0.08em] whitespace-nowrap"
-                style={{ color: MUTED }}
-              >
-                Kommer snart
-              </span>
             )}
           </span>
         )
@@ -206,7 +173,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
           cursor: 'pointer',
         }}
       >
-        Skriv dig på ventelisten
+        Hent appen
       </button>
     </div>
   )
@@ -259,35 +226,23 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
             <>
               {label}
               {active && <span aria-hidden className="w-[7px] h-[7px] rounded-full" style={{ background: SIGNAL }} />}
-              {tone === 'soon' && (
-                <span className="text-[10px] font-medium uppercase tracking-[0.08em]" style={{ color: MUTED }}>
-                  Kommer snart
-                </span>
-              )}
             </>
           )
           const rowClass = 'flex items-center gap-2 py-3.5 text-[17px] font-medium'
-          const rowStyle = { color: linkColor(tone, active), borderBottom: '1px solid rgba(255,255,255,0.06)' }
+          const rowStyle = { color: linkColor(active), borderBottom: '1px solid rgba(255,255,255,0.06)' }
           return (
             <li key={label}>
-              {tone === 'soon' ? (
-                // Inactive until launch — rendered as plain text, not a link.
-                <span className={`${rowClass} cursor-default select-none`} style={{ ...rowStyle, opacity: 0.6 }}>
-                  {inner}
-                </span>
-              ) : (
-                <a
-                  href={href}
-                  target={external ? '_blank' : undefined}
-                  rel={external ? 'noopener noreferrer' : undefined}
-                  aria-current={active ? homeAriaCurrent : undefined}
-                  onClick={() => setMenuOpen(false)}
-                  className={rowClass}
-                  style={rowStyle}
-                >
-                  {inner}
-                </a>
-              )}
+              <a
+                href={href}
+                target={external ? '_blank' : undefined}
+                rel={external ? 'noopener noreferrer' : undefined}
+                aria-current={active ? homeAriaCurrent : undefined}
+                onClick={() => setMenuOpen(false)}
+                className={rowClass}
+                style={rowStyle}
+              >
+                {inner}
+              </a>
             </li>
           )
         })}
@@ -299,7 +254,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
           className="w-full text-base font-medium py-3.5 rounded-[20px]"
           style={{ background: SIGNAL, color: '#003c16', touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
         >
-          Skriv dig på ventelisten
+          Hent appen
         </button>
       </div>
     </div>
@@ -307,7 +262,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
 
   const navInner = (
     <>
-      <a href="/" aria-label="Altid Hjem — forside" className="shrink-0">
+      <a href="/" aria-label="Altid Hjem forside" className="shrink-0">
         <Logo className="h-11 w-auto" variant="forest" />
       </a>
       {desktopMenu}
@@ -381,7 +336,7 @@ export default function Nav({ spiirBanner = false, banner }: NavProps) {
             className="inline-block align-middle ml-2 px-3 py-1 rounded-full font-medium"
             style={{ background: SIGNAL, color: '#003c16' }}
           >
-            {(bannerConfig.cta ?? 'Skriv dig på ventelisten').replace(/\s*→\s*$/, '')}
+            {(bannerConfig.cta ?? 'Hent appen').replace(/\s*→\s*$/, '')}
           </span>
         </button>
       </div>

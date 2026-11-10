@@ -183,11 +183,11 @@ export default function LadeboksCalculator() {
       </div>
 
       <a
-        href="#venteliste"
+        href="#hent-appen"
         className="w-full inline-flex items-center justify-center rounded-full px-6 py-3.5 text-[15px] font-medium transition-opacity hover:opacity-85"
         style={{ backgroundColor: SAGE, color: 'var(--forest)' }}
       >
-        Få opladning med i hjemmets overblik
+        Hent Altid Hjem, og få overblik over husstanden
       </a>
 
       <p className="text-[11px] mt-3 leading-relaxed" style={{ color: 'rgba(26,61,34,0.55)' }}>

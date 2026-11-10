@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import * as amplitude from '@amplitude/analytics-browser'
 import dynamic from 'next/dynamic'
+import StoreBadges from '@/components/StoreBadges'
 import { fluid } from '@/lib/fluid'
 import { H2, EYEBROW, BODY } from '@/lib/typography'
 
@@ -44,7 +44,6 @@ type PlayerEl = HTMLElement & {
 }
 
 export default function FounderVideo() {
-  const router = useRouter()
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   // Two modes: ambient (muted autoplay when scrolled into view) and sound mode
@@ -231,16 +230,6 @@ export default function FounderVideo() {
     amplitude.track('Founder Video Sound On')
   }
 
-  // Same signup flow as nav/hero: scroll to the bottom form, otherwise expand
-  // the hero form, otherwise navigate home with #venteliste.
-  function handleCTA() {
-    amplitude.track('Waitlist CTA Clicked', { source: 'founder' })
-    const onPageForm = document.getElementById('venteliste2')
-    if (onPageForm) { onPageForm.scrollIntoView({ behavior: 'smooth', block: 'center' }); return }
-    if (window.location.pathname !== '/') { router.push('/#venteliste'); return }
-    window.dispatchEvent(new CustomEvent('expand-waitlist'))
-  }
-
   return (
     <section className="relative overflow-hidden" style={{ background: '#193d23' }}>
       <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch">
@@ -270,14 +259,9 @@ export default function FounderVideo() {
             Altid Hjem er udviklet af teamet bag Altid Energi. Nu tager vi samme opgør med skjulte gebyrer videre til resten af hjemmets aftaler.
           </p>
 
-          <button
-            type="button"
-            onClick={handleCTA}
-            className="mt-9 inline-flex w-fit items-center justify-center font-medium rounded-[20px] px-8 py-[18px] xl:px-0 xl:py-[23px] xl:w-[clamp(200px,15.83vw,304px)] text-[16px] transition-opacity hover:opacity-90"
-            style={{ background: '#90ff7c', color: '#003c16', cursor: 'pointer', touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
-          >
-            Skriv dig på ventelisten
-          </button>
+          {/* The negative margin borrows from the column padding, so the pills stay on
+              one row at 390 px (they need 339 px). */}
+          <StoreBadges position="founder" variant="dark" className="mt-9 max-sm:-mr-2" />
         </div>
 
         {/* Right: video, fills the entire right half (cover) */}
@@ -315,7 +299,7 @@ export default function FounderVideo() {
             // covers first paint — preload="auto" would buffer HLS segments for
             // every visitor, including those who never scroll here.
             preload="metadata"
-            metadata={{ video_title: 'Altid Hjem — Werner Valeur', video_id: 'founder-manifesto' }}
+            metadata={{ video_title: 'Altid Hjem: Werner Valeur', video_id: 'founder-manifesto' }}
             style={{
               position: 'absolute',
               inset: 0,
@@ -339,7 +323,7 @@ export default function FounderVideo() {
             <button
               type="button"
               onClick={handleSoundModeTap}
-              aria-label="Vis afspillerknapper — dobbelttryk for fuld skærm"
+              aria-label="Vis afspillerknapper. Dobbelttryk for fuld skærm"
               className="absolute inset-0 z-10 cursor-pointer"
               style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent', background: 'transparent' }}
             />
@@ -352,7 +336,7 @@ export default function FounderVideo() {
             <button
               type="button"
               onClick={handleWatchWithSound}
-              aria-label="Se med lyd — afspil videoen forfra"
+              aria-label="Se med lyd: afspil videoen forfra"
               // Pill sits top-left below lg — on the narrow crops the burned-in
               // subtitles own the bottom of the frame; desktop has room at the
               // bottom-left.

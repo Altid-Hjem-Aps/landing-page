@@ -3,8 +3,7 @@ import { SAVINGS_DISCLAIMER } from '@/lib/copy'
 import { H2, EYEBROW, BODY, FINE_PRINT } from '@/lib/typography'
 
 // The full storyboard lives in why/cards.ts; the self-running stage (clock +
-// scenery) is why/EtHjemStage.tsx — shared with the exit-intent dialog. This
-// section supplies the heading, the stage's box and the legal fine print.
+// scenery) is why/EtHjemStage.tsx. This section supplies the heading, the stage's box and the legal fine print.
 
 export default function WhatIs() {
   return (
