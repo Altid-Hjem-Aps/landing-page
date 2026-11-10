@@ -593,11 +593,6 @@
   .h-orbit-front {
     z-index: 2;
   }
-  .h-ring {
-    fill: none;
-    stroke: rgba(0, 60, 22, 0.14);
-    stroke-width: 1.5;
-  }
   .h-orb {
     position: absolute;
     left: 0;
@@ -638,8 +633,7 @@
     border-radius: 10px;
     background: var(--cream);
   }
-  /* Ekstra Bladet's article, small: bottom left of the first viewport on a computer,
-     mirroring the QR card; under the rating on smaller screens. */
+  /* Ekstra Bladet's article as a small card: under the rating on smaller screens. */
   .h-press-frame {
     position: relative;
     z-index: 3;
@@ -686,22 +680,28 @@
     font-weight: 500;
     line-height: 18px;
   }
+  /* On a computer: floating, slightly turned, in the open space left of the phones at the
+     bottom of the hero. */
   @media (min-width: 1024px) {
     .h-press-frame {
       position: absolute;
-      inset: 8px 8px auto;
-      height: min(calc(100vh - 16px), calc(100% - 16px));
+      left: calc(50% - var(--u) * 640);
+      bottom: calc(var(--u) * 96);
       margin: 0;
-      pointer-events: none;
     }
-    /* Above the pause button, which sits in the bottom left corner. */
     .h-press {
-      position: absolute;
-      left: 0;
-      bottom: 48px;
-      width: 310px;
+      width: 330px;
       min-height: 88px;
-      pointer-events: auto;
+      rotate: -3deg;
+      box-shadow: 0 14px 34px rgba(0, 30, 10, 0.14);
+    }
+  }
+  .float {
+    @media (prefers-reduced-motion: no-preference) {
+      animation: site-float 6s ease-in-out infinite;
+    }
+    &[data-running='false'] {
+      animation-play-state: paused;
     }
   }
   .qr-frame {
