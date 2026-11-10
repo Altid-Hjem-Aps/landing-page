@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { act, fireEvent, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { consentSentences } from 'altid-consent'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -13,6 +13,11 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
   usePathname: () => '/',
 }))
+// The rating reads the App Store over the network (test/app-rating.test.tsx covers that).
+vi.mock('@/components/site/AppRating', async (original) => {
+  const { RatingLine } = await original<typeof import('@/components/site/AppRating')>()
+  return { default: () => <RatingLine rating={{ average: 4.33333, count: 6 }} /> }
+})
 
 // Literal on purpose, not built from lib/store-links.
 const APP_STORE = 'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_altidhjem_dk&mt=8'
@@ -21,9 +26,9 @@ const PLAY =
 const STAGED = 'Skærmbilleder fra appen med eksempeldata.'
 const PAUSE = 'Sæt bevægelsen på pause'
 const PLAY_MOTION = 'Start bevægelsen igen'
-// The tunnel, the service row, the proof marquee, the plates, the list, the cards marquee.
-const ALL_RUNNING = ['true', 'true', 'true', 'true', 'true', 'true']
-const ALL_STOPPED = ['false', 'false', 'false', 'false', 'false', 'false']
+// The service row, the proof marquee, the plates, the list, the cards marquee.
+const ALL_RUNNING = ['true', 'true', 'true', 'true', 'true']
+const ALL_STOPPED = ['false', 'false', 'false', 'false', 'false']
 
 type Observed = { element: Element; callback: IntersectionObserverCallback }
 
@@ -77,6 +82,8 @@ beforeEach(() => {
   })) as unknown as typeof window.matchMedia
   HTMLMediaElement.prototype.play = vi.fn(async () => {})
   HTMLMediaElement.prototype.pause = vi.fn()
+  // jsdom has no layout. The nav asks what lies under it: the hero's dark block by default.
+  document.elementsFromPoint = vi.fn(() => [document.querySelector('.h-title')].filter((el) => el !== null))
   HTMLDialogElement.prototype.showModal = function showModal() {
     this.setAttribute('open', '')
   }
@@ -137,8 +144,12 @@ describe('the page', () => {
     const text = readableText(container).replace(consentSentences('hjem').all, '')
     expect(text).not.toMatch(/venteliste|waitlist|skriv dig op|kommer snart|snart|én regning|Altid Mobil|Altid Alarm|Altid Opladning|–|—/i)
     expect(text).not.toMatch(/Nordens Forsikringshus|Subaio|Spari\b/)
-    expect(text).not.toMatch(/stjerner|anmeldelse|brugere|medlemmer|bedømmelse/i)
-    expect(container.querySelector('[aria-label*="stars" i], [class*="star" i]')).toBeNull()
+    // The App Store's own rating is the one exception, read live: no reviews, user counts or other stars.
+    const rating = container.querySelector('.h-rating') as HTMLElement
+    expect(text.replace(rating.textContent as string, '').replace(rating.getAttribute('aria-label') as string, '')).not.toMatch(
+      /stjerner|anmeldelse|brugere|medlemmer|bedømmelse/i,
+    )
+    expect(Array.from(container.querySelectorAll('[aria-label*="stars" i], [class*="star" i]'))).toEqual([rating.querySelector('.h-stars')])
   })
 
   it('never says Mad alone, in visible text or alt text', () => {
@@ -227,9 +238,12 @@ describe('the page', () => {
     expect(JSON.parse(await blob.text())).toEqual({ store: 'appstore', position: 'hero' })
   })
 
-  it('says what the hero promises in plain words, with no stars and no rating', () => {
+  it('shows the App Store rating under the pills, stars filled to the average', () => {
     const { container } = render(<Home />)
-    expect((container.querySelector('#top') as HTMLElement).textContent).toContain('Gratis at hente. Til iPhone og Android.')
+    const rating = container.querySelector('#top .h-rating') as HTMLElement
+    expect(rating).toHaveAccessibleName('Bedømt til 4,3 ud af 5 baseret på 6 bedømmelser i App Store')
+    expect(rating).toHaveTextContent('4,3 ud af 5 · 6 bedømmelser i App Store')
+    expect((rating.querySelector('.h-stars') as HTMLElement).style.getPropertyValue('--fill')).toBe('86.6666%')
   })
 
   it('links the four services by full name to their sections', () => {
@@ -310,9 +324,12 @@ describe('the marquees', () => {
     for (const tile of tiles) expect(tile.querySelector('img')?.getAttribute('src')).toContain('site%2Fapp%2F')
   })
 
-  it('says only plain facts in the laurels', () => {
+  it('names the App Store award in the laurel', () => {
     const { container } = render(<Home />)
-    expect(Array.from(container.querySelectorAll('.p-laurel')).map((l) => l.textContent)).toEqual(['Ét overblik', 'Ét login'])
+    const laurels = container.querySelectorAll('.p-laurel')
+    expect(laurels).toHaveLength(1)
+    expect(laurels[0]).toHaveAccessibleName('Dagens app i kategorien Finans i App Store')
+    expect(laurels[0]).toHaveTextContent('Dagens appi kategorien Finans')
   })
 
   it('has five question cards naming their service, with no stars and no names', () => {
@@ -816,17 +833,10 @@ describe('motion', () => {
     expect(runningPieces(container)).toEqual(ALL_RUNNING)
   })
 
-  it('plays the tunnel only while it should run, and never autoplays from the HTML', () => {
+  it('has no video and no soft gradient behind the hero', () => {
     const { container } = render(<Home />)
-    const video = container.querySelector('video') as HTMLVideoElement
-    expect(video).not.toHaveAttribute('autoplay')
-    // The first frame sits behind the video as an inline background.
-    expect(video).not.toHaveAttribute('poster')
-    expect(readFileSync('app/page.tsx', 'utf8')).toContain("import './site-tunnel-poster.css'")
-    expect(readFileSync('app/site-tunnel-poster.css', 'utf8')).toMatch(/\.h-tunnel-wrap \{\s+background: center \/ cover no-repeat url\(data:image\/webp;base64,/)
-    expect(video.play).toHaveBeenCalled()
-    fireEvent.click(screen.getByRole('button', { name: PAUSE }))
-    expect(video.pause).toHaveBeenCalled()
+    expect(container.querySelector('video')).toBeNull()
+    expect(readFileSync('app/site.css', 'utf8')).not.toMatch(/rgba\(var\(--/)
   })
 
   it('a pause survives scrolling away and back', () => {
@@ -865,9 +875,19 @@ describe('motion', () => {
     setReduced(true)
     expect(runningPieces(container)).toEqual(ALL_STOPPED)
     expect(screen.queryByRole('button', { name: PAUSE })).toBeNull()
-    expect((container.querySelector('video') as HTMLVideoElement).pause).toHaveBeenCalled()
     setReduced(false)
     expect(runningPieces(container)).toEqual(ALL_RUNNING)
+  })
+})
+
+describe('the glass nav', () => {
+  it('turns light over a dark block and back over a light one', async () => {
+    const { container } = render(<Home />)
+    const nav = container.querySelector('header.nav') as HTMLElement
+    expect(nav).toHaveAttribute('data-on', 'dark')
+    vi.mocked(document.elementsFromPoint).mockReturnValue([container.querySelector('.d-card') as Element])
+    fireEvent.scroll(window)
+    await waitFor(() => expect(nav).toHaveAttribute('data-on', 'light'))
   })
 })
 

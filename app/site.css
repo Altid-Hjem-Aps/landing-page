@@ -12,11 +12,12 @@
   --stone: #6f6a61;
   --sand: #f5efe3;
   --signal: #90ff7c;
-  --honey: 255, 186, 74;
-  --sky: 96, 178, 255;
-  --mint: 104, 222, 120;
-  --lavender: 160, 140, 250;
-  --rose: 255, 142, 140;
+  /* The pastels as the store screenshots and the brand book use them: solid blocks. */
+  --honey: #ffd27a;
+  --sky: #a3d5ff;
+  --mint: #b7f2a7;
+  --lavender: #bdb0f9;
+  --rose: #ffbab8;
 
   --display: var(--font-dm-sans), system-ui, sans-serif;
   --text: var(--font-onest), system-ui, sans-serif;
@@ -140,56 +141,39 @@
   [data-tone='rose'] {
     --tint: var(--rose);
   }
+  /* Text on a pastel is always Deep forest (brand book, sheet 12). */
+  .f-card,
+  .f-bento,
+  .d-card {
+    .t-body {
+      color: rgba(0, 60, 22, 0.8);
+    }
+  }
 
-  /* Phone: our own frame. --w is its width; the rest follows. */
+  /* Phone: the frame from the store screenshots (Figma 9182:2), solid black with its shadows.
+     --w is its width; the rest follows. */
   .ph {
     --w: calc(var(--u) * 323);
     position: relative;
     width: var(--w);
-    height: calc(var(--w) * 2.0402);
-
-    &::before,
-    &::after {
-      content: '';
-      position: absolute;
-      border-radius: 2px;
-      background: linear-gradient(90deg, #2a2d2b, #55595a);
-    }
-    &::before {
-      left: calc(var(--w) * 0.018);
-      top: calc(var(--w) * 0.42);
-      width: calc(var(--w) * 0.009);
-      height: calc(var(--w) * 0.26);
-    }
-    &::after {
-      right: calc(var(--w) * 0.018);
-      top: calc(var(--w) * 0.5);
-      width: calc(var(--w) * 0.009);
-      height: calc(var(--w) * 0.2);
-    }
+    height: calc(var(--w) * 2228 / 1060);
   }
   .ph-body {
     position: absolute;
-    inset: calc(var(--w) * 0.018) calc(var(--w) * 0.024);
+    inset: 0;
     border-radius: calc(var(--w) * 0.15);
-    background: linear-gradient(135deg, #5d6161 0%, #2b2e2d 22%, #1f2221 60%, #4a4e4e 100%);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
-
-    &::after {
-      content: '';
-      position: absolute;
-      inset: calc(var(--w) * 0.009);
-      border-radius: calc(var(--w) * 0.141);
-      background: #070808;
-    }
+    background: #0d0f0e;
+    box-shadow:
+      0 calc(var(--w) * 0.057) calc(var(--w) * 0.113) rgba(0, 0, 0, 0.28),
+      0 calc(var(--w) * 0.0094) calc(var(--w) * 0.028) rgba(0, 0, 0, 0.18);
   }
   .ph-screen {
     position: absolute;
-    left: calc(var(--w) * 0.051);
-    top: calc(var(--w) * 0.0485);
-    width: calc(var(--w) * 0.898);
-    height: calc(var(--w) * 0.898 * 2556 / 1179);
-    border-radius: calc(var(--w) * 0.123);
+    left: calc(var(--w) * 30 / 1060);
+    top: calc(var(--w) * 30 / 1060);
+    width: calc(var(--w) * 1000 / 1060);
+    height: calc(var(--w) * 1000 / 1060 * 2556 / 1179);
+    border-radius: calc(var(--w) * 129 / 1060);
     overflow: hidden;
     background: var(--forest);
   }
@@ -244,9 +228,50 @@
     gap: 39px;
     padding: 8px;
     border-radius: 32px;
-    background: rgba(253, 250, 244, 0.72);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    /* Liquid glass: a thin tint, strong blur and saturation, and a lit rim. */
+    background: rgba(253, 250, 244, 0.42);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.9),
+      inset 0 -1px 1px rgba(255, 255, 255, 0.3),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.45),
+      0 8px 32px rgba(0, 30, 10, 0.14);
+    transition: background-color 0.25s, box-shadow 0.25s;
+  }
+  .nav-logo-dark {
+    display: none;
+  }
+  /* Over the page's dark blocks the glass darkens and its content turns light. */
+  .nav[data-on='dark'] {
+    .nav-pill {
+      background: rgba(253, 250, 244, 0.12);
+      box-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.45),
+        inset 0 -1px 1px rgba(255, 255, 255, 0.12),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+        0 8px 32px rgba(0, 0, 0, 0.22);
+    }
+    .nav-logo-light {
+      display: none;
+    }
+    .nav-logo-dark {
+      display: block;
+    }
+    .nav-links a {
+      color: rgba(253, 250, 244, 0.85);
+
+      &:hover {
+        color: var(--cream);
+      }
+    }
+    .nav-cta {
+      background: var(--signal);
+      color: var(--forest);
+    }
+    .nav-burger {
+      color: var(--cream);
+    }
   }
   .nav-home {
     display: flex;
@@ -391,43 +416,12 @@
     min-height: min(100vh, calc(var(--u) * 1095));
     overflow: clip;
   }
+  /* A Deep forest block carries the statement, as on the first store screenshot. */
   .h-panel {
     position: absolute;
     inset: 8px 8px 0;
-    border-radius: 24px 24px 0 0;
-    overflow: hidden;
-  }
-  .h-sky {
-    position: absolute;
-    inset: 0 0 auto;
-    height: calc(var(--u) * 884);
     border-radius: 24px;
-    background: linear-gradient(rgb(217, 233, 250), var(--cream));
-  }
-  .h-clouds {
-    position: absolute;
-    inset: 0 0 auto;
-    width: 100%;
-    height: calc(var(--u) * 338);
-    object-fit: cover;
-  }
-  .h-tunnel-wrap {
-    position: absolute;
-    inset: calc(var(--u) * 239) 0 auto;
-    height: calc(var(--u) * 801);
-    mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent);
-    -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent);
-  }
-  .h-tunnel {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  /* iOS draws a play button on a video it refuses to autoplay, for example in Low Power Mode. */
-  .h-tunnel::-webkit-media-controls-start-playback-button {
-    display: none !important;
-    -webkit-appearance: none;
+    background: var(--forest);
   }
   .h-text {
     position: relative;
@@ -438,27 +432,49 @@
   .h-title {
     width: min(100% - 34px, 8.75em);
     margin-inline: auto;
+    color: var(--cream);
   }
   .h-line {
     width: min(100% - 34px, 25em);
     margin: 16px auto 0;
+    color: rgba(253, 250, 244, 0.85);
   }
   .h-pills {
     margin-top: calc(var(--u) * 40);
   }
   .h-rating {
-    margin-top: 12px;
-    font-size: 14px;
-    line-height: 16px;
-    color: var(--stone);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    font-size: 15px;
+    line-height: 18px;
+    color: rgba(253, 250, 244, 0.72);
+  }
+  /* Five stars in Honey over five faint ones, cut at the average. */
+  .h-stars {
+    position: relative;
+    flex: none;
+    width: 106px;
+    height: 18px;
+    background: rgba(253, 250, 244, 0.24);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 106 18'%3E%3Cg fill='%23000'%3E%3Cpath id='s' d='M9 0l2.6 5.6 6.1.7-4.5 4.2 1.2 6L9 13.5 3.6 16.5l1.2-6L.3 6.3l6.1-.7z'/%3E%3Cuse href='%23s' x='22'/%3E%3Cuse href='%23s' x='44'/%3E%3Cuse href='%23s' x='66'/%3E%3Cuse href='%23s' x='88'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 100% 100%;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 106 18'%3E%3Cg fill='%23000'%3E%3Cpath id='s' d='M9 0l2.6 5.6 6.1.7-4.5 4.2 1.2 6L9 13.5 3.6 16.5l1.2-6L.3 6.3l6.1-.7z'/%3E%3Cuse href='%23s' x='22'/%3E%3Cuse href='%23s' x='44'/%3E%3Cuse href='%23s' x='66'/%3E%3Cuse href='%23s' x='88'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 100% 100%;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: var(--fill);
+      background: var(--honey);
+    }
   }
   .h-bottom {
     position: relative;
     z-index: 1;
     margin: calc(var(--u) * 24) 8px 0;
     height: calc(var(--u) * 607);
-    mask-image: linear-gradient(#000 76%, transparent);
-    -webkit-mask-image: linear-gradient(#000 76%, transparent);
   }
   .h-lanes {
     position: absolute;
@@ -499,8 +515,6 @@
   .h-phones {
     position: absolute;
     inset: 0;
-    mask-image: linear-gradient(#000 63%, transparent);
-    -webkit-mask-image: linear-gradient(#000 63%, transparent);
   }
   /* The tilt of the frame on the page we match, as a perspective and three rotations. */
   .h-phone {
@@ -513,18 +527,6 @@
     .ph {
       --w: calc(var(--u) * 320);
     }
-    .ph-body {
-      box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.28),
-        calc(var(--u) * 7) calc(var(--u) * 1) 0 0 #3b3f3f;
-    }
-    &::before {
-      content: '';
-      position: absolute;
-      inset: calc(var(--u) * 6) calc(var(--u) * 8);
-      border-radius: calc(var(--u) * 48);
-      border: 1.5px solid rgba(255, 255, 255, 0.75);
-    }
   }
   .h-second {
     position: absolute;
@@ -532,8 +534,6 @@
     top: calc(var(--u) * 170);
     width: calc(var(--u) * 259);
     height: calc(var(--u) * 318);
-    mask-image: linear-gradient(#000 80%, transparent);
-    -webkit-mask-image: linear-gradient(#000 80%, transparent);
 
     .ph {
       --w: calc(var(--u) * 226);
@@ -555,6 +555,7 @@
     z-index: 2;
     inset: auto 0 calc(var(--u) * 6);
     text-align: center;
+    color: rgba(253, 250, 244, 0.72);
   }
   .qr-frame {
     display: none;
@@ -580,8 +581,8 @@
     height: 88px;
     padding: 6px 12px 6px 8px;
     border-radius: 16px;
-    background: var(--forest);
-    color: #fff;
+    background: var(--cream);
+    color: var(--forest);
     pointer-events: auto;
 
     figure {
@@ -617,25 +618,19 @@
   .qr-line {
     font-size: 12px;
     line-height: 15px;
-    color: rgba(255, 255, 255, 0.72);
+    color: rgba(0, 60, 22, 0.72);
   }
   @media (max-width: 767px) {
     .h {
       min-height: max(100svh, calc(var(--u) * 879));
     }
-    .h-sky {
-      height: calc(var(--u) * 884);
-    }
-    .h-clouds {
-      height: calc(var(--u) * 89);
-    }
-    .h-tunnel-wrap {
-      inset: calc(var(--u) * 342) auto auto calc(var(--u) * -187);
-      width: calc(var(--u) * 748);
-      height: calc(var(--u) * 421);
-    }
     .h-line {
       width: calc(var(--u) * 310);
+    }
+    .h-rating {
+      flex-direction: column;
+      gap: 6px;
+      font-size: 14px;
     }
     .h-pills {
       margin-top: calc(var(--u) * 40);
@@ -657,10 +652,6 @@
 
       .ph {
         --w: calc(var(--u) * 250);
-      }
-      &::before {
-        inset: calc(var(--u) * 5) calc(var(--u) * 6);
-        border-radius: calc(var(--u) * 38);
       }
     }
     .h-second {
@@ -747,27 +738,33 @@
   .p {
     text-align: center;
   }
-  .p-laurels {
-    display: flex;
-    justify-content: center;
-    gap: calc(var(--u) * 24);
-    height: 51px;
-  }
   .p-laurel {
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     color: var(--forest);
     font-family: var(--display);
     font-weight: 700;
-    font-size: 15px;
-    line-height: 18px;
-    white-space: nowrap;
+    font-size: 17px;
+    line-height: 19px;
 
-    span {
-      min-width: 88px;
-      text-align: center;
+    > svg {
+      width: 36px;
+      height: 61px;
     }
+    > span {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 104px;
+    }
+  }
+  .p-apple {
+    margin-bottom: 4px;
+  }
+  .p-award-line {
+    white-space: nowrap;
   }
   .p-title {
     width: min(100% - 34px, 16em);
@@ -812,9 +809,6 @@
     inset: auto 0 calc(var(--pad) - 28px);
   }
   @media (max-width: 767px) {
-    .p-laurels {
-      gap: calc(var(--u) * 8);
-    }
     .p-title {
       margin-top: 22px;
     }
@@ -865,7 +859,7 @@
     position: relative;
     border-radius: 24px;
     overflow: hidden;
-    background: linear-gradient(rgba(var(--tint), 0) 40%, rgba(var(--tint), 0.32) 90%, rgba(var(--tint), 0.6)), var(--sand);
+    background: var(--tint);
   }
   .f-card-top {
     min-height: calc(var(--u) * 238);
@@ -943,11 +937,11 @@
   }
   .f-bento-a {
     --tint: var(--sky);
-    background: linear-gradient(rgba(var(--tint), 0), rgba(var(--tint), 0.42) 90%, rgba(var(--tint), 0.42)), var(--sand);
+    background: var(--tint);
   }
   .f-bento-b {
     --tint: var(--rose);
-    background: linear-gradient(rgba(var(--tint), 0), rgba(var(--tint), 0.32) 90%, rgba(var(--tint), 0.5)), var(--sand);
+    background: var(--tint);
   }
   .f-bento-text {
     position: absolute;
@@ -1326,7 +1320,7 @@
     position: relative;
     height: calc(var(--u) * 620);
     border-radius: 24px;
-    background: radial-gradient(circle at 75% 100%, rgba(var(--tint), 0.6), rgba(var(--tint), 0.34) 10%, rgba(var(--tint), 0) 64%), var(--sand);
+    background: var(--tint);
     clip-path: inset(0 round 24px);
   }
   .d-card-text {
@@ -1477,8 +1471,7 @@
   /* The narrowest phones: the text keeps its size, so the cards can't shrink with the page. */
   @media (max-width: 359px) {
     .p-laurel {
-      gap: 4px;
-      font-size: 13px;
+      gap: 8px;
     }
     .d-card {
       height: 440px;
@@ -1696,7 +1689,7 @@
     margin-inline: auto;
     border-radius: 24px;
     overflow: hidden;
-    background: radial-gradient(circle at 50% 0, rgba(144, 255, 124, 0) 40%, rgba(144, 255, 124, 0.1) 90%, rgba(144, 255, 124, 0.26)), var(--forest);
+    background: var(--forest);
   }
   .x-house {
     position: absolute;
@@ -1797,7 +1790,7 @@
     border-radius: 32px;
     overflow: hidden;
     color: var(--forest);
-    background: linear-gradient(rgba(var(--tint, 245, 239, 227), 0.32), rgba(var(--tint, 245, 239, 227), 0.62)), var(--sand);
+    background: var(--tint, var(--sand));
   }
   .l-cover {
     outline: 1px solid rgba(0, 60, 22, 0.1);

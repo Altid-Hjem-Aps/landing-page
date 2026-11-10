@@ -1,29 +1,24 @@
-import Image from 'next/image'
 import StoreBadges from '@/components/StoreBadges'
+import AppRating from './AppRating'
 import { HERO } from './copy'
 import HeroLanes from './HeroLanes'
-import HeroTunnel from './HeroTunnel'
 import Phone from './Phone'
 import QrCard from './QrCard'
 import StagedNote from './StagedNote'
 
-// Hero: sky with clouds, the tunnel of light, the text, one tilted phone and a smaller
-// one in front of it, and cards that travel under the phones as the page scrolls.
+// Hero: a Deep forest block as on the first store screenshot, the text, one tilted phone
+// and a smaller one in front of it, and cards that travel under the phones as the page scrolls.
 export default function Hero() {
   return (
-    <section id="top" data-b="hero" className="h">
-      <div className="h-panel" aria-hidden="true">
-        <span className="h-sky" />
-        <HeroTunnel />
-        <Image src="/site/render/clouds.webp" alt="" width={1424} height={338} sizes="100vw" className="h-clouds" loading="eager" fetchPriority="low" />
-      </div>
+    <section id="top" data-b="hero" data-surface="dark" className="h">
+      <div className="h-panel" aria-hidden="true" />
       <div className="h-text">
         <h1 className="t-h1 h-title">{HERO.title}</h1>
         <p className="t-body h-line">{HERO.line}</p>
         <div className="h-pills">
-          <StoreBadges position="hero" variant="cream" size="lg" className="justify-center" />
+          <StoreBadges position="hero" variant="forest" size="lg" className="justify-center" />
         </div>
-        <p className="h-rating">{HERO.rating}</p>
+        <AppRating />
       </div>
       <div className="h-bottom">
         <HeroLanes />

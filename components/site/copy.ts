@@ -27,7 +27,9 @@ export const NAV = {
 export const HERO = {
   title: 'Hele hjemmets økonomi i én app',
   line: 'Hent Altid Hjem gratis i dag, og få overblik over jeres mad, strøm, forsikring og økonomi.',
-  rating: 'Gratis at hente. Til iPhone og Android.',
+  // {average} and {count} come from the App Store (AppRating.tsx).
+  rating: '{average} ud af 5 · {count} i App Store',
+  ratingLabel: 'Bedømt til {average} ud af 5 baseret på {count} i App Store',
   altPhone: 'Forsiden i Altid Hjem: 8.166 kr. tilbage, søjler for resten af måneden og en besked om, at du er 3.000 kr. foran.',
   altSecond: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.',
 } as const
@@ -43,7 +45,8 @@ export const WORKS = {
 } as const
 
 export const PROOF = {
-  laurels: ['Ét overblik', 'Ét login'],
+  // Apple featured the app as App of the Day in the Finance category (Thor, 10 Nov 2026).
+  award: { lines: ['Dagens app', 'i kategorien Finans'], label: 'Dagens app i kategorien Finans i App Store' },
   title: 'Svar på de spørgsmål, I kender fra køkkenbordet',
   tiles: [
     { q: '“Hvad skal vi spise?”', src: '/site/app/mad-meal_plan.webp', alt: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.' },

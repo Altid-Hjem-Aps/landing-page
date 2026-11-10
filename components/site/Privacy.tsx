@@ -45,7 +45,7 @@ function GlassHouse() {
 export default function Privacy() {
   return (
     <section data-b="privacy" className="sec x">
-      <div className="x-panel">
+      <div className="x-panel" data-surface="dark">
         <GlassHouse />
         <div className="x-text">
           <h2 className="t-h2">{PRIVACY.title}</h2>

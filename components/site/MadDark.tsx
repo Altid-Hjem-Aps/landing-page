@@ -13,7 +13,7 @@ const RANGES = [7, 28, 37, 39]
 export default function MadDark() {
   return (
     <>
-      <section id="altid-mad" data-b="dark" className="sec d">
+      <section id="altid-mad" data-b="dark" data-surface="dark" className="sec d">
         <Image src="/site/render/spotlight.webp" alt="" width={688} height={495} className="d-spot" aria-hidden="true" />
         <PlateCarousel />
         <header className="d-head">
@@ -33,7 +33,7 @@ export default function MadDark() {
         </header>
         <div className="d-cards">
           {MAD.cards.map((card, i) => (
-            <article key={card.title} className="d-card" data-tone={card.tone}>
+            <article key={card.title} className="d-card" data-tone={card.tone} data-surface="light">
               <div className="d-card-text">
                 <h3 className="t-h3b">{card.title}</h3>
                 <p className="t-body">{card.body}</p>

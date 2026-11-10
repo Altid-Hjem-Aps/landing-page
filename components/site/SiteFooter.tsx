@@ -15,7 +15,7 @@ const SOCIAL_PATHS: Record<string, string> = {
 // The front page's footer. The SEO pages keep components/Footer.tsx.
 export default function SiteFooter() {
   return (
-    <footer data-b="footer" className="ft">
+    <footer data-b="footer" data-surface="dark" className="ft">
       <div className="ft-inner">
         <div className="ft-brand">
           <a href="#top" aria-label={FOOTER.home}>
