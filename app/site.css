@@ -521,15 +521,17 @@
   }
   /* The bill slides in from the left and slips behind the first phone. */
   .hl-bill-fly {
+    --r: calc(-12deg + var(--k) * 9deg);
     position: absolute;
-    left: calc(50% - var(--u) * 600);
-    top: calc(var(--u) * 210);
-    animation: site-hl-bill 1.9s cubic-bezier(0.3, 0.6, 0.3, 1) both;
+    left: calc(50% - var(--u) * 640);
+    top: calc(var(--u) * (150 + var(--k) * 110));
+    animation: site-hl-bill 1.9s cubic-bezier(0.35, 0.5, 0.4, 1) both;
+    animation-delay: calc(var(--k) * 0.35s);
   }
   /* The assistant's note comes out from behind the second phone on the right, above the QR card. */
   .hl-note-fly {
     position: absolute;
-    left: calc(50% + var(--u) * 250);
+    left: calc(50% + var(--u) * 345);
     top: calc(var(--u) * 190);
 
     &[data-phase='note'] {
@@ -2460,23 +2462,23 @@ body:has(.site) {
 
 @keyframes site-hl-bill {
   0% {
-    translate: calc(var(--u) * -260) calc(var(--u) * -50);
-    rotate: -12deg;
+    translate: calc(var(--u) * -240) 0;
+    rotate: var(--r);
     opacity: 0;
   }
-  18% {
+  15% {
     opacity: 1;
   }
-  72% {
-    translate: calc(var(--u) * 300) calc(var(--u) * 40);
-    rotate: -3deg;
-    scale: 0.92;
+  /* Well behind the phones before it goes. */
+  92% {
+    translate: calc(var(--u) * 640) calc(var(--u) * (60 - var(--k) * 50));
+    rotate: 0deg;
+    scale: 0.82;
     opacity: 1;
   }
   100% {
-    translate: calc(var(--u) * 470) calc(var(--u) * 70);
-    rotate: 0deg;
-    scale: 0.7;
+    translate: calc(var(--u) * 660) calc(var(--u) * (60 - var(--k) * 50));
+    scale: 0.8;
     opacity: 0;
   }
 }

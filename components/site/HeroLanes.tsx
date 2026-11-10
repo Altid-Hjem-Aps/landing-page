@@ -1,20 +1,20 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import { HERO } from './copy'
 import { useMotionPiece } from './MotionPrefs'
 
-// One story at a time, on a timer: a paper bill slides in from the left and slips behind the
-// phones; the app's assistant then comes out on the right with a notification about it and an
-// action, stays a moment, the action is tapped, the notification turns into what was done, and
-// it leaves before the next bill comes. It stops with the pause button and off screen; with
-// reduced motion the first notification simply rests in its done state. Sample data and
-// wording in copy.ts (HERO.lanes).
+// One story at a time, on a timer: three paper bills slide in from the left, one after another,
+// and go into the phones; the app's assistant then comes out on the right, clear of the phones,
+// with a notification about the first bill and an action. It stays a moment, the action is
+// tapped, the notification turns into what was done, and it leaves before the next bills come.
+// It stops with the pause button and off screen; with reduced motion the first notification
+// simply rests in its done state. Sample data and wording in copy.ts (HERO.lanes).
 
 type Phase = 'bill' | 'note' | 'tap' | 'done' | 'leave'
 
 // How long each phase lasts, in ms.
-const TIMES: Record<Phase, number> = { bill: 1900, note: 1700, tap: 450, done: 1900, leave: 600 }
+const TIMES: Record<Phase, number> = { bill: 2700, note: 1700, tap: 450, done: 1900, leave: 600 }
 const NEXT: Record<Phase, Phase> = { bill: 'note', note: 'tap', tap: 'done', done: 'leave', leave: 'bill' }
 
 function Bill({ index }: { index: number }) {
@@ -94,11 +94,14 @@ export default function HeroLanes() {
 
   return (
     <div ref={ref} className="h-lanes" data-running={running ? 'true' : 'false'} aria-hidden="true">
-      {shown === 'bill' ? (
-        <div key={`bill-${index}`} className="hl-bill-fly">
-          <Bill index={index} />
-        </div>
-      ) : null}
+      {shown === 'bill'
+        ? // Three bills go in, one after another; the note is about the first.
+          [0, 1, 2].map((k) => (
+            <div key={`bill-${index}-${k}`} className="hl-bill-fly" style={{ '--k': k } as CSSProperties}>
+              <Bill index={(index + k) % HERO.lanes.length} />
+            </div>
+          ))
+        : null}
       {shown !== 'bill' ? (
         <div key={`note-${index}`} className="hl-note-fly" data-phase={shown}>
           <Note index={index} phase={shown} />
