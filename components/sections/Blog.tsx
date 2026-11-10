@@ -163,7 +163,9 @@ function PostCard({ post, clone = false }: { post: Post; clone?: boolean }) {
       className="flex flex-col w-full transition-transform hover:-translate-y-0.5"
       style={{
         borderRadius: 24,
-        background: '#f5efe3',
+        background: '#ffffff',
+        border: '1px solid rgba(22,50,35,0.12)',
+        boxShadow: '0 6px 18px rgba(0,0,0,0.05)',
         padding: 'clamp(24px,1.8vw,34px)',
       }}
     >
@@ -205,8 +207,8 @@ function PostCard({ post, clone = false }: { post: Post; clone?: boolean }) {
         <span
           className="shrink-0 inline-flex items-center gap-2 rounded-full text-[clamp(13px,0.85vw,16px)] font-medium"
           style={{
-            background: '#003c16',
-            color: '#fdfaf4',
+            background: '#90ff7c',
+            color: '#163223',
             padding: 'clamp(9px,0.7vw,13px) clamp(18px,1.3vw,25px)',
           }}
         >
@@ -226,7 +228,7 @@ export default function Blog() {
   const reveal = useCarouselReveal(trackRef, carousel.reduced, N, carousel.demoNudge)
 
   return (
-    <section className="py-20 sm:py-28">
+    <section className="py-20 sm:py-28" style={{ background: '#ffffff' }}>
       <div className="text-center mb-12 sm:mb-14 px-6">
         <h2 className="t-h2">Læs mere om, hvordan Altid Hjem skaber ro i hverdagen</h2>
       </div>

@@ -34,24 +34,24 @@ export const HERO = {
     { src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
     { src: '/site/app/regninger-top.webp', alt: 'Regninger i appen: 2.345 kr., 21.842 kr. i faste regninger om måneden og kalenderen for november.' },
   ],
-  // The cards flying past the hero phones: a bill in, the assistant's note out. Amounts and
-  // dates are sample data from the app's captures (regninger, forsikring, energi, okonomi).
+  // The cards flying past the hero phones: a paper bill in, the assistant's note out. Bills as in
+  // Thor's earlier bills mockup (made-up companies SikkerPlus and TeleNu); the notes are samples.
   lanes: [
     {
-      bill: { icon: 'forsikring', tone: '#ffbab8', name: 'Indboforsikring', when: 'Fornyes 1. marts', amount: '385 kr./md.' },
+      bill: { title: 'Indboforsikring', from: 'SikkerPlus', date: '12. november', amount: '249 kr.', mail: false },
       note: 'Jeg har fundet en indboforsikring, der kan være billigere. Vil du se tilbuddet?',
     },
     {
-      bill: { icon: 'okonomi', tone: '#ffd27a', name: 'Grøn ejerafgift', when: 'Trækkes 10. jan.', amount: '1.235 kr.' },
-      note: 'Grøn ejerafgift er sat i kalenderen. Der er penge nok på kontoen.',
+      bill: { title: 'Mobilregning', from: 'TeleNu', date: '5. november', amount: '249 kr.', mail: true },
+      note: 'Der findes et mobilabonnement med samme data, der er billigere. Skal jeg vise det?',
     },
     {
-      bill: { icon: 'energi', tone: '#a3d5ff', name: 'Strøm, oktober', when: '190 kWh', amount: '447 kr.' },
-      note: 'Strømmen er billigst kl. 13-15 i dag. Sæt opvasken over der.',
+      bill: { title: 'Bilforsikring', from: 'SikkerPlus', date: '3. november', amount: '659 kr.', mail: false },
+      note: 'Bilforsikringen trækkes 3. november. Der er penge nok på kontoen.',
     },
     {
-      bill: { icon: 'mad', tone: '#bdb0f9', name: 'Restaurant og takeaway', when: 'Denne måned', amount: '555 kr.' },
-      note: 'I har brugt lidt mere på takeaway end normalt. Ugens madplan er klar.',
+      bill: { title: 'Ulykkesforsikring', from: 'SikkerPlus', date: '6. november', amount: '139 kr.', mail: true },
+      note: 'I har to ulykkesforsikringer, der dækker det samme. Vil I se, hvilken I kan opsige?',
     },
   ] as const,
   secondScreens: [

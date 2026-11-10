@@ -1,11 +1,10 @@
 'use client'
 
 import { HERO } from './copy'
-import ServiceIcon from './ServiceIcon'
 import { useEffect, useRef } from 'react'
 import { useMotionPrefs } from './MotionPrefs'
 
-// Bills fly in from the left as the page scrolls and slip behind the phones; a moment later each
+// Paper bills fly in from the left as the page scrolls and slip behind the phones; a moment later each
 // comes out on the right as a notification from the app's assistant, saying what it took care
 // of or found. Driven by scroll, not time: each card travels from x -481 to +481 inside its
 // side's box, easing its scale and tilt on the way, and the phones sit on top. Sample data from
@@ -41,15 +40,23 @@ const ease = (t: number) => t * t * (3 - 2 * t)
 function Bill({ index }: { index: number }) {
   const bill = HERO.lanes[index].bill
   return (
-    <div className="hl-bill">
-      <span className="hl-ico" style={{ background: bill.tone }}>
-        <ServiceIcon name={bill.icon} size={18} />
+    <div className="hl-paper">
+      <span className="hl-paper-top">
+        {bill.mail ? <span className="hl-mail">Mail</span> : <span />}
+        <span>{bill.date}</span>
       </span>
-      <span className="hl-text">
-        <b>{bill.name}</b>
-        <small>{bill.when}</small>
+      <span className="hl-faktura">Faktura</span>
+      <b>{bill.title}</b>
+      <small>{bill.from}</small>
+      <span className="hl-lines" aria-hidden="true">
+        <i />
+        <i />
+        <i />
       </span>
-      <span className="hl-amount">{bill.amount}</span>
+      <span className="hl-paper-foot">
+        <span>Pr. måned</span>
+        <b>{bill.amount}</b>
+      </span>
     </div>
   )
 }

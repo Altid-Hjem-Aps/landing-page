@@ -542,46 +542,93 @@
       translate: -50% -50%;
     }
   }
-  /* A bill, like a row in the app's Regninger. */
-  .hl-bill {
+  /* A paper bill, as in the bills mockup: Faktura, who from, a few grey lines, the amount. */
+  .hl-paper {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    width: calc(var(--u) * 300);
-    padding: 12px 16px 12px 12px;
-    border-radius: 18px;
-    background: #fff;
-    box-shadow: 0 10px 26px rgba(0, 40, 14, 0.12);
-    color: var(--forest);
-  }
-  .hl-ico {
-    display: grid;
-    flex: none;
-    place-items: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-  }
-  .hl-text {
-    display: flex;
-    flex: 1;
     flex-direction: column;
-    min-width: 0;
-    line-height: 1.25;
+    width: calc(var(--u) * 210);
+    padding: calc(var(--u) * 16) calc(var(--u) * 18);
+    border-radius: 6px;
+    background: #fdfbf6;
+    box-shadow:
+      0 14px 30px rgba(0, 40, 14, 0.12),
+      0 1px 2px rgba(0, 40, 14, 0.08);
+    color: #1f2a24;
+    line-height: 1.2;
 
-    b {
-      font-size: 15px;
-      font-weight: 600;
+    > b {
+      margin-top: 2px;
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: calc(var(--u) * 19);
+      letter-spacing: -0.01em;
     }
-    small {
-      font-size: 13px;
+    > small {
+      font-size: calc(var(--u) * 13);
       color: var(--stone);
     }
   }
-  .hl-amount {
-    flex: none;
-    font-size: 15px;
+  .hl-paper-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: calc(var(--u) * 11);
+    color: var(--stone);
+  }
+  .hl-mail {
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: #e6efff;
+    color: #2f6fe0;
     font-weight: 600;
+  }
+  .hl-faktura {
+    margin-top: calc(var(--u) * 12);
+    font-size: calc(var(--u) * 10);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .hl-lines {
+    display: grid;
+    gap: calc(var(--u) * 6);
+    margin-top: calc(var(--u) * 14);
+    padding-top: calc(var(--u) * 12);
+    border-top: 1px solid rgba(31, 42, 36, 0.12);
+
+    i {
+      height: calc(var(--u) * 5);
+      border-radius: 3px;
+      background: rgba(31, 42, 36, 0.12);
+    }
+    i:nth-child(2) {
+      width: 80%;
+    }
+    i:nth-child(3) {
+      width: 62%;
+    }
+  }
+  .hl-paper-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: calc(var(--u) * 16);
+    padding-top: calc(var(--u) * 10);
+    border-top: 1px solid rgba(31, 42, 36, 0.12);
+
+    span {
+      font-size: calc(var(--u) * 10);
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--stone);
+    }
+    b {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: calc(var(--u) * 20);
+    }
   }
   /* The assistant's note, as a phone notification on frosted glass. */
   .hl-note {

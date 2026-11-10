@@ -41,7 +41,9 @@ export default function Zoomer({ children }: { children: ReactNode }) {
       // without cutting anything off; the corners round as it shrinks.
       const scale = 1 - ((1 - eased) * rest * 2) / vw
       el.style.transform = `scale(${scale.toFixed(4)})`
-      el.style.borderRadius = `${(((1 - eased) * 24) / scale).toFixed(1)}px`
+      // The privacy panel's 24 px corners, held until it is nearly open, then easing to square.
+      const round = 24 * Math.min(1, (1 - eased) * 4)
+      el.style.borderRadius = `${(round / scale).toFixed(1)}px`
     }
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(draw)
