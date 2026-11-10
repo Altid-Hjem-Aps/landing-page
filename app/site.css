@@ -142,49 +142,76 @@
   [data-tone='rose'] {
     --tint: var(--rose);
   }
+  [data-tone='sand'] {
+    --tint: var(--sand);
+  }
   /* Text on a pastel is always Deep forest (brand book, sheet 12). */
-  .f-card,
-  .f-bento,
   .d-card {
     .t-body {
       color: var(--forest);
     }
+    h3 {
+      white-space: pre-line;
+    }
   }
 
-  /* Phone: Apple's iPhone 18 Pro bezel in Silver (Apple Design Resources), laid over the
-     screen; its screen opening is 1206 x 2622 of the 1350 x 2760 frame. --w is its width. */
+  /* Phone: Apple's iPhone 18 Pro front in Silver (Apple Design Resources) over the screen,
+     and behind it the silhouette repeated in depth (PhoneBody), so a tilted phone shows a
+     solid titanium side. Its screen opening is 1206 x 2622 of the 1350 x 2760 frame, and the
+     screen is masked to that opening's exact shape. --w is its width. */
   .ph {
     --w: calc(var(--u) * 323);
+    --depth: calc(var(--w) * 0.11);
     position: relative;
     width: var(--w);
     aspect-ratio: 1350 / 2760;
+    transform-style: preserve-3d;
 
     &::after {
       content: '';
       position: absolute;
-      z-index: 1;
       inset: 0;
       background: url('/site/device/iphone-18-pro-silver.webp') 0 0 / 100% 100% no-repeat;
+      transform: translateZ(0.6px);
       pointer-events: none;
     }
   }
-  /* The shadow, cast by a shape the size of the frame's outline. */
   .ph-body {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+  }
+  .ph-edge {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #5b5e61, #b5b8bb 22%, #e2e4e6 50%, #9a9da0 78%, #5e6164);
+    mask: url('/site/device/silhouette.png') 0 0 / 100% 100% no-repeat;
+    -webkit-mask: url('/site/device/silhouette.png') 0 0 / 100% 100% no-repeat;
+    /* Lighter in the middle of the depth, as the rounded side catches the light. */
+    filter: brightness(calc(1.12 - 0.05 * max(var(--d) - 6.5, 6.5 - var(--d))));
+    transform: translateZ(calc(var(--depth) * var(--d) / -12));
+  }
+  .ph-shadow {
     position: absolute;
     inset: 0.76% 1.19%;
     border-radius: calc(var(--w) * 0.19);
     box-shadow:
       0 calc(var(--w) * 0.06) calc(var(--w) * 0.12) rgba(0, 30, 10, 0.22),
       0 calc(var(--w) * 0.01) calc(var(--w) * 0.03) rgba(0, 30, 10, 0.14);
+    transform: translateZ(calc(var(--depth) * -1));
   }
   .ph-screen {
     position: absolute;
     inset: 2.5% 5.33%;
-    border-radius: calc(var(--w) * 0.172);
     overflow: hidden;
-    background: var(--forest);
+    background: #000;
+    mask: url('/site/device/screen-mask.png') 0 0 / 100% 100% no-repeat;
+    -webkit-mask: url('/site/device/screen-mask.png') 0 0 / 100% 100% no-repeat;
+    transform: translateZ(0.3px);
   }
   .ph-cycle {
+    transform-style: preserve-3d;
+
     @media (prefers-reduced-motion: no-preference) {
       animation: site-float 7s ease-in-out infinite;
     }
@@ -490,7 +517,7 @@
     z-index: 1;
     margin: calc(var(--u) * 24) 8px 0;
     /* Tall enough for the whole tilted phone, its float and its shadow. */
-    height: calc(var(--u) * 715);
+    height: calc(var(--u) * 770);
   }
   .h-lanes {
     position: absolute;
@@ -534,27 +561,27 @@
   }
   /* The tilt of the frame on the page we match, as a perspective and three rotations. */
   .h-phone {
-    --tilt: perspective(calc(var(--u) * 830)) rotateX(-1deg) rotateY(-10deg) rotateZ(7deg);
+    --tilt: perspective(calc(var(--u) * 900)) rotateX(4deg) rotateY(-20deg) rotateZ(6deg);
     position: absolute;
-    left: calc(50% + var(--u) * -215);
+    left: calc(50% + var(--u) * -255);
     top: calc(var(--u) * 19);
     transform: var(--tilt);
+    transform-style: preserve-3d;
 
     .ph {
       --w: calc(var(--u) * 320);
     }
   }
+  /* About the size of the first phone, in front of it, turned the other way. */
   .h-second {
     position: absolute;
-    left: calc(50% + var(--u) * -8);
-    top: calc(var(--u) * 170);
-    width: calc(var(--u) * 259);
-    height: calc(var(--u) * 318);
+    left: calc(50% + var(--u) * 10);
+    top: calc(var(--u) * 80);
+    transform-style: preserve-3d;
 
     .ph {
-      --w: calc(var(--u) * 226);
-      left: calc(var(--u) * 14);
-      transform: perspective(calc(var(--u) * 970)) rotateY(34deg) rotateZ(-5deg);
+      --w: calc(var(--u) * 296);
+      transform: perspective(calc(var(--u) * 900)) rotateX(4deg) rotateY(24deg) rotateZ(-5deg);
     }
   }
   /* The ring of services: its far half and far icons under the phones, the near ones over. */
@@ -777,22 +804,19 @@
       height: calc(var(--u) * 560);
     }
     .h-phone {
-      left: calc(var(--u) * 6);
+      left: calc(var(--u) * 10);
       top: calc(var(--u) * 12);
 
       .ph {
-        --w: calc(var(--u) * 250);
+        --w: calc(var(--u) * 236);
       }
     }
     .h-second {
-      left: calc(var(--u) * 178);
-      top: calc(var(--u) * 102);
-      width: calc(var(--u) * 183);
-      height: calc(var(--u) * 225);
+      left: calc(var(--u) * 158);
+      top: calc(var(--u) * 50);
 
       .ph {
-        --w: calc(var(--u) * 160);
-        left: calc(var(--u) * 10);
+        --w: calc(var(--u) * 220);
       }
     }
     .h-orb {
@@ -976,366 +1000,7 @@
       margin-top: 22px;
     }
   }
-  /* 4. Features */
-  .f {
-    padding-top: 0;
-    overflow: clip;
-  }
-  .f-head {
-    text-align: center;
-
-    h2 {
-      width: min(100% - 34px, 10.5em);
-      margin-inline: auto;
-    }
-    p {
-      width: min(100% - 34px, 28em);
-      margin: 16px auto 0;
-    }
-  }
-  .f-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: calc(var(--u) * 32);
-    width: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
-    margin: calc(var(--u) * 80) auto 0;
-  }
-  .f-card {
-    position: relative;
-    border-radius: 24px;
-    overflow: hidden;
-    background: var(--tint);
-  }
-  .f-card-top {
-    min-height: calc(var(--u) * 238);
-    padding: calc(var(--u) * 48) calc(var(--u) * 48) 16px;
-
-    p {
-      margin-top: 8px;
-      max-width: calc(var(--u) * 341);
-    }
-  }
-  .f-card-bottom {
-    position: relative;
-    height: calc(var(--u) * 501);
-    overflow: hidden;
-  }
-  .f-card-phone {
-    position: absolute;
-    left: calc(var(--u) * 50);
-    top: 0;
-
-    .ph {
-      --w: calc(var(--u) * 338);
-    }
-    &[data-pan='go'] img {
-      animation: site-pan 2.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-    }
-  }
-  .f-rows {
-    position: absolute;
-    left: calc(var(--u) * 42);
-    top: calc(var(--u) * 360);
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--u) * 13);
-
-    img {
-      display: block;
-      width: calc(var(--u) * 354);
-      height: auto;
-      border-radius: 16px;
-      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
-    }
-  }
-  .f-tile {
-    position: absolute;
-    left: calc(var(--u) * 252);
-    top: calc(var(--u) * 117);
-    width: calc(var(--u) * 161);
-    height: calc(var(--u) * 213);
-    border-radius: 12%;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
-  }
-  .f-pair {
-    position: absolute;
-    left: calc(var(--u) * 26);
-    top: calc(var(--u) * 292);
-    display: flex;
-    gap: calc(var(--u) * 8);
-
-    img {
-      display: block;
-      width: calc(var(--u) * 188);
-      height: calc(var(--u) * 99);
-      border-radius: 16px;
-      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
-    }
-  }
-  .f-bento {
-    position: relative;
-    width: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
-    height: calc(var(--u) * 658);
-    margin: calc(var(--u) * 32) auto 0;
-    border-radius: 24px;
-    overflow: hidden;
-  }
-  .f-bento-a {
-    --tint: var(--sky);
-    background: var(--tint);
-  }
-  .f-bento-b {
-    --tint: var(--rose);
-    background: var(--tint);
-  }
-  .f-bento-text {
-    position: absolute;
-    z-index: 2;
-    left: calc(var(--u) * 80);
-    top: 50%;
-    width: calc(var(--u) * 540);
-    transform: translateY(-50%);
-
-    p {
-      margin-top: 16px;
-      max-width: calc(var(--u) * 414);
-    }
-  }
-  .f-bento-text-right {
-    left: calc(var(--u) * 912);
-    width: calc(var(--u) * 384);
-  }
-  .f-col {
-    position: absolute;
-    width: calc(var(--u) * 392);
-    height: auto;
-  }
-  .f-col-1 {
-    left: calc(var(--u) * 669);
-    top: calc(var(--u) * -34);
-  }
-  .f-col-2 {
-    left: calc(var(--u) * 1077);
-    top: calc(var(--u) * -24);
-  }
-  .f-records {
-    position: absolute;
-    z-index: 1;
-    left: calc(var(--u) * 56);
-    top: calc(var(--u) * 109);
-
-    .ph {
-      --w: calc(var(--u) * 380);
-    }
-  }
-  .f-float {
-    position: absolute;
-    filter: drop-shadow(0 8px 20px rgba(0, 60, 22, 0.18));
-
-    img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-  }
-  .f-float-1 {
-    left: calc(var(--u) * 180);
-    top: calc(var(--u) * 186);
-    width: calc(var(--u) * 175);
-  }
-  .f-float-2 {
-    left: calc(var(--u) * -18);
-    top: calc(var(--u) * 314);
-    width: calc(var(--u) * 185);
-  }
-  .rings {
-    --ring-p: 0;
-    --cx: calc(var(--u) * 139.5);
-    --cy: calc(var(--u) * 328.5);
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-  .ring {
-    position: absolute;
-    left: var(--cx);
-    top: var(--cy);
-    width: 0;
-    height: 0;
-    transform: rotate(calc(var(--ring-p) * 3.6deg)) scale(calc(1 + var(--ring-p) * 0.06));
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: calc(var(--r) * -1);
-      top: calc(var(--r) * -1);
-      width: calc(var(--r) * 2);
-      height: calc(var(--r) * 2);
-      border-radius: 50%;
-      border: 1px solid rgba(255, 255, 255, 0.7);
-    }
-  }
-  .ring-0 {
-    --r: calc(var(--u) * 470);
-  }
-  .ring-1 {
-    --r: calc(var(--u) * 680);
-  }
-  .ring-spoke {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 0;
-    height: 0;
-  }
-  .ring-tile {
-    position: absolute;
-    left: calc(var(--r) - var(--u) * 41);
-    top: calc(var(--u) * -41);
-    width: calc(var(--u) * 82);
-    height: calc(var(--u) * 82);
-    border-radius: 16px;
-    background: #fff;
-    box-shadow: 0 0 16px -8px rgba(0, 0, 0, 0.25);
-    transform: rotate(90deg);
-
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 27%;
-      background: var(--forest);
-      mask: var(--icon) center / contain no-repeat;
-      -webkit-mask: var(--icon) center / contain no-repeat;
-    }
-  }
-  .f-note {
-    position: absolute;
-    inset: auto 0 calc(var(--pad) - 28px);
-    text-align: center;
-  }
-  @media (max-width: 767px) {
-    .f-cards {
-      grid-template-columns: 1fr;
-      gap: calc(var(--u) * 17);
-      width: calc(var(--u) * 356);
-      margin-top: calc(var(--u) * 42);
-    }
-    .f-card:nth-child(3) .f-card-top {
-      min-height: calc(var(--u) * 227);
-    }
-    .f-card-bottom {
-      height: calc(var(--u) * 383);
-    }
-    .f-card-top {
-      min-height: calc(var(--u) * 200);
-      padding: calc(var(--u) * 40) calc(var(--u) * 40) 8px;
-
-      p {
-        max-width: calc(var(--u) * 275);
-      }
-    }
-    .f-card-phone {
-      left: calc(var(--u) * 40);
-
-      .ph {
-        --w: calc(var(--u) * 275);
-      }
-    }
-    .f-rows {
-      left: calc(var(--u) * 34);
-      top: calc(var(--u) * 262);
-      gap: calc(var(--u) * 12);
-
-      img {
-        width: calc(var(--u) * 288);
-      }
-    }
-    .f-tile {
-      left: calc(var(--u) * 205);
-      top: calc(var(--u) * 79);
-      width: calc(var(--u) * 131);
-      height: calc(var(--u) * 174);
-    }
-    .f-pair {
-      left: calc(var(--u) * 22);
-      top: calc(var(--u) * 218);
-      gap: calc(var(--u) * 6);
-
-      img {
-        width: calc(var(--u) * 153);
-        height: calc(var(--u) * 80);
-      }
-    }
-    .f-bento {
-      width: calc(var(--u) * 356);
-      margin-top: calc(var(--u) * 17);
-    }
-    .f-bento-a {
-      height: calc(var(--u) * 616);
-    }
-    .f-bento-b {
-      height: calc(var(--u) * 686);
-    }
-    .f-bento-text,
-    .f-bento-text-right {
-      left: calc(var(--u) * 40);
-      top: calc(var(--u) * 40);
-      width: calc(var(--u) * 276);
-      transform: none;
-
-      p {
-        margin-top: 8px;
-      }
-    }
-    .f-col {
-      width: calc(var(--u) * 222);
-    }
-    .f-col-1 {
-      left: calc(var(--u) * -48);
-      top: calc(var(--u) * 268);
-    }
-    .f-col-2 {
-      left: calc(var(--u) * 182);
-      top: calc(var(--u) * 268);
-    }
-    .f-records {
-      left: calc(var(--u) * 53);
-      top: calc(var(--u) * 355);
-
-      .ph {
-        --w: calc(var(--u) * 249);
-      }
-    }
-    .f-float-1 {
-      left: calc(var(--u) * 125);
-      top: calc(var(--u) * 122);
-      width: calc(var(--u) * 110);
-    }
-    .f-float-2 {
-      left: calc(var(--u) * -8);
-      top: calc(var(--u) * 205);
-      width: calc(var(--u) * 118);
-    }
-    .rings {
-      --cx: calc(var(--u) * 178);
-      --cy: calc(var(--u) * 610);
-    }
-    .ring-0 {
-      --r: calc(var(--u) * 235);
-    }
-    .ring-1 {
-      --r: calc(var(--u) * 340);
-    }
-    .ring-tile {
-      left: calc(var(--r) - var(--u) * 22);
-      top: calc(var(--u) * -22);
-      width: calc(var(--u) * 44);
-      height: calc(var(--u) * 44);
-      border-radius: 10px;
-    }
-  }
-
-  /* 5. Dark: Altid Mad */
+  /* 5. Dark: Økonomi and the mail's feature blocks */
   .d {
     background: var(--forest);
     color: var(--cream);
@@ -1560,7 +1225,7 @@
     z-index: 1;
     left: calc(var(--u) * 80);
     top: 50%;
-    width: calc(var(--u) * 512);
+    width: calc(var(--u) * 640);
     transform: translateY(-50%);
 
     p {
@@ -1595,40 +1260,20 @@
       border-radius: 0;
     }
     .d-content {
-      --phone: min(calc(var(--u) * 370), calc((100vh - 144px) * 0.4899));
+      --phone: min(calc(var(--u) * 370), calc((100vh - 144px) * 646 / 1357));
       left: calc(50% + var(--u) * 167);
       top: 72px;
     }
   }
-  .d-piece {
+  /* The mail's phone with its lifted pieces: the export is 866 x 1477 with the 646 px phone
+     at 110, 70, so it is placed and sized from the phone. */
+  .d-shot {
     position: absolute;
-    filter: drop-shadow(0 10px 24px rgba(0, 40, 14, 0.2));
-
-    img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-  }
-  .d-piece-1 {
-    left: calc(var(--k) * -11);
-    top: calc(var(--k) * 283);
-    width: calc(var(--k) * 392);
-  }
-  .d-piece-2 {
-    left: calc(var(--k) * -59);
-    top: calc(var(--k) * 183);
-    width: calc(var(--k) * 478);
-  }
-  .d-piece-3 {
-    left: calc(var(--k) * -13);
-    top: calc(var(--k) * 248);
-    width: calc(var(--k) * 395);
-  }
-  .d-piece-4 {
-    left: calc(var(--k) * -13);
-    top: calc(var(--k) * 247);
-    width: calc(var(--k) * 395);
+    left: calc(var(--phone) * -110 / 646);
+    top: calc(var(--phone) * -70 / 646);
+    width: calc(var(--phone) * 866 / 646);
+    max-width: none;
+    height: auto;
   }
   .d-note {
     position: absolute;
@@ -1650,31 +1295,27 @@
       width: calc(var(--u) * 356);
       margin-top: calc(var(--u) * 16);
     }
+    /* Text on top, the mail's phone under it, cut by the card's bottom as in the mail. */
     .d-card {
-      height: calc(var(--u) * 421);
+      height: auto;
+      padding: calc(var(--u) * 36) calc(var(--u) * 28) 0;
     }
     .d-card-text {
-      left: calc(var(--u) * 40);
-      top: calc(var(--u) * 40);
-      width: calc(var(--u) * 276);
+      position: static;
+      width: auto;
       transform: none;
     }
+    .d-fixed {
+      position: relative;
+      inset: auto;
+      height: calc(var(--u) * 300);
+      margin-top: calc(var(--u) * 24);
+      border-radius: 0;
+    }
     .d-content {
-      --phone: calc(var(--u) * 110);
-      left: calc(var(--u) * 33);
-      top: calc(var(--u) * 232);
-    }
-    .d-piece-1 {
-      left: calc(var(--u) * 60);
-      top: calc(var(--u) * 40);
-      width: calc(var(--u) * 150);
-    }
-    .d-piece-2,
-    .d-piece-3,
-    .d-piece-4 {
-      left: calc(var(--u) * 80);
-      top: calc(var(--u) * 30);
-      width: calc(var(--u) * 150);
+      --phone: calc(var(--u) * 220);
+      left: calc(50% - var(--phone) / 2);
+      top: 0;
     }
   }
 
@@ -1683,12 +1324,7 @@
     .p-laurel {
       gap: 8px;
     }
-    .d-card {
-      height: 440px;
-    }
-    .d-content {
-      top: 262px;
-    }
+
   }
 
   /* 7. And more */
@@ -1891,26 +1527,40 @@
   /* Four steps: the whole block stays put while the page scrolls through it; the title, all
      four steps and the phone are in view, and the scroll moves the highlight down the steps. */
   .st {
-    --phone: min(calc(var(--u) * 323), calc((100svh - 140px) * 1350 / 2760));
+    --phone: min(calc(var(--u) * 323), calc((100svh - 250px) * 1350 / 2760));
     height: calc(100svh + 4 * 55svh);
     padding-block: 0;
   }
+  /* The title on one line across the top, the steps under it from the top down (so opening a
+     step never moves the title), and the phone beside them. */
   .st-stage {
     position: sticky;
     top: 0;
     display: grid;
     grid-template-columns: calc(var(--u) * 600) var(--phone);
+    grid-template-rows: auto 1fr;
+    column-gap: calc(var(--u) * 60);
     justify-content: space-between;
-    align-items: center;
     height: 100svh;
     width: min(100% - 2 * var(--u) * 120, calc(var(--u) * 1150));
     margin-inline: auto;
-    padding-top: 72px;
+    padding-top: max(96px, calc(50svh - 330px));
+  }
+  .st-title {
+    grid-column: 1 / -1;
+    white-space: nowrap;
+  }
+  .st-left {
+    align-self: start;
+  }
+  .st-phone {
+    align-self: start;
+    margin-top: calc(var(--u) * 24);
   }
   .st-list {
     display: grid;
     gap: 10px;
-    margin-top: calc(var(--u) * 36);
+    margin-top: calc(var(--u) * 24);
   }
   .st-step {
     padding: 18px 26px;
@@ -1970,12 +1620,8 @@
     margin-top: 18px;
     justify-content: flex-start;
   }
-  .st-phone {
-    position: relative;
-
-    .ph {
-      --w: var(--phone);
-    }
+  .st-phone .ph {
+    --w: var(--phone);
   }
   .st-screen {
     opacity: 0;
@@ -1995,6 +1641,9 @@
     .st {
       height: auto;
       padding-block: var(--pad) 0;
+    }
+    .st-title {
+      white-space: normal;
     }
     .st-stage {
       position: static;

@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import AppBar from '@/components/site/AppBar'
 import { META, NAV } from '@/components/site/copy'
 import FaqSection from '@/components/site/FaqSection'
-import Features from '@/components/site/Features'
 import FinalCta from '@/components/site/FinalCta'
 import { dmSans } from '@/components/site/fonts'
 import Hero from '@/components/site/Hero'
@@ -57,7 +56,6 @@ export default function Home() {
           <Hero />
           <WorksWith />
           <Proof />
-          <Features />
           <MadDark />
           <Steps />
           <Privacy />

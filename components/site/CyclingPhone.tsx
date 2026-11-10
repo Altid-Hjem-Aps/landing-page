@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useMotionPiece } from './MotionPrefs'
+import PhoneBody from './PhoneBody'
 
 // A phone that floats gently and shows its screens in turn, so a mockup never stands still.
 // It stops with the page's pause control, off screen and under reduced motion.
@@ -23,7 +24,7 @@ export default function CyclingPhone({ screens, sizes, preload = false }: { scre
   return (
     <div ref={ref} className="ph-cycle" data-running={running}>
       <div className="ph" data-staged="true">
-        <span className="ph-body" aria-hidden="true" />
+        <PhoneBody />
         <div className="ph-screen">
           {screens.map((screen, i) => (
             <Image

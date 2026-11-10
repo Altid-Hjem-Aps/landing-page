@@ -1,9 +1,10 @@
 import Image from 'next/image'
+import PhoneBody from './PhoneBody'
 
-// Our own drawn phone: dark titanium edge, a thin highlight, black bezel and side buttons,
-// in the proportions of the frames on the page we match. The capture carries its own
-// status bar and island. Its numbers are seeded, so the section around it must render
-// StagedNote, and test/site-home.test.tsx holds every section to that.
+// Apple's iPhone 18 Pro front (Apple Design Resources) over the screen, with a body behind it
+// that gives a tilted phone its depth. The capture carries its own status bar and island. Its
+// numbers are seeded, so the section around it must render StagedNote, and
+// test/site-home.test.tsx holds every section to that.
 export default function Phone({
   src,
   alt,
@@ -21,7 +22,7 @@ export default function Phone({
 }) {
   return (
     <div className="ph" data-staged="true">
-      <span className="ph-body" aria-hidden="true" />
+      <PhoneBody />
       <div className="ph-screen">
         <Image
           src={src}

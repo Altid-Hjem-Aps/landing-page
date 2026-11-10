@@ -1,17 +1,14 @@
 import Image from 'next/image'
 import { OKONOMI } from './copy'
-import Parallax from './Parallax'
 import PaydayPace from './PaydayPace'
-import Phone from './Phone'
 import StagedNote from './StagedNote'
 
-const RANGES = [7, 28, 37, 39]
-
 // Deep forest, Økonomi. Spotlight on the app's front page drawn large (what is left until
-// payday, ahead or behind), then four cards the phone
-// stays fixed behind:
-// each card is clipped with clip-path and holds its own position: fixed phone, so the
-// screen changes as a card passes. No transform or backdrop-filter on any ancestor here.
+// payday, ahead or behind), then the seven feature blocks of the launch mail, word for word,
+// with the phone and lifted pieces exported from the mail's Figma frames. The phone
+// stays fixed while the cards pass: each card is clipped with clip-path and holds its own
+// position: fixed phone, so the screen changes as a card passes. No transform or
+// backdrop-filter on any ancestor here.
 export default function MadDark() {
   return (
     <>
@@ -27,18 +24,15 @@ export default function MadDark() {
           </div>
         </header>
         <div className="d-cards">
-          {OKONOMI.cards.map((card, i) => (
-            <article key={card.title} className="d-card" data-tone={card.tone} data-surface="light">
+          {OKONOMI.cards.map((card) => (
+            <article key={card.src} className="d-card" data-tone={card.tone} data-surface="light">
               <div className="d-card-text">
                 <h3 className="t-h3b">{card.title}</h3>
                 <p className="t-body">{card.body}</p>
               </div>
               <div className="d-fixed">
                 <div className="d-content">
-                  <Phone src={card.src} alt={card.alt} sizes="(max-width: 767px) 110px, 340px" />
-                  <Parallax range={RANGES[i]} className={`d-piece d-piece-${i + 1}`}>
-                    <Image src={card.piece} alt={card.pieceAlt} width={card.pieceSize[0]} height={card.pieceSize[1]} sizes="(max-width: 767px) 135px, 478px" />
-                  </Parallax>
+                  <Image src={card.src} alt={card.alt} width={866} height={1477} sizes="(max-width: 767px) 230px, 500px" className="d-shot" />
                 </div>
               </div>
             </article>
