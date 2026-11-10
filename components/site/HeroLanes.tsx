@@ -1,41 +1,73 @@
 'use client'
 
-import Image from 'next/image'
+import { HERO } from './copy'
+import ServiceIcon from './ServiceIcon'
 import { useEffect, useRef } from 'react'
 import { useMotionPrefs } from './MotionPrefs'
 
-// Small cards cut from the real captures. Driven by scroll, not time: each travels from
-// x -481 to +481 inside its side's box, easing its scale and tilt on the way, and the
-// phones sit on top. The reference timeline runs over 4,000 px of scroll; here it is compressed
-// to the hero's own range, keeping the stagger between the lanes.
+// Bills fly in from the left as the page scrolls and slip behind the phones; a moment later each
+// comes out on the right as a notification from the app's assistant, saying what it took care
+// of or found. Driven by scroll, not time: each card travels from x -481 to +481 inside its
+// side's box, easing its scale and tilt on the way, and the phones sit on top. Sample data from
+// the app's captures; the wording is in copy.ts (HERO.lanes).
 
 type Lane = {
   side: 'left' | 'right'
-  src: string
-  width: number
-  height: number
+  item: number
   start: number
   length: number
   from: [scale: number, tilt: number, y: number]
   to: [scale: number, tilt: number, y: number]
 }
 
+// Bill i on the left, its notification on the right, starting as the bill reaches the phones.
 const LANES: Lane[] = [
-  { side: 'left', src: '/site/app/crop-foran-card.webp', width: 248, height: 77, start: 40, length: 1000, from: [1, 12, -212], to: [0.8, 2, 0] },
-  { side: 'left', src: '/site/app/piece-bars.webp', width: 256, height: 70, start: 60, length: 1150, from: [1, -21, 230], to: [0.8, -2, 0] },
-  { side: 'left', src: '/site/plates/butter-chicken.webp', width: 118, height: 118, start: 260, length: 1300, from: [1.2, -3, 73], to: [1, -1, 0] },
-  { side: 'left', src: '/site/app/piece-148.webp', width: 204, height: 51, start: 480, length: 1200, from: [1, 12, -212], to: [0.8, 2, 0] },
-  { side: 'left', src: '/site/app/piece-bilka.webp', width: 190, height: 38, start: 620, length: 1200, from: [1, -12, 230], to: [0.8, -2, 0] },
-  { side: 'right', src: '/site/app/piece-1076.webp', width: 230, height: 60, start: 100, length: 1300, from: [1, -13, 0], to: [0.83, -2, -154] },
-  { side: 'right', src: '/site/brand/umbrella.webp', width: 96, height: 96, start: 240, length: 1350, from: [0.8, 2, 0], to: [1, 12, 230] },
-  { side: 'right', src: '/site/app/crop-foran-card.webp', width: 248, height: 77, start: 400, length: 1350, from: [0.8, 0, 0], to: [1, 6, 40] },
-  { side: 'right', src: '/site/plates/pizza.webp', width: 118, height: 118, start: 560, length: 1350, from: [0.8, -3, 73], to: [1, -12, -212] },
+  { side: 'left', item: 0, start: 0, length: 520, from: [1, 10, -200], to: [0.82, 2, -20] },
+  { side: 'left', item: 1, start: 70, length: 520, from: [1, -14, 220], to: [0.82, -2, 40] },
+  { side: 'left', item: 2, start: 140, length: 520, from: [1, 6, 30], to: [0.82, 1, 0] },
+  { side: 'left', item: 3, start: 210, length: 520, from: [1, -10, -120], to: [0.82, -2, -10] },
+  { side: 'right', item: 0, start: 300, length: 520, from: [0.82, -2, -40], to: [1, -6, -180] },
+  { side: 'right', item: 1, start: 370, length: 520, from: [0.82, 2, -20], to: [1, 5, -110] },
+  { side: 'right', item: 2, start: 440, length: 520, from: [0.82, -1, -40], to: [1, -3, -190] },
+  { side: 'right', item: 3, start: 510, length: 520, from: [0.82, 2, 0], to: [1, 4, -40] },
 ]
 
-const REST_SCROLL = 700
+const REST_SCROLL = 620
 const FADE = 0.14
 
 const ease = (t: number) => t * t * (3 - 2 * t)
+
+function Bill({ index }: { index: number }) {
+  const bill = HERO.lanes[index].bill
+  return (
+    <div className="hl-bill">
+      <span className="hl-ico" style={{ background: bill.tone }}>
+        <ServiceIcon name={bill.icon} size={18} />
+      </span>
+      <span className="hl-text">
+        <b>{bill.name}</b>
+        <small>{bill.when}</small>
+      </span>
+      <span className="hl-amount">{bill.amount}</span>
+    </div>
+  )
+}
+
+function Note({ index }: { index: number }) {
+  return (
+    <div className="hl-note">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/app-badge.png" alt="" width={36} height={36} />
+      <span className="hl-text">
+        <span className="hl-note-top">
+          <b>Altid Hjem</b>
+          <small>nu</small>
+        </span>
+        <span className="hl-note-body">{HERO.lanes[index].note}</span>
+      </span>
+    </div>
+  )
+}
 
 export default function HeroLanes() {
   const { reduced } = useMotionPrefs()
@@ -66,11 +98,6 @@ export default function HeroLanes() {
       frame = requestAnimationFrame(() => draw(position()))
     }
     draw(position())
-    // Hidden until they slide in, so a lazy image would pop in late. The lanes only show
-    // from 768 px, and a phone should not pay for them.
-    if (window.matchMedia('(min-width: 768px)').matches) {
-      for (const card of cards.current) card?.querySelector('img')?.setAttribute('loading', 'eager')
-    }
     window.addEventListener('resize', onChange)
     if (!reduced) window.addEventListener('scroll', onChange, { passive: true })
     return () => {
@@ -94,7 +121,7 @@ export default function HeroLanes() {
                 className="h-lane-card"
                 style={{ transform: 'translate3d(-481px, 0, 0)', opacity: 0 }}
               >
-                <Image src={lane.src} alt="" width={lane.width} height={lane.height} sizes={`${lane.width}px`} loading="lazy" style={{ width: `calc(var(--u) * ${lane.width})` }} />
+                {lane.side === 'left' ? <Bill index={lane.item} /> : <Note index={lane.item} />}
               </div>
             ) : null,
           )}

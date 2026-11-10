@@ -34,6 +34,26 @@ export const HERO = {
     { src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
     { src: '/site/app/regninger-top.webp', alt: 'Regninger i appen: 2.345 kr., 21.842 kr. i faste regninger om måneden og kalenderen for november.' },
   ],
+  // The cards flying past the hero phones: a bill in, the assistant's note out. Amounts and
+  // dates are sample data from the app's captures (regninger, forsikring, energi, okonomi).
+  lanes: [
+    {
+      bill: { icon: 'forsikring', tone: '#ffbab8', name: 'Indboforsikring', when: 'Fornyes 1. marts', amount: '385 kr./md.' },
+      note: 'Jeg har fundet en indboforsikring, der kan være billigere. Vil du se tilbuddet?',
+    },
+    {
+      bill: { icon: 'okonomi', tone: '#ffd27a', name: 'Grøn ejerafgift', when: 'Trækkes 10. jan.', amount: '1.235 kr.' },
+      note: 'Grøn ejerafgift er sat i kalenderen. Der er penge nok på kontoen.',
+    },
+    {
+      bill: { icon: 'energi', tone: '#a3d5ff', name: 'Strøm, oktober', when: '190 kWh', amount: '447 kr.' },
+      note: 'Strømmen er billigst kl. 13-15 i dag. Sæt opvasken over der.',
+    },
+    {
+      bill: { icon: 'mad', tone: '#bdb0f9', name: 'Restaurant og takeaway', when: 'Denne måned', amount: '555 kr.' },
+      note: 'I har brugt lidt mere på takeaway end normalt. Ugens madplan er klar.',
+    },
+  ] as const,
   secondScreens: [
     { src: '/site/app/mad-meal_plan.webp', alt: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.', focus: '50% 34%' },
     { src: '/site/app/droemme-detail.webp', alt: 'En drøm i appen: 9.500 kr. tilbage til Familieferie på Mallorca, 1.100 kr. om måneden.' },
