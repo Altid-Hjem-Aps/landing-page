@@ -47,7 +47,6 @@
   /* On Deep forest the ring turns Signal green, on anything that sits directly on it. */
   .nav[data-on='dark'] :focus-visible,
   .d-head :focus-visible,
-  .pp :focus-visible,
   .x :focus-visible,
   .ft :focus-visible {
     outline-color: var(--signal);
@@ -144,15 +143,6 @@
   }
   [data-tone='sand'] {
     --tint: var(--sand);
-  }
-  /* Text on a pastel is always Deep forest (brand book, sheet 12). */
-  .d-card {
-    .t-body {
-      color: var(--forest);
-    }
-    h3 {
-      white-space: pre-line;
-    }
   }
 
   /* Phone: Apple's iPhone 18 Pro front in Silver (Apple Design Resources) over the screen,
@@ -1006,175 +996,6 @@
     color: var(--cream);
     overflow: clip;
   }
-  .d-spot {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    width: calc(var(--u) * 688);
-    height: calc(var(--u) * 495);
-    transform: translateX(-50%);
-    pointer-events: none;
-  }
-  /* The app's front page, large: the amount left, a bar per day to payday, the message. */
-  .pp {
-    position: relative;
-    width: min(100% - 34px, calc(var(--u) * 860));
-    margin: 0 auto calc(var(--u) * 96);
-    text-align: left;
-  }
-  .pp-switch {
-    display: inline-flex;
-    padding: 4px;
-    border-radius: 999px;
-    background: rgba(253, 250, 244, 0.1);
-    box-shadow: inset 0 0 0 1px rgba(253, 250, 244, 0.14);
-
-    button {
-      min-height: 40px;
-      padding: 0 20px;
-      border-radius: 999px;
-      font-size: 16px;
-      font-weight: 500;
-      color: rgba(253, 250, 244, 0.7);
-      transition: background-color 0.35s, color 0.35s;
-
-      &[aria-pressed='true'] {
-        background: var(--cream);
-        color: var(--forest);
-      }
-    }
-  }
-  .pp-amount {
-    margin-top: calc(var(--u) * 20);
-    font-family: var(--display);
-    color: var(--cream);
-  }
-  .pp-number {
-    font-weight: 700;
-    font-size: clamp(56px, 32px + 6.6vw, 132px);
-    line-height: 1;
-    letter-spacing: -0.035em;
-    font-variant-numeric: tabular-nums;
-  }
-  .pp-left {
-    font-weight: 500;
-    font-size: clamp(22px, 16px + 1.6vw, 40px);
-  }
-  .pp-chart {
-    display: flex;
-    align-items: flex-end;
-    gap: calc(var(--u) * 24);
-    margin-top: calc(var(--u) * 56);
-  }
-  .pp-bars {
-    position: relative;
-    flex: 1;
-    display: flex;
-    align-items: flex-end;
-    gap: 0.6%;
-    height: clamp(120px, 60px + 13vw, 240px);
-  }
-  .pp-bar {
-    flex: 1;
-    height: calc(var(--h) * 100%);
-    border-radius: 4px;
-    transition: height 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--i) * 22ms), background-color 0.4s, box-shadow 0.4s;
-
-    &[data-kind='past'] {
-      background: #4caf50;
-    }
-    &[data-kind='today'] {
-      background: var(--cream);
-    }
-    &[data-kind='future'] {
-      box-shadow: inset 0 0 0 1.5px rgba(253, 250, 244, 0.85);
-    }
-  }
-  .pp-even {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    pointer-events: none;
-
-    line {
-      stroke: var(--cream);
-      stroke-width: 2;
-      stroke-dasharray: 6 6;
-    }
-  }
-  .pp-pill {
-    position: absolute;
-    left: calc(var(--x) * 100%);
-    bottom: calc(var(--h) * 100% + 12px);
-    translate: -50% 0;
-    padding: 4px 14px;
-    border-radius: 999px;
-    background: #4caf50;
-    font-size: clamp(14px, 12px + 0.4vw, 18px);
-    font-weight: 600;
-    color: var(--forest);
-    transition: left 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), bottom 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  .pp-payday {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    font-size: clamp(14px, 12px + 0.4vw, 18px);
-    font-weight: 600;
-    color: var(--cream);
-  }
-  .pp-coins {
-    width: calc(var(--u) * 54);
-    min-width: 34px;
-    aspect-ratio: 54 / 64;
-    background: url('/site/brand/coin-stack.svg') center / contain no-repeat;
-  }
-  .pp-note-row {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: end;
-    gap: 14px;
-    margin-top: calc(var(--u) * 36);
-
-    .pp-note {
-      grid-area: 1 / 2;
-    }
-  }
-  .pp-app {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-    background: url('/app-badge.png') center / cover;
-  }
-  .pp-note {
-    max-width: 30em;
-    padding: 18px 22px;
-    border-radius: 22px;
-    background: rgba(253, 250, 244, 0.92);
-    font-size: clamp(17px, 15px + 0.4vw, 21px);
-    line-height: 1.35;
-    color: var(--forest);
-    opacity: 0;
-    translate: 0 12px;
-    transition: opacity 0.45s, translate 0.45s;
-
-    &[data-shown='true'] {
-      opacity: 1;
-      translate: 0 0;
-      transition-delay: 0.5s;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .pp-bar,
-    .pp-pill,
-    .pp-note {
-      transition: none;
-    }
-  }
-
   .d-head {
     position: relative;
     text-align: center;
@@ -1220,12 +1041,32 @@
     background: var(--tint);
     clip-path: inset(0 round 24px);
   }
+  /* The mail's type: headline DM Sans Bold, 120 % leading, -3.5 % tracking; body Onest
+     Regular, 140 % leading; both #163223, with the mail's 16 px gap under a 22 px headline (0.73) kept. */
+  .d-card-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: var(--title);
+    line-height: 1.2;
+    letter-spacing: -0.035em;
+    color: #163223;
+    white-space: pre-line;
+  }
+  .d-card-body {
+    margin-top: calc(var(--title) * 0.73);
+    font-family: var(--text);
+    font-size: clamp(17px, 14px + 0.55vw, 22px);
+    line-height: 1.4;
+    color: #163223;
+    max-width: 24em;
+  }
   .d-card-text {
+    --title: clamp(28px, 16px + 2.2vw, 48px);
     position: absolute;
     z-index: 1;
-    left: calc(var(--u) * 80);
+    left: calc(var(--u) * 96);
     top: 50%;
-    width: calc(var(--u) * 640);
+    width: calc(var(--u) * 560);
     transform: translateY(-50%);
 
     p {
@@ -1260,9 +1101,10 @@
       border-radius: 0;
     }
     .d-content {
-      --phone: min(calc(var(--u) * 370), calc((100vh - 144px) * 646 / 1357));
+      /* Centred in the window below the nav (which ends about 80 px down), never under it. */
+      --phone: min(calc(var(--u) * 370), calc((100vh - 220px) * 646 / 1357));
       left: calc(50% + var(--u) * 167);
-      top: 72px;
+      top: calc(50vh - var(--phone) * 1357 / 646 / 2 + 40px);
     }
   }
   /* The mail's phone with its lifted pieces: the export is 866 x 1477 with the 646 px phone
@@ -1274,12 +1116,6 @@
     width: calc(var(--phone) * 866 / 646);
     max-width: none;
     height: auto;
-  }
-  .d-note {
-    position: absolute;
-    inset: auto 0 calc(var(--pad) - 28px);
-    text-align: center;
-    color: rgba(253, 250, 244, 0.7);
   }
   @media (max-width: 767px) {
     .d-para {

@@ -54,31 +54,6 @@ export const OKONOMI = {
   titleFirst: 'Ikke mere',
   titleSecond: '“hvor blev pengene af?”',
   line: 'Forbind banken sikkert med MitID, og se, hvad der er tilbage til lønningsdag, hvor pengene går hen, og hvilke udgifter der er på vej.',
-  // The front page of the app, large. Sample data from the captures hjem-top and hjem-faelles.
-  pace: {
-    switchLabel: 'Vis tal for',
-    left: 'tilbage',
-    ahead: 'Foran',
-    payday: 'Løn 20.',
-    views: [
-      {
-        label: 'Mine',
-        amount: 8166,
-        today: 15,
-        ahead: 0.16,
-        note: 'Du er 3.000 kr. foran. Det svarer til 6 gange restaurant og takeaway.',
-        summary: 'Eksempel fra appen: 8.166 kr. tilbage til løn den 20. Du er 3.000 kr. foran.',
-      },
-      {
-        label: 'Fælles',
-        amount: 12853,
-        today: 17,
-        ahead: 0.22,
-        note: 'I er 4.708 kr. foran. Det svarer til 5 gange restaurant og takeaway.',
-        summary: 'Eksempel fra appen: 12.853 kr. tilbage til løn den 20. for husstanden. I er 4.708 kr. foran.',
-      },
-    ],
-  },
   // The seven feature blocks of the launch mail (Figma 9366:329 and 9366:211), word for word,
   // each with its phone and lifted pieces exported from the same frames.
   cards: [
