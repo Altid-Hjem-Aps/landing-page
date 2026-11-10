@@ -102,17 +102,31 @@ export const OKONOMI = {
   titleFirst: 'Ikke mere',
   titleSecond: '“hvor blev pengene af?”',
   line: 'Forbind banken sikkert med MitID, og se, hvad der er tilbage til lønningsdag, hvor pengene går hen, og hvilke udgifter der er på vej.',
-  categoriesLabel: 'Jeres kategorier',
-  // The app's own category icons (public/site/icons), in its category colours.
-  categories: [
-    { icon: '/site/icons/housing.svg', name: 'Bolig', tone: 'sky' },
-    { icon: '/site/icons/transport.svg', name: 'Transport', tone: 'honey' },
-    { icon: '/site/icons/groceries.svg', name: 'Dagligvarer', tone: 'mint' },
-    { icon: '/site/icons/restaurants.svg', name: 'Restaurant og takeaway', tone: 'lavender' },
-    { icon: '/site/icons/shopping.svg', name: 'Shopping', tone: 'rose' },
-    { icon: '/site/icons/children.svg', name: 'Børn', tone: 'honey' },
-    { icon: '/site/icons/leisure.svg', name: 'Fritid', tone: 'sky' },
-  ],
+  // The front page of the app, large. Sample data from the captures hjem-top and hjem-faelles.
+  pace: {
+    switchLabel: 'Vis tal for',
+    left: 'tilbage',
+    ahead: 'Foran',
+    payday: 'Løn 20.',
+    views: [
+      {
+        label: 'Mine',
+        amount: 8166,
+        today: 15,
+        ahead: 0.16,
+        note: 'Du er 3.000 kr. foran. Det svarer til 6 gange restaurant og takeaway.',
+        summary: 'Eksempel fra appen: 8.166 kr. tilbage til løn den 20. Du er 3.000 kr. foran.',
+      },
+      {
+        label: 'Fælles',
+        amount: 12853,
+        today: 17,
+        ahead: 0.22,
+        note: 'I er 4.708 kr. foran. Det svarer til 5 gange restaurant og takeaway.',
+        summary: 'Eksempel fra appen: 12.853 kr. tilbage til løn den 20. for husstanden. I er 4.708 kr. foran.',
+      },
+    ],
+  },
   cards: [
     {
       tone: 'honey',
@@ -205,11 +219,9 @@ export const BANKS = {
 } as const
 
 export const PRESS = {
-  eyebrow: 'Omtalt i',
+  label: 'Omtalt i Ekstra Bladet, 25. juli 2026',
+  title: 'Spar stort på dine dagligvarer: Ny app sammenligner priser',
   outlet: 'Ekstra Bladet',
-  date: '25. juli 2026',
-  quote: '“Spar stort på dine dagligvarer: Ny app sammenligner priser”',
-  cta: 'Læs artiklen',
   newTab: ' (åbner i en ny fane)',
   href: 'https://ekstrabladet.dk/forbrug/Teknologi/spar-stort-paa-dine-dagligvarer-ny-app-sammenligner-priser/11232767',
 } as const

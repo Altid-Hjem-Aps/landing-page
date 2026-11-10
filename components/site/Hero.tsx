@@ -1,12 +1,13 @@
+import Image from 'next/image'
 import StoreBadges from '@/components/StoreBadges'
 import AppRating from './AppRating'
-import { HERO } from './copy'
+import { HERO, PRESS } from './copy'
 import CyclingPhone from './CyclingPhone'
 import HeroLanes from './HeroLanes'
 import HeroOrbit from './HeroOrbit'
 import QrCard from './QrCard'
 
-// Hero: the text on the page's light ground, one tilted phone and a smaller one in front of
+// Hero: the text on the page's light ground, Ekstra Bladet's article as a small card, one tilted phone and a smaller one in front of
 // it, both showing their screens in turn, the cards that travel under them as the page
 // scrolls, and the four services circling them with light trails.
 export default function Hero() {
@@ -19,6 +20,19 @@ export default function Hero() {
           <StoreBadges position="hero" variant="cream" size="lg" className="justify-center" />
         </div>
         <AppRating />
+      </div>
+      <div className="h-press-frame">
+        <a className="h-press" href={PRESS.href} target="_blank" rel="noopener noreferrer">
+          <Image src="/site/press/ekstra-bladet.png" alt={PRESS.outlet} width={44} height={44} />
+          <span>
+            <span className="h-press-label">{PRESS.label}</span>
+            <span className="h-press-title">{PRESS.title}</span>
+            <span className="sr-only">{PRESS.newTab}</span>
+          </span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M4 10l6-6M5 4h5v5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
       </div>
       <div className="h-bottom">
         <HeroLanes />

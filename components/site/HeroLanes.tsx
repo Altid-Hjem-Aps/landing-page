@@ -33,6 +33,7 @@ const LANES: Lane[] = [
 ]
 
 const REST_SCROLL = 700
+const FADE = 0.14
 
 const ease = (t: number) => t * t * (3 - 2 * t)
 
@@ -53,6 +54,9 @@ export default function HeroLanes() {
         const x = (-481 + 962 * p) * unit
         const y = mix(lane.from[2], lane.to[2]) * unit
         card.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${mix(lane.from[1], lane.to[1]).toFixed(2)}deg) scale(${mix(lane.from[0], lane.to[0]).toFixed(3)})`
+        // No box cuts them: on a wide window a hard edge would show mid-page, so each card
+        // fades in and out over the first and last stretch of its travel.
+        card.style.opacity = Math.min(1, p / FADE, (1 - p) / FADE).toFixed(3)
       })
     }
     // Reduced motion: the cards rest where a scrolling visitor would see them.
@@ -62,7 +66,7 @@ export default function HeroLanes() {
       frame = requestAnimationFrame(() => draw(position()))
     }
     draw(position())
-    // Clipped until they slide in, so a lazy image would pop in late. The lanes only show
+    // Hidden until they slide in, so a lazy image would pop in late. The lanes only show
     // from 768 px, and a phone should not pay for them.
     if (window.matchMedia('(min-width: 768px)').matches) {
       for (const card of cards.current) card?.querySelector('img')?.setAttribute('loading', 'eager')
@@ -88,7 +92,7 @@ export default function HeroLanes() {
                   cards.current[i] = el
                 }}
                 className="h-lane-card"
-                style={{ transform: 'translate3d(-481px, 0, 0)' }}
+                style={{ transform: 'translate3d(-481px, 0, 0)', opacity: 0 }}
               >
                 <Image src={lane.src} alt="" width={lane.width} height={lane.height} sizes={`${lane.width}px`} loading="lazy" style={{ width: `calc(var(--u) * ${lane.width})` }} />
               </div>

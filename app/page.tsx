@@ -8,7 +8,6 @@ import { dmSans } from '@/components/site/fonts'
 import Hero from '@/components/site/Hero'
 import { jsonLdScript } from '@/components/site/jsonLd'
 import Love from '@/components/site/Love'
-import Press from '@/components/site/Press'
 import MadDark from '@/components/site/MadDark'
 import Steps from '@/components/site/Steps'
 import WorksWith from '@/components/site/WorksWith'
@@ -57,7 +56,6 @@ export default function Home() {
         <main id="indhold">
           <Hero />
           <WorksWith />
-          <Press />
           <Proof />
           <Features />
           <MadDark />

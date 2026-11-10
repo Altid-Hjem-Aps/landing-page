@@ -1,13 +1,14 @@
 import Image from 'next/image'
 import { OKONOMI } from './copy'
 import Parallax from './Parallax'
+import PaydayPace from './PaydayPace'
 import Phone from './Phone'
-import CategoryCarousel from './PlateCarousel'
 import StagedNote from './StagedNote'
 
 const RANGES = [7, 28, 37, 39]
 
-// Deep forest, Økonomi. Spotlight, the app's spending categories, then four cards the phone
+// Deep forest, Økonomi. Spotlight on the app's front page drawn large (what is left until
+// payday, ahead or behind), then four cards the phone
 // stays fixed behind:
 // each card is clipped with clip-path and holds its own position: fixed phone, so the
 // screen changes as a card passes. No transform or backdrop-filter on any ancestor here.
@@ -16,7 +17,7 @@ export default function MadDark() {
     <>
       <section id="okonomi-universet" data-b="dark" data-surface="dark" className="sec d">
         <Image src="/site/render/spotlight.webp" alt="" width={688} height={495} className="d-spot" aria-hidden="true" />
-        <CategoryCarousel />
+        <PaydayPace />
         <header className="d-head">
           <h2 className="t-h2 d-title">
             <span className="d-title-dim">{OKONOMI.titleFirst}</span> {OKONOMI.titleSecond}

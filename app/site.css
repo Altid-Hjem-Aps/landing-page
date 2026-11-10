@@ -1,7 +1,7 @@
 /* The new altidhjem.dk front page (ALT-1420): the reference page's layout, in our own code and
    skin. Imported by app/page.tsx only, so the SEO pages keep their palette. Everything is
-   nested under .site, every keyframe is prefixed site-. No position: sticky (body overflow-x
-   hidden kills it). No transform or backdrop-filter on an ancestor of the fixed phones.
+   nested under .site, every keyframe is prefixed site-. The body clips overflow-x instead of
+   hiding it, so position: sticky works. No transform or backdrop-filter on an ancestor of the fixed phones.
    --u is one design pixel: 1440 wide on a computer, 390 wide on a phone. */
 
 .site {
@@ -47,7 +47,7 @@
   /* On Deep forest the ring turns Signal green, on anything that sits directly on it. */
   .nav[data-on='dark'] :focus-visible,
   .d-head :focus-visible,
-  .plates :focus-visible,
+  .pp :focus-visible,
   .x :focus-visible,
   .ft :focus-visible {
     outline-color: var(--signal);
@@ -151,61 +151,36 @@
     }
   }
 
-  /* Phone: a titanium rim, a black bezel and side buttons, solid, with the store
-     screenshots' shadows. --w is its width; the rest follows. */
+  /* Phone: Apple's iPhone 18 Pro bezel in Silver (Apple Design Resources), laid over the
+     screen; its screen opening is 1206 x 2622 of the 1350 x 2760 frame. --w is its width. */
   .ph {
     --w: calc(var(--u) * 323);
-    --rim: calc(var(--w) * 0.022);
-    --bezel: calc(var(--w) * 0.034);
     position: relative;
     width: var(--w);
-    height: calc((var(--w) - 2 * (var(--rim) + var(--bezel))) * 2556 / 1179 + 2 * (var(--rim) + var(--bezel)));
+    aspect-ratio: 1350 / 2760;
 
-    /* Side buttons: action and volume on the left, power on the right. */
-    &::before,
     &::after {
       content: '';
       position: absolute;
-      width: calc(var(--w) * 0.014);
-      border-radius: 2px;
-      background: linear-gradient(90deg, #8e9194, #d9dbdd);
-    }
-    &::before {
-      left: calc(var(--w) * -0.01);
-      top: calc(var(--w) * 0.44);
-      height: calc(var(--w) * 0.28);
-      box-shadow: 0 calc(var(--w) * -0.2) 0 0 #a8abae;
-    }
-    &::after {
-      right: calc(var(--w) * -0.01);
-      top: calc(var(--w) * 0.56);
-      height: calc(var(--w) * 0.3);
+      z-index: 1;
+      inset: 0;
+      background: url('/site/device/iphone-18-pro-silver.webp') 0 0 / 100% 100% no-repeat;
+      pointer-events: none;
     }
   }
+  /* The shadow, cast by a shape the size of the frame's outline. */
   .ph-body {
     position: absolute;
-    inset: 0;
-    border-radius: calc(var(--w) * 0.155);
-    background: linear-gradient(135deg, #f1f2f3 0%, #a9acaf 18%, #d8dadc 45%, #8e9194 75%, #e3e5e6 100%);
+    inset: 0.76% 1.19%;
+    border-radius: calc(var(--w) * 0.19);
     box-shadow:
-      0 calc(var(--w) * 0.057) calc(var(--w) * 0.113) rgba(0, 0, 0, 0.28),
-      0 calc(var(--w) * 0.0094) calc(var(--w) * 0.028) rgba(0, 0, 0, 0.18);
-
-    &::after {
-      content: '';
-      position: absolute;
-      inset: var(--rim);
-      border-radius: calc(var(--w) * 0.135);
-      background: #0d0f0e;
-    }
+      0 calc(var(--w) * 0.06) calc(var(--w) * 0.12) rgba(0, 30, 10, 0.22),
+      0 calc(var(--w) * 0.01) calc(var(--w) * 0.03) rgba(0, 30, 10, 0.14);
   }
   .ph-screen {
     position: absolute;
-    left: calc(var(--rim) + var(--bezel));
-    top: calc(var(--rim) + var(--bezel));
-    width: calc(var(--w) - 2 * (var(--rim) + var(--bezel)));
-    height: calc((var(--w) - 2 * (var(--rim) + var(--bezel))) * 2556 / 1179);
-    border-radius: calc(var(--w) * 0.104);
+    inset: 2.5% 5.33%;
+    border-radius: calc(var(--w) * 0.172);
     overflow: hidden;
     background: var(--forest);
   }
@@ -514,7 +489,8 @@
     position: relative;
     z-index: 1;
     margin: calc(var(--u) * 24) 8px 0;
-    height: calc(var(--u) * 607);
+    /* Tall enough for the whole tilted phone, its float and its shadow. */
+    height: calc(var(--u) * 715);
   }
   .h-lanes {
     position: absolute;
@@ -526,7 +502,6 @@
     top: 0;
     width: calc(var(--u) * 641);
     height: 100%;
-    overflow: clip;
   }
   .h-lane-left {
     left: calc(50% - var(--u) * 712);
@@ -567,11 +542,6 @@
 
     .ph {
       --w: calc(var(--u) * 320);
-    }
-    .ph-body {
-      box-shadow:
-        calc(var(--u) * 9) calc(var(--u) * 2) 0 0 #9fa2a5,
-        0 calc(var(--u) * 18) calc(var(--u) * 36) rgba(0, 0, 0, 0.28);
     }
   }
   .h-second {
@@ -650,6 +620,72 @@
     padding: 2px 10px;
     border-radius: 10px;
     background: var(--cream);
+  }
+  /* Ekstra Bladet's article, small: bottom left of the first viewport on a computer,
+     mirroring the QR card; under the rating on smaller screens. */
+  .h-press-frame {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    margin: 20px 17px 0;
+  }
+  .h-press {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 330px;
+    padding: 10px 14px 10px 10px;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 6px 20px rgba(0, 30, 10, 0.1);
+    text-align: left;
+    color: var(--forest);
+    transition: transform 0.15s;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+    img {
+      flex: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+    }
+    svg {
+      flex: none;
+      color: var(--stone);
+    }
+  }
+  .h-press-label {
+    display: block;
+    font-size: 12px;
+    line-height: 15px;
+    color: var(--stone);
+  }
+  .h-press-title {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+  }
+  @media (min-width: 1024px) {
+    .h-press-frame {
+      position: absolute;
+      inset: 8px 8px auto;
+      height: min(calc(100vh - 16px), calc(100% - 16px));
+      margin: 0;
+      pointer-events: none;
+    }
+    /* Above the pause button, which sits in the bottom left corner. */
+    .h-press {
+      position: absolute;
+      left: 0;
+      bottom: 48px;
+      width: 310px;
+      min-height: 88px;
+      pointer-events: auto;
+    }
   }
   .qr-frame {
     display: none;
@@ -738,7 +774,7 @@
     }
     .h-bottom {
       margin: calc(var(--u) * 12) 8px 0;
-      height: calc(var(--u) * 384);
+      height: calc(var(--u) * 560);
     }
     .h-phone {
       left: calc(var(--u) * 6);
@@ -814,60 +850,6 @@
     }
   }
 
-  /* Press: the mention altidmad.dk shows, in its press block's layout. */
-  .pr {
-    width: min(100% - 34px, calc(var(--u) * 1100));
-    margin: calc(var(--u) * 40) auto 0;
-  }
-  .pr-eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--stone);
-
-    img {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-    }
-  }
-  .pr-date {
-    margin-top: 24px;
-    font-size: 18px;
-    color: var(--stone);
-  }
-  .pr-quote {
-    margin-top: 8px;
-    font-family: var(--display);
-    font-weight: 700;
-    font-size: clamp(30px, 22px + 2vw, 52px);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    color: var(--forest);
-    text-wrap: balance;
-  }
-  .pr-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    min-height: 48px;
-    margin-top: 28px;
-    padding: 0 26px;
-    border: 1px solid rgba(0, 60, 22, 0.25);
-    border-radius: 999px;
-    font-size: 17px;
-    font-weight: 500;
-    color: var(--forest);
-    transition: background-color 0.15s;
-
-    &:hover {
-      background: var(--sand);
-    }
-  }
 
   /* 3. Proof */
   .p {
@@ -1368,86 +1350,166 @@
     transform: translateX(-50%);
     pointer-events: none;
   }
-  .plates {
+  /* The app's front page, large: the amount left, a bar per day to payday, the message. */
+  .pp {
     position: relative;
-    height: max(calc(var(--u) * 243), 226px);
-    touch-action: pan-y pinch-zoom;
+    width: min(100% - 34px, calc(var(--u) * 860));
+    margin: 0 auto calc(var(--u) * 96);
+    text-align: left;
   }
-  .plates-row {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    display: flex;
-    gap: 40px;
-    transform: translateX(calc(-80px - var(--sel) * 200px));
-    transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  .pp-switch {
+    display: inline-flex;
+    padding: 4px;
+    border-radius: 999px;
+    background: rgba(253, 250, 244, 0.1);
+    box-shadow: inset 0 0 0 1px rgba(253, 250, 244, 0.14);
 
-    @media (prefers-reduced-motion: reduce) {
+    button {
+      min-height: 40px;
+      padding: 0 20px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(253, 250, 244, 0.7);
+      transition: background-color 0.35s, color 0.35s;
+
+      &[aria-pressed='true'] {
+        background: var(--cream);
+        color: var(--forest);
+      }
+    }
+  }
+  .pp-amount {
+    margin-top: calc(var(--u) * 20);
+    font-family: var(--display);
+    color: var(--cream);
+  }
+  .pp-number {
+    font-weight: 700;
+    font-size: clamp(56px, 32px + 6.6vw, 132px);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    font-variant-numeric: tabular-nums;
+  }
+  .pp-left {
+    font-weight: 500;
+    font-size: clamp(22px, 16px + 1.6vw, 40px);
+  }
+  .pp-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: calc(var(--u) * 24);
+    margin-top: calc(var(--u) * 56);
+  }
+  .pp-bars {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.6%;
+    height: clamp(120px, 60px + 13vw, 240px);
+  }
+  .pp-bar {
+    flex: 1;
+    height: calc(var(--h) * 100%);
+    border-radius: 4px;
+    transition: height 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--i) * 22ms), background-color 0.4s, box-shadow 0.4s;
+
+    &[data-kind='past'] {
+      background: #4caf50;
+    }
+    &[data-kind='today'] {
+      background: var(--cream);
+    }
+    &[data-kind='future'] {
+      box-shadow: inset 0 0 0 1.5px rgba(253, 250, 244, 0.85);
+    }
+  }
+  .pp-even {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+
+    line {
+      stroke: var(--cream);
+      stroke-width: 2;
+      stroke-dasharray: 6 6;
+    }
+  }
+  .pp-pill {
+    position: absolute;
+    left: calc(var(--x) * 100%);
+    bottom: calc(var(--h) * 100% + 12px);
+    translate: -50% 0;
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: #4caf50;
+    font-size: clamp(14px, 12px + 0.4vw, 18px);
+    font-weight: 600;
+    color: var(--forest);
+    transition: left 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), bottom 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .pp-payday {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: clamp(14px, 12px + 0.4vw, 18px);
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .pp-coins {
+    width: calc(var(--u) * 54);
+    min-width: 34px;
+    aspect-ratio: 54 / 64;
+    background: url('/site/brand/coin-stack.svg') center / contain no-repeat;
+  }
+  .pp-note-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: end;
+    gap: 14px;
+    margin-top: calc(var(--u) * 36);
+
+    .pp-note {
+      grid-area: 1 / 2;
+    }
+  }
+  .pp-app {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: url('/app-badge.png') center / cover;
+  }
+  .pp-note {
+    max-width: 30em;
+    padding: 18px 22px;
+    border-radius: 22px;
+    background: rgba(253, 250, 244, 0.92);
+    font-size: clamp(17px, 15px + 0.4vw, 21px);
+    line-height: 1.35;
+    color: var(--forest);
+    opacity: 0;
+    translate: 0 12px;
+    transition: opacity 0.45s, translate 0.45s;
+
+    &[data-shown='true'] {
+      opacity: 1;
+      translate: 0 0;
+      transition-delay: 0.5s;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pp-bar,
+    .pp-pill,
+    .pp-note {
       transition: none;
     }
   }
-  .plate {
-    position: relative;
-    display: flex;
-    flex: none;
-    flex-direction: column;
-    justify-content: flex-start;
-    width: 160px;
-    height: 186px;
-    padding: 0;
-    color: var(--cream);
 
-    .plate-icon {
-      display: grid;
-      place-items: center;
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      background: var(--tint);
-      opacity: calc(0.46 - 0.15 * var(--d));
-      transition: opacity 0.5s, transform 0.5s;
-      transform: scale(0.82);
-
-      img {
-        width: 64px;
-        height: 64px;
-      }
-    }
-    &[data-selected='true'] .plate-icon {
-      opacity: 1;
-      transform: none;
-    }
-  }
-  .plate-day {
-    position: absolute;
-    left: 50%;
-    top: 166px;
-    transform: translateX(-50%);
-    padding: 3px 10px;
-    border-radius: 16px;
-    background: rgba(253, 250, 244, 0.1);
-    font-size: 13px;
-    line-height: 16px;
-    color: rgba(253, 250, 244, 0.7);
-  }
-  .plate[data-selected='true'] .plate-day {
-    visibility: hidden;
-  }
-  .plate-name {
-    position: absolute;
-    left: 50%;
-    top: 166px;
-    transform: translateX(-50%);
-    padding: 3px 12px;
-    border-radius: 16px;
-    background: rgba(253, 250, 244, 0.18);
-    font-size: 13px;
-    line-height: 16px;
-    color: var(--cream);
-    width: max-content;
-    max-width: calc(100vw - 24px);
-    text-align: center;
-  }
   .d-head {
     position: relative;
     text-align: center;
@@ -1575,9 +1637,6 @@
     color: rgba(253, 250, 244, 0.7);
   }
   @media (max-width: 767px) {
-    .plates {
-      height: max(calc(var(--u) * 208), 208px);
-    }
     .d-para {
       margin-top: calc(var(--u) * 8);
     }
@@ -1829,28 +1888,93 @@
     }
   }
 
-  /* Four steps: the phone stays put on the right while the steps scroll past. */
-  .st-title {
-    width: min(100% - 2 * var(--u) * 149, calc(var(--u) * 555));
-    margin-left: calc(var(--u) * 149);
+  /* Four steps: the whole block stays put while the page scrolls through it; the title, all
+     four steps and the phone are in view, and the scroll moves the highlight down the steps. */
+  .st {
+    --phone: min(calc(var(--u) * 323), calc((100svh - 140px) * 1350 / 2760));
+    height: calc(100svh + 4 * 55svh);
+    padding-block: 0;
   }
-  .st-wrap {
-    position: relative;
-    clip-path: inset(0);
+  .st-stage {
+    position: sticky;
+    top: 0;
+    display: grid;
+    grid-template-columns: calc(var(--u) * 600) var(--phone);
+    justify-content: space-between;
+    align-items: center;
+    height: 100svh;
+    width: min(100% - 2 * var(--u) * 120, calc(var(--u) * 1150));
+    margin-inline: auto;
+    padding-top: 72px;
   }
-  .st-pin {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
+  .st-list {
+    display: grid;
+    gap: 10px;
+    margin-top: calc(var(--u) * 36);
+  }
+  .st-step {
+    padding: 18px 26px;
+    border-radius: 22px;
+    background: color-mix(in srgb, var(--sand) 70%, transparent);
+    color: rgba(0, 60, 22, 0.55);
+    transition: background-color 0.4s, color 0.4s, padding 0.4s;
+
+    &[data-active='true'] {
+      padding-block: 26px;
+      background: var(--tint);
+      color: var(--forest);
+    }
+  }
+  .st-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+  }
+  .st-n {
+    flex: none;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+  }
+  .st-card-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(22px, 18px + 0.6vw, 28px);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+  /* The open step's text and buttons; the others fold to their title. */
+  .st-more {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s;
+
+    > div {
+      overflow: hidden;
+      padding-left: 34px;
+    }
+  }
+  .st-step[data-active='true'] .st-more {
+    grid-template-rows: 1fr;
+  }
+  .st-card-body {
+    margin-top: 8px;
+    font-size: clamp(17px, 15px + 0.3vw, 19px);
+    line-height: 1.4;
+  }
+  .st-pills {
+    margin-top: 18px;
+    justify-content: flex-start;
   }
   .st-phone {
-    position: fixed;
-    top: 50%;
-    left: calc(50% + var(--u) * 190);
-    translate: 0 -50%;
+    position: relative;
 
     .ph {
-      --w: calc(var(--u) * 323);
+      --w: var(--phone);
     }
   }
   .st-screen {
@@ -1861,79 +1985,46 @@
       opacity: 1;
     }
   }
-  .st-list {
-    width: calc(var(--u) * 555);
-    margin-left: calc(var(--u) * 149);
-  }
-  .st-step {
-    display: flex;
-    align-items: center;
-    min-height: 72vh;
-  }
-  .st-card {
-    width: 100%;
-    padding: calc(var(--u) * 36);
-    border-radius: 24px;
-    background: color-mix(in srgb, var(--sand) 60%, transparent);
-    color: rgba(0, 60, 22, 0.6);
-    transition: background-color 0.4s, color 0.4s, transform 0.4s;
-    transform: scale(0.94);
-  }
-  .st-step[data-active='true'] .st-card {
-    background: var(--tint);
-    color: var(--forest);
-    transform: none;
-  }
-  .st-n {
-    display: block;
-    font-family: var(--display);
-    font-weight: 800;
-    font-size: 15px;
-    letter-spacing: 0.04em;
-  }
-  .st-card-title {
-    margin-top: 10px;
-    font-family: var(--display);
-    font-weight: 700;
-    font-size: clamp(28px, 22px + 1.2vw, 40px);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-  }
-  .st-card-body {
-    margin-top: 10px;
-    font-size: clamp(17px, 15px + 0.4vw, 20px);
-    line-height: 1.4;
-  }
-  .st-pills {
-    margin-top: 24px;
-  }
   .st-inline {
     display: none;
   }
   .st-note {
-    margin-top: 24px;
-    text-align: center;
+    margin-top: 14px;
   }
   @media (max-width: 767px) {
-    .st-title,
-    .st-list {
+    .st {
+      height: auto;
+      padding-block: var(--pad) 0;
+    }
+    .st-stage {
+      position: static;
+      display: block;
+      height: auto;
       width: auto;
       margin-inline: calc(var(--u) * 17);
+      padding-top: 0;
     }
-    .st-pin {
+    .st-phone {
       display: none;
     }
-    .st-step {
-      flex-direction: column;
-      gap: 24px;
-      min-height: 0;
-      margin-top: 32px;
+    .st-list {
+      gap: 32px;
     }
-    .st-card {
-      transform: none;
+    .st-step {
+      padding: 26px 22px;
+      background: var(--tint);
+      color: var(--forest);
+    }
+    .st-more {
+      grid-template-rows: 1fr;
+    }
+    .st-more > div {
+      padding-left: 0;
     }
     .st-inline {
-      display: block;
+      display: flex;
+      justify-content: center;
+      margin-top: 24px;
 
       .ph {
         --w: calc(var(--u) * 240);
@@ -2499,6 +2590,8 @@ html:has(.sheet[open]) {
 
 body:has(.site) {
   background: #fdfaf4;
+  /* clip, not hidden: hidden makes the body a scroll box, and that kills position: sticky. */
+  overflow-x: clip;
 }
 
 @media (prefers-reduced-motion: reduce) {
