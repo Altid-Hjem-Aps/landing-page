@@ -189,8 +189,19 @@ export const STEPS = {
 
 export const BANKS = {
   title: 'Virker med alle danske banker',
-  // The app connects through Subaio, whose own text in the app says all Danish banks.
-  names: ['Danske Bank', 'Nordea', 'Jyske Bank', 'Nykredit', 'Sydbank', 'Arbejdernes Landsbank', 'Spar Nord', 'Lunar', 'Sparekassen Kronjylland', 'Ringkjøbing Landbobank'],
+  // The app connects through Subaio, whose own text in the app says all Danish banks. Logos
+  // from each bank's own website on 10 Nov 2026, see public/site/banks/sources.json.
+  logos: [
+    { name: 'Danske Bank', src: '/site/banks/danske-bank.svg', ratio: 9.85 },
+    { name: 'Nordea', src: '/site/banks/nordea.svg', ratio: 4.76 },
+    { name: 'Jyske Bank', src: '/site/banks/jyske-bank.svg', ratio: 6.46 },
+    { name: 'Nykredit', src: '/site/banks/nykredit.svg', ratio: 6.18 },
+    { name: 'Sydbank', src: '/site/banks/sydbank.svg', ratio: 5.08 },
+    { name: 'Spar Nord', src: '/site/banks/spar-nord.svg', ratio: 2.78 },
+    { name: 'Lunar', src: '/site/banks/lunar.svg', ratio: 2.86 },
+    { name: 'Sparekassen Kronjylland', src: '/site/banks/sparekassen-kronjylland.svg', ratio: 4.89 },
+    { name: 'Ringkjøbing Landbobank', src: '/site/banks/ringkjobing-landbobank.svg', ratio: 2.37 },
+  ],
 } as const
 
 export const PRESS = {

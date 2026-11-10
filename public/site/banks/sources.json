@@ -1,0 +1,101 @@
+[
+  {
+    "name": "Danske Bank",
+    "file": "danske-bank.svg",
+    "sourceUrl": "https://danskebank.dk/-/media/danske-bank-images/logo/danske-bank-logo-svg.svg?iar=0&rev=e556e7c368a649ec9bc5b3e1701ecf23&hash=A4A585E5A96F33CC2EFAB973823F1BEB",
+    "pageUrl": "https://danskebank.dk/privat",
+    "fetchedAt": "2026-11-10T13:15:00Z",
+    "width": 1920.0,
+    "height": 195.0,
+    "matchesLiveHeader": true,
+    "note": "Header <img> file. Navy #002346."
+  },
+  {
+    "name": "Nordea",
+    "file": "nordea.svg",
+    "sourceUrl": "https://www.nordea.dk/Images/144-169221/Nordea-logo%20(2017).svg",
+    "pageUrl": "https://www.nordea.dk/",
+    "fetchedAt": "2026-11-10T13:15:00Z",
+    "width": 136.1,
+    "height": 28.6,
+    "matchesLiveHeader": true,
+    "note": "Header <img> file (Nordea blue #0000A0). Same artwork as the header; the site recolours it white via CSS on its dark blue top bar."
+  },
+  {
+    "name": "Jyske Bank",
+    "file": "jyske-bank.svg",
+    "sourceUrl": "https://www.jyskebank.dk/",
+    "pageUrl": "https://www.jyskebank.dk/",
+    "fetchedAt": "2026-11-10T13:15:00Z",
+    "width": 155.0,
+    "height": 24.0,
+    "matchesLiveHeader": true,
+    "note": "Inline <svg> in the header (no separate file); green #00422e. curl gets 403, captured with headless Chromium."
+  },
+  {
+    "name": "Nykredit",
+    "file": "nykredit.svg",
+    "sourceUrl": "https://www.nykredit.dk/globalassets/billeder/ikoner-logoer-flag-grafikker-og-diverse/logoer/nykredit_logo.svg",
+    "pageUrl": "https://www.nykredit.dk/dit-liv/",
+    "fetchedAt": "2026-11-10T13:15:00Z",
+    "width": 136.0,
+    "height": 22.0,
+    "matchesLiveHeader": true,
+    "note": "Header <img> file."
+  },
+  {
+    "name": "Sydbank",
+    "file": "sydbank.svg",
+    "sourceUrl": "https://www.sydbank.dk/",
+    "pageUrl": "https://www.sydbank.dk/",
+    "fetchedAt": "2026-11-10T13:15:00Z",
+    "width": 900.0,
+    "height": 177.0,
+    "matchesLiveHeader": true,
+    "note": "Inline <svg> in the header (class logo-al-sydbank); currentColor fills resolved to computed colours (#af1e2d, #093356, white). Post-merger mark. curl gets 403, captured with headless Chromium."
+  },
+  {
+    "name": "Spar Nord",
+    "file": "spar-nord.svg",
+    "sourceUrl": "https://www.sparnord.dk/globalassets/billeder/spar-nord/logo/sparnord_logo_website.svg",
+    "pageUrl": "https://www.sparnord.dk/dit-liv/",
+    "fetchedAt": "2026-11-10T13:15:00Z",
+    "width": 128.0,
+    "height": 46.0,
+    "matchesLiveHeader": true,
+    "note": "Header <img> file. Site runs on the Nykredit platform but still shows the Spar Nord logo."
+  },
+  {
+    "name": "Lunar",
+    "file": "lunar.svg",
+    "sourceUrl": "https://www.lunar.app/dk/privat",
+    "pageUrl": "https://www.lunar.app/dk/privat",
+    "fetchedAt": "2026-11-10T13:15:00Z",
+    "width": 80.0,
+    "height": 28.0,
+    "matchesLiveHeader": true,
+    "note": "Inline <svg> in the header, fill set to black #000000: the header shows it white over the hero photo and black once scrolled or on light pages. Same path."
+  },
+  {
+    "name": "Sparekassen Kronjylland",
+    "file": "sparekassen-kronjylland.svg",
+    "sourceUrl": "https://www.sparkron.dk/-/media/sparekassenkronjylland/pdf-filer/logo/primaer_logo_positiv.pdf?rev=56d013064aa64ffbb9ffbf5668c3459c&hash=67C4B93999DDFD8BE5F6A03370A69821",
+    "pageUrl": "https://www.sparkron.dk/om-sparekassen/presse",
+    "fetchedAt": "2026-11-10T13:15:00Z",
+    "width": 319.05,
+    "height": 65.3,
+    "matchesLiveHeader": true,
+    "note": "Header only has a 148x48 PNG; this SVG is converted (pdftocairo) from the positive primary logo PDF on the bank's press page, viewBox cropped to the artwork. Visually identical to the header PNG."
+  },
+  {
+    "name": "Ringkjøbing Landbobank",
+    "file": "ringkjobing-landbobank.svg",
+    "sourceUrl": "https://www.rlb.dk/media/api/content/mediafiles/4u0j4u4y/rlb-v1-farver.svg",
+    "pageUrl": "https://www.rlb.dk/",
+    "fetchedAt": "2026-11-10T13:15:00Z",
+    "width": 369.93,
+    "height": 155.97,
+    "matchesLiveHeader": true,
+    "note": "landbobanken.dk redirects to rlb.dk. Header <img> file, green #2d8c2d + orange #f07d1b."
+  }
+]

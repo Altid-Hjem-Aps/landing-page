@@ -790,13 +790,19 @@
     padding-right: calc(var(--u) * 72);
   }
   .w-bank {
+    display: flex;
+    align-items: center;
     flex: none;
-    font-family: var(--display);
-    font-weight: 700;
-    font-size: clamp(20px, 17px + 0.6vw, 26px);
-    letter-spacing: -0.02em;
-    white-space: nowrap;
-    color: rgba(0, 60, 22, 0.55);
+    height: 44px;
+
+    img {
+      display: block;
+      height: 28px;
+      width: auto;
+    }
+    &[data-tall='true'] img {
+      height: 40px;
+    }
   }
   @media (max-width: 767px) {
     .w-mq {
