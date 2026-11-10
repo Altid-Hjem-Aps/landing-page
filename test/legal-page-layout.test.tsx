@@ -88,7 +88,7 @@ describe('/privatlivspolitik', () => {
     render(<Privatlivspolitik />)
     const h2s = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
     expect(h2s).toEqual(privacyPolicy.sections.map((s) => s.title))
-    expect(screen.getByText('Senest opdateret: 5. november 2026')).toBeInTheDocument()
+    expect(screen.getByText('Senest opdateret: 10. november 2026')).toBeInTheDocument()
   })
 
   it('lists every cookie and storage key the site sets, and lets the visitor change the choice', () => {
