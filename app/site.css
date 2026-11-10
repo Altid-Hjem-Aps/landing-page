@@ -1555,7 +1555,7 @@
     }
   }
 
-  /* 8. Privacy: a Deep forest panel with a lock, three facts and the banks in white. */
+  /* 8. Privacy: a Dark forest panel with the MitID lock and the banks in white. */
   .x-panel {
     display: flex;
     flex-direction: column;
@@ -1564,7 +1564,8 @@
     margin-inline: auto;
     padding: calc(var(--u) * 88) 0 calc(var(--u) * 64);
     border-radius: 24px;
-    background: var(--forest);
+    /* Dark forest, the darkest green in the brand book. */
+    background: var(--dark-forest);
     color: #fff;
     text-align: center;
     overflow: hidden;
