@@ -2,12 +2,13 @@ import { Logo } from '@/components/Logo'
 import { STORY } from './copy'
 import StoryDots from './StoryDots'
 
-// The old site's "we have done this before" block in the new skin: one rounded panel split
-// in Altid Energi blue and Deep forest, the quote with its hanging opening mark on the left,
-// the promise on the right, and the two logos joined by a line of dots across the seam.
+// The old site's "we have done this before" block in the new type, edge to edge as it was:
+// Altid Energi blue and Deep forest side by side, the quote with its hanging opening mark on
+// the left, the promise on the right, the two logos joined by dots across the seam, and the
+// app icon sitting on the seam down into the FAQ below.
 export default function Story() {
   return (
-    <section data-b="story" className="sec sy" aria-labelledby="sy-title">
+    <section data-b="story" className="sy" aria-labelledby="sy-title">
       <div className="sy-panel" data-surface="dark">
         <div className="sy-half sy-energi">
           <p className="sy-pill">{STORY.proof}</p>
@@ -26,6 +27,8 @@ export default function Story() {
           <StoryDots />
           <Logo variant="forest" className="sy-logo" />
         </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/app-badge.png" alt="" width={96} height={96} className="sy-icon" />
       </div>
     </section>
   )

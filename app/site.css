@@ -1570,13 +1570,25 @@
     overflow: hidden;
   }
   .x-lock {
-    display: grid;
-    place-items: center;
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    background: var(--signal);
-    color: var(--forest);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    height: 64px;
+    padding: 0 24px 0 20px;
+    border-radius: 999px;
+    background: #fff;
+    color: #0060e6;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+
+    svg {
+      width: 28px;
+      height: 28px;
+    }
+    img {
+      display: block;
+      width: auto;
+      height: 25px;
+    }
   }
   .x-title {
     margin-top: 28px;
@@ -1587,39 +1599,11 @@
     margin-top: 16px;
     color: rgba(255, 255, 255, 0.8);
   }
-  .x-points {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    width: min(100% - 34px, 50em);
-    margin-top: 28px;
-
-    li {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 40px;
-      padding: 0 16px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
-      font-size: 16px;
-      font-weight: 500;
-      color: #fff;
-
-      svg {
-        color: var(--signal);
-      }
-    }
-  }
   /* The banks in white (public/site/banks/white, made from the colour SVGs with their
      white details cut out), across the panel. */
   .x-banks {
     width: 100%;
-    margin-top: calc(var(--u) * 64);
-    padding-top: calc(var(--u) * 40);
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    margin-top: calc(var(--u) * 56);
 
     .w {
       padding-top: 0;
@@ -1654,25 +1638,22 @@
       width: calc(var(--u) * 356);
       padding-top: 48px;
     }
-    .x-points li {
-      font-size: 15px;
-    }
   }
 
-  /* Story: the old site's Trust block in the new skin. One rounded panel, Altid Energi blue
-     and Deep forest side by side, the logos joined by dots across the seam. */
+  /* Story: the old site's Trust block in the new type, edge to edge. Altid Energi blue and
+     Deep forest side by side, the logos joined by dots across the seam, the app icon on the
+     seam between this block and the FAQ. */
+  .sy {
+    margin-top: var(--pad);
+  }
   .sy-panel {
     position: relative;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    width: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
-    margin-inline: auto;
-    border-radius: 24px;
-    overflow: hidden;
     color: #fff;
   }
   .sy-half {
-    padding: calc(var(--u) * 96) calc(var(--u) * 72) calc(var(--u) * 190);
+    padding: calc(var(--u) * 128) calc(var(--u) * 96) calc(var(--u) * 200);
   }
   .sy-energi {
     background: #022f6f;
@@ -1698,11 +1679,12 @@
   }
   /* The hanging opening mark, as in the mail and the old block: -0.42em. */
   .sy-quote {
+    max-width: 15em;
     margin-top: calc(var(--u) * 32);
     font-family: var(--display);
     font-weight: 700;
-    font-size: clamp(28px, 18px + 1.9vw, 46px);
-    line-height: 1.15;
+    font-size: clamp(30px, 18px + 2.2vw, 56px);
+    line-height: 1.12;
     letter-spacing: -0.025em;
     text-indent: -0.42em;
     text-wrap: balance;
@@ -1711,21 +1693,22 @@
     margin-top: calc(var(--u) * 32);
     font-family: var(--display);
     font-weight: 700;
-    font-size: clamp(28px, 18px + 1.9vw, 46px);
-    line-height: 1.15;
+    font-size: clamp(30px, 18px + 2.2vw, 56px);
+    line-height: 1.12;
     letter-spacing: -0.025em;
+    text-wrap: balance;
   }
   .sy-body {
-    max-width: 30em;
-    margin-top: 20px;
-    font-size: clamp(16px, 14.5px + 0.3vw, 19px);
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.82);
+    max-width: 24em;
+    margin-top: 24px;
+    font-size: clamp(18px, 15px + 0.5vw, 22px);
+    line-height: 1.45;
+    color: #fff;
   }
   .sy-bridge {
     position: absolute;
     left: 50%;
-    bottom: calc(var(--u) * 64);
+    bottom: calc(var(--u) * 88);
     display: flex;
     align-items: center;
     gap: calc(var(--u) * 28);
@@ -1733,7 +1716,7 @@
   }
   .sy-logo {
     width: auto;
-    height: clamp(34px, 2.2vw + 8px, 48px);
+    height: clamp(34px, 2.2vw + 8px, 52px);
   }
   .sy-dots {
     display: flex;
@@ -1757,13 +1740,24 @@
       }
     }
   }
+  .sy-icon {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    bottom: 0;
+    width: calc(var(--u) * 96);
+    min-width: 64px;
+    height: auto;
+    border-radius: 24%;
+    translate: -50% 50%;
+    box-shadow: 0 14px 34px rgba(0, 30, 10, 0.3);
+  }
   @media (max-width: 767px) {
     .sy-panel {
       grid-template-columns: 1fr;
-      width: calc(var(--u) * 356);
     }
     .sy-half {
-      padding: 48px 24px 56px;
+      padding: 64px 24px 56px;
     }
     .sy-hjem {
       padding-bottom: 32px;
@@ -1773,7 +1767,7 @@
       position: static;
       justify-content: center;
       gap: 14px;
-      padding-bottom: 48px;
+      padding-bottom: 72px;
       translate: none;
       background: var(--forest);
     }
@@ -1782,65 +1776,33 @@
     }
   }
 
-  /* 10. FAQ: the questions on the left, the family photo as a card on the right. */
+  /* 10. FAQ, as on the old site: the questions on the cream half, rows split by fine lines,
+     a Signal plus in a circle; the family photo filling the other half to the edge. */
   .q-grid {
     display: grid;
-    grid-template-columns: 1fr calc(var(--u) * 560);
-    gap: calc(var(--u) * 64);
-    width: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
-    margin-inline: auto;
+    grid-template-columns: 1fr 1fr;
+  }
+  .q-main {
+    padding: calc(var(--u) * 128) calc(var(--u) * 96) calc(var(--u) * 112);
   }
   .q-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
     margin-top: calc(var(--u) * 40);
-  }
-  .q-photo {
-    align-self: start;
-    position: sticky;
-    top: 96px;
-    height: min(calc(var(--u) * 640), calc(100vh - 128px));
-    border-radius: 24px;
-    overflow: hidden;
-    background: var(--sand);
-  }
-  .q-icon {
-    position: absolute;
-    left: 24px;
-    top: 24px;
-    width: 72px;
-    height: 72px;
-    border-radius: 18px;
-    box-shadow: 0 10px 28px rgba(0, 30, 10, 0.25);
-  }
-  @media (max-width: 767px) {
-    .q-grid {
-      grid-template-columns: 1fr;
-      width: calc(var(--u) * 356);
-    }
-    .q-photo {
-      position: relative;
-      top: auto;
-      order: -1;
-      height: calc(var(--u) * 260);
-    }
+    border-top: 1px solid rgba(0, 60, 22, 0.14);
   }
   .q-item {
-    border-radius: 24px;
-    background: var(--sand);
+    border-bottom: 1px solid rgba(0, 60, 22, 0.14);
 
     summary {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      padding: 24px;
+      padding: 22px 0;
       font-family: var(--display);
       font-weight: 700;
-      font-size: clamp(20px, 18.51px + 0.381vw, 24px);
-      line-height: 1.1;
-      letter-spacing: -0.008em;
+      font-size: clamp(19px, 17px + 0.4vw, 23px);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
       color: var(--forest);
       cursor: pointer;
       list-style: none;
@@ -1850,6 +1812,11 @@
       }
       svg {
         flex: none;
+        width: 36px;
+        height: 36px;
+        padding: 8px;
+        border-radius: 50%;
+        background: var(--signal);
         transition: transform 0.2s;
       }
     }
@@ -1857,15 +1824,36 @@
       transform: rotate(45deg);
     }
     p {
-      padding: 0 24px 24px;
+      max-width: 34em;
+      padding: 0 52px 24px 0;
       font-size: 18px;
-      font-weight: 500;
-      line-height: 25px;
+      line-height: 1.5;
+      color: var(--forest);
     }
     a {
       color: var(--forest);
       text-decoration: underline;
       text-underline-offset: 3px;
+    }
+  }
+  /* The window's height, staying in view while the questions scroll past. */
+  .q-photo {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+  }
+  @media (max-width: 767px) {
+    .q-grid {
+      grid-template-columns: 1fr;
+    }
+    .q-main {
+      padding: 64px 20px 48px;
+    }
+    .q-photo {
+      position: relative;
+      order: -1;
+      height: calc(var(--u) * 300);
     }
   }
 

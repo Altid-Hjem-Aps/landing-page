@@ -126,8 +126,6 @@ export const MAD = {
 export const PRIVACY = {
   title: 'Jeres tal er jeres',
   body: 'Forbindelsen til jeres bank giver kun adgang til at læse oplysninger, og vi kan ikke flytte penge. Vi sælger ikke jeres bankoplysninger.',
-  // The same three facts as the line above, short. MitID is how the bank login works (step 2).
-  points: ['Log ind med MitID', 'Kun adgang til at læse', 'Vi kan ikke flytte penge'],
   link: 'Læs privatlivspolitikken',
 } as const
 
@@ -169,13 +167,14 @@ export const PRESS = {
   href: 'https://ekstrabladet.dk/forbrug/Teknologi/spar-stort-paa-dine-dagligvarer-ny-app-sammenligner-priser/11232767',
 } as const
 
-// The old site's Trust block (components/sections/Trust.tsx), word for word.
+// The old site's Trust block (components/sections/Trust.tsx); the body is condensed.
 export const STORY = {
   proof: '+15.000 tilfredse danske kunder',
   quote: '“Vi startede med at gøre op med skjulte gebyrer i elmarkedet. Nu gør vi det samme på tværs af alle hjemmets faste udgifter.”',
   eyebrow: 'Vi har gjort det før',
   title: 'Fair, gennemsigtigt og billigt',
-  body: 'Altid Hjem er skabt af teamet bag Altid Energi, som gjorde op med skjulte gebyrer i elmarkedet. Med over 15.000 kunder har vi bevist, at fair og gennemsigtige priser virker. Nu tager vi samme tilgang til hjemmets faste udgifter, så du altid ved, hvad du betaler for, og hvorfor. Ingen skjulte gebyrer. Fuld gennemsigtighed. Altid.',
+  // Condensed from the old block's longer paragraph (Thor 10/11).
+  body: 'Altid Hjem er skabt af teamet bag Altid Energi. Med over 15.000 kunder har vi bevist, at fair og gennemsigtige priser virker. Nu gør vi det samme for hjemmets faste udgifter.',
 } as const
 
 // One FAQ, one source: the visible answers and the JSON-LD both read this. `link` names

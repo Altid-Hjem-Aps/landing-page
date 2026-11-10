@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { FAQ, type FaqItem } from "./copy";
 
-// The questions on the left and the family photo from the old site on the right. Native
+// As on the old site: the questions on the cream half, the family photo filling the other
+// half to the edge. Native
 // details, several may stay open, the first is open in the HTML. Plain words: the
 // JSON-LD reads the same data, so what a search engine sees is what a person reads.
 function Answer({ item }: { item: FaqItem }) {
@@ -24,7 +25,7 @@ function Answer({ item }: { item: FaqItem }) {
 
 export default function FaqSection() {
   return (
-    <section id="spoergsmaal" data-b="faq" className="sec q">
+    <section id="spoergsmaal" data-b="faq" className="q">
       <div className="q-grid">
         <div className="q-main">
           <h2 className="t-h2">{FAQ.title}</h2>
@@ -51,7 +52,7 @@ export default function FaqSection() {
             ))}
           </div>
         </div>
-        {/* The family photo from the old site's FAQ, as a card, with the app icon on its corner. */}
+        {/* The family photo from the old site's FAQ (Figma 5533:3843), edge to edge on the right. */}
         <div className="q-photo">
           <Image
             src="/faq-familie.jpg"
