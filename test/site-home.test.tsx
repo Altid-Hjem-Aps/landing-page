@@ -146,7 +146,7 @@ describe('the page', () => {
     expect(text).not.toMatch(/Nordens Forsikringshus|Subaio|Spari\b/)
     // The App Store's own rating is the one exception, read live: no reviews, user counts or other stars.
     const rating = container.querySelector('.h-rating') as HTMLElement
-    expect(text.replace(rating.textContent as string, '').replace(rating.getAttribute('aria-label') as string, '')).not.toMatch(
+    expect(text.replace(rating.textContent as string, '')).not.toMatch(
       /stjerner|anmeldelse|brugere|medlemmer|bedømmelse/i,
     )
     expect(Array.from(container.querySelectorAll('[aria-label*="stars" i], [class*="star" i]'))).toEqual([rating.querySelector('.h-stars')])
@@ -241,8 +241,8 @@ describe('the page', () => {
   it('shows the App Store rating under the pills, stars filled to the average', () => {
     const { container } = render(<Home />)
     const rating = container.querySelector('#top .h-rating') as HTMLElement
-    expect(rating).toHaveAccessibleName('Bedømt til 4,3 ud af 5 baseret på 6 bedømmelser i App Store')
     expect(rating).toHaveTextContent('4,3 ud af 5 · 6 bedømmelser i App Store')
+    expect(rating.querySelector('.h-stars')).toHaveAttribute('aria-hidden', 'true')
     expect((rating.querySelector('.h-stars') as HTMLElement).style.getPropertyValue('--fill')).toBe('86.6666%')
   })
 
@@ -328,8 +328,8 @@ describe('the marquees', () => {
     const { container } = render(<Home />)
     const laurels = container.querySelectorAll('.p-laurel')
     expect(laurels).toHaveLength(1)
-    expect(laurels[0]).toHaveAccessibleName('Dagens app i kategorien Finans i App Store')
-    expect(laurels[0]).toHaveTextContent('Dagens appi kategorien Finans')
+    expect(laurels[0]).toHaveTextContent('Dagens appi kategorien Finansi App Store')
+    expect(laurels[0].querySelector('.sr-only')).toHaveTextContent('i App Store')
   })
 
   it('has five question cards naming their service, with no stars and no names', () => {

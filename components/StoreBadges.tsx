@@ -94,6 +94,7 @@ export default function StoreBadges({
           href={storeLink(s.store)}
           onClick={() => countClick(s.store, position)}
           className={`${PILL} ${SIZES[size]} ${look.focus} ${s.className ?? ''}`}
+          data-variant={variant}
           style={s.store === 'play' && look.play ? look.play : look.pill}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 shrink-0" fill="currentColor">

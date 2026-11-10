@@ -40,10 +40,10 @@ const tiles = (hidden: boolean) =>
 export default function Proof() {
   return (
     <section data-b="proof" className="sec p" aria-labelledby="p-title">
-      <p className="p-laurel" aria-label={PROOF.award.label}>
+      <p className="p-laurel">
         <Laurel />
-        <span aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" className="p-apple">
+        <span>
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" className="p-apple" aria-hidden="true">
             <path d={APPLE} />
           </svg>
           {PROOF.award.lines.map((line) => (
@@ -51,6 +51,7 @@ export default function Proof() {
               {line}
             </span>
           ))}
+          <span className="sr-only">{PROOF.award.where}</span>
         </span>
         <Laurel flip />
       </p>

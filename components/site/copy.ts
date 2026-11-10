@@ -29,7 +29,6 @@ export const HERO = {
   line: 'Hent Altid Hjem gratis i dag, og få overblik over jeres mad, strøm, forsikring og økonomi.',
   // {average} and {count} come from the App Store (AppRating.tsx).
   rating: '{average} ud af 5 · {count} i App Store',
-  ratingLabel: 'Bedømt til {average} ud af 5 baseret på {count} i App Store',
   altPhone: 'Forsiden i Altid Hjem: 8.166 kr. tilbage, søjler for resten af måneden og en besked om, at du er 3.000 kr. foran.',
   altSecond: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.',
 } as const
@@ -46,7 +45,7 @@ export const WORKS = {
 
 export const PROOF = {
   // Apple featured the app as App of the Day in the Finance category (Thor, 10 Nov 2026).
-  award: { lines: ['Dagens app', 'i kategorien Finans'], label: 'Dagens app i kategorien Finans i App Store' },
+  award: { lines: ['Dagens app', 'i kategorien Finans'], where: 'i App Store' },
   title: 'Svar på de spørgsmål, I kender fra køkkenbordet',
   tiles: [
     { q: '“Hvad skal vi spise?”', src: '/site/app/mad-meal_plan.webp', alt: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.' },
