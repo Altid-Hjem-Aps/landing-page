@@ -1780,7 +1780,6 @@
   .zoomer {
     margin-top: var(--pad);
     overflow: clip;
-    transform-origin: 50% 50%;
     will-change: transform;
   }
   .sy-panel {

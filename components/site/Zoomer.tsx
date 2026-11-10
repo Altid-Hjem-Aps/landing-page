@@ -28,11 +28,11 @@ export default function Zoomer({ children }: { children: ReactNode }) {
       const u = phone ? vw / 390 : Math.min(vw, 1440) / 1440
       const panel = phone ? 356 * u : Math.min(vw - 64 * u, 1376 * u)
       const rest = (vw - panel) / 2
-      // Its unscaled box: the scale is about the centre, so the centre does not move.
-      const rect = el.getBoundingClientRect()
-      const middle = rect.top + rect.height / 2
-      const top = middle - el.offsetHeight / 2
-      const bottom = middle + el.offsetHeight / 2
+      // Its unscaled box, from layout (transforms don't move offsetTop).
+      let docTop = 0
+      for (let node: HTMLElement | null = el; node; node = node.offsetParent as HTMLElement | null) docTop += node.offsetTop
+      const top = docTop - window.scrollY
+      const bottom = top + el.offsetHeight
       const into = Math.min(1, Math.max(0, (vh - top) / (vh * 0.6)))
       const outOf = Math.min(1, Math.max(0, bottom / (vh * 0.6)))
       const open = Math.min(into, outOf)
@@ -40,6 +40,9 @@ export default function Zoomer({ children }: { children: ReactNode }) {
       // Scale the whole block, so it shrinks to the panel's width and grows to the window's
       // without cutting anything off; the corners round as it shrinks.
       const scale = 1 - ((1 - eased) * rest * 2) / vw
+      // Coming in it shrinks towards its top edge, going out towards its bottom edge, so the
+      // edge in view stays put and no strip of page shows between it and its neighbour.
+      el.style.transformOrigin = into < outOf ? '50% 0' : '50% 100%'
       el.style.transform = `scale(${scale.toFixed(4)})`
       // The privacy panel's 24 px corners, held until it is nearly open, then easing to square.
       const round = 24 * Math.min(1, (1 - eased) * 4)
