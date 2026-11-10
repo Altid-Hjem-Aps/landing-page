@@ -1,38 +1,32 @@
 import Image from 'next/image'
-import { MAD, NOTES } from './copy'
+import { OKONOMI } from './copy'
 import Parallax from './Parallax'
 import Phone from './Phone'
-import PlateCarousel from './PlateCarousel'
+import CategoryCarousel from './PlateCarousel'
 import StagedNote from './StagedNote'
 
 const RANGES = [7, 28, 37, 39]
 
-// Deep forest. Spotlight, week of plates, then four cards the phone stays fixed behind:
+// Deep forest, Økonomi. Spotlight, the app's spending categories, then four cards the phone
+// stays fixed behind:
 // each card is clipped with clip-path and holds its own position: fixed phone, so the
 // screen changes as a card passes. No transform or backdrop-filter on any ancestor here.
 export default function MadDark() {
   return (
     <>
-      <section id="altid-mad" data-b="dark" data-surface="dark" className="sec d">
+      <section id="okonomi-universet" data-b="dark" data-surface="dark" className="sec d">
         <Image src="/site/render/spotlight.webp" alt="" width={688} height={495} className="d-spot" aria-hidden="true" />
-        <PlateCarousel />
+        <CategoryCarousel />
         <header className="d-head">
           <h2 className="t-h2 d-title">
-            <span className="d-title-dim">{MAD.titleFirst}</span> {MAD.titleSecond}
+            <span className="d-title-dim">{OKONOMI.titleFirst}</span> {OKONOMI.titleSecond}
           </h2>
           <div className="d-para">
-            <p className="t-body">{MAD.savings.line}</p>
-            <p className="t-body d-foot">
-              {MAD.savings.footnoteLead}
-              <a href={MAD.savings.footnoteHref} target="_blank" rel="noopener noreferrer">
-                {MAD.savings.footnoteLink}
-              </a>
-            </p>
-            <p className="t-body d-foot">{NOTES.plates}</p>
+            <p className="t-body">{OKONOMI.line}</p>
           </div>
         </header>
         <div className="d-cards">
-          {MAD.cards.map((card, i) => (
+          {OKONOMI.cards.map((card, i) => (
             <article key={card.title} className="d-card" data-tone={card.tone} data-surface="light">
               <div className="d-card-text">
                 <h3 className="t-h3b">{card.title}</h3>

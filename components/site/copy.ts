@@ -10,7 +10,6 @@ export const NAV = {
   ],
   sheet: [
     { href: '#okonomi', label: 'Økonomi' },
-    { href: '#altid-mad', label: 'Altid Mad' },
     { href: '#altid-energi', label: 'Altid Energi' },
     { href: '#altid-forsikring', label: 'Altid Forsikring' },
     { href: '#spoergsmaal', label: 'Spørgsmål' },
@@ -29,19 +28,19 @@ export const HERO = {
   line: 'Hent Altid Hjem gratis i dag, og få overblik over jeres mad, strøm, forsikring og økonomi.',
   // {average} and {count} come from the App Store (AppRating.tsx).
   rating: '{average} ud af 5 · {count} i App Store',
-  altPhone: 'Forsiden i Altid Hjem: 8.166 kr. tilbage, søjler for resten af måneden og en besked om, at du er 3.000 kr. foran.',
-  altSecond: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.',
-} as const
-
-export const WORKS = {
-  title: 'Samlet i én app',
-  services: [
-    { href: '#okonomi', name: 'Økonomi', icon: 'okonomi' },
-    { href: '#altid-mad', name: 'Altid Mad', icon: 'mad' },
-    { href: '#altid-energi', name: 'Altid Energi', icon: 'energi' },
-    { href: '#altid-forsikring', name: 'Altid Forsikring', icon: 'forsikring' },
+  // The hero phones show these in turn.
+  mainScreens: [
+    { src: '/site/app/hjem-top.webp', alt: 'Forsiden i Altid Hjem: 8.166 kr. tilbage, søjler for resten af måneden og en besked om, at du er 3.000 kr. foran.' },
+    { src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
+    { src: '/site/app/regninger-top.webp', alt: 'Regninger i appen: 2.345 kr., 21.842 kr. i faste regninger om måneden og kalenderen for november.' },
+  ],
+  secondScreens: [
+    { src: '/site/app/mad-meal_plan.webp', alt: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.', focus: '50% 34%' },
+    { src: '/site/app/droemme-detail.webp', alt: 'En drøm i appen: 9.500 kr. tilbage til Familieferie på Mallorca, 1.100 kr. om måneden.' },
+    { src: '/site/app/energi-home.webp', alt: 'Altid Energi i appen: elprisen time for time.' },
   ],
 } as const
+
 
 export const PROOF = {
   // Apple featured the app as App of the Day in Finance (Thor, 10 Nov 2026). Apple's own English wording.
@@ -99,12 +98,67 @@ export const FEATURES = {
   },
 } as const
 
-export const MAD = {
+export const OKONOMI = {
   titleFirst: 'Ikke mere',
-  titleSecond: '“hvad skal vi spise?”',
-  days: ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'],
-  weekLabel: 'Ugens madplan',
-  // Real catalogue names, from public/site/plates/plates.json.
+  titleSecond: '“hvor blev pengene af?”',
+  line: 'Forbind banken sikkert med MitID, og se, hvad der er tilbage til lønningsdag, hvor pengene går hen, og hvilke udgifter der er på vej.',
+  categoriesLabel: 'Jeres kategorier',
+  // The app's own category icons (public/site/icons), in its category colours.
+  categories: [
+    { icon: '/site/icons/housing.svg', name: 'Bolig', tone: 'sky' },
+    { icon: '/site/icons/transport.svg', name: 'Transport', tone: 'honey' },
+    { icon: '/site/icons/groceries.svg', name: 'Dagligvarer', tone: 'mint' },
+    { icon: '/site/icons/restaurants.svg', name: 'Restaurant og takeaway', tone: 'lavender' },
+    { icon: '/site/icons/shopping.svg', name: 'Shopping', tone: 'rose' },
+    { icon: '/site/icons/children.svg', name: 'Børn', tone: 'honey' },
+    { icon: '/site/icons/leisure.svg', name: 'Fritid', tone: 'sky' },
+  ],
+  cards: [
+    {
+      tone: 'honey',
+      title: '“Hvad har vi tilbage?”',
+      body: 'Se, hvad der er tilbage til lønningsdag, og om I er foran eller bagud.',
+      src: '/site/app/hjem-top.webp',
+      alt: 'Forsiden i Altid Hjem: 8.166 kr. tilbage, søjler for resten af måneden og en besked om, at du er 3.000 kr. foran.',
+      piece: '/site/app/crop-foran-card.webp',
+      pieceSize: [915, 285],
+      pieceAlt: 'Du er 3.000 kr. foran. Det svarer til 6 gange restaurant og takeaway.',
+    },
+    {
+      tone: 'sky',
+      title: 'Her brugte I mest',
+      body: 'Tryk på en kategori, og se, hvor pengene gik hen, og hvad I plejer at bruge.',
+      src: '/site/app/okonomi-category_transport.webp',
+      alt: 'Kategorien Transport i appen: hvad I har brugt, og hvad I plejer at bruge.',
+      piece: '/site/app/piece-takeaway.webp',
+      pieceSize: [380, 503],
+      pieceAlt: 'Kategorien Restaurant og takeaway med månedens beløb.',
+    },
+    {
+      tone: 'mint',
+      title: 'Alle faste udgifter',
+      body: 'Se jeres faste udgifter i en kalender, så I aldrig bliver overraskede.',
+      src: '/site/app/regninger-top.webp',
+      alt: 'Regninger i appen: 2.345 kr., 21.842 kr. i faste regninger om måneden og kalenderen for november.',
+      piece: '/site/app/piece-regning.webp',
+      pieceSize: [376, 198],
+      pieceAlt: 'Næste store regning: bilforsikringen.',
+    },
+    {
+      tone: 'lavender',
+      title: 'Spar op til jeres drømme',
+      body: 'Sæt et mål, og se hver måned, hvor langt I er nået.',
+      src: '/site/app/droemme-detail.webp',
+      alt: 'En drøm i appen: 9.500 kr. tilbage til Familieferie på Mallorca, 1.100 kr. om måneden.',
+      piece: '/site/app/painting.webp',
+      pieceSize: [629, 672],
+      pieceAlt: 'Maleriet af en kystby fra drømmen om en familieferie.',
+    },
+  ],
+} as const
+
+export const MAD = {
+  // Real catalogue names, from public/site/plates/plates.json. The collage uses them.
   plates: [
     { src: '/site/plates/tacos.webp', name: 'Klassiske tacos med oksefars' },
     { src: '/site/plates/svamperisotto.webp', name: 'Svamperisotto med brune champignon' },
@@ -113,54 +167,6 @@ export const MAD = {
     { src: '/site/plates/stegt-flaesk.webp', name: 'Stegt flæsk med kartofler og persillesovs' },
     { src: '/site/plates/butter-chicken.webp', name: 'Butter chicken med ris og naan' },
     { src: '/site/plates/kylling-i-karry.webp', name: 'Kylling i karry med æble, gulerod og ris' },
-  ],
-  savings: {
-    line: 'Spar i gennemsnit 11.207 kr. om året på dagligvarer*',
-    footnoteLead: '*En gennemsnitlig husstand på fire personer kan spare 11.207 kr. om året på dagligvarer med Altid Mad. Kilde: ',
-    footnoteLink: 'Altid Mad Q3-rapporten',
-    footnoteHref: 'https://altidmad.dk/altid-mad-kvartalsrapport-q3.pdf',
-  },
-  cards: [
-    {
-      tone: 'lavender',
-      title: 'En hel uge på få minutter',
-      body: 'Fortæl, hvem der spiser med, og hvad I kan lide. Så er ugens madplan klar.',
-      src: '/site/app/mad-meal_plan.webp',
-      alt: 'Madplanen i Altid Mad: ugens retter på en række tallerkener og dagens måltider under dem.',
-      piece: '/site/app/piece-week.webp',
-      pieceSize: [800, 203],
-      pieceAlt: 'Ugens retter på en række tallerkener.',
-    },
-    {
-      tone: 'rose',
-      title: 'Opskriften er lige ved hånden',
-      body: 'Har I mere lyst til noget andet, skifter I retten med ét tryk.',
-      src: '/site/app/mad-recipe.webp',
-      alt: 'En opskrift i Altid Mad: kylling i karry med knappen Skift ret og listen over ingredienser.',
-      piece: '/site/app/piece-ingredients.webp',
-      pieceSize: [960, 745],
-      pieceAlt: 'Ingredienserne til kylling i karry, med plads til at krydse af.',
-    },
-    {
-      tone: 'honey',
-      title: '“Hvor handler vi billigst ind?”',
-      body: 'Appen finder automatisk de billigste varer på tværs af de butikker, I handler i.',
-      src: '/site/app/mad-trip.webp',
-      alt: 'Indkøb i Altid Mad: 108 varer tilbage, fordelt på butikker, med pris på hver vare.',
-      piece: '/site/app/piece-bilka-section.webp',
-      pieceSize: [800, 670],
-      pieceAlt: 'Indkøbslisten for Bilka: frugt og grønt med pris på hver vare.',
-    },
-    {
-      tone: 'mint',
-      title: 'Indkøbslisten skriver sig selv',
-      body: 'Kryds varerne af, mens I går rundt. Listen er delt op efter butik.',
-      src: '/site/app/mad-trip-in_progress.webp',
-      alt: 'Indkøbsturen i Altid Mad: 106 varer tilbage, og de to første varer er krydset af.',
-      piece: '/site/app/piece-ticked.webp',
-      pieceSize: [800, 497],
-      pieceAlt: 'To varer er krydset af på indkøbslisten.',
-    },
   ],
 } as const
 
@@ -209,6 +215,12 @@ export const STEPS = {
       alt: 'En fælles drøm i appen: 9.500 kr. tilbage til Familieferie på Mallorca, 1.100 kr. om måneden.',
     },
   ],
+} as const
+
+export const BANKS = {
+  title: 'Virker med alle danske banker',
+  // The app connects through Subaio, whose own text in the app says all Danish banks.
+  names: ['Danske Bank', 'Nordea', 'Jyske Bank', 'Nykredit', 'Sydbank', 'Arbejdernes Landsbank', 'Spar Nord', 'Lunar', 'Sparekassen Kronjylland', 'Ringkjøbing Landbobank'],
 } as const
 
 export const PRESS = {
@@ -271,11 +283,6 @@ export const FAQ: { title: string; items: readonly FaqItem[] } = {
       a: 'Din partner ser aldrig dine konti, saldi eller posteringer. Partneren ser kun to ting: en fælles drøm på en konto, du selv har markeret som husstandens, og fælles regler for forhandlere.',
     },
     {
-      q: 'Hvor kommer de 11.207 kr. fra?',
-      a: 'Tallet kommer fra Altid Mad Q3-rapporten. Det er den samme ugentlige indkøbskurv hos den billigste kæde og hos mediankæden, regnet om til et år. Du kan læse hele rapporten her.',
-      link: { text: 'læse hele rapporten her', href: MAD.savings.footnoteHref },
-    },
-    {
       q: 'Hvordan virker Altid Forsikring?',
       a: 'I samler jeres forsikringer i appen og svarer på nogle få spørgsmål. Så kontakter en rådgiver jer, og I får et tilbud efter samtalen. Det er gratis og helt uforpligtende.',
     },
@@ -309,7 +316,6 @@ export const FOOTER = {
   heads: { app: 'Appen', more: 'Læs mere', help: 'Hjælp', legal: 'Juridisk' },
   app: [
     { href: '#okonomi', label: 'Økonomi' },
-    { href: '#altid-mad', label: 'Altid Mad' },
     { href: '#altid-energi', label: 'Altid Energi' },
     { href: '#altid-forsikring', label: 'Altid Forsikring' },
   ],

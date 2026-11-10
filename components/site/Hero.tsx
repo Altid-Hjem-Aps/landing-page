@@ -1,13 +1,14 @@
 import StoreBadges from '@/components/StoreBadges'
 import AppRating from './AppRating'
 import { HERO } from './copy'
+import CyclingPhone from './CyclingPhone'
+import HeroLanes from './HeroLanes'
 import HeroOrbit from './HeroOrbit'
-import Phone from './Phone'
 import QrCard from './QrCard'
-import StagedNote from './StagedNote'
 
 // Hero: the text on the page's light ground, one tilted phone and a smaller one in front of
-// it, and the four services circling them with light trails.
+// it, both showing their screens in turn, the cards that travel under them as the page
+// scrolls, and the four services circling them with light trails.
 export default function Hero() {
   return (
     <section id="top" data-b="hero" className="h">
@@ -20,17 +21,17 @@ export default function Hero() {
         <AppRating />
       </div>
       <div className="h-bottom">
+        <HeroLanes />
         <HeroOrbit />
         <div className="h-phones">
           <div className="h-phone">
-            <Phone src="/site/app/hjem-top.webp" alt={HERO.altPhone} sizes="(max-width: 767px) 62vw, 320px" quality={75} preload />
+            <CyclingPhone screens={HERO.mainScreens} sizes="(max-width: 767px) 62vw, 320px" preload />
           </div>
           <div className="h-second">
-            <Phone src="/site/app/mad-meal_plan.webp" alt={HERO.altSecond} sizes="(max-width: 767px) 44vw, 210px" focus="50% 34%" />
+            <CyclingPhone screens={HERO.secondScreens} sizes="(max-width: 767px) 44vw, 210px" />
           </div>
         </div>
       </div>
-      <StagedNote className="h-note" />
       <QrCard />
     </section>
   )

@@ -13,7 +13,7 @@ const plate = (i: number, tone: string): Tile => ({ kind: 'plate', src: MAD.plat
 const COLUMNS: Tile[][] = [
   [plate(5, 'rose'), { kind: 'icon', icon: 'energi', tone: 'sky' }],
   [plate(0, 'honey'), { kind: 'image', src: '/site/brand/coin-stack.svg', tone: 'mint', alt: LOVE.collageAlt.coins }, plate(2, 'lavender')],
-  [{ kind: 'image', src: '/site/app/mad-meal_plan.webp', tone: 'sand', alt: MAD.cards[0].alt, cover: true }],
+  [{ kind: 'image', src: '/site/app/mad-meal_plan.webp', tone: 'sand', alt: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.', cover: true }],
   [{ kind: 'image', src: '/site/app/painting.webp', tone: 'sand', alt: LOVE.collageAlt.painting, cover: true, focus: '60% 50%' }],
   [{ kind: 'image', src: '/site/app/hjem-top.webp', tone: 'sand', alt: LOVE.collageAlt.bars, cover: true }],
   [plate(3, 'sky')],

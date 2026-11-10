@@ -1,18 +1,17 @@
 'use client'
 
-import Image from 'next/image'
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type TouchEvent } from 'react'
-import { MAD } from './copy'
+import { OKONOMI } from './copy'
 import { useMotionPiece } from './MotionPrefs'
 
-// The week of plates. Tabs: the selected plate sits centered under the spotlight, the
-// others dim beside it. Each tab's label is its day; the selected one shows the dish.
+// The app's spending categories. Tabs: the selected one sits centred under the spotlight,
+// the others dim beside it, and its name shows under it.
 const ADVANCE_MS = 5000
 const START = 1
 const SWIPE_PX = 40
-const COUNT = MAD.plates.length
+const COUNT = OKONOMI.categories.length
 
-export default function PlateCarousel() {
+export default function CategoryCarousel() {
   const { ref, running } = useMotionPiece<HTMLDivElement>()
   const [selected, setSelected] = useState(START)
   const [picked, setPicked] = useState(false)
@@ -70,10 +69,10 @@ export default function PlateCarousel() {
       }}
       onTouchEnd={onTouchEnd}
     >
-      <div className="plates-row" role="tablist" aria-label={MAD.weekLabel} style={{ '--sel': selected } as CSSProperties}>
-        {MAD.days.map((day, i) => (
+      <div className="plates-row" role="tablist" aria-label={OKONOMI.categoriesLabel} style={{ '--sel': selected } as CSSProperties}>
+        {OKONOMI.categories.map((category, i) => (
           <button
-            key={day}
+            key={category.name}
             ref={(el) => {
               tabs.current[i] = el
             }}
@@ -82,7 +81,7 @@ export default function PlateCarousel() {
             id={`plate-tab-${i}`}
             aria-selected={i === selected}
             aria-controls="plate-panel"
-            aria-label={day}
+            aria-label={category.name}
             tabIndex={i === selected ? 0 : -1}
             className="plate"
             data-selected={i === selected ? 'true' : undefined}
@@ -90,13 +89,15 @@ export default function PlateCarousel() {
             onClick={() => pick(i)}
             onKeyDown={(event) => onKeyDown(event, i)}
           >
-            <Image src={MAD.plates[i].src} alt="" width={160} height={160} sizes="320px" quality={90} />
-            <span className="plate-day">{day}</span>
+            <span className="plate-icon" data-tone={category.tone}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={category.icon} alt="" width={64} height={64} />
+            </span>
           </button>
         ))}
       </div>
       <p id="plate-panel" role="tabpanel" aria-labelledby={`plate-tab-${selected}`} className="plate-name">
-        {MAD.plates[selected].name}
+        {OKONOMI.categories[selected].name}
       </p>
     </div>
   )

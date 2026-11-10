@@ -151,32 +151,79 @@
     }
   }
 
-  /* Phone: the frame from the store screenshots (Figma 9182:2), solid black with its shadows.
-     --w is its width; the rest follows. */
+  /* Phone: a titanium rim, a black bezel and side buttons, solid, with the store
+     screenshots' shadows. --w is its width; the rest follows. */
   .ph {
     --w: calc(var(--u) * 323);
+    --rim: calc(var(--w) * 0.022);
+    --bezel: calc(var(--w) * 0.034);
     position: relative;
     width: var(--w);
-    height: calc(var(--w) * 2228 / 1060);
+    height: calc((var(--w) - 2 * (var(--rim) + var(--bezel))) * 2556 / 1179 + 2 * (var(--rim) + var(--bezel)));
+
+    /* Side buttons: action and volume on the left, power on the right. */
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      width: calc(var(--w) * 0.014);
+      border-radius: 2px;
+      background: linear-gradient(90deg, #8e9194, #d9dbdd);
+    }
+    &::before {
+      left: calc(var(--w) * -0.01);
+      top: calc(var(--w) * 0.44);
+      height: calc(var(--w) * 0.28);
+      box-shadow: 0 calc(var(--w) * -0.2) 0 0 #a8abae;
+    }
+    &::after {
+      right: calc(var(--w) * -0.01);
+      top: calc(var(--w) * 0.56);
+      height: calc(var(--w) * 0.3);
+    }
   }
   .ph-body {
     position: absolute;
     inset: 0;
-    border-radius: calc(var(--w) * 0.15);
-    background: #0d0f0e;
+    border-radius: calc(var(--w) * 0.155);
+    background: linear-gradient(135deg, #f1f2f3 0%, #a9acaf 18%, #d8dadc 45%, #8e9194 75%, #e3e5e6 100%);
     box-shadow:
       0 calc(var(--w) * 0.057) calc(var(--w) * 0.113) rgba(0, 0, 0, 0.28),
       0 calc(var(--w) * 0.0094) calc(var(--w) * 0.028) rgba(0, 0, 0, 0.18);
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: var(--rim);
+      border-radius: calc(var(--w) * 0.135);
+      background: #0d0f0e;
+    }
   }
   .ph-screen {
     position: absolute;
-    left: calc(var(--w) * 30 / 1060);
-    top: calc(var(--w) * 30 / 1060);
-    width: calc(var(--w) * 1000 / 1060);
-    height: calc(var(--w) * 1000 / 1060 * 2556 / 1179);
-    border-radius: calc(var(--w) * 129 / 1060);
+    left: calc(var(--rim) + var(--bezel));
+    top: calc(var(--rim) + var(--bezel));
+    width: calc(var(--w) - 2 * (var(--rim) + var(--bezel)));
+    height: calc((var(--w) - 2 * (var(--rim) + var(--bezel))) * 2556 / 1179);
+    border-radius: calc(var(--w) * 0.104);
     overflow: hidden;
     background: var(--forest);
+  }
+  .ph-cycle {
+    @media (prefers-reduced-motion: no-preference) {
+      animation: site-float 7s ease-in-out infinite;
+    }
+    &[data-running='false'] {
+      animation-play-state: paused;
+    }
+  }
+  .ph-cycle-screen {
+    opacity: 0;
+    transition: opacity 0.6s;
+
+    &[data-shown='true'] {
+      opacity: 1;
+    }
   }
 
   /* Marquee */
@@ -469,6 +516,42 @@
     margin: calc(var(--u) * 24) 8px 0;
     height: calc(var(--u) * 607);
   }
+  .h-lanes {
+    position: absolute;
+    inset: calc(var(--u) * -91) 0 auto;
+    height: calc(var(--u) * 606);
+  }
+  .h-lane-clip {
+    position: absolute;
+    top: 0;
+    width: calc(var(--u) * 641);
+    height: 100%;
+    overflow: clip;
+  }
+  .h-lane-left {
+    left: calc(50% - var(--u) * 712);
+  }
+  .h-lane-right {
+    right: calc(50% - var(--u) * 712);
+  }
+  .h-lane-card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    will-change: transform;
+
+    img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      max-width: none;
+      height: auto;
+      transform: translate(-50%, -50%);
+      filter: drop-shadow(0 6px 14px rgba(0, 60, 22, 0.14));
+    }
+  }
   .h-phones {
     position: absolute;
     z-index: 1;
@@ -484,6 +567,11 @@
 
     .ph {
       --w: calc(var(--u) * 320);
+    }
+    .ph-body {
+      box-shadow:
+        calc(var(--u) * 9) calc(var(--u) * 2) 0 0 #9fa2a5,
+        0 calc(var(--u) * 18) calc(var(--u) * 36) rgba(0, 0, 0, 0.28);
     }
   }
   .h-second {
@@ -645,6 +733,9 @@
         column-gap: 8px;
       }
     }
+    .h-lanes {
+      display: none;
+    }
     .h-bottom {
       margin: calc(var(--u) * 12) 8px 0;
       height: calc(var(--u) * 384);
@@ -691,56 +782,29 @@
     color: var(--forest);
   }
   .w-mq {
-    --mq-time: 28s;
-    margin: calc(var(--u) * 23) auto 0;
-    width: fit-content;
-    max-width: 100%;
-  }
-  .w-mq .mq-track {
-    animation: none;
-  }
-  .w-mq .mq-list[aria-hidden='true'] {
-    display: none;
+    --mq-time: 40s;
+    margin: calc(var(--u) * 28) 0 0;
   }
   .w-mq .mq-list {
-    gap: 40px;
+    gap: calc(var(--u) * 72);
+    padding-right: calc(var(--u) * 72);
   }
-  .w-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    height: 24px;
+  .w-bank {
+    flex: none;
     font-family: var(--display);
     font-weight: 700;
-    font-size: 20px;
+    font-size: clamp(20px, 17px + 0.6vw, 26px);
     letter-spacing: -0.02em;
-    color: var(--forest);
     white-space: nowrap;
+    color: rgba(0, 60, 22, 0.55);
   }
   @media (max-width: 767px) {
     .w-mq {
-      margin-top: calc(var(--u) * 24);
-      width: calc(var(--u) * 356);
-    }
-    .w-mq .mq-track {
-      animation: site-loop var(--mq-time) linear infinite;
-    }
-    .w-mq[data-running='false'] .mq-track {
-      animation-play-state: paused;
+      margin-top: calc(var(--u) * 20);
     }
     .w-mq .mq-list {
+      gap: 40px;
       padding-right: 40px;
-    }
-    .w-mq .mq-list[aria-hidden='true'] {
-      display: flex;
-    }
-  }
-  @media (max-width: 767px) and (prefers-reduced-motion: reduce) {
-    .w-mq .mq-track {
-      animation: none;
-    }
-    .w-mq .mq-list[aria-hidden='true'] {
-      display: none;
     }
   }
 
@@ -1327,18 +1391,25 @@
     padding: 0;
     color: var(--cream);
 
-    img {
-      display: block;
+    .plate-icon {
+      display: grid;
+      place-items: center;
       width: 160px;
       height: 160px;
       border-radius: 50%;
+      background: var(--tint);
       opacity: calc(0.46 - 0.15 * var(--d));
-      filter: saturate(0.6) brightness(0.75);
-      transition: opacity 0.5s, filter 0.5s;
+      transition: opacity 0.5s, transform 0.5s;
+      transform: scale(0.82);
+
+      img {
+        width: 64px;
+        height: 64px;
+      }
     }
-    &[data-selected='true'] img {
+    &[data-selected='true'] .plate-icon {
       opacity: 1;
-      filter: none;
+      transform: none;
     }
   }
   .plate-day {
@@ -2401,6 +2472,12 @@ body:has(.site) {
 @keyframes site-loop {
   to {
     transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes site-float {
+  50% {
+    translate: 0 -10px;
   }
 }
 
