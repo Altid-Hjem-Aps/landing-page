@@ -130,16 +130,15 @@ export const PRIVACY = {
   link: 'Læs privatlivspolitikken',
 } as const
 
-// Step photos: free licences, no credit required. step-1 Hiki App on Unsplash (wwe4p-Qf7cU),
-// step-2 Ivan S on Pexels (7993392), step-3 Anastasia Shuraeva on Pexels (5495142), step-4
-// Vitaly Gariev on Unsplash (3rXZyQdMdlI).
+// Step photos: one couple in one home, Diva Plavalaguna on Pexels (Pexels License, no credit
+// required): couple-1 5710884 and couple-3 5711137 (both mirrored), couple-2 5711041, couple-4 5711037.
 export const STEPS = {
   title: 'Fire trin til ét overblik',
   steps: [
-    { n: '01', photo: '/site/people/step-1.webp', photoFocus: '50% 40%', tone: 'honey', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
-    { n: '02', photo: '/site/people/step-2.webp', photoFocus: '2% 50%', tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
-    { n: '03', photo: '/site/people/step-3.webp', photoFocus: '50% 40%', tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Madplan, elpris og forsikringstjek. Tag det, der passer jer.', src: '/site/app/mere-sheet.webp', alt: 'Menuen i appen: Energi, Mad, Forsikring og Økonomi.' },
-    { n: '04', photo: '/site/people/step-4.webp', photoFocus: '54% 50%', tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik og hver jeres egne tal.', src: '/site/app/hjem-faelles.webp', alt: 'Forsiden med Fælles valgt: 12.853 kr. tilbage for husstanden.' },
+    { n: '01', photo: '/site/people/couple-1.webp', photoFocus: '100% 50%', tone: 'honey', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
+    { n: '02', photo: '/site/people/couple-2.webp', photoFocus: '26% 50%', tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
+    { n: '03', photo: '/site/people/couple-3.webp', photoFocus: '100% 50%', tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Madplan, elpris og forsikringstjek. Tag det, der passer jer.', src: '/site/app/mere-sheet.webp', alt: 'Menuen i appen: Energi, Mad, Forsikring og Økonomi.' },
+    { n: '04', photo: '/site/people/couple-4.webp', photoFocus: '50% 45%', tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik og hver jeres egne tal.', src: '/site/app/hjem-faelles.webp', alt: 'Forsiden med Fælles valgt: 12.853 kr. tilbage for husstanden.' },
   ],
 } as const
 

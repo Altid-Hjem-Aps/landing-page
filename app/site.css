@@ -1777,9 +1777,11 @@
   /* 10. FAQ, working as on the old site: the photo at its own 1442 x 1091 proportions sets
      the height; the questions scroll inside the cream half, with a Signal scrollbar on the
      left; one answer open at a time. */
+  /* Halves, so the seam lines up with the blue and green above and the app icon sits where
+     the four blocks meet. */
   .q-grid {
     display: grid;
-    grid-template-columns: 5fr 7fr;
+    grid-template-columns: 1fr 1fr;
   }
   .q-main {
     position: relative;
@@ -1789,17 +1791,17 @@
     inset: 0;
     display: flex;
     flex-direction: column;
-    padding: calc(var(--u) * 80) calc(var(--u) * 64) calc(var(--u) * 48) calc(var(--u) * 96);
+    padding: calc(var(--u) * 72) calc(var(--u) * 80) calc(var(--u) * 40) calc(var(--u) * 96);
 
     h2 {
-      font-size: clamp(30px, 20px + 1.5vw, 44px);
+      font-size: clamp(28px, 18px + 1.3vw, 40px);
     }
   }
   .q-area {
     position: relative;
     flex: 1;
     min-height: 0;
-    margin-top: calc(var(--u) * 28);
+    margin-top: calc(var(--u) * 20);
   }
   .q-track {
     position: absolute;
@@ -1838,11 +1840,11 @@
       justify-content: space-between;
       gap: 24px;
       width: 100%;
-      padding: clamp(18px, 1.6vw, 24px) 0;
+      padding: clamp(14px, 1.2vw, 20px) 0;
       text-align: left;
       font-family: var(--display);
       font-weight: 700;
-      font-size: clamp(18px, 16px + 0.4vw, 22px);
+      font-size: clamp(17px, 15px + 0.3vw, 20px);
       line-height: 1.2;
       letter-spacing: -0.01em;
       color: var(--forest);
@@ -1851,7 +1853,7 @@
       svg {
         flex: none;
         box-sizing: content-box;
-        padding: 10px;
+        padding: 9px;
         border-radius: 50%;
         background: var(--signal);
         transition: transform 0.5s;
@@ -1862,8 +1864,8 @@
     }
     p {
       max-width: 34em;
-      padding: 0 48px 24px 0;
-      font-size: 17px;
+      padding: 0 48px 18px 0;
+      font-size: 16px;
       line-height: 1.6;
       color: var(--forest);
     }
