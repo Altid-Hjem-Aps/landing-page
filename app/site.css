@@ -1569,25 +1569,22 @@
     text-align: center;
     overflow: hidden;
   }
+  /* The lock and the MitID mark, both in white on the Deep forest. */
   .x-lock {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    height: 64px;
-    padding: 0 24px 0 20px;
-    border-radius: 999px;
-    background: #fff;
-    color: #0060e6;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    gap: 14px;
+    color: #fff;
 
     svg {
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
     }
     img {
       display: block;
       width: auto;
-      height: 25px;
+      height: 30px;
+      filter: brightness(0) invert(1);
     }
   }
   .x-title {
@@ -1776,58 +1773,97 @@
     }
   }
 
-  /* 10. FAQ, as on the old site: the questions on the cream half, rows split by fine lines,
-     a Signal plus in a circle; the family photo filling the other half to the edge. */
+  /* 10. FAQ, working as on the old site: the photo at its own 1442 x 1091 proportions sets
+     the height; the questions scroll inside the cream half, with a Signal scrollbar on the
+     left; one answer open at a time. */
   .q-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 5fr 7fr;
   }
   .q-main {
-    padding: calc(var(--u) * 128) calc(var(--u) * 96) calc(var(--u) * 112);
+    position: relative;
+  }
+  .q-inner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--u) * 80) calc(var(--u) * 64) calc(var(--u) * 48) calc(var(--u) * 96);
+
+    h2 {
+      font-size: clamp(30px, 20px + 1.5vw, 44px);
+    }
+  }
+  .q-area {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    margin-top: calc(var(--u) * 28);
+  }
+  .q-track {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    border-radius: 3px;
+    background: rgba(0, 60, 22, 0.1);
+  }
+  .q-thumb {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    border-radius: 3px;
+    background: var(--signal);
+  }
+  .q-scroll {
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
   .q-list {
-    margin-top: calc(var(--u) * 40);
-    border-top: 1px solid rgba(0, 60, 22, 0.14);
+    padding-left: calc(var(--u) * 28);
   }
   .q-item {
-    border-bottom: 1px solid rgba(0, 60, 22, 0.14);
+    border-bottom: 1px solid rgba(0, 60, 22, 0.16);
 
-    summary {
+    button {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      padding: 22px 0;
+      gap: 24px;
+      width: 100%;
+      padding: clamp(18px, 1.6vw, 24px) 0;
+      text-align: left;
       font-family: var(--display);
       font-weight: 700;
-      font-size: clamp(19px, 17px + 0.4vw, 23px);
+      font-size: clamp(18px, 16px + 0.4vw, 22px);
       line-height: 1.2;
       letter-spacing: -0.01em;
       color: var(--forest);
       cursor: pointer;
-      list-style: none;
 
-      &::-webkit-details-marker {
-        display: none;
-      }
       svg {
         flex: none;
-        width: 36px;
-        height: 36px;
-        padding: 8px;
+        box-sizing: content-box;
+        padding: 10px;
         border-radius: 50%;
         background: var(--signal);
-        transition: transform 0.2s;
+        transition: transform 0.5s;
       }
     }
-    &[open] summary svg {
+    button[aria-expanded='true'] svg {
       transform: rotate(45deg);
     }
     p {
       max-width: 34em;
-      padding: 0 52px 24px 0;
-      font-size: 18px;
-      line-height: 1.5;
+      padding: 0 48px 24px 0;
+      font-size: 17px;
+      line-height: 1.6;
       color: var(--forest);
     }
     a {
@@ -1836,24 +1872,82 @@
       text-underline-offset: 3px;
     }
   }
-  /* The window's height, staying in view while the questions scroll past. */
-  .q-photo {
-    position: sticky;
-    top: 0;
-    align-self: start;
-    height: 100vh;
+  .q-answer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+
+    > div {
+      overflow: hidden;
+    }
+    &[data-open='true'] {
+      grid-template-rows: 1fr;
+    }
   }
-  @media (max-width: 767px) {
+  .q-more {
+    display: none;
+  }
+  .q-photo {
+    aspect-ratio: 1442 / 1091;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .q-answer,
+    .q-item button svg {
+      transition: none;
+    }
+  }
+  /* A phone: the list in the page's flow, the first four questions and "Vis flere"; no photo. */
+  @media (max-width: 1023px) {
     .q-grid {
       grid-template-columns: 1fr;
     }
-    .q-main {
-      padding: 64px 20px 48px;
+    .q-inner {
+      position: static;
+      padding: 72px 20px 56px;
+    }
+    .q-track {
+      display: none;
+    }
+    .q-scroll {
+      height: auto;
+      overflow: visible;
+    }
+    .q-list {
+      padding-left: 0;
+    }
+    .q-item[data-more='true'] {
+      display: none;
+    }
+    .q-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      align-self: center;
+      min-height: 48px;
+      margin-top: 28px;
+      padding: 0 28px;
+      border-radius: 999px;
+      background: var(--signal);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--forest);
+
+      svg {
+        transition: transform 0.3s;
+      }
+      &[aria-expanded='true'] svg {
+        transform: rotate(180deg);
+      }
     }
     .q-photo {
-      position: relative;
-      order: -1;
-      height: calc(var(--u) * 300);
+      display: none;
     }
   }
 

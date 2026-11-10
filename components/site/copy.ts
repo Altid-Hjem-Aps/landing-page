@@ -182,49 +182,37 @@ export const STORY = {
 // the words in `a` that link somewhere.
 export type FaqItem = { q: string; a: string; link?: { text: string; href: string } }
 
+// The old site's FAQ (components/sections/Faq.tsx), word for word, as Thor asked 10/11.
 export const FAQ: { title: string; items: readonly FaqItem[] } = {
-  title: 'Spørgsmål og svar',
+  title: 'Ofte stillede spørgsmål',
   items: [
     {
       q: 'Hvad er Altid Hjem?',
-      a: 'En app, der samler hjemmets økonomi ét sted: Økonomi, Altid Mad, Altid Energi og Altid Forsikring. Ét overblik, ét login.',
+      a: 'Altid Hjem er en app, der samler hjemmets økonomi og faste udgifter ét sted: strøm, forsikring og mad. Du får ét overblik og ét login. Altid.',
     },
     {
-      q: 'Hvad koster det?',
-      a: 'Appen er gratis at hente, og det er gratis at oprette en konto. Du betaler kun for det, du selv vælger at bruge, for eksempel strøm, hvis du bliver kunde hos Altid Energi.',
+      q: 'Er Altid Hjem klar?',
+      a: 'Ja. Altid Hjem ligger i App Store og Google Play, og du kan hente appen nu.',
     },
     {
-      q: 'Hvor henter jeg appen?',
-      a: 'I App Store og Google Play. Du kan bruge knapperne her på siden eller søge efter Altid Hjem.',
+      q: 'Hvor kan jeg hente Altid Hjem?',
+      a: 'I både App Store og Google Play. Du finder den ved at søge efter Altid Hjem, eller du kan bruge knapperne her på siden.',
     },
     {
-      q: 'Skal jeg forbinde min bank?',
-      a: 'Nej, det er frivilligt, og resten af appen virker uden. Vil du bruge Økonomi, forbinder du banken sikkert med MitID.',
+      q: 'Hvor meget sparer jeg med Altid Hjem?',
+      a: 'Det afhænger af dine aftaler, men mange sparer langt over 1.000 kr. årligt alene på strøm. Hos Altid Energi har over 15.000 kunder allerede sparet millioner, og med flere af hjemmets udgifter samlet vokser besparelsen.',
     },
     {
-      q: 'Kan I flytte penge fra min konto?',
-      a: 'Nej. Forbindelsen giver kun adgang til at læse oplysninger fra banken. Hverken vi eller vores leverandør kan flytte penge eller betale fra dine konti.',
+      q: 'Er det gratis at bruge Altid Hjem?',
+      a: 'Ja, appen er gratis at hente, og det er gratis at oprette en konto. Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
     },
     {
-      q: 'Skal jeg være kunde hos Altid Energi?',
-      a: 'Nej. Altid Hjem virker også, hvis du ikke er kunde hos Altid Energi. Er du allerede kunde, kan du knytte dit kundeforhold til din konto og se forbrug og saldo i appen.',
+      q: 'Hvilke tjenester kan jeg samle i appen?',
+      a: 'I appen finder du Altid Energi, Altid Forsikring og Altid Mad sammen med et overblik over hjemmets økonomi. Tjenesterne er udvalgt på baggrund af kvalitet, pris og gennemsigtighed.',
     },
     {
-      q: 'Kan vi bruge appen sammen?',
-      a: 'Ja. Du kan invitere din partner, og så har I både jeres egne tal og et fælles overblik.',
-    },
-    {
-      q: 'Hvad kan min partner se?',
-      a: 'Din partner ser aldrig dine konti, saldi eller posteringer. Partneren ser kun to ting: en fælles drøm på en konto, du selv har markeret som husstandens, og fælles regler for forhandlere.',
-    },
-    {
-      q: 'Hvordan virker Altid Forsikring?',
-      a: 'I samler jeres forsikringer i appen og svarer på nogle få spørgsmål. Så kontakter en rådgiver jer, og I får et tilbud efter samtalen. Det er gratis og helt uforpligtende.',
-    },
-    {
-      q: 'Hvordan sletter jeg min konto?',
-      a: 'Du kan slette kontoen under Profil i appen eller her på siden.',
-      link: { text: 'her på siden', href: '/slet-konto' },
+      q: 'Skal jeg selv opsige mine gamle aftaler?',
+      a: 'Nej, det klarer vi. Når du vælger en løsning gennem Altid Hjem, håndterer vi skiftet for dig, så du slipper for opsigelser og papirarbejde.',
     },
   ],
 }
