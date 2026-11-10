@@ -46,6 +46,8 @@
   }
   /* On Deep forest the ring turns Signal green, on anything that sits directly on it. */
   .nav[data-on='dark'] :focus-visible,
+  .x-panel :focus-visible,
+  .sy-panel :focus-visible,
   .ft :focus-visible {
     outline-color: var(--signal);
   }
@@ -1553,7 +1555,7 @@
     }
   }
 
-  /* 8. Privacy: a calm Mint panel with a lock, three facts and the banks sliding past. */
+  /* 8. Privacy: a Deep forest panel with a lock, three facts and the banks in white. */
   .x-panel {
     display: flex;
     flex-direction: column;
@@ -1562,7 +1564,8 @@
     margin-inline: auto;
     padding: calc(var(--u) * 88) 0 calc(var(--u) * 64);
     border-radius: 24px;
-    background: var(--tint);
+    background: var(--forest);
+    color: #fff;
     text-align: center;
     overflow: hidden;
   }
@@ -1572,17 +1575,17 @@
     width: 72px;
     height: 72px;
     border-radius: 50%;
-    background: #fff;
+    background: var(--signal);
     color: var(--forest);
-    box-shadow: 0 10px 30px rgba(0, 60, 22, 0.12);
   }
   .x-title {
     margin-top: 28px;
+    color: #fff;
   }
   .x-body {
     width: min(100% - 34px, 30em);
     margin-top: 16px;
-    color: var(--forest);
+    color: rgba(255, 255, 255, 0.8);
   }
   .x-points {
     display: flex;
@@ -1599,18 +1602,24 @@
       min-height: 40px;
       padding: 0 16px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
       font-size: 16px;
       font-weight: 500;
-      color: var(--forest);
+      color: #fff;
+
+      svg {
+        color: var(--signal);
+      }
     }
   }
-  /* The banks on a white band across the panel. */
+  /* The banks in white (public/site/banks/white, made from the colour SVGs with their
+     white details cut out), across the panel. */
   .x-banks {
     width: 100%;
-    margin-top: calc(var(--u) * 56);
-    padding-block: 28px 32px;
-    background: #fff;
+    margin-top: calc(var(--u) * 64);
+    padding-top: calc(var(--u) * 40);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
 
     .w {
       padding-top: 0;
@@ -1621,16 +1630,21 @@
       font-family: var(--text);
       line-height: 1.3;
       letter-spacing: 0;
+      color: rgba(255, 255, 255, 0.8);
     }
   }
   .x-link {
     display: inline-block;
-    margin-top: 28px;
+    margin-top: 32px;
     font-size: 16px;
     line-height: 22px;
-    color: var(--forest);
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: underline;
     text-underline-offset: 3px;
+
+    &:focus-visible {
+      outline-color: var(--signal);
+    }
   }
   @media (max-width: 767px) {
     .x {
@@ -1645,122 +1659,172 @@
     }
   }
 
-  /* 9. Love */
-  .l {
-    padding: 0 0 calc(var(--u) * 159);
-  }
-  .l-collage {
-    position: absolute;
-    inset: calc(var(--u) * 190) 0 auto;
-    height: calc(var(--u) * 560);
-    width: calc(var(--u) * 1440);
-    margin-inline: auto;
-    max-width: 100%;
-  }
-  .l-col {
-    position: absolute;
-    top: var(--top);
-    left: var(--x);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: calc(var(--u) * 143);
-  }
-  .l-col-1 { --x: calc(var(--u) * 91); --top: calc(var(--u) * 55); --tile: calc(var(--u) * 230); }
-  .l-col-2 { --x: calc(var(--u) * 250); --top: calc(var(--u) * 18); --tile: calc(var(--u) * 166); }
-  .l-col-3 { --x: calc(var(--u) * 409); --top: calc(var(--u) * 87); --tile: calc(var(--u) * 413); }
-  .l-col-4 { --x: calc(var(--u) * 569); --top: 0px; --tile: calc(var(--u) * 413); }
-  .l-col-5 { --x: calc(var(--u) * 728); --top: 0px; --tile: calc(var(--u) * 413); }
-  .l-col-6 { --x: calc(var(--u) * 887); --top: calc(var(--u) * 87); --tile: calc(var(--u) * 413); }
-  .l-col-7 { --x: calc(var(--u) * 1047); --top: calc(var(--u) * 18); --tile: calc(var(--u) * 166); }
-  .l-col-8 { --x: calc(var(--u) * 1206); --top: calc(var(--u) * 55); --tile: calc(var(--u) * 230); }
-  .l-tile {
+  /* Story: the old site's Trust block in the new skin. One rounded panel, Altid Energi blue
+     and Deep forest side by side, the logos joined by dots across the seam. */
+  .sy-panel {
     position: relative;
     display: grid;
-    place-items: center;
-    height: var(--tile);
-    border-radius: 32px;
+    grid-template-columns: 1fr 1fr;
+    width: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
+    margin-inline: auto;
+    border-radius: 24px;
     overflow: hidden;
+    color: #fff;
+  }
+  .sy-half {
+    padding: calc(var(--u) * 96) calc(var(--u) * 72) calc(var(--u) * 190);
+  }
+  .sy-energi {
+    background: #022f6f;
+  }
+  .sy-hjem {
+    background: var(--forest);
+  }
+  .sy-pill {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.3;
     color: var(--forest);
-    background: var(--tint, var(--sand));
   }
-  .l-cover {
-    outline: 1px solid rgba(0, 60, 22, 0.1);
-    outline-offset: -1px;
+  .sy-energi .sy-pill {
+    background: #73d0e7;
+    color: #022f6f;
   }
-  .l-plate img {
-    width: 112%;
-    max-width: none;
-    height: auto;
+  .sy-hjem .sy-pill {
+    background: var(--signal);
   }
-  .l-head {
-    position: relative;
-    padding-top: calc(var(--u) * 690);
-    text-align: center;
-
-    h2 {
-      width: min(100% - 34px, 10.5em);
-      margin-inline: auto;
-    }
-    p {
-      width: min(100% - 34px, 28em);
-      margin: 16px auto 0;
-    }
+  /* The hanging opening mark, as in the mail and the old block: -0.42em. */
+  .sy-quote {
+    margin-top: calc(var(--u) * 32);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(28px, 18px + 1.9vw, 46px);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    text-indent: -0.42em;
+    text-wrap: balance;
   }
-  /* The collage's gaps stay in px while its tiles shrink, so it needs more room. */
-  @media (min-width: 768px) and (max-width: 1199px) {
-    .l-head {
-      padding-top: calc(var(--u) * 690 + 40px);
-    }
+  .sy-title {
+    margin-top: calc(var(--u) * 32);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(28px, 18px + 1.9vw, 46px);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
   }
-  .l-note {
+  .sy-body {
+    max-width: 30em;
+    margin-top: 20px;
+    font-size: clamp(16px, 14.5px + 0.3vw, 19px);
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .sy-bridge {
     position: absolute;
-    inset: auto 0 calc(var(--u) * 100);
-    font-size: 12px;
-    line-height: 16px;
-    text-align: center;
+    left: 50%;
+    bottom: calc(var(--u) * 64);
+    display: flex;
+    align-items: center;
+    gap: calc(var(--u) * 28);
+    translate: -50% 0;
+  }
+  .sy-logo {
+    width: auto;
+    height: clamp(34px, 2.2vw + 8px, 48px);
+  }
+  .sy-dots {
+    display: flex;
+    gap: 10px;
+
+    span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--signal);
+      opacity: var(--dot-max);
+      animation: dot-flow 2.6s linear infinite;
+      animation-delay: calc(var(--i) * 0.22s);
+    }
+    &[data-running='false'] span {
+      animation-play-state: paused;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      span {
+        animation: none;
+      }
+    }
   }
   @media (max-width: 767px) {
-    .l {
-      padding: 0 0 calc(var(--u) * 96);
+    .sy-panel {
+      grid-template-columns: 1fr;
+      width: calc(var(--u) * 356);
     }
-    .l-collage {
-      inset: calc(var(--u) * 85) 0 auto;
-      height: calc(var(--u) * 500);
-      width: 100%;
-      overflow: hidden;
+    .sy-half {
+      padding: 48px 24px 56px;
     }
-    .l-col {
-      width: calc(var(--u) * 110);
-      gap: 10px;
+    .sy-hjem {
+      padding-bottom: 32px;
     }
-    .l-col-1, .l-col-2, .l-col-7, .l-col-8 { display: none; }
-    .l-col-3 { --x: calc(var(--u) * -30); --top: calc(var(--u) * 60); --tile: calc(var(--u) * 400); }
-    .l-col-4 { --x: calc(var(--u) * 90); --top: 0px; --tile: calc(var(--u) * 400); }
-    .l-col-5 { --x: calc(var(--u) * 210); --top: 0px; --tile: calc(var(--u) * 400); }
-    .l-col-6 { --x: calc(var(--u) * 330); --top: calc(var(--u) * 60); --tile: calc(var(--u) * 400); }
-    .l-tile {
-      border-radius: 24px;
+    /* Under the two halves on a phone, on the Deep forest. */
+    .sy-bridge {
+      position: static;
+      justify-content: center;
+      gap: 14px;
+      padding-bottom: 48px;
+      translate: none;
+      background: var(--forest);
     }
-    .l-head {
-      padding-top: calc(var(--u) * 615);
-    }
-    .l-note {
-      inset: auto 17px calc(var(--u) * 40);
+    .sy-logo {
+      height: 30px;
     }
   }
 
-  /* 10. FAQ */
-  .q {
-    text-align: center;
+  /* 10. FAQ: the questions on the left, the family photo as a card on the right. */
+  .q-grid {
+    display: grid;
+    grid-template-columns: 1fr calc(var(--u) * 560);
+    gap: calc(var(--u) * 64);
+    width: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
+    margin-inline: auto;
   }
   .q-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    width: min(100% - 34px, calc(var(--u) * 900));
-    margin: calc(var(--u) * 64) auto 0;
-    text-align: left;
+    margin-top: calc(var(--u) * 40);
+  }
+  .q-photo {
+    align-self: start;
+    position: sticky;
+    top: 96px;
+    height: min(calc(var(--u) * 640), calc(100vh - 128px));
+    border-radius: 24px;
+    overflow: hidden;
+    background: var(--sand);
+  }
+  .q-icon {
+    position: absolute;
+    left: 24px;
+    top: 24px;
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    box-shadow: 0 10px 28px rgba(0, 30, 10, 0.25);
+  }
+  @media (max-width: 767px) {
+    .q-grid {
+      grid-template-columns: 1fr;
+      width: calc(var(--u) * 356);
+    }
+    .q-photo {
+      position: relative;
+      top: auto;
+      order: -1;
+      height: calc(var(--u) * 260);
+    }
   }
   .q-item {
     border-radius: 24px;

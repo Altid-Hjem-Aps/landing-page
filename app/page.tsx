@@ -6,9 +6,9 @@ import FinalCta from '@/components/site/FinalCta'
 import { dmSans } from '@/components/site/fonts'
 import Hero from '@/components/site/Hero'
 import { jsonLdScript } from '@/components/site/jsonLd'
-import Love from '@/components/site/Love'
 import MadDark from '@/components/site/MadDark'
 import Steps from '@/components/site/Steps'
+import Story from '@/components/site/Story'
 import { MotionPrefs } from '@/components/site/MotionPrefs'
 import PauseButton from '@/components/site/PauseButton'
 import Privacy from '@/components/site/Privacy'
@@ -57,9 +57,9 @@ export default function Home() {
           <MadDark />
           <Steps />
           <Privacy />
-          <Love />
-          <Blog />
+          <Story />
           <FaqSection />
+          <Blog />
           <FinalCta />
         </main>
         <PauseButton />

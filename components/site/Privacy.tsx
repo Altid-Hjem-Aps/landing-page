@@ -20,12 +20,12 @@ function Check() {
   )
 }
 
-// The bank connection, made calm: a light Mint panel, a lock, what the connection can and
-// can't do in three short lines, and the banks it works with sliding past underneath.
+// The bank connection, made calm: a Deep forest panel, a lock, what the connection can and
+// can't do in three short lines, and the banks it works with sliding past in white.
 export default function Privacy() {
   return (
     <section data-b="privacy" className="sec x">
-      <div className="x-panel" data-tone="mint">
+      <div className="x-panel" data-surface="dark">
         <span className="x-lock">
           <Lock />
         </span>

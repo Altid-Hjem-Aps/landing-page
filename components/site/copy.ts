@@ -149,15 +149,15 @@ export const BANKS = {
   // The app connects through Subaio, whose own text in the app says all Danish banks. Logos
   // from each bank's own website on 10 Nov 2026, see public/site/banks/sources.json.
   logos: [
-    { name: 'Danske Bank', src: '/site/banks/danske-bank.svg', ratio: 9.85 },
-    { name: 'Nordea', src: '/site/banks/nordea.svg', ratio: 4.76 },
-    { name: 'Jyske Bank', src: '/site/banks/jyske-bank.svg', ratio: 6.46 },
-    { name: 'Nykredit', src: '/site/banks/nykredit.svg', ratio: 6.18 },
-    { name: 'Sydbank', src: '/site/banks/sydbank.svg', ratio: 5.08 },
-    { name: 'Spar Nord', src: '/site/banks/spar-nord.svg', ratio: 2.78 },
-    { name: 'Lunar', src: '/site/banks/lunar.svg', ratio: 2.86 },
-    { name: 'Sparekassen Kronjylland', src: '/site/banks/sparekassen-kronjylland.svg', ratio: 4.89 },
-    { name: 'Ringkjøbing Landbobank', src: '/site/banks/ringkjobing-landbobank.svg', ratio: 2.37 },
+    { name: 'Danske Bank', src: '/site/banks/white/danske-bank.png', ratio: 9.85 },
+    { name: 'Nordea', src: '/site/banks/white/nordea.png', ratio: 4.76 },
+    { name: 'Jyske Bank', src: '/site/banks/white/jyske-bank.png', ratio: 6.44 },
+    { name: 'Nykredit', src: '/site/banks/white/nykredit.png', ratio: 6.42 },
+    { name: 'Sydbank', src: '/site/banks/white/sydbank.png', ratio: 5.08 },
+    { name: 'Spar Nord', src: '/site/banks/white/spar-nord.png', ratio: 2.83 },
+    { name: 'Lunar', src: '/site/banks/white/lunar.png', ratio: 2.86 },
+    { name: 'Sparekassen Kronjylland', src: '/site/banks/white/sparekassen-kronjylland.png', ratio: 4.89 },
+    { name: 'Ringkjøbing Landbobank', src: '/site/banks/white/ringkjobing-landbobank.png', ratio: 2.37 },
   ],
 } as const
 
@@ -169,14 +169,13 @@ export const PRESS = {
   href: 'https://ekstrabladet.dk/forbrug/Teknologi/spar-stort-paa-dine-dagligvarer-ny-app-sammenligner-priser/11232767',
 } as const
 
-export const LOVE = {
-  title: 'Lavet med omhu til danske hjem',
-  body: 'Altid Hjem kommer fra holdet bag Altid Energi og samler det, I ellers skal holde styr på hver for sig: jeres mad, strøm, forsikring og økonomi.',
-  collageAlt: {
-    painting: 'Maleriet af en kystby fra drømmen om en familieferie.',
-    coins: 'En stak mønter fra forsiden i appen.',
-    bars: 'Søjler for hver dag frem til lønningsdag den 20., med mærkaten Foran.',
-  },
+// The old site's Trust block (components/sections/Trust.tsx), word for word.
+export const STORY = {
+  proof: '+15.000 tilfredse danske kunder',
+  quote: '“Vi startede med at gøre op med skjulte gebyrer i elmarkedet. Nu gør vi det samme på tværs af alle hjemmets faste udgifter.”',
+  eyebrow: 'Vi har gjort det før',
+  title: 'Fair, gennemsigtigt og billigt',
+  body: 'Altid Hjem er skabt af teamet bag Altid Energi, som gjorde op med skjulte gebyrer i elmarkedet. Med over 15.000 kunder har vi bevist, at fair og gennemsigtige priser virker. Nu tager vi samme tilgang til hjemmets faste udgifter, så du altid ved, hvad du betaler for, og hvorfor. Ingen skjulte gebyrer. Fuld gennemsigtighed. Altid.',
 } as const
 
 // One FAQ, one source: the visible answers and the JSON-LD both read this. `link` names
