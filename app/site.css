@@ -1752,73 +1752,83 @@
     }
   }
 
-  /* Four steps: the old front page's how-it-works, as solid store-colour cards. */
+  /* Four steps in the list-and-phone layout: the active step takes its store colour. */
   .st {
-    text-align: center;
+    .m-left {
+      text-align: left;
+    }
+    .m-list {
+      height: auto;
+      margin-top: calc(var(--u) * 40);
+      overflow: visible;
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+    .m-row {
+      padding-right: calc(var(--u) * 24);
+
+      &[data-selected='true'] {
+        background: var(--tint);
+      }
+      &[data-selected='true'] .m-row-body {
+        color: var(--forest);
+      }
+    }
+    .m-panel {
+      top: calc(var(--u) * 90);
+    }
+    .m-shadow {
+      top: calc(var(--u) * 690);
+    }
+    .m-note {
+      top: calc(var(--u) * 726);
+    }
+  }
+  @media (max-width: 767px) {
+    .st .m-panel {
+      top: 0;
+    }
   }
   .st-eyebrow {
+    margin-bottom: 16px;
     font-size: 15px;
     font-weight: 600;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--stone);
   }
-  .st-title {
-    width: min(100% - 34px, 12em);
-    margin: 16px auto 0;
-  }
-  .st-list {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: calc(var(--u) * 24);
-    width: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
-    margin: calc(var(--u) * 64) auto 0;
-    text-align: left;
-  }
-  .st-card {
-    display: flex;
-    flex-direction: column;
-    min-height: calc(var(--u) * 340);
-    padding: calc(var(--u) * 36);
-    border-radius: 24px;
-    background: var(--tint);
-    color: var(--forest);
-  }
   .st-n {
+    display: block;
+    margin-bottom: 10px;
     font-family: var(--display);
     font-weight: 800;
-    font-size: clamp(44px, 36px + 1.4vw, 64px);
-    line-height: 0.9;
-    letter-spacing: -0.03em;
-  }
-  .st-card-title {
-    margin-top: auto;
-    padding-top: 32px;
-    font-family: var(--display);
-    font-weight: 700;
-    font-size: clamp(20px, 18px + 0.4vw, 24px);
-    line-height: 1.15;
-  }
-  .st-card-body {
-    margin-top: 10px;
-    font-size: 16px;
-    line-height: 1.45;
+    font-size: 15px;
+    letter-spacing: 0.04em;
   }
   .st-pills {
-    margin-top: calc(var(--u) * 48);
+    margin-top: calc(var(--u) * 32);
   }
-  @media (max-width: 1023px) {
-    .st-list {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  @media (max-width: 559px) {
-    .st-list {
-      grid-template-columns: 1fr;
-    }
-    .st-card {
-      min-height: 0;
-      padding: 28px;
+  @media (max-width: 767px) {
+    .st {
+      .m-list {
+        flex-direction: column;
+        gap: calc(var(--u) * 8);
+        width: auto;
+        height: auto;
+        margin: calc(var(--u) * 24) 0 0;
+        padding: 0;
+        overflow: visible;
+      }
+      .m-row {
+        width: 100%;
+        height: auto;
+      }
+      .m-shadow {
+        top: calc(var(--u) * 525);
+      }
+      .m-note {
+        top: calc(var(--u) * 548);
+      }
     }
   }
 

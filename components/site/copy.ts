@@ -164,67 +164,6 @@ export const MAD = {
   ],
 } as const
 
-export const MORE = {
-  title: 'Og der er mere',
-  line: 'Altid Hjem kan også det her:',
-  listLabel: 'Det, du finder i appen',
-  rows: [
-    {
-      title: 'Drømme',
-      body: 'Spar op til det, som er vigtigst for jer. Sæt et mål, og se hver måned, hvor langt I er nået.',
-      src: '/site/app/droemme-detail.webp',
-      alt: 'En drøm i appen: 9.500 kr. tilbage til Familieferie på Mallorca, 1.100 kr. om måneden.',
-    },
-    {
-      title: 'Ting til dig i dag',
-      body: 'Det, du skal tage stilling til, ligger øverst på forsiden.',
-      src: '/site/app/hjem-scrolled.webp',
-      alt: 'Forsiden i Altid Hjem: kortet 2 ting til dig i dag, måneden og de seneste bevægelser.',
-    },
-    {
-      title: 'Her brugte du mest',
-      body: 'Tryk på en kategori, og se, hvor pengene gik hen, og hvad I plejer at bruge.',
-      src: '/site/app/okonomi-category_transport.webp',
-      alt: 'Kategorien transport i Økonomi: 450 kr. under det, du plejer, og hvor du brugte mest.',
-    },
-    {
-      title: 'Alle faste udgifter',
-      body: 'Bolig, transport, børn og abonnementer med pris pr. måned.',
-      src: '/site/app/regninger-chart.webp',
-      alt: 'Faste udgifter i appen: søjler for de store regninger og en liste med bolig, transport, børn og forsikring.',
-    },
-    {
-      title: 'Din saldo hos Altid Energi',
-      body: 'Se, hvad du har indbetalt, og hvad du har brugt.',
-      src: '/site/app/energi-balance.webp',
-      alt: 'Din saldo hos Altid Energi: 240 kr. med indbetalt og brugt som søjler.',
-    },
-    {
-      title: 'Mad efter jeres smag',
-      body: 'Vælg det, der passer til jer, og fravælg resten.',
-      src: '/site/app/mad-flow-1_tastes.webp',
-      alt: 'Altid Mad spørger: Hvad passer til jer? Med valg som børnevenligt, hurtige retter og vegetarisk.',
-    },
-    {
-      title: 'Følg forsikringstjekket',
-      body: 'Se, hvor langt I er nået, fra spørgsmål til tilbud.',
-      src: '/site/app/b-forlob-waiting.webp',
-      alt: 'Forløbet i Altid Forsikring: spørgsmål besvaret, derefter besked fra en rådgiver og så tilbuddet.',
-    },
-    {
-      title: 'Mine og Fælles',
-      body: 'Skift mellem dine egne tal og jeres fælles overblik.',
-      src: '/site/app/okonomi-top.webp',
-      alt: 'Økonomi i appen med valget mellem Mine og Fælles øverst.',
-    },
-    {
-      title: 'Indkøb undervejs',
-      body: 'Kryds varerne af, mens I går rundt. Listen er delt op efter butik.',
-      src: '/site/app/mad-trip-in_progress.webp',
-      alt: 'Indkøbsturen i Altid Mad: 106 varer tilbage, og de to første varer er krydset af.',
-    },
-  ],
-} as const
 
 export const PRIVACY = {
   title: 'Jeres tal er jeres',
@@ -235,11 +174,40 @@ export const PRIVACY = {
 export const STEPS = {
   eyebrow: 'Sådan virker det',
   title: 'Fire trin til ét overblik',
+  listLabel: 'De fire trin',
   steps: [
-    { n: '01', tone: 'honey', title: 'Hent appen gratis', body: 'Du finder Altid Hjem i App Store og Google Play, og det er gratis at oprette en konto.' },
-    { n: '02', tone: 'sky', title: 'Forbind banken, hvis du vil', body: 'Med MitID ser du, hvad der er tilbage til lønningsdag, og hvor pengene går hen. Det er frivilligt, og vi har kun læseadgang.' },
-    { n: '03', tone: 'lavender', title: 'Vælg det, der passer jer', body: 'Få en madplan i Altid Mad, følg elprisen i Altid Energi, og få jeres forsikringer tjekket i Altid Forsikring.' },
-    { n: '04', tone: 'mint', title: 'Inviter din partner', body: 'Så har I både jeres egne tal og et fælles overblik. Ét overblik, ét login.' },
+    {
+      n: '01',
+      tone: 'honey',
+      title: 'Hent appen gratis',
+      body: 'Du finder Altid Hjem i App Store og Google Play, og det er gratis at oprette en konto.',
+      src: '/site/app/hjem-top.webp',
+      alt: 'Forsiden i Altid Hjem: 8.166 kr. tilbage, søjler for resten af måneden og en besked om, at du er 3.000 kr. foran.',
+    },
+    {
+      n: '02',
+      tone: 'sky',
+      title: 'Forbind banken, hvis du vil',
+      body: 'Med MitID ser du, hvad der er tilbage til lønningsdag, og hvor pengene går hen. Det er frivilligt, og vi har kun læseadgang.',
+      src: '/site/app/okonomi-top.webp',
+      alt: 'Økonomi i appen: hvad der er brugt siden lønningsdag, fordelt på kategorier.',
+    },
+    {
+      n: '03',
+      tone: 'lavender',
+      title: 'Vælg det, der passer jer',
+      body: 'Få en madplan i Altid Mad, følg elprisen i Altid Energi, og få jeres forsikringer tjekket i Altid Forsikring.',
+      src: '/site/app/mad-meal_plan.webp',
+      alt: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.',
+    },
+    {
+      n: '04',
+      tone: 'mint',
+      title: 'Inviter din partner',
+      body: 'Så har I både jeres egne tal og et fælles overblik. Ét overblik, ét login.',
+      src: '/site/app/droemme-detail.webp',
+      alt: 'En fælles drøm i appen: 9.500 kr. tilbage til Familieferie på Mallorca, 1.100 kr. om måneden.',
+    },
   ],
 } as const
 
