@@ -10,12 +10,14 @@ export default function Phone({
   sizes,
   focus = '50% 0%',
   preload = false,
+  quality = 90,
 }: {
   src: string
   alt: string
   sizes: string
   focus?: string
   preload?: boolean
+  quality?: number
 }) {
   return (
     <div className="ph" data-staged="true">
@@ -26,7 +28,7 @@ export default function Phone({
           alt={alt}
           fill
           sizes={sizes}
-          quality={90}
+          quality={quality}
           style={{ objectFit: 'cover', objectPosition: focus }}
           {...(preload ? { preload } : {})}
         />

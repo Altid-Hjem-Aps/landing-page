@@ -24,7 +24,7 @@ export default function Hero() {
         <HeroLanes />
         <div className="h-phones">
           <div className="h-phone">
-            <Phone src="/site/app/hjem-top.webp" alt={HERO.altPhone} sizes="(max-width: 767px) 62vw, 320px" preload />
+            <Phone src="/site/app/hjem-top.webp" alt={HERO.altPhone} sizes="(max-width: 767px) 62vw, 320px" quality={75} preload />
           </div>
           <div className="h-second">
             <Phone src="/site/app/mad-meal_plan.webp" alt={HERO.altSecond} sizes="(max-width: 767px) 44vw, 210px" focus="50% 34%" />

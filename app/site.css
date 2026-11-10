@@ -148,7 +148,7 @@
   .f-bento,
   .d-card {
     .t-body {
-      color: rgba(0, 60, 22, 0.8);
+      color: var(--forest);
     }
   }
 
