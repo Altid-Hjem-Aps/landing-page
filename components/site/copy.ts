@@ -125,7 +125,8 @@ export const MAD = {
 
 export const PRIVACY = {
   title: 'Jeres tal er jeres',
-  body: 'Forbindelsen til jeres bank giver kun adgang til at læse oplysninger, og vi kan ikke flytte penge. Vi sælger ikke jeres bankoplysninger.',
+  // Thor's wording, 10/11.
+  body: 'I forbinder sikkert jeres bank med MitID. Vi får kun adgang til at læse jeres oplysninger og kan hverken flytte penge eller foretage betalinger. Jeres bankoplysninger bliver aldrig solgt eller delt med tredjeparter til markedsføring eller lignende.',
   link: 'Læs privatlivspolitikken',
 } as const
 
