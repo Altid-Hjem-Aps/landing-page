@@ -70,6 +70,16 @@ describe('/kontakt', () => {
     expect(screen.getByRole('heading', { level: 2, name: 'Ofte stillede spørgsmål' })).toBeInTheDocument()
     expect(screen.getByText('Jeg kan ikke logge ind')).toBeInTheDocument()
   })
+
+  // Risk: Altid Energi questions land at hej@altidhjem.dk because the page gives no way to reach them.
+  it('gives the Altid Energi mail, phone and phone hours from hej@ answer 8', () => {
+    const { container } = render(<Kontakt />)
+    const main = container.querySelector('main')!.textContent
+    expect(screen.getByRole('link', { name: 'hej@altidenergi.dk' })).toHaveAttribute('href', 'mailto:hej@altidenergi.dk')
+    expect(screen.getByRole('link', { name: '44 440 440' })).toHaveAttribute('href', 'tel:+4544440440')
+    expect(main).toContain('mandag til fredag fra kl. 9.00 til 15.30')
+    expect(main).not.toMatch(/[–—]/)
+  })
 })
 
 describe('/privatlivspolitik', () => {

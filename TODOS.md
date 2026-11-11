@@ -32,11 +32,10 @@
   as-is deliberately (pages are mutually consistent; legal copy needs counsel).
 - **Fix:** Have a lawyer confirm or reword to "5 år efter udgangen af det
   regnskabsår, materialet vedrører".
-- **Also (operational):** /slet-konto now promises confirm-before-delete
-  ("sletningen gennemføres først, når du har bekræftet"). The support runbook
-  for hej@altidhjem.dk must actually enforce that confirmation round-trip —
-  deleting on the first inbound email would make the published policy false
-  AND enable spoofed-email deletions.
+- **Also (operational):** /slet-konto no longer promises confirm-before-delete,
+  but it still offers a "Slet min konto" mail. Whoever acts on one must confirm
+  with the account's address first: deleting on the first inbound email enables
+  spoofed-email deletions.
 
 ## P3 — Pre-existing lint errors block adding lint to CI (2026-06-10 /review)
 - `npm run lint` fails with 6 errors (setState-in-effect in two components,

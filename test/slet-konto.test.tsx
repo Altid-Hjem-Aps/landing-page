@@ -15,6 +15,20 @@ describe('/slet-konto', () => {
     expect(decodeURIComponent(mailto!.getAttribute('href')!)).toContain('Slet min konto')
   })
 
+  // Risk: the page drifts from hej@'s answer 6, or promises a date or a later feature again.
+  it('tells the same story as the support answer and promises no dates', () => {
+    const { container } = render(<SletKonto />)
+    const main = container.querySelector('main')!.textContent
+    expect(screen.getByText('Profil → Slet konto')).toBeInTheDocument()
+    expect(main).toContain('fjerner vi din konto og dine appdata')
+    expect(main).toContain('bankdata også slettet hos Subaio')
+    expect(main).toContain('elaftale hos Altid Energi fortsætter som før')
+    expect(main).toContain('de næste 90 dage')
+    expect(screen.getByRole('link', { name: 'hej@altidenergi.dk' })).toHaveAttribute('href', 'mailto:hej@altidenergi.dk')
+    expect(main).not.toMatch(/\bsnart\b|arbejder på|inden for 30 dage|gennemføres først/i)
+    expect(main).not.toMatch(/[–—]/)
+  })
+
   it('links to the privacy policy for retention details', () => {
     render(<SletKonto />)
     expect(screen.getByRole('link', { name: 'privatlivspolitik' })).toHaveAttribute('href', '/privatlivspolitik')
@@ -30,7 +44,7 @@ describe('/slet-konto', () => {
   // NOTE: actual production indexability also depends on robots.txt and deploy
   // headers (e.g. Vercel preview noindex) — this only checks the page's own metadata.
   it('page metadata does not opt out of indexing', () => {
-    expect(metadata.title).toBe('Slet din konto – Altid Hjem')
+    expect(metadata.title).toBe('Slet din konto | Altid Hjem')
     expect(metadata.description).toBeTruthy()
     expect(metadata.robots).toBeUndefined()
   })
