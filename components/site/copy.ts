@@ -10,8 +10,9 @@ export const NAV = {
   ],
   sheet: [
     { href: '#okonomi', label: 'Økonomi' },
-    { href: '#altid-energi', label: 'Altid Energi' },
-    { href: '#altid-forsikring', label: 'Altid Forsikring' },
+    { href: '#mad', label: 'Mad' },
+    { href: '#energi', label: 'Energi' },
+    { href: '#forsikring', label: 'Forsikring' },
     { href: '#spoergsmaal', label: 'Spørgsmål' },
     { href: '/kontakt', label: 'Kontakt' },
   ],
@@ -36,19 +37,20 @@ export const HERO = {
   ],
   // The hero's story, one at a time: a paper bill in, the assistant's note out with an action,
   // then what was done. Bills as in
-  // Thor's earlier bills mockup (made-up companies SikkerPlus and TeleNu); the notes are samples.
+  // Thor's earlier bills mockup (made-up companies SikkerPlus and TeleNu); the notes are samples
+  // and make no savings claims (Thor 11/11: none outside the Mad figure).
   lanes: [
     {
       bill: { title: 'Indboforsikring', from: 'SikkerPlus', date: '12. november', amount: '249 kr.', mail: false },
-      note: 'Jeg har fundet en indboforsikring, der kan være billigere. Vil du se tilbuddet?',
-      action: 'Vis tilbud',
-      done: 'Tilbuddet ligger klar til dig i appen.',
+      note: 'Indboforsikringen fornyes snart. Vil du have et uforpligtende tilbud at sammenligne med?',
+      action: 'Ja tak',
+      done: 'Du bliver ringet op med et tilbud.',
     },
     {
       bill: { title: 'Mobilregning', from: 'TeleNu', date: '5. november', amount: '249 kr.', mail: true },
-      note: 'Der findes et mobilabonnement med samme data, der er billigere. Skal jeg vise det?',
-      action: 'Ja tak',
-      done: 'Sammenligningen ligger klar til dig i appen.',
+      note: 'Mobilregningen på 249 kr. er lagt ind under Regninger. Vil du se alle jeres faste udgifter?',
+      action: 'Vis mig',
+      done: 'Alle faste udgifter er samlet i kalenderen.',
     },
     {
       bill: { title: 'Bilforsikring', from: 'SikkerPlus', date: '3. november', amount: '659 kr.', mail: false },
@@ -58,15 +60,15 @@ export const HERO = {
     },
     {
       bill: { title: 'Ulykkesforsikring', from: 'SikkerPlus', date: '6. november', amount: '139 kr.', mail: true },
-      note: 'I har to ulykkesforsikringer, der dækker det samme. Vil I se, hvilken I kan opsige?',
+      note: 'Ulykkesforsikringen er lagt ind under Forsikring. Vil I se alle jeres forsikringer samlet?',
       action: 'Vis mig',
-      done: 'Overblikket ligger klar til jer i appen.',
+      done: 'Jeres forsikringer er samlet ét sted.',
     },
   ] as const,
   secondScreens: [
-    { src: '/site/app/mad-meal_plan.webp', alt: 'Madplanen i Altid Mad: 130 kr. tilbage og ugens retter på en række tallerkener.', focus: '50% 34%' },
+    { src: '/site/app/mad-meal_plan.webp', alt: 'Madplanen i appen: 130 kr. tilbage og ugens retter på en række tallerkener.', focus: '50% 34%' },
     { src: '/site/app/droemme-detail.webp', alt: 'En drøm i appen: 9.500 kr. tilbage til Familieferie på Mallorca, 1.100 kr. om måneden.' },
-    { src: '/site/app/energi-home.webp', alt: 'Altid Energi i appen: elprisen time for time.' },
+    { src: '/site/app/energi-home.webp', alt: 'Energi i appen: elprisen time for time.' },
   ],
 } as const
 
@@ -97,6 +99,7 @@ export const OKONOMI = {
       tone: 'honey',
       title: '“Bruger vi for meget\npå takeaway?”',
       body: 'Forbind banken sikkert med MitID, og se hvordan pengene bliver brugt.',
+      id: 'okonomi',
       src: '/site/mail/takeaway.webp',
       alt: 'Økonomi i appen: 1.955 kr. brugt siden løn, fordelt på Transport, Restaurant og takeaway, Andet og Tøj.',
     },
@@ -104,6 +107,7 @@ export const OKONOMI = {
       tone: 'lavender',
       title: 'Ikke mere\n“hvad skal vi spise?”',
       body: 'Få en komplet madplan på få minutter, tilpasset dig og din familie.',
+      id: 'mad',
       src: '/site/mail/mad.webp',
       alt: 'Madplanen i appen: 437 kr. tilbage og ugens retter, blandt andet hjemmelavet pizza med tomat og mozzarella.',
     },
@@ -118,6 +122,7 @@ export const OKONOMI = {
       tone: 'sky',
       title: '“Hvornår skal opvasken sættes over?”',
       body: 'Følg elprisen time for time og få besked, når strømmen er billigst.',
+      id: 'energi',
       src: '/site/mail/energi.webp',
       alt: 'Elprisen i appen: 0,62 kr. pr. kWh lige nu og prisen time for time.',
     },
@@ -125,6 +130,7 @@ export const OKONOMI = {
       tone: 'rose',
       title: 'Alle jeres forsikringer\nsamlet ét sted',
       body: 'Se, hvad I betaler, og få snart nye tilbud. Helt gratis og uforpligtende.',
+      id: 'forsikring',
       src: '/site/mail/forsikring.webp',
       alt: 'Forsikringer i appen: 1.397 kr. om måneden for bil, hus, indbo og ulykke.',
     },
@@ -211,7 +217,8 @@ export const STORY = {
 // the words in `a` that link somewhere.
 export type FaqItem = { q: string; a: string; link?: { text: string; href: string } }
 
-// The old site's FAQ (components/sections/Faq.tsx), word for word, as Thor asked 10/11.
+// The old site's FAQ (components/sections/Faq.tsx), as Thor asked 10/11, with two answers changed
+// on his 11/11 rules: plain service names, and no savings claim except the sourced Mad figure.
 export const FAQ: { title: string; items: readonly FaqItem[] } = {
   title: 'Ofte stillede spørgsmål',
   items: [
@@ -229,7 +236,9 @@ export const FAQ: { title: string; items: readonly FaqItem[] } = {
     },
     {
       q: 'Hvor meget sparer jeg med Altid Hjem?',
-      a: 'Det afhænger af dine aftaler, men mange sparer langt over 1.000 kr. årligt alene på strøm. Hos Altid Energi har over 15.000 kunder allerede sparet millioner, og med flere af hjemmets udgifter samlet vokser besparelsen.',
+      // Only the sourced Mad figure, in the store texts' words (Thor 11/11); no other savings claims.
+      a: 'Det afhænger af jeres aftaler og vaner. På dagligvarer kan I spare i gennemsnit 11.207 kr. om året. Se beregningen i Altid Mad-rapporten.',
+      link: { text: 'Altid Mad-rapporten', href: '/madrapport' },
     },
     {
       q: 'Er det gratis at bruge Altid Hjem?',
@@ -237,7 +246,7 @@ export const FAQ: { title: string; items: readonly FaqItem[] } = {
     },
     {
       q: 'Hvilke tjenester kan jeg samle i appen?',
-      a: 'I appen finder du Altid Energi, Altid Forsikring og Altid Mad sammen med et overblik over hjemmets økonomi. Tjenesterne er udvalgt på baggrund af kvalitet, pris og gennemsigtighed.',
+      a: 'I appen finder du Mad, Energi og Forsikring sammen med et overblik over hjemmets økonomi. Tjenesterne er udvalgt på baggrund af kvalitet, pris og gennemsigtighed.',
     },
     {
       q: 'Skal jeg selv opsige mine gamle aftaler?',
@@ -268,8 +277,9 @@ export const FOOTER = {
   heads: { app: 'Appen', more: 'Læs mere', help: 'Hjælp', legal: 'Juridisk' },
   app: [
     { href: '#okonomi', label: 'Økonomi' },
-    { href: '#altid-energi', label: 'Altid Energi' },
-    { href: '#altid-forsikring', label: 'Altid Forsikring' },
+    { href: '#mad', label: 'Mad' },
+    { href: '#energi', label: 'Energi' },
+    { href: '#forsikring', label: 'Forsikring' },
   ],
   // Every SEO page in app/sitemap.ts, with today's titles in plain words.
   more: [

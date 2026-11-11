@@ -20,7 +20,7 @@ export default function MadDark() {
         </header>
         <div className="d-cards">
           {OKONOMI.cards.map((card) => (
-            <article key={card.src} className="d-card" data-tone={card.tone} data-surface="light">
+            <article key={card.src} id={'id' in card ? card.id : undefined} className="d-card" data-tone={card.tone} data-surface="light">
               <div className="d-card-text">
                 <h3 className="d-card-title">
                   {card.title.split('\n').map((line) => (
