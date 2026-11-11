@@ -167,16 +167,19 @@ export const PRIVACY = {
 } as const
 
 // Step photos, from the user's side: one series made with ChatGPT's image tool on 11 Nov 2026
-// (same phone, light and home in all four, phone in the middle of the frame), each with an empty
-// green screen that the app's own screenshot is then put on, so the app shown is the real one.
-// The brief and the script are in the session's notes; the phone is centred, hence 50% 50%.
+// (an ordinary Danish home on a weekday, the same phone, light and person in all four, the phone
+// in the middle of the frame, hence 50% 50%). Each was made with an empty green screen and the
+// app's own screenshot is put on it, so the app shown is the real one. Step 4 shows the app's
+// "Inviter partneren" step, from the app repo's own render on main (5 Nov), with the clock and
+// signal marks of the other screens added. The brief and the script are in the session's notes.
+// A new round gets new file names: next/image keeps serving a cached picture under an old name.
 export const STEPS = {
   title: 'Fire trin til ét overblik',
   steps: [
-    { n: '01', photo: '/site/people/trin-1.webp', photoFocus: '50% 50%', tone: 'honey', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
-    { n: '02', photo: '/site/people/trin-2.webp', photoFocus: '50% 50%', tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
-    { n: '03', photo: '/site/people/trin-3.webp', photoFocus: '50% 50%', tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Madplan, elpris og forsikringstjek. Tag det, der passer jer.', src: '/site/app/mere-sheet.webp', alt: 'Menuen i appen: Energi, Mad, Forsikring og Økonomi.' },
-    { n: '04', photo: '/site/people/trin-4.webp', photoFocus: '50% 50%', tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik og hver jeres egne tal.', src: '/site/app/hjem-faelles.webp', alt: 'Forsiden med Fælles valgt: 12.853 kr. tilbage for husstanden.' },
+    { n: '01', photo: '/site/people/hverdag-1.webp', photoFocus: '50% 50%', tone: 'honey', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
+    { n: '02', photo: '/site/people/hverdag-2.webp', photoFocus: '50% 50%', tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
+    { n: '03', photo: '/site/people/hverdag-3.webp', photoFocus: '50% 50%', tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Madplan, elpris og forsikringstjek. Tag det, der passer jer.', src: '/site/app/mere-sheet.webp', alt: 'Menuen i appen: Energi, Mad, Forsikring og Økonomi.' },
+    { n: '04', photo: '/site/people/hverdag-4.webp', photoFocus: '50% 50%', tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik og hver jeres egne tal.', src: '/site/app/inviter-partner.webp', alt: 'Inviter partneren i appen: hvad Mads ser og ikke ser, og knappen Inviter Mads.' },
   ],
 } as const
 
