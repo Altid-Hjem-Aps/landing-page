@@ -1862,10 +1862,13 @@
     grid-template-columns: 1fr 1fr;
     color: #fff;
   }
+  /* Sizes, spacing and type are the old block's own (components/sections/Trust.tsx), so it
+     sits as Thor designed it on altidhjem.dk: regular weight, the old heading ramp, 16 px body. */
   .sy-half {
-    padding: calc(var(--u) * 128) calc(var(--u) * 96) calc(var(--u) * 200);
+    padding: clamp(64px, 7.8vw, 150px) clamp(28px, 4.6vw, 92px) clamp(150px, 10.9vw, 210px);
   }
   .sy-energi {
+    position: relative;
     background: #022f6f;
   }
   .sy-hjem {
@@ -1873,50 +1876,60 @@
   }
   /* The hanging opening mark, as in the mail and the old block: -0.42em. */
   .sy-quote {
-    max-width: 15em;
-    font-family: var(--display);
-    font-weight: 700;
-    font-size: clamp(30px, 18px + 2.2vw, 56px);
-    line-height: 1.12;
-    letter-spacing: -0.025em;
+    font-weight: 400;
+    font-size: clamp(28px, calc(22.4px + 1.44vw), 50px);
+    line-height: 1.2;
     text-indent: -0.42em;
     text-wrap: balance;
   }
+  /* The four lines are only forced where each fits its column, from 1720 px, as on the old site. */
+  .sy-br {
+    display: none;
+  }
+  @media (min-width: 1720px) {
+    .sy-br {
+      display: inline;
+    }
+  }
   .sy-title {
-    font-family: var(--display);
-    font-weight: 700;
-    font-size: clamp(30px, 18px + 2.2vw, 56px);
-    line-height: 1.12;
-    letter-spacing: -0.025em;
-    text-wrap: balance;
+    margin-bottom: 24px;
+    font-weight: 400;
+    font-size: clamp(28px, calc(22.4px + 1.44vw), 50px);
+    line-height: 1.15;
   }
   .sy-body {
-    max-width: 24em;
-    margin-top: 24px;
-    font-size: clamp(18px, 15px + 0.5vw, 22px);
-    line-height: 1.45;
+    max-width: 560px;
+    font-size: 16px;
+    line-height: 1.8;
     color: #fff;
   }
   .sy-bridge {
     position: absolute;
     left: 50%;
-    bottom: calc(var(--u) * 88);
+    bottom: clamp(44px, 4.8vw, 92px);
     display: flex;
     align-items: center;
-    gap: calc(var(--u) * 28);
+    gap: clamp(20px, 2.2vw, 34px);
     translate: -50% 0;
   }
   .sy-logo {
     width: auto;
-    height: clamp(34px, 2.2vw + 8px, 52px);
+    height: clamp(38px, 3.2vw, 56px);
+  }
+  .sy-stacked {
+    display: none;
   }
   .sy-dots {
     display: flex;
+    align-items: center;
     gap: 10px;
 
+    &[data-vertical='true'] {
+      display: none;
+    }
     span {
-      width: 10px;
-      height: 10px;
+      width: 11px;
+      height: 11px;
       border-radius: 50%;
       background: var(--signal);
       opacity: var(--dot-max);
@@ -1948,23 +1961,37 @@
     .sy-panel {
       grid-template-columns: 1fr;
     }
-    .sy-half {
-      padding: 64px 24px 56px;
+    .sy-energi {
+      padding: 64px 28px;
     }
+    /* Room at the bottom for the app icon that sits on the edge to the FAQ. */
     .sy-hjem {
-      padding-bottom: 32px;
+      padding: 64px 28px 96px;
     }
-    /* Under the two halves on a phone, on the Deep forest. */
     .sy-bridge {
-      position: static;
-      justify-content: center;
-      gap: 14px;
-      padding-bottom: 72px;
-      translate: none;
-      background: var(--forest);
+      display: none;
     }
-    .sy-logo {
-      height: 30px;
+    /* As on the old site: the Altid Energi logo ends the blue, the Altid Hjem logo opens the
+       green, and the dots run down across the seam with the middle one on it. */
+    .sy-stacked {
+      display: block;
+      height: 48px;
+      margin-inline: auto;
+    }
+    .sy-energi .sy-stacked {
+      margin-top: 40px;
+    }
+    .sy-hjem .sy-stacked {
+      margin-bottom: 36px;
+    }
+    .sy-dots[data-vertical='true'] {
+      position: absolute;
+      z-index: 1;
+      left: 50%;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      translate: -50% 50%;
     }
   }
 

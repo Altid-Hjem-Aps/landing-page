@@ -219,12 +219,20 @@ export const PRESS = {
   href: 'https://ekstrabladet.dk/forbrug/Teknologi/spar-stort-paa-dine-dagligvarer-ny-app-sammenligner-priser/11232767',
 } as const
 
-// The old site's Trust block (components/sections/Trust.tsx); the body is condensed.
+// The old site's Trust block (components/sections/Trust.tsx), word for word and set the way
+// Thor designed it there (11/11: "the exact same way I designed on altidhjem.dk"). The quote is
+// in four lines, each with the letter-spacing he gave it; the lines are only forced on wide
+// screens, where each fits its column, as on the old site.
 export const STORY = {
   quote: '“Vi startede med at gøre op med skjulte gebyrer i elmarkedet. Nu gør vi det samme på tværs af alle hjemmets faste udgifter.”',
+  quoteLines: [
+    { text: '“Vi startede med at gøre op med', tracking: '-0.02em' },
+    { text: 'skjulte gebyrer i elmarkedet.', tracking: '0.04em' },
+    { text: 'Nu gør vi det samme på tværs', tracking: '0em' },
+    { text: 'af alle hjemmets faste udgifter.”', tracking: '0em' },
+  ],
   title: 'Fair, gennemsigtigt og billigt',
-  // Condensed from the old block's longer paragraph (Thor 10/11).
-  body: 'Altid Hjem er skabt af teamet bag Altid Energi. Med over 15.000 kunder har vi bevist, at fair og gennemsigtige priser virker. Nu gør vi det samme for hjemmets faste udgifter.',
+  body: 'Altid Hjem er skabt af teamet bag Altid Energi, som gjorde op med skjulte gebyrer i elmarkedet. Med over 15.000 kunder har vi bevist, at fair og gennemsigtige priser virker. Nu tager vi samme tilgang til hjemmets faste udgifter, så du altid ved, hvad du betaler for, og hvorfor. Ingen skjulte gebyrer. Fuld gennemsigtighed. Altid.',
 } as const
 
 // One FAQ, one source: the visible answers and the JSON-LD both read this. `link` names
