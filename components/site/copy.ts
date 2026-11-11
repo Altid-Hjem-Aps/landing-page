@@ -173,8 +173,9 @@ export const PRIVACY = {
 // (warm, soft window light, slightly filmic). The phone is held as people hold one: turned and
 // off centre, so photoFocus says where each photo is cropped. Each was made with an empty green
 // screen and the app's own screenshot is put on it in the phone's perspective, so the app shown
-// is the real one. Step 4 has two phones, first names only: Sofie's shows her Hjem with "Mads er
-// inviteret", Mads's shows "Sofie har inviteret dig", both the app repo's own renders on main
+// is the real one. Step 4 is seen over the couple's shoulders, two phones, first names only:
+// Sofie's shows her Hjem with "Mads er inviteret" and "Mads har ikke svaret", Mads's shows
+// "Sofie har inviteret dig", both the app repo's own renders on main
 // with the clock and signal marks of the other screens added. The briefs and the scripts are in
 // the session's notes. A new round gets new file names: next/image keeps serving a cached
 // picture under an old name.
@@ -182,9 +183,9 @@ export const STEPS = {
   title: 'Fire trin til ét overblik',
   steps: [
     { n: '01', photo: '/site/people/hjemme-1.webp', photoFocus: '100% 50%', tone: 'honey', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
-    { n: '02', photo: '/site/people/hjemme-2.webp', photoFocus: '0% 50%', tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
-    { n: '03', photo: '/site/people/hjemme-3.webp', photoFocus: '40% 50%', tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Madplan, elpris og forsikringstjek. Tag det, der passer jer.', src: '/site/app/mere-sheet.webp', alt: 'Menuen i appen: Energi, Mad, Forsikring og Økonomi.' },
-    { n: '04', photo: '/site/people/hjemme-4.webp', photoFocus: '50% 50%', tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik og hver jeres egne tal.', src: '/site/app/partner-venter.webp', alt: 'To telefoner side om side: på Sofies står der Mads er inviteret, på Mads’ står der Sofie har inviteret dig.' },
+    { n: '02', photo: '/site/people/hjemme-bank.webp', photoFocus: '50% 50%', tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
+    { n: '03', photo: '/site/people/hjemme-koekken.webp', photoFocus: '42% 50%', tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Madplan, elpris og forsikringstjek. Tag det, der passer jer.', src: '/site/app/mere-sheet.webp', alt: 'Menuen i appen: Energi, Mad, Forsikring og Økonomi.' },
+    { n: '04', photo: '/site/people/hjemme-partner.webp', photoFocus: '50% 50%', tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik og hver jeres egne tal.', src: '/site/app/partner-venter.webp', alt: 'Et par i sofaen med hver sin telefon: på Sofies står der Mads er inviteret og Mads har ikke svaret, på Mads’ står der Sofie har inviteret dig.' },
   ],
 } as const
 
