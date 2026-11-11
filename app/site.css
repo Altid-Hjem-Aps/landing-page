@@ -2194,7 +2194,6 @@
     overflow: hidden;
 
     h3 {
-      margin-top: 20px;
       font-family: var(--display);
       font-weight: 700;
       font-size: clamp(28px, 20px + 1.2vw, 40px);
@@ -2206,15 +2205,6 @@
       font-size: clamp(17px, 15px + 0.3vw, 20px);
       line-height: 1.4;
     }
-  }
-  .pz-part-icon {
-    display: grid;
-    place-items: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.6);
-    color: var(--forest);
   }
   .pz-part-shot {
     width: calc(var(--u) * 360);

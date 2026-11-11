@@ -1,9 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import { readAppRating, ratingText } from '@/components/site/AppRating'
 import { NAV, PRESSE } from '@/components/site/copy'
 import { dmSans } from '@/components/site/fonts'
-import ServiceIcon from '@/components/site/ServiceIcon'
 import SiteFooter from '@/components/site/SiteFooter'
 import SiteNav from '@/components/site/SiteNav'
 import '../site.css'
@@ -28,8 +26,7 @@ function Download({ href, children, quiet = false, external = false }: { href: s
 // The press page for all of Altid Hjem, in the new site's look: what the app is, a screenshot
 // per part of the app (Økonomi, Mad, Energi, Forsikring), press photos with their credit,
 // logos, coverage and the press contact. Everything a journalist takes away is a direct download.
-export default async function Presse() {
-  const rating = await readAppRating()
+export default function Presse() {
   return (
     <div className={`site ${dmSans.variable}`}>
       <a href="#indhold" className="skip">
@@ -60,10 +57,6 @@ export default async function Presse() {
                 <dd>{fact.value}</dd>
               </div>
             ))}
-            <div>
-              <dt>{PRESSE.about.ratingLabel}</dt>
-              <dd>{ratingText(rating)}</dd>
-            </div>
           </dl>
         </section>
 
@@ -76,9 +69,6 @@ export default async function Presse() {
             {PRESSE.parts.items.map((part) => (
               <li key={part.name} className="pz-part" data-tone={part.tone}>
                 <div className="pz-part-text">
-                  <span className="pz-part-icon">
-                    <ServiceIcon name={part.icon} size={22} />
-                  </span>
                   <h3>{part.name}</h3>
                   <p>{part.body}</p>
                   <Download href={`/presse/${part.file}`}>{PRESSE.parts.download}</Download>

@@ -348,17 +348,16 @@ export const PRESSE = {
       { label: 'Pris', value: 'Gratis' },
       { label: 'Findes til', value: 'iPhone og Android' },
     ],
-    ratingLabel: 'App Store',
   },
   parts: {
     title: 'Fire dele, én app',
     line: 'Skærmbilleder af hver del af appen. Hent dem enkeltvis.',
     download: 'Hent billede',
     items: [
-      { icon: 'okonomi', tone: 'honey', name: 'Økonomi', body: 'Forbind banken sikkert med MitID, og se hvordan pengene bliver brugt.', file: 'altid-hjem-okonomi.jpg', shot: '/site/mail/takeaway.webp', alt: 'Økonomi i Altid Hjem: 1.955 kr. brugt siden løn, fordelt på kategorier.' },
-      { icon: 'mad', tone: 'lavender', name: 'Mad', body: 'Få en komplet madplan på få minutter, tilpasset dig og din familie.', file: 'altid-hjem-mad.jpg', shot: '/site/mail/mad.webp', alt: 'Mad i Altid Hjem: ugens madplan og 437 kr. tilbage af madbudgettet.' },
-      { icon: 'energi', tone: 'sky', name: 'Energi', body: 'Følg elprisen time for time og få besked, når strømmen er billigst.', file: 'altid-hjem-energi.jpg', shot: '/site/mail/energi.webp', alt: 'Energi i Altid Hjem: elprisen lige nu og time for time.' },
-      { icon: 'forsikring', tone: 'rose', name: 'Forsikring', body: 'Se, hvad I betaler, og få snart nye tilbud. Helt gratis og uforpligtende.', file: 'altid-hjem-forsikring.jpg', shot: '/site/mail/forsikring.webp', alt: 'Forsikring i Altid Hjem: 1.397 kr. om måneden for bil, hus, indbo og ulykke.' },
+      { tone: 'honey', name: 'Økonomi', body: 'Forbind banken sikkert med MitID, og se hvordan pengene bliver brugt.', file: 'altid-hjem-okonomi.jpg', shot: '/site/mail/takeaway.webp', alt: 'Økonomi i Altid Hjem: 1.955 kr. brugt siden løn, fordelt på kategorier.' },
+      { tone: 'lavender', name: 'Mad', body: 'Få en komplet madplan på få minutter, tilpasset dig og din familie.', file: 'altid-hjem-mad.jpg', shot: '/site/mail/mad.webp', alt: 'Mad i Altid Hjem: ugens madplan og 437 kr. tilbage af madbudgettet.' },
+      { tone: 'sky', name: 'Energi', body: 'Følg elprisen time for time og få besked, når strømmen er billigst.', file: 'altid-hjem-energi.jpg', shot: '/site/mail/energi.webp', alt: 'Energi i Altid Hjem: elprisen lige nu og time for time.' },
+      { tone: 'rose', name: 'Forsikring', body: 'Se, hvad I betaler, og få snart nye tilbud. Helt gratis og uforpligtende.', file: 'altid-hjem-forsikring.jpg', shot: '/site/mail/forsikring.webp', alt: 'Forsikring i Altid Hjem: 1.397 kr. om måneden for bil, hus, indbo og ulykke.' },
     ],
   },
   photos: {
