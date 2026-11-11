@@ -11,11 +11,9 @@ export default function Story() {
     <section data-b="story" className="sy" aria-labelledby="sy-title">
       <div className="sy-panel" data-surface="dark">
         <div className="sy-half sy-energi">
-          <p className="sy-pill">{STORY.proof}</p>
           <blockquote className="sy-quote">{STORY.quote}</blockquote>
         </div>
         <div className="sy-half sy-hjem">
-          <p className="sy-pill">{STORY.eyebrow}</p>
           <h2 id="sy-title" className="sy-title">
             {STORY.title}
           </h2>

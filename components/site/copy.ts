@@ -207,9 +207,7 @@ export const PRESS = {
 
 // The old site's Trust block (components/sections/Trust.tsx); the body is condensed.
 export const STORY = {
-  proof: '+15.000 tilfredse danske kunder',
   quote: '“Vi startede med at gøre op med skjulte gebyrer i elmarkedet. Nu gør vi det samme på tværs af alle hjemmets faste udgifter.”',
-  eyebrow: 'Vi har gjort det før',
   title: 'Fair, gennemsigtigt og billigt',
   // Condensed from the old block's longer paragraph (Thor 10/11).
   body: 'Altid Hjem er skabt af teamet bag Altid Energi. Med over 15.000 kunder har vi bevist, at fair og gennemsigtige priser virker. Nu gør vi det samme for hjemmets faste udgifter.',

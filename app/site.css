@@ -1841,26 +1841,9 @@
   .sy-hjem {
     background: var(--forest);
   }
-  .sy-pill {
-    display: inline-block;
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--forest);
-  }
-  .sy-energi .sy-pill {
-    background: #73d0e7;
-    color: #022f6f;
-  }
-  .sy-hjem .sy-pill {
-    background: var(--signal);
-  }
   /* The hanging opening mark, as in the mail and the old block: -0.42em. */
   .sy-quote {
     max-width: 15em;
-    margin-top: calc(var(--u) * 32);
     font-family: var(--display);
     font-weight: 700;
     font-size: clamp(30px, 18px + 2.2vw, 56px);
@@ -1870,7 +1853,6 @@
     text-wrap: balance;
   }
   .sy-title {
-    margin-top: calc(var(--u) * 32);
     font-family: var(--display);
     font-weight: 700;
     font-size: clamp(30px, 18px + 2.2vw, 56px);
