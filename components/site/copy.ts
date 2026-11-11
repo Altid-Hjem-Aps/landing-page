@@ -368,18 +368,15 @@ export const PRESSE = {
     alt: 'Werner Valeur',
     web: 'Hent web',
     print: 'Hent tryk',
-    // Web size only for 6 to 12: they come from the photographer's web folder (Werner's Dropbox,
-    // "LAV OPLØSNING TIL WEB", mail of 19 Jun 2026). The print files are the ones
-    // altidmad.dk/presse serves (23 to 27 MB each). Portraits and everyday settings come first;
-    // the last four were taken for the Mad story (shopping bags, a shop).
+    // Web size only for 6 to 8: they come from the photographer's web folder (Werner's Dropbox,
+    // "LAV OPLØSNING TIL WEB", mail of 19 Jun 2026). Thor ruled out the restaurant, window and
+    // blue curtain photos from that folder on 11 Nov 2026. The print files are the ones
+    // altidmad.dk/presse serves (23 to 27 MB each). Plain portraits come first; the last four
+    // were taken for the Mad story (shopping bags, a shop).
     items: [
       { file: 'werner-valeur-6.jpg', web: '0,5 MB' },
       { file: 'werner-valeur-7.jpg', web: '0,6 MB' },
       { file: 'werner-valeur-8.jpg', web: '1,4 MB' },
-      { file: 'werner-valeur-9.jpg', web: '0,9 MB' },
-      { file: 'werner-valeur-10.jpg', web: '0,5 MB', focus: '41% 50%' },
-      { file: 'werner-valeur-11.jpg', web: '0,6 MB' },
-      { file: 'werner-valeur-12.jpg', web: '0,9 MB' },
       { file: 'werner-valeur-5.jpg', web: '0,3 MB', print: { href: 'https://altidmad.dk/presse/altid-mad-pressefoto-5-tryk.jpg', size: '25 MB' } },
       { file: 'werner-valeur-1.jpg', web: '0,9 MB', print: { href: 'https://altidmad.dk/presse/altid-mad-pressefoto-1-tryk.jpg', size: '26 MB' } },
       { file: 'werner-valeur-2.jpg', web: '0,8 MB', print: { href: 'https://altidmad.dk/presse/altid-mad-pressefoto-2-tryk.jpg', size: '23 MB' } },
