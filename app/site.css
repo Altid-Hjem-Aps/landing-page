@@ -2277,8 +2277,8 @@
   }
   .pz-photos {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: calc(var(--u) * 32);
+    grid-template-columns: repeat(4, 1fr);
+    gap: calc(var(--u) * 40) calc(var(--u) * 24);
     margin-top: calc(var(--u) * 48);
 
     img {
@@ -2361,7 +2361,7 @@
     margin: var(--pad) auto 0;
     padding: calc(var(--u) * 88) calc(var(--u) * 80);
     border-radius: 24px;
-    background: var(--forest);
+    background: var(--dark-forest);
     color: #fff;
 
     h2 {
@@ -2402,11 +2402,31 @@
       gap: 32px;
     }
     .pz-parts,
-    .pz-photos,
     .pz-logos {
       grid-template-columns: 1fr;
       gap: 17px;
       margin-top: 28px;
+    }
+    .pz-photos {
+      grid-template-columns: 1fr 1fr;
+      gap: 24px 12px;
+      margin-top: 28px;
+
+      img {
+        border-radius: 16px;
+      }
+      figcaption {
+        font-size: 12px;
+      }
+      /* Two photos across leaves about 170 px a column: the pills fill it on one line each. */
+      .pz-dl {
+        width: 100%;
+        justify-content: center;
+        gap: 6px;
+        padding: 0 10px;
+        font-size: 13px;
+        white-space: nowrap;
+      }
     }
     .pz-soon {
       grid-template-columns: 1fr;
@@ -2557,6 +2577,12 @@
       }
     }
   }
+  /* Hjælp and Juridisk share the last column, one under the other. */
+  .ft-side {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
   .ft-more ul {
     display: grid;
     grid-template-columns: calc(var(--u) * 272) 1fr;
@@ -2570,16 +2596,9 @@
     .ft-col button {
       font-size: clamp(15px, 1.25vw, 18px);
     }
-    .ft-inner > .ft-col:nth-child(4),
-    .ft-inner > .ft-col:nth-child(5) {
+    .ft-side {
       grid-column: 4;
-    }
-    .ft-inner > .ft-col:nth-child(4) {
       grid-row: 1;
-    }
-    .ft-inner > .ft-col:nth-child(5) {
-      grid-row: 1;
-      margin-top: 152px;
     }
   }
   @media (max-width: 1023px) {
@@ -2595,14 +2614,9 @@
     .ft-more {
       grid-row: 3;
     }
-    .ft-col:nth-child(4) {
+    .ft-side {
       grid-column: 2;
       grid-row: 2;
-    }
-    .ft-col:nth-child(5) {
-      grid-column: 2;
-      grid-row: 2;
-      margin-top: 130px;
     }
     .ft-more ul {
       grid-template-columns: 1fr;

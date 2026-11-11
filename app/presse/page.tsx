@@ -98,7 +98,7 @@ export default function Presse() {
             {PRESSE.photos.items.map((photo) => (
               <li key={photo.file}>
                 <figure>
-                  <Image src={`/presse/${photo.file}`} alt={PRESSE.photos.alt} width={1200} height={1600} sizes="(max-width: 767px) 90vw, 420px" />
+                  <Image src={`/presse/${photo.file}`} alt={PRESSE.photos.alt} width={1200} height={1600} sizes="(max-width: 767px) 45vw, 330px" />
                   <figcaption>{PRESSE.photos.caption}</figcaption>
                 </figure>
                 <div className="pz-dls">

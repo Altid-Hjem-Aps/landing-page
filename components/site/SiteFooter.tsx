@@ -68,29 +68,31 @@ export default function SiteFooter({ base = '' }: { base?: '' | '/' }) {
             ))}
           </ul>
         </nav>
-        <nav className="ft-col" aria-label={FOOTER.heads.help}>
-          <h2>{FOOTER.heads.help}</h2>
-          <ul>
-            {FOOTER.help.map((l) => (
-              <li key={l.href}>
-                <Link href={l.href}>{l.label}</Link>
+        <div className="ft-side">
+          <nav className="ft-col" aria-label={FOOTER.heads.help}>
+            <h2>{FOOTER.heads.help}</h2>
+            <ul>
+              {FOOTER.help.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href}>{l.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <nav className="ft-col" aria-label={FOOTER.heads.legal}>
+            <h2>{FOOTER.heads.legal}</h2>
+            <ul>
+              {FOOTER.legal.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href}>{l.label}</Link>
+                </li>
+              ))}
+              <li>
+                <CookieSettingsLink className="ft-cookie" />
               </li>
-            ))}
-          </ul>
-        </nav>
-        <nav className="ft-col" aria-label={FOOTER.heads.legal}>
-          <h2>{FOOTER.heads.legal}</h2>
-          <ul>
-            {FOOTER.legal.map((l) => (
-              <li key={l.href}>
-                <Link href={l.href}>{l.label}</Link>
-              </li>
-            ))}
-            <li>
-              <CookieSettingsLink className="ft-cookie" />
-            </li>
-          </ul>
-        </nav>
+            </ul>
+          </nav>
+        </div>
       </div>
     </footer>
   )
