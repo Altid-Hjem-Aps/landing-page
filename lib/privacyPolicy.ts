@@ -51,7 +51,7 @@ export function parseInline(text: string): InlineSegment[] {
 }
 
 export const privacyPolicy: PrivacyPolicy = {
-  updated: '2026-11-10',
+  updated: '2026-11-11',
   sections: [
     {
       title: '1. Vi er den dataansvarlige',
@@ -110,6 +110,8 @@ export const privacyPolicy: PrivacyPolicy = {
         { type: 'paragraph', text: 'Siger du ja til notifikationer på din telefon, gemmer vi en kode, så vi kan sende beskeder til netop din telefon. Koden får vi fra Google (Firebase), som bringer beskederne ud for os. Vi gemmer også et tilfældigt nummer for appen på din telefon, om det er en iPhone eller en Android, hvilken version af appen du har, og om notifikationer er slået til. Om hver besked gemmer vi, hvad slags besked det var, hvornår vi sendte den, og om du åbnede den. Selve teksten i beskeden sletter vi, når den er sendt. Slår du notifikationer fra, gemmer vi, hvornår du gjorde det.' },
         { type: 'label', text: 'Henvisningsoplysninger' },
         { type: 'paragraph', text: 'Når du deler eller kopierer dit personlige henvisningslink i appen, og når nogen klikker på det, registrerer vi hændelsen. For hver hændelse gemmer vi tidspunkt, land, browsertype og en hashværdi af IP-adressen med et dagligt skiftende tilfældigt tillæg, men aldrig selve IP-adressen. Det personlige link viser, hvilken kunde et klik hører til. Oplysningerne bruges til at tælle henvisninger på grundlag af vores legitime interesse i at drive henvisningsordningen og slettes efter 90 dage. Henvisningsoptællingen bruger ikke cookies.' },
+        { type: 'label', text: 'Hvor din konto kom fra' },
+        { type: 'paragraph', text: 'Henter du appen fra Google Play på en Android-telefon, fortæller Google Play os, hvilket link du kom fra, fx hvilken annonce eller kampagne (kilde og kampagnenavn). Det gemmer vi på din konto, når du opretter den. Er der en personlig invitationskode i linket, gemmer vi ikke selve koden. På en iPhone får vi ingen oplysning om, hvor du kom fra, så der gemmer vi intet. Står din e-mail på vores venteliste, kobler vi også din konto til din tilmelding, så vi kan se, hvilken side du skrev dig op fra.' },
         { type: 'label', text: 'Profilbillede' },
         { type: 'paragraph', text: 'Hvis du selv lægger et billede af dig ind i appen, gemmer vi det, så de andre voksne i din husstand kan se det. Kun medlemmer af din husstand, der er logget ind, kan se billedet. Før vi gemmer det, fjerner vi oplysninger om, hvor og med hvilket kamera det er taget. Det er frivilligt at lægge et billede ind.' },
         { type: 'label', text: 'Kommunikationsoplysninger' },
@@ -148,6 +150,8 @@ export const privacyPolicy: PrivacyPolicy = {
         { type: 'label', text: 'Optælling af, hvor mange der bruger appen og tjenesterne' },
         { type: 'paragraph', text: 'Vi tæller, hvor mange der bruger appen og vores tjenester, så vi ved, om Altid Hjem bliver brugt. Vi gemmer kun, at appen blev åbnet, og hvilke tjenester der blev brugt den dag. Optællingen viser ikke, hvad du kigger på eller trykker på, og vi bruger kun tallene samlet. Det gælder alle, uanset om du har sagt ja eller nej til analysen ovenfor.' },
         { type: 'paragraph', text: 'Retsgrundlag: Legitim interesse (GDPR artikel 6, stk. 1, litra f). Vores interesse er at vide, om tjenesterne bliver brugt, og at kunne afregne korrekt. Vi vurderer, at den går forud for din interesse, fordi oplysningerne er få, ikke siger noget om, hvad du gør i appen, og ikke bruges til noget om dig som person. Du kan altid gøre indsigelse, se afsnit 9.' },
+        { type: 'label', text: 'Måling af, hvilke annoncer og kampagner der giver nye kunder' },
+        { type: 'paragraph', text: 'Vi bruger oplysningen om, hvor din konto kom fra (se afsnit 3), til at se, hvilke annoncer og kampagner der giver nye kunder, og hvad en ny kunde koster os. Vi bruger kun tallene samlet per kampagne og ikke til noget om dig som person. Retsgrundlag: Legitim interesse (GDPR artikel 6, stk. 1, litra f). Vores interesse er at bruge vores markedsføringskroner fornuftigt. Vi vurderer, at den går forud for din interesse, fordi oplysningen kun siger, hvilket link appen blev hentet fra, og ikke hvem du er eller hvad du gør i appen. Du kan altid gøre indsigelse, se afsnit 9.' },
         { type: 'label', text: 'Markedsføring og personaliserede tilbud fra Altid Hjem og datterselskaber' },
         { type: 'paragraph', text: 'Retsgrundlag: Samtykke (GDPR artikel 6, stk. 1, litra a). Du kan til enhver tid trække dit samtykke tilbage.' },
         { type: 'label', text: 'Opfyldelse af lovkrav' },
@@ -216,6 +220,7 @@ export const privacyPolicy: PrivacyPolicy = {
             { text: 'De valg, du selv har truffet om dine bankoplysninger (kontoroller, egne kategorier, skjulte abonnementer, svar på afregninger og udlæg), gemmer vi, indtil du fjerner dem eller sletter din konto. Sletter du din konto, beder vi samtidig Subaio om at slette dig hos dem. Beskeden sendes efter sletningen og forsøges igen, indtil Subaio har bekræftet.' },
             { text: 'Fælles drømme og fælles regler hører til husstanden. Sletter du din konto eller forlader husstanden, mens din partner bliver, bliver det, partneren allerede kunne se, i husstanden uden dit navn og din konto på. Er du alene i husstanden, slettes det sammen med husstanden.' },
             { text: 'Vi gemmer oplysningerne om, at appen er åbnet, og hvilke tjenester der er brugt en bestemt dag, per bruger i 13 måneder. Derefter gemmer vi kun samlede tal.' },
+            { text: 'Oplysningen om, hvor din konto kom fra, og koblingen til din ventelistetilmelding gemmer vi, så længe du har en konto. Sletter du din konto, slettes de sammen med den.' },
             { text: 'Brugsdata i Amplitude opbevarer vi, så længe du har givet samtykke. Trækker du samtykket tilbage under Profil › Samtykker, eller sletter du din konto, stopper indsamlingen med det samme, og vi beder automatisk Amplitude om at slette oplysningerne om dig. Sletningen er gennemført inden for 30 dage.' },
           ],
         },
