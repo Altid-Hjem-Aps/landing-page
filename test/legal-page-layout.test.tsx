@@ -70,6 +70,16 @@ describe('/kontakt', () => {
     expect(screen.getByRole('heading', { level: 2, name: 'Ofte stillede spørgsmål' })).toBeInTheDocument()
     expect(screen.getByText('Jeg kan ikke logge ind')).toBeInTheDocument()
   })
+
+  // Risk: Altid Energi questions land at hej@altidhjem.dk because the page gives no way to reach them.
+  it('gives the Altid Energi mail, phone and phone hours from hej@ answer 8', () => {
+    const { container } = render(<Kontakt />)
+    const main = container.querySelector('main')!.textContent
+    expect(screen.getByRole('link', { name: 'hej@altidenergi.dk' })).toHaveAttribute('href', 'mailto:hej@altidenergi.dk')
+    expect(screen.getByRole('link', { name: '44 440 440' })).toHaveAttribute('href', 'tel:+4544440440')
+    expect(main).toContain('mandag til fredag fra kl. 9.00 til 15.30')
+    expect(main).not.toMatch(/[–—]/)
+  })
 })
 
 describe('/privatlivspolitik', () => {
@@ -88,7 +98,7 @@ describe('/privatlivspolitik', () => {
     render(<Privatlivspolitik />)
     const h2s = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
     expect(h2s).toEqual(privacyPolicy.sections.map((s) => s.title))
-    expect(screen.getByText('Senest opdateret: 3. november 2026')).toBeInTheDocument()
+    expect(screen.getByText('Senest opdateret: 11. november 2026')).toBeInTheDocument()
   })
 
   it('lists every cookie and storage key the site sets, and lets the visitor change the choice', () => {

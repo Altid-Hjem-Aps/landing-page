@@ -15,10 +15,18 @@ describe('/slet-konto', () => {
     expect(decodeURIComponent(mailto!.getAttribute('href')!)).toContain('Slet min konto')
   })
 
-  it('states the in-app path as it is in app 1.0.3, and promises nothing for later', () => {
+  // Risk: the page drifts from hej@'s answer 6, or promises a date or a later feature again.
+  it('tells the same story as the support answer and promises no dates', () => {
     const { container } = render(<SletKonto />)
-    expect(screen.getByText('Mere → Profil → Slet konto')).toBeInTheDocument()
-    expect(container.textContent).not.toMatch(/snart|arbejder på/i)
+    const main = container.querySelector('main')!.textContent
+    expect(screen.getByText('Profil → Slet konto')).toBeInTheDocument()
+    expect(main).toContain('fjerner vi din konto og dine appdata')
+    expect(main).toContain('bankdata også slettet hos Subaio')
+    expect(main).toContain('elaftale hos Altid Energi fortsætter som før')
+    expect(main).toContain('de næste 90 dage')
+    expect(screen.getByRole('link', { name: 'hej@altidenergi.dk' })).toHaveAttribute('href', 'mailto:hej@altidenergi.dk')
+    expect(main).not.toMatch(/\bsnart\b|arbejder på|inden for 30 dage|gennemføres først/i)
+    expect(main).not.toMatch(/[–—]/)
   })
 
   it('links to the privacy policy for retention details', () => {
