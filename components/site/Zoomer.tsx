@@ -62,8 +62,10 @@ export default function Zoomer({ children }: { children: ReactNode }) {
   }, [reduced])
 
   return (
-    <div ref={ref} className="zoomer">
-      {children}
+    <div className="zoom-wrap">
+      <div ref={ref} className="zoomer">
+        {children}
+      </div>
     </div>
   )
 }

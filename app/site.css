@@ -1779,8 +1779,14 @@
      seam between this block and the FAQ. */
   /* The story and the FAQ together: the privacy panel's size out of view, the full window in
      view (Zoomer.tsx scales it from the scroll). */
-  .zoomer {
+  /* What shows beside the block while it is shrunk: the page's own colour above, and white
+     below, where the white blog section follows. The switch sits mid-block, which is never
+     on screen while the block is shrunk. */
+  .zoom-wrap {
     margin-top: var(--pad);
+    background: linear-gradient(to bottom, transparent 50%, #fff 50%);
+  }
+  .zoomer {
     overflow: clip;
     will-change: transform;
   }
@@ -1923,10 +1929,11 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
-  /* White, so the whole block reads as one shape while it shrinks and grows. */
+  /* The page's cream, as on the old site. It is the block's own colour, so it shrinks and
+     rounds with the block. */
   .q-main {
     position: relative;
-    background: #fff;
+    background: var(--cream);
   }
   .q-inner {
     position: absolute;
