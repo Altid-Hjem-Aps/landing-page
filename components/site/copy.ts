@@ -6,16 +6,15 @@ export const NAV = {
   ariaMenu: 'Menu',
   links: [
     { href: '#spoergsmaal', label: 'Spørgsmål' },
-    { href: '/presse', label: 'Presse' },
     { href: '/kontakt', label: 'Kontakt' },
   ],
+  // Presse is not in the menus (Thor 11/11): the page is reached from the footer.
   sheet: [
     { href: '#okonomi', label: 'Økonomi' },
     { href: '#mad', label: 'Mad' },
     { href: '#energi', label: 'Energi' },
     { href: '#forsikring', label: 'Forsikring' },
     { href: '#spoergsmaal', label: 'Spørgsmål' },
-    { href: '/presse', label: 'Presse' },
     { href: '/kontakt', label: 'Kontakt' },
   ],
   cta: 'Hent appen',
