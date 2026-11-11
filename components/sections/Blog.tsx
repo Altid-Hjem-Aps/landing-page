@@ -230,7 +230,7 @@ export default function Blog() {
   return (
     <section className="py-20 sm:py-28" style={{ background: '#ffffff' }}>
       <div className="text-center mb-12 sm:mb-14 px-6">
-        <h2 className="t-h2">Læs mere om, hvordan Altid Hjem skaber ro i hverdagen</h2>
+        <h2 className="t-h2">Læs mere om Altid Hjem</h2>
       </div>
 
       {/* Snap carousel — large cards (≈720px @1920) that overflow the viewport,

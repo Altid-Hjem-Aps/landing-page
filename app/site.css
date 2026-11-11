@@ -1862,8 +1862,8 @@
     grid-template-columns: 1fr 1fr;
     color: #fff;
   }
-  /* Sizes, spacing and type are the old block's own (components/sections/Trust.tsx), so it
-     sits as Thor designed it on altidhjem.dk: regular weight, the old heading ramp, 16 px body. */
+  /* Layout, spacing, logos and dots are the old block's own (components/sections/Trust.tsx);
+     the type is this site's, so the block matches the sections around it (Thor 11/11). */
   .sy-half {
     padding: clamp(64px, 7.8vw, 150px) clamp(28px, 4.6vw, 92px) clamp(150px, 10.9vw, 210px);
   }
@@ -1876,31 +1876,28 @@
   }
   /* The hanging opening mark, as in the mail and the old block: -0.42em. */
   .sy-quote {
-    font-weight: 400;
-    font-size: clamp(28px, calc(22.4px + 1.44vw), 50px);
-    line-height: 1.2;
+    max-width: 15em;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(30px, 18px + 2.2vw, 56px);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
     text-indent: -0.42em;
     text-wrap: balance;
   }
-  /* The four lines are only forced where each fits its column, from 1720 px, as on the old site. */
-  .sy-br {
-    display: none;
-  }
-  @media (min-width: 1720px) {
-    .sy-br {
-      display: inline;
-    }
-  }
   .sy-title {
-    margin-bottom: 24px;
-    font-weight: 400;
-    font-size: clamp(28px, calc(22.4px + 1.44vw), 50px);
-    line-height: 1.15;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(30px, 18px + 2.2vw, 56px);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
   }
   .sy-body {
-    max-width: 560px;
-    font-size: 16px;
-    line-height: 1.8;
+    max-width: 24em;
+    margin-top: 24px;
+    font-size: clamp(18px, 15px + 0.5vw, 22px);
+    line-height: 1.45;
     color: #fff;
   }
   .sy-bridge {
