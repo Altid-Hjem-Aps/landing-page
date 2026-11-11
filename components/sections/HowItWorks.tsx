@@ -1,15 +1,14 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { motion, useReducedMotion } from 'framer-motion'
-import * as amplitude from '@amplitude/analytics-browser'
-import { H2, EYEBROW, BUTTON_PRIMARY } from '@/lib/typography'
+import StoreBadges from '@/components/StoreBadges'
+import { H2, EYEBROW } from '@/lib/typography'
 
 type Step = { n: string; title: string; desc: React.ReactNode }
 
 const STEPS: Step[] = [
-  { n: '01', title: 'Tilmeld dig ventelisten gratis', desc: 'Skriv dit navn og din e-mail, og vi holder dig opdateret.' },
-  { n: '02', title: 'Få besked, når appen er klar', desc: 'Vi sender dig en e-mail, når appen er klar. Så du er blandt de første til at prøve Altid Hjem.' },
+  { n: '01', title: 'Hent appen gratis', desc: 'Du finder Altid Hjem i App Store og Google Play.' },
+  { n: '02', title: 'Opret dig', desc: 'Det er gratis at oprette en konto, og så er du i gang.' },
   { n: '03', title: 'Vælg dine løsninger', desc: 'Sammenlign og vælg de tjenester, der passer til dit hjem.' },
   { n: '04', title: 'Fuldt overblik', desc: <>Alle faste udgifter samlet ét sted, med ét login. <span style={{ color: '#163223' }}>Altid.</span></> },
 ]
@@ -26,7 +25,6 @@ const DIVIDERS = [
 ]
 
 export default function HowItWorks() {
-  const router = useRouter()
   const prefersReducedMotion = useReducedMotion()
 
   // Cards animate in 01→04 (staggered) when the grid scrolls into view; static
@@ -42,16 +40,6 @@ export default function HowItWorks() {
   const cardVariants = prefersReducedMotion
     ? undefined
     : { hidden: { opacity: 0, y: 26 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } } }
-
-  // Same signup flow as nav/hero/founder: scroll to the bottom form if present,
-  // otherwise expand the hero form, otherwise navigate home with #venteliste.
-  function handleCTA() {
-    amplitude.track('Waitlist CTA Clicked', { source: 'how-it-works' })
-    const onPageForm = document.getElementById('venteliste2')
-    if (onPageForm) { onPageForm.scrollIntoView({ behavior: 'smooth', block: 'center' }); return }
-    if (window.location.pathname !== '/') { router.push('/#venteliste'); return }
-    window.dispatchEvent(new CustomEvent('expand-waitlist'))
-  }
 
   return (
     <section className="py-20 sm:py-28" style={{ background: '#fdfaf4' }}>
@@ -103,18 +91,7 @@ export default function HowItWorks() {
           ))}
         </motion.div>
 
-        {/* CTA — same button design as the hero, redirecting to the bottom form */}
-        <div className="flex justify-center mt-12 sm:mt-14">
-          <button
-            type="button"
-            onClick={handleCTA}
-            className={`${BUTTON_PRIMARY} w-full px-5 lg:w-auto lg:px-[42px]`}
-            style={{ background: '#90ff7c', color: '#003c16' }}
-          >
-            <span className="lg:hidden">Skriv dig gratis på ventelisten</span>
-            <span className="hidden lg:inline">Skriv dig på ventelisten og få ro på hjemmets udgifter</span>
-          </button>
-        </div>
+        <StoreBadges position="how-it-works" className="justify-center mt-12 sm:mt-14" />
 
       </div>
     </section>

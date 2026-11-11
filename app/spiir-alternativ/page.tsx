@@ -5,9 +5,9 @@ import BottomCta from '@/components/sections/BottomCta'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'Spiir-alternativ: Hvad skal du bruge i stedet for Spiir? – Altid Hjem',
+  title: 'Spiir-alternativ: Hvad skal du bruge i stedet for Spiir? | Altid Hjem',
   description:
-    'Spiir lukkede 8. juni 2026. Leder du efter et Spiir-alternativ, der giver overblik over dine faste udgifter? Altid Hjem skal samle el, mobil og forsikring i én app. Skriv dig gratis på ventelisten.',
+    'Spiir lukkede 8. juni 2026. Leder du efter et Spiir-alternativ, der giver overblik over dine faste udgifter? Altid Hjem samler økonomi, strøm, forsikring og madplan i én app. Hent den gratis.',
 }
 
 // FAQ-indholdet bruges to steder: på siden (afsnit for afsnit) og som
@@ -31,21 +31,21 @@ const FAQ: { q: string; a: string[] }[] = [
     q: 'Er Altid Hjem en budgetapp?',
     a: [
       'Nej. Altid Hjem er ikke en klassisk budgetapp.',
-      'Vi fokuserer på hjemmets faste udgifter som el, mobil, forsikring, mad og mere. Målet er at samle dem ét sted, så du får færre logins, færre regninger og bedre overblik.',
+      'Vi fokuserer på hjemmets økonomi og faste udgifter. Du ser, hvad du har tilbage til næste løn. Du ser også dine faste udgifter og abonnementer i en kalender og har madplan, strøm og forsikring samlet i samme app.',
     ],
   },
   {
-    q: 'Hvornår åbner Altid Hjem?',
+    q: 'Hvor henter jeg Altid Hjem?',
     a: [
-      'Altid Hjem er i de sidste forberedelser.',
-      'Skriv dig på ventelisten på altidhjem.dk, så får du besked, når appen er klar. De første på listen får adgang først.',
+      'Altid Hjem ligger i App Store og Google Play.',
+      'Appen er gratis at hente, og du kan bruge knapperne her på siden.',
     ],
   },
   {
-    q: 'Koster det noget at skrive sig på ventelisten?',
+    q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej. Det er gratis at skrive sig på ventelisten.',
-      'Du får besked, når Altid Hjem åbner.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
+      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
     ],
   },
 ]
@@ -126,7 +126,7 @@ export default function SpiirAlternativ() {
                 </p>
                 <p className="mb-3">Altid Hjem går skridtet videre.</p>
                 <p className="mb-3">
-                  Vi samler hjemmets faste udgifter. El, mobil, forsikring, mad og mere. I{' '}
+                  Vi samler hjemmets økonomi og faste udgifter. Strøm, forsikring og madplan. I{' '}
                   <span className="font-medium" style={{ color: 'var(--forest)' }}>
                     én app med ét overblik og ét login
                   </span>
@@ -153,8 +153,8 @@ export default function SpiirAlternativ() {
                   er Altid Hjem bygget til netop det.
                 </p>
                 <p>
-                  Vi viser dig ikke kun udgifterne. Vi samler dem, så det bliver lettere at forstå,
-                  styre og betale hjemmets faste regninger.
+                  Vi viser dig ikke kun udgifterne. Vi samler dem, så det bliver lettere at forstå og
+                  styre hjemmets faste regninger.
                 </p>
               </section>
 
@@ -210,12 +210,10 @@ export default function SpiirAlternativ() {
           </div>
         </div>
 
-        {/* Samme tilmeldingssektion som forsiden — mørkegrøn, folk kan skrive
-            sig på ventelisten direkte her uden at forlade siden. */}
         <BottomCta
-          eyebrow="Klar til at få overblikket tilbage?"
-          subtitle="Tilmeld dig gratis ventelisten i dag og få tidlig adgang, når appen lanceres"
-          source="spiir-alternativ"
+          eyebrow='Fra Spiir til Altid Hjem'
+          heading='Hent Altid Hjem, og få overblikket tilbage'
+          subtitle='Forbind banken med MitID, så ser du dine faste udgifter i en kalender og det, du har tilbage til næste løn.'
         />
       </main>
       <Footer />

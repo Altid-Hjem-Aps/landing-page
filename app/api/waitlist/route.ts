@@ -5,16 +5,10 @@ import { trackServer, identifyServer } from '@/lib/amplitude.server'
 import { recordReferral, mirrorSignup, getReferrerProgress, getUnsubToken, isUnsubscribed, checkRateLimit, checkRateLimitStrict, getQueuePosition, getSignupByEmail } from '@/lib/db'
 import { syncContactTags, addAudienceContact } from '@/lib/resend'
 import { normalizeSignupSource } from '@/lib/signup-source'
-import {
-  CONSENT_VERSION,
-  CONFIRM_SENT_HEADING,
-  confirmSentBody,
-  DUPLICATE_ERROR,
-  LOOKUP_FAILED_ERROR,
-  CONFIRM_SENDS_PER_HOUR,
-} from '@/lib/copy'
+import { CONSENT_VERSION, LOOKUP_FAILED_ERROR, CONFIRM_SENDS_PER_HOUR } from '@/lib/copy'
 import { signConfirmToken, assertConsentTokenConfigured } from '@/lib/consent-token'
 import { assertSurveyTokenConfigured, signSurveyToken, verifySurveyToken } from '@/lib/survey-token'
+import { handleNewsletter } from '@/lib/newsletter'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.altidhjem.dk'
 // Pinned, not req.nextUrl.origin: the confirmation link carries a consent token,
@@ -26,6 +20,14 @@ const PHONE_RE = /^\d{8}$/
 const WINDOW_SECONDS = 60 * 60 // 1 hour
 const MAX_ATTEMPTS = 3
 
+// Answers for step 1, which no page posts to any more; a page cached from before
+// the switch still might.
+const CONFIRM_SENT_HEADING = 'Du er næsten i mål'
+const DUPLICATE_ERROR = 'Du er allerede skrevet op!'
+function confirmSentBody(email: string): string {
+  return `Du står allerede på ventelisten. Vi har sendt en mail til ${email} med et link, som du skal trykke på, før vi må sende dig markedsføring.`
+}
+
 export async function POST(req: NextRequest) {
   let body
   try {
@@ -33,6 +35,8 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ success: false, error: 'Ugyldig anmodning' }, { status: 400 })
   }
+
+  if (body?.source === 'newsletter') return handleNewsletter(req, body)
 
   if (body.step === 1) {
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
@@ -167,7 +171,9 @@ export async function POST(req: NextRequest) {
         if (allowed) {
           const token = signConfirmToken(existing.publicId, pending, Date.now() / 1000)
           await sendConsentConfirmation({
-            name: existing.firstName || String(name).trim(),
+            // The name on file only. This mail goes to someone else's address, so a
+            // stranger must not be able to choose its words.
+            name: existing.firstName ?? '',
             email: String(email).toLowerCase().trim(),
             confirmUrl: `${SITE_ORIGIN}/api/bekraeft?t=${encodeURIComponent(token)}`,
             unsubscribeUrl: `https://altidhjem.dk/api/unsubscribe?token=${encodeURIComponent(existing.unsubToken as string)}`,

@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // 90 for the front page's app captures: their small text goes soft at the default 75.
+  images: { qualities: [75, 90] },
   async redirects() {
     return [
       // SEO-siden flyttede til søgeords-slug (12. jun 2026) — 301 bevarer

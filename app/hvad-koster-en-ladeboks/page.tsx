@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import LadeboksCalculator from '@/components/LadeboksCalculator'
 
 export const metadata: Metadata = {
-  title: 'Hvad koster en ladeboks? Priser og valg – Altid Hjem',
+  title: 'Hvad koster en ladeboks? Priser og valg | Altid Hjem',
   description:
     'Se vejledende priser på ladeboks, installation, leje og refusion, og få styr på prisen for hjemmeladning. Prøv beregneren her på siden.',
   alternates: { canonical: 'https://altidhjem.dk/hvad-koster-en-ladeboks' },
@@ -67,15 +67,15 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem er en dansk app på vej, som skal kunne samle el, mobil, forsikring, opladning, alarm og mad i ét overblik med ét login.',
-      'Appen bygges af holdet bag det gebyrfrie energiselskab Altid Energi, hvor mere end 15.000 danskere allerede er kunder.',
+      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så du får ét overblik, ét login.',
+      'Appen er bygget af holdet bag det gebyrfrie energiselskab Altid Energi, hvor mere end 15.000 danskere allerede er kunder.',
     ],
   },
   {
-    q: 'Koster det noget at skrive sig på ventelisten?',
+    q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej, det koster ikke noget at skrive sig på ventelisten til Altid Hjem.',
-      'Ventelisten er åben på altidhjem.dk, og appen er endnu ikke lanceret.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
+      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
     ],
   },
 ]
@@ -220,16 +220,16 @@ export default function HvadKosterEnLadeboks() {
               </section>
               <section>
                 <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvad Altid Hjem skal kunne
+                  Hvad Altid Hjem kan i dag
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem er bygget til at samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad i ét overblik med ét login. Altid Energi er tilgængeligt i dag, mens opladning og de øvrige tjenester er på vej.
+                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så du får ét overblik, ét login. Opladning og ladebokse er ikke en del af appen.
                 </p>
                 <p className="mb-3">
-                  For opladning skal Altid Hjem kunne gøre det lettere at se tjenesten sammen med hjemmets øvrige aftaler. Målet er et mere overskueligt grundlag for at forstå priser, vilkår og løbende udgifter.
+                  I appen ser du elprisen time for time og kan få besked, når strømmen er billig. Det kan du bruge, når du vil vælge, hvornår bilen skal lades.
                 </p>
                 <p>
-                  Altid Hjem bygges af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder. Du kan skrive dig på ventelisten på altidhjem.dk.
+                  Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder. Du kan hente appen gratis i App Store og Google Play.
                 </p>
               </section>
 
@@ -271,13 +271,11 @@ export default function HvadKosterEnLadeboks() {
           </div>
         </div>
 
-        <div id="venteliste">
-          <BottomCta
-            eyebrow='Opladning er en del af hjemmets faste udgifter'
-            subtitle='Skriv dig gratis på ventelisten og få tidlig adgang, når Altid Hjem lanceres'
-            source='hvad-koster-en-ladeboks'
-          />
-        </div>
+        <BottomCta
+          eyebrow='Ét overblik over hjemmets udgifter'
+          heading='Hent Altid Hjem, og få overblik over husstanden'
+          subtitle='Appen er gratis og viser elprisen time for time, så du kan se, hvornår strømmen er billig.'
+        />
       </main>
       <Footer />
     </>

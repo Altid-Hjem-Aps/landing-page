@@ -5,7 +5,7 @@ import CookieSettingsLink from '@/components/CookieSettingsLink'
 import { COOKIE_SETTINGS_URL, parseInline, privacyPolicy, type PolicyBlock } from '@/lib/privacyPolicy'
 
 export const metadata: Metadata = {
-  title: 'Privatlivspolitik – Altid Hjem',
+  title: 'Privatlivspolitik: Altid Hjem',
   description: 'Læs om hvordan Altid Hjem ApS behandler dine personoplysninger.',
 }
 

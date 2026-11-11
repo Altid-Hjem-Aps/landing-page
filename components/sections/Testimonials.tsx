@@ -3,16 +3,16 @@
 import { useAutoCarousel, useCarouselReveal, CarouselPagination } from '@/components/useAutoCarousel'
 import { EYEBROW } from '@/lib/typography'
 
-// Real quotes from waitlist signups (3 Jul 2026). `initials` is unused since
+// Real quotes from people who signed up before launch (3 Jul 2026). `initials` is unused since
 // the photo panel was cut from the card design — kept in case it returns.
-interface Testimonial {
+export interface Testimonial {
   quote: string
   name: string
   job: string
   initials: string
 }
 
-const TESTIMONIALS: Testimonial[] = [
+export const TESTIMONIALS: Testimonial[] = [
   {
     quote: 'Jeg fik Altid Hjem anbefalet, og glæder mig til at det kan give mig et bedre overblik over vores økonomi hjemme hos os.',
     name: 'Lone',
@@ -88,7 +88,7 @@ export default function Testimonials() {
   return (
     <section className="py-16 sm:py-20" style={{ background: '#fff' }}>
       <p className={`${EYEBROW} mx-auto max-w-[960px] px-6 text-center`} style={{ color: '#163223' }}>
-        Hør, hvorfor mere end 2.000 danskere allerede har skrevet sig på ventelisten
+        Hør, hvad danskerne siger om Altid Hjem
       </p>
 
       {/* Centred snap carousel, same behaviour as the Blog: the active card
@@ -97,7 +97,7 @@ export default function Testimonials() {
         ref={trackRef}
         // Keyboard users can focus the track and scroll it with arrow keys.
         role="region"
-        aria-label="Udtalelser fra ventelisten"
+        aria-label="Udtalelser"
         tabIndex={0}
         onScroll={onScroll}
         onPointerDown={cancelGlide}

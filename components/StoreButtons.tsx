@@ -1,5 +1,4 @@
-const APP_STORE_URL = 'https://apps.apple.com/dk/app/altid-hjem/id6794330094'
-const GOOGLE_PLAY_URL = 'https://play.google.com/store/apps/details?id=dk.altidhjem.app'
+import { APP_STORE_URL, PLAY_STORE_URL } from '@/lib/store-links'
 
 // Official badges, unmodified (source in public/store-badges/README.md). The Google
 // PNG carries its own clear space (192 of 250 px is badge), so it is drawn at
@@ -18,7 +17,7 @@ export default function StoreButtons() {
           style={{ display: 'block', height: 48, width: 'auto' }}
         />
       </a>
-      <a href={GOOGLE_PLAY_URL} className="block">
+      <a href={PLAY_STORE_URL} className="block">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/store-badges/google-play-da.png"
