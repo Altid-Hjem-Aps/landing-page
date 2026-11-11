@@ -10,10 +10,12 @@ import { H2, EYEBROW } from '@/lib/typography'
 // can point at the same SEO page from different angles; the chip icon matches
 // the post's topic. Loop/autoplay/pagination live in useAutoCarousel.
 
+export type BlogCategory = 'Mobil' | 'Opladning' | 'Alarm' | 'Forsikring' | 'Energi' | 'Overblik'
+
 type Post = {
   href: string
   icon: string
-  category: string
+  category: BlogCategory
   title: string
   excerpt: string
   meta: string
@@ -97,7 +99,7 @@ const POSTS: Post[] = [
     icon: '/services/icon-forsikring.svg',
     category: 'Forsikring',
     title: 'Hvad koster forsikring i 2026?',
-    excerpt: 'Se vejledende priser på de mest almindelige forsikringer, og find ud af, om du betaler for meget – eller er dækket dobbelt uden at vide det.',
+    excerpt: 'Se vejledende priser på de mest almindelige forsikringer, og find ud af, om du betaler for meget, eller om du er dækket dobbelt uden at vide det.',
     meta: '5 min læsning · 17. jun 2026',
   },
   {
@@ -112,8 +114,8 @@ const POSTS: Post[] = [
     href: '/spiir-alternativ',
     icon: '/app-badge.png',
     category: 'Overblik',
-    title: 'Spiir lukker – hvad bruger du nu?',
-    excerpt: 'Spiir lukkede 8. juni 2026. Altid Hjem giver dig overblik over hjemmets faste udgifter – el, mobil og forsikring samlet ét sted, i én app.',
+    title: 'Spiir lukker: hvad bruger du nu?',
+    excerpt: 'Spiir lukkede 8. juni 2026. Altid Hjem giver dig overblik over hjemmets faste udgifter: madplan, strøm, forsikring og økonomi samlet ét sted, i én app.',
     meta: '4 min læsning · 10. jun 2026',
   },
   {
@@ -121,7 +123,7 @@ const POSTS: Post[] = [
     icon: '/services/icon-forsikring.svg',
     category: 'Forsikring',
     title: 'Er du forsikret dobbelt uden at vide det?',
-    excerpt: 'Mange danskere betaler for den samme dækning to gange – fx en rejseforsikring, der allerede er inkluderet i indboforsikringen. Se, hvordan du tjekker det.',
+    excerpt: 'Mange danskere betaler for den samme dækning to gange, fx en rejseforsikring, der allerede er inkluderet i indboforsikringen. Se, hvordan du tjekker det.',
     meta: '4 min læsning · 17. jun 2026',
   },
   {
@@ -129,7 +131,7 @@ const POSTS: Post[] = [
     icon: '/services/icon-strom.svg',
     category: 'Energi',
     title: 'Hvornår er strømmen billigst?',
-    excerpt: 'Følg elpriserne time for time i DK1 og DK2, og se hvornår strømmen er billigst i dag og i morgen – så du kan lægge forbruget, når prisen er lav.',
+    excerpt: 'Følg elpriserne time for time i DK1 og DK2, og se hvornår strømmen er billigst i dag og i morgen, så du kan lægge forbruget, når prisen er lav.',
     meta: '4 min læsning · 14. jun 2026',
   },
   {
@@ -137,15 +139,11 @@ const POSTS: Post[] = [
     icon: '/app-badge.png',
     category: 'Overblik',
     title: 'Få ro på hjemmets faste udgifter',
-    excerpt: 'Regninger, vilkår og aftaler spredt på mail, papir og e-Boks stjæler overblikket. Saml dem ét sted, og se præcis hvad du betaler for – og hvorfor.',
+    excerpt: 'Regninger, vilkår og aftaler spredt på mail, papir og e-Boks stjæler overblikket. Saml dem ét sted, og se præcis hvad du betaler for, og hvorfor.',
     meta: '3 min læsning · 10. jun 2026',
   },
 ]
 
-// The track renders the posts three times so the carousel can loop seamlessly
-// (see useAutoCarousel).
-const N = POSTS.length
-const LOOP = [...POSTS, ...POSTS, ...POSTS]
 
 // Autoplay interval — the active dot's progress fill loads over this time,
 // then the carousel slides to the next card (Apple-gallery pagination).
@@ -197,13 +195,20 @@ function PostCard({ post, clone = false }: { post: Post; clone?: boolean }) {
   )
 }
 
-export default function Blog() {
+// categories: show only posts in these categories (the front page passes the
+// services that are live in the app). Without it, every post is shown.
+export default function Blog({ categories }: { categories?: readonly BlogCategory[] } = {}) {
+  const posts = categories ? POSTS.filter((p) => categories.includes(p.category)) : POSTS
+  // The track renders the posts three times so the carousel can loop
+  // seamlessly (see useAutoCarousel).
+  const N = posts.length
+  const LOOP = [...posts, ...posts, ...posts]
   const carousel = useAutoCarousel(N, AUTO_MS)
   const { trackRef, onScroll, cancelGlide } = carousel
   const reveal = useCarouselReveal(trackRef, carousel.reduced, N, carousel.demoNudge)
 
   return (
-    <section className="py-20 sm:py-28" style={{ background: '#ffffff' }}>
+    <section className="focus-ring-light py-20 sm:py-28" style={{ background: '#ffffff' }}>
 
       <div className="text-center mb-12 sm:mb-14 px-6">
         <p className={`${EYEBROW} mb-4`} style={{ color: '#6f6a61' }}>

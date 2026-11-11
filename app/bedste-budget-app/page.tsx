@@ -60,22 +60,22 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: 'Kan Altid Hjem erstatte en budget-app?',
     a: [
-      'Nej, Altid Hjem skal løse en anden opgave end en klassisk budget-app.',
-      'Appen er bygget til at samle hjemmets faste aftaler, mens budget-apps typisk kategoriserer bevægelser på jeres konti.',
+      'Det afhænger af, hvad I bruger budget-appen til.',
+      'I Altid Hjem forbinder I banken med MitID og ser, hvad I har tilbage til næste løn. I ser også jeres faste udgifter og abonnementer i en kalender. Appen samler også madplan, strøm og forsikring.',
     ],
   },
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem er en kommende dansk app, der skal samle hjemmets faste udgifter ét sted.',
-      'Målet er ét overblik, ét login til el, mobil, forsikring, opladning, alarm og mad.',
+      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så du får ét overblik, ét login.',
+      'Du kan hente den gratis i App Store og Google Play.',
     ],
   },
   {
-    q: 'Koster det noget at skrive sig på ventelisten til Altid Hjem?',
+    q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej, det koster ikke noget at skrive sig på ventelisten.',
-      'Tilmeldingen giver jer mulighed for at følge med, mens Altid Hjem bliver udviklet.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
+      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
     ],
   },
 ]
@@ -220,16 +220,16 @@ export default function BedsteBudgetApp() {
               </section>
               <section>
                 <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvad skal Altid Hjem kunne?
+                  Hvad kan Altid Hjem?
                 </h2>
                 <p className="mb-3">
-                  Altid Hjem er ikke bygget som en klassisk budget-app. Appen skal kunne samle hjemmets faste udgifter til el, mobil, forsikring, opladning, alarm og mad, så I får ét overblik, ét login.
+                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så I får ét overblik, ét login. I Økonomi forbinder I banken med MitID og ser, hvad I har tilbage til næste løn. I ser også jeres faste udgifter og abonnementer i en kalender.
                 </p>
                 <p className="mb-3">
-                  Altid Energi er allerede aktivt som Danmarks første gebyrfrie energiselskab, uden faste gebyrer eller abonnement, og mere end 15.000 danskere er kunder. Mobil, opladning, alarm og forsikring er på vej og skal kunne indgå i Altid Hjem.
+                  Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder.
                 </p>
                 <p>
-                  Altid Hjem er endnu ikke lanceret. I kan skrive jer på ventelisten på altidhjem.dk, hvis I vil følge udviklingen.
+                  I kan hente appen gratis i App Store og Google Play.
                 </p>
               </section>
 
@@ -271,13 +271,11 @@ export default function BedsteBudgetApp() {
           </div>
         </div>
 
-        <div id="venteliste">
-          <BottomCta
-            eyebrow='De faste udgifter er den stille post'
-            subtitle='Skriv dig gratis på ventelisten og få tidlig adgang, når Altid Hjem lanceres'
-            source='bedste-budget-app'
-          />
-        </div>
+        <BottomCta
+          eyebrow='Budget og faste udgifter i samme app'
+          heading='Hent Altid Hjem, og se, hvad I har tilbage til næste løn'
+          subtitle='Appen er gratis og viser jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket.'
+        />
       </main>
       <Footer />
     </>
