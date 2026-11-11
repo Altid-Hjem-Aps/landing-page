@@ -114,9 +114,11 @@ export const OKONOMI = {
     },
     {
       tone: 'sand',
-      title: '“Hvor handler vi\nbilligst ind?”',
+      // The mail's headline for its shopping block ("Blok 04"), with its source line (Thor 11/11).
+      title: 'Spar 11.207 kr. om\nåret på dagligvarer*',
       body: 'Appen finder automatisk de billigste varer på tværs af de butikker, I handler i.',
-      src: '/site/mail/indkob.webp',
+      source: { text: 'Baseret på Altid Mad Q3-rapporten', href: '/madrapport' },
+      src: '/site/mail/indkob-liste.webp',
       alt: 'Indkøbslisten i appen: 47 varer tilbage, sorteret efter butik, med priser.',
     },
     {

@@ -30,6 +30,11 @@ export default function MadDark() {
                   ))}
                 </h3>
                 <p className="d-card-body">{card.body}</p>
+                {'source' in card ? (
+                  <p className="d-card-source">
+                    <a href={card.source.href}>{card.source.text}</a>
+                  </p>
+                ) : null}
               </div>
               <div className="d-fixed">
                 <div className="d-content">
