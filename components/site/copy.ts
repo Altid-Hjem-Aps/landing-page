@@ -166,22 +166,23 @@ export const PRIVACY = {
   link: 'Læs privatlivspolitikken',
 } as const
 
-// Step photos, from the user's side: Sofie's hands in an ordinary, well-kept Danish home, made
-// with ChatGPT's image tool on 11 Nov 2026, each photo from scratch in its own run. Each was made
-// with an empty green screen and the app's own screenshot is put on it, so the app shown is the
-// real one; afterwards the photos are scaled and moved so the phone has the same size and place
-// in all of them (hence 50% 50%; step 3 looks further right so the milk carton is in the picture). Step 4 has two phones: Sofie's shows "Mads Holm er med" and
-// Mads's shows "Sofie har inviteret dig", both the app repo's own renders on main with the clock
-// and signal marks of the other screens added. The briefs and the script are in the session's
-// notes. A new round gets new file names: next/image keeps serving a cached picture under an
-// old name.
+// Step photos, from the user's side: Sofie's hands at home, made with ChatGPT's image tool on
+// 11 Nov 2026, each photo from scratch in its own run, in the look of the FAQ's family photo
+// (warm, soft window light, slightly filmic). The phone is held as people hold one: turned and
+// off centre, so photoFocus says where each photo is cropped. Each was made with an empty green
+// screen and the app's own screenshot is put on it in the phone's perspective, so the app shown
+// is the real one. Step 4 has two phones, first names only: Sofie's shows her Hjem with "Mads er
+// inviteret", Mads's shows "Sofie har inviteret dig", both the app repo's own renders on main
+// with the clock and signal marks of the other screens added. The briefs and the scripts are in
+// the session's notes. A new round gets new file names: next/image keeps serving a cached
+// picture under an old name.
 export const STEPS = {
   title: 'Fire trin til ét overblik',
   steps: [
-    { n: '01', photo: '/site/people/sofie-1.webp', photoFocus: '50% 50%', tone: 'honey', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
-    { n: '02', photo: '/site/people/sofie-2.webp', photoFocus: '50% 50%', tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
-    { n: '03', photo: '/site/people/sofie-3.webp', photoFocus: '80% 50%', tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Madplan, elpris og forsikringstjek. Tag det, der passer jer.', src: '/site/app/mere-sheet.webp', alt: 'Menuen i appen: Energi, Mad, Forsikring og Økonomi.' },
-    { n: '04', photo: '/site/people/sofie-4.webp', photoFocus: '50% 50%', tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik og hver jeres egne tal.', src: '/site/app/partner-er-med.webp', alt: 'To telefoner side om side: på Sofies står der Mads Holm er med, på Mads’ står der Sofie har inviteret dig.' },
+    { n: '01', photo: '/site/people/hjemme-1.webp', photoFocus: '100% 50%', tone: 'honey', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
+    { n: '02', photo: '/site/people/hjemme-2.webp', photoFocus: '0% 50%', tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
+    { n: '03', photo: '/site/people/hjemme-3.webp', photoFocus: '40% 50%', tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Madplan, elpris og forsikringstjek. Tag det, der passer jer.', src: '/site/app/mere-sheet.webp', alt: 'Menuen i appen: Energi, Mad, Forsikring og Økonomi.' },
+    { n: '04', photo: '/site/people/hjemme-4.webp', photoFocus: '50% 50%', tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik og hver jeres egne tal.', src: '/site/app/partner-venter.webp', alt: 'To telefoner side om side: på Sofies står der Mads er inviteret, på Mads’ står der Sofie har inviteret dig.' },
   ],
 } as const
 
