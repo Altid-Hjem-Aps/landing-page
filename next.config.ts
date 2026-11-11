@@ -19,6 +19,15 @@ const nextConfig: NextConfig = {
         destination: "/brand-kuqbnes0j3n6zg/index.html",
         permanent: false,
       },
+      // Fixed address for the Mad report that the App Store and Google Play
+      // texts cite as source for the 11.207 kr. figure (ALT-1522). Temporary
+      // on purpose: the file will move when altidmad.dk is folded into
+      // altidhjem.dk. Change the destination here, never the address.
+      {
+        source: "/madrapport",
+        destination: "https://altidmad.dk/altid-mad-kvartalsrapport-q3.pdf",
+        permanent: false,
+      },
       // Keep the canonical www host while serving app-association files on
       // the apex host without a redirect.
       {

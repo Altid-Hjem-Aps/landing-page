@@ -64,4 +64,19 @@ describe('redirects', () => {
       permanent: true,
     })
   })
+
+  it('temporarily redirects /madrapport to the Mad report before the apex-to-www rule', async () => {
+    const redirects = await nextConfig.redirects!()
+    const madrapport = {
+      source: '/madrapport',
+      destination: 'https://altidmad.dk/altid-mad-kvartalsrapport-q3.pdf',
+      permanent: false,
+    }
+    expect(redirects).toContainEqual(madrapport)
+    const apexRule = redirects.findIndex((r) =>
+      r.has?.some((h) => h.type === 'host' && h.value === 'altidhjem.dk'),
+    )
+    expect(apexRule).toBeGreaterThanOrEqual(0)
+    expect(redirects.findIndex((r) => r.source === '/madrapport')).toBeLessThan(apexRule)
+  })
 })
