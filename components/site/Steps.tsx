@@ -1,10 +1,56 @@
 'use client'
 
-import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import Image, { getImageProps } from 'next/image'
+import { type CSSProperties, useEffect, useRef, useState } from 'react'
 import StoreBadges from '@/components/StoreBadges'
 import { STEPS } from './copy'
 import StagedNote from './StagedNote'
+import { STEP_SCREENS, STEP_VIEW } from './stepScreens'
+
+type Step = (typeof STEPS.steps)[number]
+
+// One step photo with its app screens. The photo is exported without a screen (step 1 has its
+// own baked in); the screenshot is laid on here, in an SVG that shares the photo's box, so a
+// screen is changed in copy.ts without touching the photo. The frame is the whole 3:2 photo,
+// sized to cover its slot and placed by photoFocus the way object-fit and object-position
+// would, and the SVG scales with it. Each display has Thor's mask from the PSD and a mesh of
+// triangles that puts the screenshot in the phone's perspective (stepScreens.ts).
+function StepPhoto({ step, slot, alt, sizes, quality, shown }: { step: Step; slot: 'inline' | 'visual'; alt: string; sizes: string; quality: number; shown?: boolean }) {
+  const [fx, fy] = step.photoFocus.split(' ')
+  const displays = STEP_SCREENS[step.n] ?? []
+  return (
+    <div className={slot === 'visual' ? 'st-frame st-photo' : 'st-frame'} data-shown={shown ? 'true' : undefined} style={{ '--fx': fx, '--fy': fy } as CSSProperties}>
+      <Image src={step.photo} alt={alt} fill sizes={sizes} quality={quality} />
+      {displays.length > 0 ? (
+        <svg className="st-screens" viewBox={`0 0 ${STEP_VIEW.w} ${STEP_VIEW.h}`} aria-hidden="true" focusable="false">
+          {displays.map((display, k) => {
+            const id = `st-${slot}-${step.n}-${k}`
+            // a 640 px wide copy is enough for a phone in a photo, and scales down cleanly
+            const href = getImageProps({ src: step.screens[k], alt: '', width: 320, height: 694, quality: 90 }).props.src
+            const { mask } = display
+            return (
+              <g key={id}>
+                <mask id={id} maskUnits="userSpaceOnUse" x={mask.x} y={mask.y} width={mask.w} height={mask.h} style={{ maskType: 'luminance' }}>
+                  <image href={mask.src} x={mask.x} y={mask.y} width={mask.w} height={mask.h} preserveAspectRatio="none" />
+                </mask>
+                <g mask={`url(#${id})`}>
+                  {display.tiles.map(([x0, y0, x1, y1, x2, y2, a, b, c, d, e, f], t) => (
+                    <g key={t} transform={`matrix(${a} ${b} ${c} ${d} ${e} ${f})`}>
+                      <clipPath id={`${id}-${t}`}>
+                        <polygon points={`${x0},${y0} ${x1},${y1} ${x2},${y2}`} />
+                      </clipPath>
+                      <image href={href} width={STEP_VIEW.sw} height={STEP_VIEW.sh} preserveAspectRatio="none" clipPath={`url(#${id}-${t})`} />
+                    </g>
+                  ))}
+                </g>
+              </g>
+            )
+          })}
+        </svg>
+      ) : null}
+    </div>
+  )
+}
 
 // Four steps. On a computer the whole block stays put (sticky) while the page scrolls through
 // the section: the title, all four steps and a photo are in view, and the scroll moves the open
@@ -72,15 +118,7 @@ export default function Steps() {
                     <p className="st-card-body">{step.body}</p>
                     {i === 0 ? <StoreBadges position="how-it-works" variant="cream" size="lg" className="st-pills" /> : null}
                     <div className="st-inline">
-                      <Image
-                        src={step.photo}
-                        alt={step.alt}
-                        fill
-                        sizes="(max-width: 767px) 100vw, 1px"
-                        quality={78}
-                        className="st-inline-photo"
-                        style={{ objectFit: 'cover', objectPosition: step.photoFocus }}
-                      />
+                      <StepPhoto step={step} slot="inline" alt={step.alt} sizes="(max-width: 767px) 120vw, 1px" quality={75} />
                     </div>
                   </div>
                 </div>
@@ -91,17 +129,7 @@ export default function Steps() {
         </div>
         <div className="st-visual" aria-hidden="true">
           {STEPS.steps.map((step, i) => (
-            <Image
-              key={step.photo}
-              src={step.photo}
-              alt=""
-              fill
-              sizes="(max-width: 767px) 1px, 50vw"
-              quality={80}
-              className="st-photo"
-              data-shown={i === active ? 'true' : undefined}
-              style={{ objectFit: 'cover', objectPosition: step.photoFocus }}
-            />
+            <StepPhoto key={step.photo} step={step} slot="visual" alt="" sizes="(max-width: 767px) 1px, 70vw" quality={90} shown={i === active} />
           ))}
         </div>
         <p className="sr-only" aria-live="polite">

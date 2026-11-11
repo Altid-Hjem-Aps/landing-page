@@ -1609,6 +1609,23 @@
     border-radius: 24px;
     overflow: hidden;
     background: var(--sand);
+    container-type: size;
+  }
+  /* The whole 3:2 photo with its screens on top: as wide as it must be to cover the slot, and
+     placed by --fx and --fy the way object-position places a cropped picture. */
+  .st-frame {
+    position: absolute;
+    left: var(--fx);
+    top: var(--fy);
+    width: max(100cqw, 150cqh);
+    aspect-ratio: 3 / 2;
+    translate: calc(var(--fx) * -1) calc(var(--fy) * -1);
+  }
+  .st-screens {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
   }
   .st-photo {
     opacity: 0;
@@ -1732,6 +1749,7 @@
     .st-inline {
       display: block;
       position: relative;
+      container-type: size;
       aspect-ratio: 4 / 3;
       margin-top: 20px;
       border-radius: 18px;
