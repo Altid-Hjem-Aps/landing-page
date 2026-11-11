@@ -352,9 +352,18 @@ export const PRESSE = {
     ],
   },
   parts: {
-    title: 'Fire dele, én app',
+    title: 'Hele hjemmets økonomi i én app',
     line: 'Skærmbilleder af hver del af appen. Hent dem enkeltvis.',
     download: 'Hent billede',
+    // Not in the app yet (Thor 11/11): shown dimmed, name and label only, no promise of what they do.
+    soon: {
+      label: 'Kommer snart',
+      items: [
+        { tone: 'mint', name: 'Mobil' },
+        { tone: 'sand', name: 'Alarm' },
+        { tone: 'sky', name: 'Opladning' },
+      ],
+    },
     items: [
       { tone: 'honey', name: 'Økonomi', body: 'Forbind banken sikkert med MitID, og se hvordan pengene bliver brugt.', file: 'altid-hjem-okonomi.jpg', shot: '/site/mail/takeaway.webp', alt: 'Økonomi i Altid Hjem: 1.955 kr. brugt siden løn, fordelt på kategorier.' },
       { tone: 'lavender', name: 'Mad', body: 'Få en madplan for ugen og en indkøbsliste, der viser, hvor varerne er billigst.', file: 'altid-hjem-mad.jpg', shot: '/site/mail/mad.webp', alt: 'Mad i Altid Hjem: ugens madplan og 437 kr. tilbage af madbudgettet.' },
@@ -402,13 +411,12 @@ export const PRESSE = {
       { label: 'Altid Mad-rapporten, 3. kvartal 2026', note: 'Prisanalysen bag tallene om dagligvarer', href: '/madrapport', external: false },
     ],
   },
-  // As on altidmad.dk/presse: Thor is the press contact, Werner gives interviews.
   contact: {
     title: 'Pressekontakt',
-    people: [
-      { name: 'Thor Jekes', mail: 't@altidhjem.dk' },
-      { name: 'Werner Valeur', note: 'Tilgængelig for interview', mail: 'w@madhousehq.com', phone: '31 31 00 04', phoneHref: 'tel:+4531310004' },
-    ],
+    name: 'Werner Valeur',
+    mail: 'w@madhousehq.com',
+    phone: '31 31 00 04',
+    phoneHref: 'tel:+4531310004',
   },
   staged: 'Skærmbilleder fra appen med eksempeldata.',
   newTab: ' (åbner i en ny fane)',

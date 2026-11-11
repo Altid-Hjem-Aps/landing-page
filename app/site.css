@@ -2212,6 +2212,41 @@
     height: auto;
     margin: calc(var(--u) * -30) 0 0 calc(var(--u) * -45);
   }
+  /* The parts that are not in the app yet: smaller, dimmed, name and "Kommer snart" only. */
+  .pz-soon {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: calc(var(--u) * 32);
+    margin-top: calc(var(--u) * 32);
+  }
+  .pz-soon-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: calc(var(--u) * 36) calc(var(--u) * 40);
+    border-radius: 24px;
+    background: var(--tint);
+    color: #163223;
+    opacity: 0.55;
+
+    h3 {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(24px, 18px + 0.9vw, 32px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+    span {
+      flex: none;
+      padding: 8px 14px;
+      border: 1.5px solid currentColor;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+  }
   /* A download: a Deep forest pill, or a quiet outlined one for the second format. */
   .pz-dl {
     display: inline-flex;
@@ -2337,16 +2372,6 @@
       text-underline-offset: 4px;
     }
   }
-  .pz-contact-people {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px calc(var(--u) * 96);
-  }
-  .pz-contact-note {
-    margin-top: 4px;
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.7);
-  }
   .pz-contact-name {
     margin-top: 24px;
     font-family: var(--display);
@@ -2382,6 +2407,14 @@
       grid-template-columns: 1fr;
       gap: 17px;
       margin-top: 28px;
+    }
+    .pz-soon {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 17px;
+    }
+    .pz-soon-card {
+      padding: 22px 24px;
     }
     .pz-part {
       grid-template-columns: 1fr;

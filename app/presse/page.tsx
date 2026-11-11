@@ -78,6 +78,14 @@ export default function Presse() {
               </li>
             ))}
           </ul>
+          <ul className="pz-soon">
+            {PRESSE.parts.soon.items.map((part) => (
+              <li key={part.name} className="pz-soon-card" data-tone={part.tone}>
+                <h3>{part.name}</h3>
+                <span>{PRESSE.parts.soon.label}</span>
+              </li>
+            ))}
+          </ul>
           <p className="note pz-note">{PRESSE.staged}</p>
         </section>
 
@@ -158,18 +166,11 @@ export default function Presse() {
           <h2 id="pz-contact" className="t-h2">
             {PRESSE.contact.title}
           </h2>
-          <ul className="pz-contact-people">
-            {PRESSE.contact.people.map((person) => (
-              <li key={person.mail}>
-                <p className="pz-contact-name">{person.name}</p>
-                {'note' in person ? <p className="pz-contact-note">{person.note}</p> : null}
-                <p className="pz-contact-lines">
-                  <a href={`mailto:${person.mail}`}>{person.mail}</a>
-                  {'phone' in person ? <a href={person.phoneHref}>{person.phone}</a> : null}
-                </p>
-              </li>
-            ))}
-          </ul>
+          <p className="pz-contact-name">{PRESSE.contact.name}</p>
+          <p className="pz-contact-lines">
+            <a href={`mailto:${PRESSE.contact.mail}`}>{PRESSE.contact.mail}</a>
+            <a href={PRESSE.contact.phoneHref}>{PRESSE.contact.phone}</a>
+          </p>
         </section>
       </main>
       <SiteFooter base="/" />
