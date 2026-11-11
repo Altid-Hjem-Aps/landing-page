@@ -16,9 +16,13 @@ export default function Hero() {
   return (
     <section id="top" data-b="hero" className="h">
       <div className="h-text">
-        <h1 className="t-h1 h-title">{HERO.title}</h1>
-        <p className="t-body h-line">{HERO.line}</p>
-        <div className="h-pills">
+        <h1 className="t-h1 h-title" data-rise="0">
+          {HERO.title}
+        </h1>
+        <p className="t-body h-line" data-rise="1">
+          {HERO.line}
+        </p>
+        <div className="h-pills" data-rise="2">
           <StoreBadges position="hero" variant="cream" size="lg" className="justify-center" />
         </div>
         <AppRating />
@@ -43,7 +47,7 @@ export default function Hero() {
           </a>
         </Float>
       </div>
-      <div className="h-bottom">
+      <div className="h-bottom" data-fade>
         <HeroLanes />
         <HeroOrbit />
         <div className="h-phones">

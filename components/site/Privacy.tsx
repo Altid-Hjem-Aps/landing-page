@@ -17,7 +17,7 @@ function Lock() {
 export default function Privacy() {
   return (
     <section data-b="privacy" className="sec x">
-      <div className="x-panel" data-surface="dark">
+      <div className="x-panel" data-surface="dark" data-reveal>
         {/* The lock and the MitID mark (mitid.dk's own logo file): the login is MitID's. */}
         <span className="x-lock">
           <Lock />

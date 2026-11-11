@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { NAV, PRESSE } from '@/components/site/copy'
 import { dmSans } from '@/components/site/fonts'
+import Reveal from '@/components/site/Reveal'
 import SiteFooter from '@/components/site/SiteFooter'
 import SiteNav from '@/components/site/SiteNav'
 import '../site.css'
@@ -35,11 +36,15 @@ export default function Presse() {
       <SiteNav base="/" />
       <main id="indhold" className="pz">
         <header className="pz-head">
-          <h1 className="t-h1">{PRESSE.title}</h1>
-          <p className="t-body pz-lead">{PRESSE.lead}</p>
+          <h1 className="t-h1" data-rise="0">
+            {PRESSE.title}
+          </h1>
+          <p className="t-body pz-lead" data-rise="1">
+            {PRESSE.lead}
+          </p>
         </header>
 
-        <section className="pz-about" data-surface="dark" aria-labelledby="pz-about">
+        <section className="pz-about" data-surface="dark" aria-labelledby="pz-about" data-rise="2">
           <div>
             <h2 id="pz-about" className="t-h2">
               {PRESSE.about.title}
@@ -61,13 +66,13 @@ export default function Presse() {
         </section>
 
         <section className="pz-sec" aria-labelledby="pz-parts">
-          <h2 id="pz-parts" className="t-h2">
+          <h2 id="pz-parts" className="t-h2" data-reveal>
             {PRESSE.parts.title}
           </h2>
-          <p className="pz-line">{PRESSE.parts.line}</p>
+          <p className="pz-line" data-reveal>{PRESSE.parts.line}</p>
           <ul className="pz-parts">
             {PRESSE.parts.items.map((part) => (
-              <li key={part.name} className="pz-part" data-tone={part.tone}>
+              <li key={part.name} className="pz-part" data-tone={part.tone} data-reveal>
                 <div className="pz-part-text">
                   <h3>{part.name}</h3>
                   <p>{part.body}</p>
@@ -80,7 +85,7 @@ export default function Presse() {
           </ul>
           <ul className="pz-soon">
             {PRESSE.parts.soon.items.map((part) => (
-              <li key={part.name} className="pz-soon-card" data-tone={part.tone}>
+              <li key={part.name} className="pz-soon-card" data-tone={part.tone} data-reveal>
                 <h3>{part.name}</h3>
                 <span>{PRESSE.parts.soon.label}</span>
               </li>
@@ -90,13 +95,13 @@ export default function Presse() {
         </section>
 
         <section className="pz-sec" aria-labelledby="pz-photos">
-          <h2 id="pz-photos" className="t-h2">
+          <h2 id="pz-photos" className="t-h2" data-reveal>
             {PRESSE.photos.title}
           </h2>
-          <p className="pz-line">{PRESSE.photos.line}</p>
+          <p className="pz-line" data-reveal>{PRESSE.photos.line}</p>
           <ul className="pz-photos">
             {PRESSE.photos.items.map((photo) => (
-              <li key={photo.file}>
+              <li key={photo.file} data-reveal>
                 <figure>
                   <Image src={`/presse/${photo.file}`} alt={PRESSE.photos.alt} width={1200} height={1600} sizes="(max-width: 767px) 45vw, 330px" />
                   <figcaption>{PRESSE.photos.caption}</figcaption>
@@ -117,13 +122,13 @@ export default function Presse() {
         </section>
 
         <section className="pz-sec" aria-labelledby="pz-logos">
-          <h2 id="pz-logos" className="t-h2">
+          <h2 id="pz-logos" className="t-h2" data-reveal>
             {PRESSE.logos.title}
           </h2>
-          <p className="pz-line">{PRESSE.logos.line}</p>
+          <p className="pz-line" data-reveal>{PRESSE.logos.line}</p>
           <ul className="pz-logos">
             {PRESSE.logos.items.map((logo) => (
-              <li key={logo.name}>
+              <li key={logo.name} data-reveal>
                 <div className="pz-logo" data-on={logo.surface}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={`/presse/${logo.preview}`} alt={logo.alt} />
@@ -141,12 +146,12 @@ export default function Presse() {
         </section>
 
         <section className="pz-sec" aria-labelledby="pz-coverage">
-          <h2 id="pz-coverage" className="t-h2">
+          <h2 id="pz-coverage" className="t-h2" data-reveal>
             {PRESSE.coverage.title}
           </h2>
           <ul className="pz-coverage">
             {PRESSE.coverage.items.map((item) => (
-              <li key={item.href}>
+              <li key={item.href} data-reveal>
                 <a href={item.href} {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
                   <span>
                     <b>{item.label}</b>
@@ -162,7 +167,7 @@ export default function Presse() {
           </ul>
         </section>
 
-        <section className="pz-contact" data-surface="dark" aria-labelledby="pz-contact">
+        <section className="pz-contact" data-surface="dark" aria-labelledby="pz-contact" data-reveal>
           <h2 id="pz-contact" className="t-h2">
             {PRESSE.contact.title}
           </h2>
@@ -174,6 +179,7 @@ export default function Presse() {
         </section>
       </main>
       <SiteFooter base="/" />
+      <Reveal />
     </div>
   )
 }

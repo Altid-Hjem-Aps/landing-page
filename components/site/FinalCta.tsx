@@ -7,8 +7,12 @@ import StagedNote from './StagedNote'
 export default function FinalCta() {
   return (
     <section data-b="final" className="sec e">
-      <h2 className="t-h2">{FINAL.title}</h2>
-      <p className="t-body e-line">{FINAL.body}</p>
+      <h2 className="t-h2" data-reveal>
+        {FINAL.title}
+      </h2>
+      <p className="t-body e-line" data-reveal>
+        {FINAL.body}
+      </p>
       <div id={STORE_ANCHOR} className="e-pills">
         <StoreBadges position="bottom" variant="cream" size="lg" className="justify-center" />
       </div>

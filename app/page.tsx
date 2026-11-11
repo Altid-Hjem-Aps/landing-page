@@ -14,6 +14,7 @@ import { MotionPrefs } from '@/components/site/MotionPrefs'
 import PauseButton from '@/components/site/PauseButton'
 import Privacy from '@/components/site/Privacy'
 import Proof from '@/components/site/Proof'
+import Reveal from '@/components/site/Reveal'
 import SiteFooter from '@/components/site/SiteFooter'
 import SiteNav from '@/components/site/SiteNav'
 import Blog from '@/components/sections/Blog'
@@ -69,6 +70,7 @@ export default function Home() {
         <AppBar />
       </MotionPrefs>
       <SiteFooter />
+      <Reveal />
     </div>
   )
 }

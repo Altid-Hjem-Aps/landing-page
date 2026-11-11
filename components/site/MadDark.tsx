@@ -11,10 +11,10 @@ export default function MadDark() {
     <>
       <section id="okonomi-universet" data-b="features" className="sec d">
         <header className="d-head">
-          <h2 className="t-h2 d-title">
+          <h2 className="t-h2 d-title" data-reveal>
             <span className="d-title-dim">{OKONOMI.titleFirst}</span> {OKONOMI.titleSecond}
           </h2>
-          <div className="d-para">
+          <div className="d-para" data-reveal>
             <p className="t-body">{OKONOMI.line}</p>
           </div>
         </header>

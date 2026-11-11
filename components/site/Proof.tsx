@@ -23,7 +23,7 @@ const APPLE =
 export default function Proof() {
   return (
     <section data-b="proof" className="sec p" aria-labelledby="p-title">
-      <p className="p-laurel">
+      <p className="p-laurel" data-reveal>
         <Laurel />
         <span>
           <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" className="p-apple" aria-hidden="true">
@@ -37,7 +37,7 @@ export default function Proof() {
         </span>
         <Laurel flip />
       </p>
-      <h2 id="p-title" className="t-h2 p-title">
+      <h2 id="p-title" className="t-h2 p-title" data-reveal>
         {PROOF.title}
       </h2>
       <Voices />
