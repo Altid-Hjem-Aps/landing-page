@@ -158,11 +158,18 @@ export default function Presse() {
           <h2 id="pz-contact" className="t-h2">
             {PRESSE.contact.title}
           </h2>
-          <p className="pz-contact-name">{PRESSE.contact.name}</p>
-          <p className="pz-contact-lines">
-            <a href={`mailto:${PRESSE.contact.mail}`}>{PRESSE.contact.mail}</a>
-            <a href={PRESSE.contact.phoneHref}>{PRESSE.contact.phone}</a>
-          </p>
+          <ul className="pz-contact-people">
+            {PRESSE.contact.people.map((person) => (
+              <li key={person.mail}>
+                <p className="pz-contact-name">{person.name}</p>
+                {'note' in person ? <p className="pz-contact-note">{person.note}</p> : null}
+                <p className="pz-contact-lines">
+                  <a href={`mailto:${person.mail}`}>{person.mail}</a>
+                  {'phone' in person ? <a href={person.phoneHref}>{person.phone}</a> : null}
+                </p>
+              </li>
+            ))}
+          </ul>
         </section>
       </main>
       <SiteFooter base="/" />

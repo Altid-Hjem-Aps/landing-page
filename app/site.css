@@ -2337,6 +2337,16 @@
       text-underline-offset: 4px;
     }
   }
+  .pz-contact-people {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px calc(var(--u) * 96);
+  }
+  .pz-contact-note {
+    margin-top: 4px;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.7);
+  }
   .pz-contact-name {
     margin-top: 24px;
     font-family: var(--display);

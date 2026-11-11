@@ -402,12 +402,13 @@ export const PRESSE = {
       { label: 'Altid Mad-rapporten, 3. kvartal 2026', note: 'Prisanalysen bag tallene om dagligvarer', href: '/madrapport', external: false },
     ],
   },
+  // As on altidmad.dk/presse: Thor is the press contact, Werner gives interviews.
   contact: {
     title: 'Pressekontakt',
-    name: 'Werner Valeur',
-    mail: 'w@madhousehq.com',
-    phone: '31 31 00 04',
-    phoneHref: 'tel:+4531310004',
+    people: [
+      { name: 'Thor Jekes', mail: 't@altidhjem.dk' },
+      { name: 'Werner Valeur', note: 'Tilgængelig for interview', mail: 'w@madhousehq.com', phone: '31 31 00 04', phoneHref: 'tel:+4531310004' },
+    ],
   },
   staged: 'Skærmbilleder fra appen med eksempeldata.',
   newTab: ' (åbner i en ny fane)',
