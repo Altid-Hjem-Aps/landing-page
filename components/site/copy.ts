@@ -131,7 +131,7 @@ export const OKONOMI = {
     {
       tone: 'rose',
       title: 'Alle jeres forsikringer\nsamlet ét sted',
-      body: 'Se, hvad I betaler, og få snart nye tilbud. Helt gratis og uforpligtende.',
+      body: 'Se, hvad I betaler, og få et forsikringstjek. Helt gratis og uforpligtende.',
       id: 'forsikring',
       src: '/site/mail/forsikring.webp',
       alt: 'Forsikringer i appen: 1.397 kr. om måneden for bil, hus, indbo og ulykke.',
@@ -326,8 +326,10 @@ export const NOTES = {
 
 // The press page (/presse), for all of Altid Hjem: the four parts of the app are categories
 // under it, named as in the app and the store texts (Thor 11/11). Sources: the "about" lines
-// are the live store text; the four lines are the launch mail's; contact, photos and credit
-// are from the PR brief (ALT-1349) and altidmad.dk/presse. No user numbers: none is cleared.
+// are the live store text; the Økonomi and Energi lines are the launch mail's; the Mad line is
+// Thor's (11/11); the Forsikring line says what is in the app at the hard launch, when this page
+// goes live (a forsikringstjek, no longer "snart"); contact, photos and credit are from the PR
+// brief (ALT-1349) and altidmad.dk/presse. No user numbers: none is cleared.
 export const PRESSE = {
   meta: {
     title: 'Presse | Altid Hjem',
@@ -355,9 +357,9 @@ export const PRESSE = {
     download: 'Hent billede',
     items: [
       { tone: 'honey', name: 'Økonomi', body: 'Forbind banken sikkert med MitID, og se hvordan pengene bliver brugt.', file: 'altid-hjem-okonomi.jpg', shot: '/site/mail/takeaway.webp', alt: 'Økonomi i Altid Hjem: 1.955 kr. brugt siden løn, fordelt på kategorier.' },
-      { tone: 'lavender', name: 'Mad', body: 'Få en komplet madplan på få minutter, tilpasset dig og din familie.', file: 'altid-hjem-mad.jpg', shot: '/site/mail/mad.webp', alt: 'Mad i Altid Hjem: ugens madplan og 437 kr. tilbage af madbudgettet.' },
+      { tone: 'lavender', name: 'Mad', body: 'Få en madplan for ugen og en indkøbsliste, der viser, hvor varerne er billigst.', file: 'altid-hjem-mad.jpg', shot: '/site/mail/mad.webp', alt: 'Mad i Altid Hjem: ugens madplan og 437 kr. tilbage af madbudgettet.' },
       { tone: 'sky', name: 'Energi', body: 'Følg elprisen time for time og få besked, når strømmen er billigst.', file: 'altid-hjem-energi.jpg', shot: '/site/mail/energi.webp', alt: 'Energi i Altid Hjem: elprisen lige nu og time for time.' },
-      { tone: 'rose', name: 'Forsikring', body: 'Se, hvad I betaler, og få snart nye tilbud. Helt gratis og uforpligtende.', file: 'altid-hjem-forsikring.jpg', shot: '/site/mail/forsikring.webp', alt: 'Forsikring i Altid Hjem: 1.397 kr. om måneden for bil, hus, indbo og ulykke.' },
+      { tone: 'rose', name: 'Forsikring', body: 'Se, hvad I betaler, og få et forsikringstjek. Helt gratis og uforpligtende.', file: 'altid-hjem-forsikring.jpg', shot: '/site/mail/forsikring.webp', alt: 'Forsikring i Altid Hjem: 1.397 kr. om måneden for bil, hus, indbo og ulykke.' },
     ],
   },
   photos: {
