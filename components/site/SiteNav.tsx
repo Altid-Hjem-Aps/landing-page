@@ -10,7 +10,9 @@ import { NAV } from './copy'
 // Altid Mad section's fixed phones would break them. The sheet is a native modal dialog,
 // so the browser holds focus inside, closes on Escape and returns focus to the burger.
 // The pill is glass: it turns light on the page's dark blocks (data-surface="dark").
-export default function SiteNav() {
+// `base` is '' on the front page and '/' elsewhere, so the in-page links lead back to it.
+export default function SiteNav({ base = '' }: { base?: '' | '/' }) {
+  const at = (href: string) => (href.startsWith('#') ? base + href : href)
   const sheet = useRef<HTMLDialogElement>(null)
   const header = useRef<HTMLElement>(null)
   const [surface, setSurface] = useState<'light' | 'dark'>('light')
@@ -52,19 +54,19 @@ export default function SiteNav() {
     <>
       <header ref={header} className="nav" data-on={surface}>
         <div className="nav-pill">
-          <a href="#top" className="nav-home" aria-label={NAV.home}>
+          <a href={at('#top')} className="nav-home" aria-label={NAV.home}>
             <Image src="/site/brand/lockup-deep-forest.svg" alt="" width={96} height={30} loading="eager" className="nav-logo-light" />
             <Image src="/site/brand/lockup-white.svg" alt="" width={96} height={30} loading="eager" className="nav-logo-dark" />
           </a>
           <nav className="nav-main" aria-label={NAV.ariaMain}>
             <div className="nav-links">
               {NAV.links.map((link) => (
-                <a key={link.href} href={link.href}>
+                <a key={link.href} href={at(link.href)}>
                   {link.label}
                 </a>
               ))}
             </div>
-            <a href={`#${STORE_ANCHOR}`} className="nav-cta">
+            <a href={at(`#${STORE_ANCHOR}`)} className="nav-cta">
               {NAV.cta}
             </a>
           </nav>
@@ -90,7 +92,7 @@ export default function SiteNav() {
             <ul className="sheet-links">
               {NAV.sheet.map((link) => (
                 <li key={link.href}>
-                  <a href={link.href} onClick={closeSheet}>
+                  <a href={at(link.href)} onClick={closeSheet}>
                     {link.label}
                   </a>
                 </li>

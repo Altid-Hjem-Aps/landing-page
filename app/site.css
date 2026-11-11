@@ -47,6 +47,8 @@
   /* On Deep forest the ring turns Signal green, on anything that sits directly on it. */
   .nav[data-on='dark'] :focus-visible,
   .x-panel :focus-visible,
+  .pz-about :focus-visible,
+  .pz-contact :focus-visible,
   .sy-panel :focus-visible,
   .ft :focus-visible {
     outline-color: var(--signal);
@@ -2091,6 +2093,304 @@
     }
     .q-photo {
       display: none;
+    }
+  }
+
+  /* The press page (/presse): the front page's type, tones and rounded panels. */
+  .pz {
+    --w: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
+    padding-bottom: var(--pad);
+
+    h2 + .pz-line {
+      margin-top: 12px;
+    }
+  }
+  .pz-head {
+    width: var(--w);
+    margin-inline: auto;
+    padding: calc(var(--u) * 180) 0 calc(var(--u) * 72);
+  }
+  .pz-lead {
+    max-width: 26em;
+    margin-top: 16px;
+    color: var(--stone);
+  }
+  .pz-sec {
+    width: var(--w);
+    margin: var(--pad) auto 0;
+  }
+  .pz-line {
+    max-width: 34em;
+    font-size: clamp(17px, 15px + 0.4vw, 21px);
+    line-height: 1.45;
+    color: var(--stone);
+  }
+  .pz-note {
+    margin-top: 14px;
+  }
+  /* About: Dark forest, the text on the left and the plain facts on the right. */
+  .pz-about {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: calc(var(--u) * 96);
+    width: var(--w);
+    margin-inline: auto;
+    padding: calc(var(--u) * 88) calc(var(--u) * 80);
+    border-radius: 24px;
+    background: var(--dark-forest);
+    color: #fff;
+
+    h2 {
+      color: #fff;
+    }
+  }
+  .pz-about-body {
+    max-width: 26em;
+    margin-top: 20px;
+    font-size: clamp(18px, 15px + 0.5vw, 22px);
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .pz-facts {
+    align-self: center;
+
+    > div {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    > div:first-child {
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    dt {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.64);
+    }
+    dd {
+      font-size: 17px;
+      font-weight: 500;
+      text-align: right;
+    }
+  }
+  /* The four parts of the app: a tone each, the screenshot cut by the card's lower edge. */
+  .pz-parts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--u) * 32);
+    margin-top: calc(var(--u) * 48);
+  }
+  .pz-part {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr calc(var(--u) * 270);
+    gap: calc(var(--u) * 24);
+    height: calc(var(--u) * 420);
+    padding: calc(var(--u) * 48) calc(var(--u) * 40) 0 calc(var(--u) * 48);
+    border-radius: 24px;
+    background: var(--tint);
+    color: #163223;
+    overflow: hidden;
+
+    h3 {
+      margin-top: 20px;
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(28px, 20px + 1.2vw, 40px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+    p {
+      margin: 10px 0 24px;
+      font-size: clamp(17px, 15px + 0.3vw, 20px);
+      line-height: 1.4;
+    }
+  }
+  .pz-part-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    color: var(--forest);
+  }
+  .pz-part-shot {
+    width: calc(var(--u) * 360);
+    max-width: none;
+    height: auto;
+    margin: calc(var(--u) * -30) 0 0 calc(var(--u) * -45);
+  }
+  /* A download: a Deep forest pill, or a quiet outlined one for the second format. */
+  .pz-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: var(--forest);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--cream);
+    transition: opacity 0.15s;
+
+    &:hover {
+      opacity: 0.85;
+    }
+    &[data-quiet='true'] {
+      background: transparent;
+      box-shadow: inset 0 0 0 1px rgba(0, 60, 22, 0.3);
+      color: var(--forest);
+    }
+  }
+  .pz-dls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pz-photos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: calc(var(--u) * 32);
+    margin-top: calc(var(--u) * 48);
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      border-radius: 24px;
+    }
+    figcaption {
+      margin: 12px 0;
+      font-size: 14px;
+      color: var(--stone);
+    }
+  }
+  .pz-logos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: calc(var(--u) * 32);
+    margin-top: calc(var(--u) * 48);
+
+    h3 {
+      margin: 16px 0 12px;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--forest);
+    }
+  }
+  .pz-logo {
+    display: grid;
+    place-items: center;
+    height: calc(var(--u) * 240);
+    min-height: 160px;
+    border-radius: 24px;
+    background: var(--sand);
+
+    &[data-on='dark'] {
+      background: var(--forest);
+    }
+    img {
+      max-width: 52%;
+      max-height: 42%;
+    }
+  }
+  .pz-coverage {
+    max-width: calc(var(--u) * 900);
+    margin-top: calc(var(--u) * 40);
+    border-top: 1px solid rgba(0, 60, 22, 0.16);
+
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 22px 0;
+      border-bottom: 1px solid rgba(0, 60, 22, 0.16);
+      color: var(--forest);
+    }
+    b {
+      display: block;
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(18px, 16px + 0.4vw, 22px);
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+    small {
+      display: block;
+      margin-top: 4px;
+      font-size: 15px;
+      color: var(--stone);
+    }
+    svg {
+      flex: none;
+    }
+  }
+  .pz-contact {
+    width: var(--w);
+    margin: var(--pad) auto 0;
+    padding: calc(var(--u) * 88) calc(var(--u) * 80);
+    border-radius: 24px;
+    background: var(--forest);
+    color: #fff;
+
+    h2 {
+      color: #fff;
+    }
+    a {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+  .pz-contact-name {
+    margin-top: 24px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(22px, 18px + 0.8vw, 30px);
+  }
+  .pz-contact-lines {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 32px;
+    margin-top: 8px;
+    font-size: clamp(18px, 15px + 0.5vw, 22px);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  @media (max-width: 767px) {
+    .pz {
+      --w: calc(var(--u) * 356);
+    }
+    .pz-head {
+      padding: 120px 0 40px;
+    }
+    .pz-about,
+    .pz-contact {
+      padding: 40px 24px;
+    }
+    .pz-about {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .pz-parts,
+    .pz-photos,
+    .pz-logos {
+      grid-template-columns: 1fr;
+      gap: 17px;
+      margin-top: 28px;
+    }
+    .pz-part {
+      grid-template-columns: 1fr;
+      height: auto;
+      padding: 32px 24px 0;
+    }
+    .pz-part-shot {
+      width: calc(var(--u) * 300);
+      margin: 0 auto calc(var(--u) * -160);
     }
   }
 

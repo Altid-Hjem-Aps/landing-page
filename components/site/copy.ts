@@ -6,6 +6,7 @@ export const NAV = {
   ariaMenu: 'Menu',
   links: [
     { href: '#spoergsmaal', label: 'Spørgsmål' },
+    { href: '/presse', label: 'Presse' },
     { href: '/kontakt', label: 'Kontakt' },
   ],
   sheet: [
@@ -14,6 +15,7 @@ export const NAV = {
     { href: '#energi', label: 'Energi' },
     { href: '#forsikring', label: 'Forsikring' },
     { href: '#spoergsmaal', label: 'Spørgsmål' },
+    { href: '/presse', label: 'Presse' },
     { href: '/kontakt', label: 'Kontakt' },
   ],
   cta: 'Hent appen',
@@ -298,6 +300,7 @@ export const FOOTER = {
   ],
   help: [
     { href: '/kontakt', label: 'Kontakt' },
+    { href: '/presse', label: 'Presse' },
     { href: '/slet-konto', label: 'Slet konto' },
   ],
   legal: [{ href: '/privatlivspolitik', label: 'Privatlivspolitik' }],
@@ -319,4 +322,86 @@ export const APP_BAR = {
 export const NOTES = {
   staged: 'Skærmbilleder fra appen med eksempeldata.',
   plates: 'Billederne af retterne er AI-genererede, ligesom i appen.',
+} as const
+
+// The press page (/presse), for all of Altid Hjem: the four parts of the app are categories
+// under it, named as in the app and the store texts (Thor 11/11). Sources: the "about" lines
+// are the live store text; the four lines are the launch mail's; contact, photos and credit
+// are from the PR brief (ALT-1349) and altidmad.dk/presse. No user numbers: none is cleared.
+export const PRESSE = {
+  meta: {
+    title: 'Presse | Altid Hjem',
+    description: 'Pressemateriale om Altid Hjem: kort om appen, skærmbilleder, pressefotos, logoer og pressekontakt.',
+  },
+  title: 'Presse',
+  lead: 'Kort om appen, billeder og logoer til fri redaktionel brug, og hvem I kan kontakte.',
+  about: {
+    title: 'Kort om Altid Hjem',
+    body: [
+      'Altid Hjem samler hjemmets faste udgifter ét sted: mad, strøm, forsikring og økonomi. Hverdagsøkonomien bliver enkel, gennemskuelig og nem at handle på.',
+      'Appen er gratis og ligger i App Store og Google Play. Bag Altid Hjem står teamet bag Altid Energi.',
+    ],
+    facts: [
+      { label: 'Selskab', value: 'Altid Hjem ApS' },
+      { label: 'CVR', value: '45637476' },
+      { label: 'Adresse', value: 'Helsinkigade 29, 2150 Nordhavn' },
+      { label: 'Pris', value: 'Gratis' },
+      { label: 'Findes til', value: 'iPhone og Android' },
+    ],
+    ratingLabel: 'App Store',
+  },
+  parts: {
+    title: 'Fire dele, én app',
+    line: 'Skærmbilleder af hver del af appen. Hent dem enkeltvis.',
+    download: 'Hent billede',
+    items: [
+      { icon: 'okonomi', tone: 'honey', name: 'Økonomi', body: 'Forbind banken sikkert med MitID, og se hvordan pengene bliver brugt.', file: 'altid-hjem-okonomi.jpg', shot: '/site/mail/takeaway.webp', alt: 'Økonomi i Altid Hjem: 1.955 kr. brugt siden løn, fordelt på kategorier.' },
+      { icon: 'mad', tone: 'lavender', name: 'Mad', body: 'Få en komplet madplan på få minutter, tilpasset dig og din familie.', file: 'altid-hjem-mad.jpg', shot: '/site/mail/mad.webp', alt: 'Mad i Altid Hjem: ugens madplan og 437 kr. tilbage af madbudgettet.' },
+      { icon: 'energi', tone: 'sky', name: 'Energi', body: 'Følg elprisen time for time og få besked, når strømmen er billigst.', file: 'altid-hjem-energi.jpg', shot: '/site/mail/energi.webp', alt: 'Energi i Altid Hjem: elprisen lige nu og time for time.' },
+      { icon: 'forsikring', tone: 'rose', name: 'Forsikring', body: 'Se, hvad I betaler, og få snart nye tilbud. Helt gratis og uforpligtende.', file: 'altid-hjem-forsikring.jpg', shot: '/site/mail/forsikring.webp', alt: 'Forsikring i Altid Hjem: 1.397 kr. om måneden for bil, hus, indbo og ulykke.' },
+    ],
+  },
+  photos: {
+    title: 'Pressefotos',
+    // The credit is a condition for using the photos; it must stay next to them.
+    line: 'Til fri redaktionel brug. Kreditering: Fotograf: Frank Lohmann.',
+    caption: 'Werner Valeur. Foto: Frank Lohmann.',
+    alt: 'Werner Valeur',
+    web: 'Hent web',
+    print: 'Hent tryk',
+    // The print files are the ones altidmad.dk/presse serves (23 to 27 MB each). The plain
+    // portrait comes first; the others were taken for the Mad story (shopping bags, a shop).
+    items: [
+      { file: 'werner-valeur-5.jpg', web: '0,3 MB', print: { href: 'https://altidmad.dk/presse/altid-mad-pressefoto-5-tryk.jpg', size: '25 MB' } },
+      { file: 'werner-valeur-1.jpg', web: '0,9 MB', print: { href: 'https://altidmad.dk/presse/altid-mad-pressefoto-1-tryk.jpg', size: '26 MB' } },
+      { file: 'werner-valeur-2.jpg', web: '0,8 MB', print: { href: 'https://altidmad.dk/presse/altid-mad-pressefoto-2-tryk.jpg', size: '23 MB' } },
+      { file: 'werner-valeur-3.jpg', web: '0,9 MB' },
+      { file: 'werner-valeur-4.jpg', web: '1,0 MB' },
+    ],
+  },
+  logos: {
+    title: 'Logoer',
+    line: 'Brug logoet, som det er, og lad der være luft omkring det.',
+    items: [
+      { name: 'Logo, mørkt', surface: 'light', preview: 'altid-hjem-lockup-deep-forest.svg', svg: 'altid-hjem-lockup-deep-forest.svg', png: 'altid-hjem-lockup-deep-forest-1920.png', alt: 'Altid Hjems logo i mørkegrøn' },
+      { name: 'Logo, hvidt', surface: 'dark', preview: 'altid-hjem-lockup-white.svg', svg: 'altid-hjem-lockup-white.svg', png: 'altid-hjem-lockup-white-1920.png', alt: 'Altid Hjems logo i hvid' },
+      { name: 'App-ikon', surface: 'light', preview: 'altid-hjem-app-icon-rounded.svg', svg: 'altid-hjem-app-icon-rounded.svg', png: 'altid-hjem-app-icon-rounded-1024.png', alt: 'Altid Hjems app-ikon' },
+    ],
+  },
+  coverage: {
+    title: 'Omtale og dokumentation',
+    items: [
+      { label: 'Ekstra Bladet: “Spar stort på dine dagligvarer: Ny app sammenligner priser”', note: '25. juli 2026', href: 'https://ekstrabladet.dk/forbrug/Teknologi/spar-stort-paa-dine-dagligvarer-ny-app-sammenligner-priser/11232767', external: true },
+      { label: 'Altid Mad-rapporten, 3. kvartal 2026', note: 'Prisanalysen bag tallene om dagligvarer', href: '/madrapport', external: false },
+    ],
+  },
+  contact: {
+    title: 'Pressekontakt',
+    name: 'Werner Valeur',
+    mail: 'w@madhousehq.com',
+    phone: '31 31 00 04',
+    phoneHref: 'tel:+4531310004',
+  },
+  staged: 'Skærmbilleder fra appen med eksempeldata.',
+  newTab: ' (åbner i en ny fane)',
 } as const

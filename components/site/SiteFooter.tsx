@@ -12,13 +12,14 @@ const SOCIAL_PATHS: Record<string, string> = {
   Facebook: 'M13.6 21v-8.2h2.75l.41-3.2H13.6V7.56c0-.93.26-1.56 1.59-1.56h1.7V3.14A22.6 22.6 0 0 0 14.42 3c-2.44 0-4.12 1.49-4.12 4.23V9.6H7.54v3.2h2.76V21h3.3Z',
 }
 
-// The front page's footer. The SEO pages keep components/Footer.tsx.
-export default function SiteFooter() {
+// The footer of the front page and the press page. The SEO pages keep components/Footer.tsx.
+// `base` is '' on the front page and '/' elsewhere, so the in-page links lead back to it.
+export default function SiteFooter({ base = '' }: { base?: '' | '/' }) {
   return (
     <footer data-b="footer" data-surface="dark" className="ft">
       <div className="ft-inner">
         <div className="ft-brand">
-          <a href="#top" aria-label={FOOTER.home}>
+          <a href={`${base}#top`} aria-label={FOOTER.home}>
             <Image src="/site/brand/lockup-white.svg" alt="" width={105} height={33} />
           </a>
           <p className="ft-company">{FOOTER.company}</p>
@@ -42,7 +43,7 @@ export default function SiteFooter() {
           <ul>
             {FOOTER.app.map((l) => (
               <li key={l.href}>
-                <a href={l.href}>{l.label}</a>
+                <a href={base + l.href}>{l.label}</a>
               </li>
             ))}
             <li>
