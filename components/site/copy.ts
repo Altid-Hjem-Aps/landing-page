@@ -197,7 +197,7 @@ export const STEPS = {
 // What the name Altid stands for: four values, and for each one what you always get and what
 // you never meet (Thor 12/11).
 export const VALUES = {
-  title: 'På jeres side. Altid.',
+  title: 'På jeres side. Altid',
   body: 'Navnet Altid er et løfte. Vi står på forbrugernes side, og det skal kunne mærkes i alt, vi laver. Her er, hvad I altid får hos os, og hvad I aldrig møder.',
   always: 'Altid',
   never: 'Aldrig',
