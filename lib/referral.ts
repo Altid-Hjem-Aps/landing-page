@@ -83,12 +83,17 @@ export function clientIp(headers: Headers): string | null {
 }
 
 /**
- * Link-preview fetchers hit /r/<code> the moment a link is pasted into a chat,
- * long before any human taps it. Those are not clicks. Match on the well-known
- * unfurl/crawler UA tokens; anything else counts as a person.
+ * Link-preview fetchers hit /r/<code> and /m/<mail>/<link> the moment a link
+ * is pasted into a chat or a post, long before any human taps it. Those are
+ * not clicks. Match on the well-known unfurl/crawler UA tokens; anything else
+ * counts as a person.
+ *
+ * No `linkedin` token: the LinkedIn app's own browser carries [LinkedInApp] in
+ * its user agent, and those are people tapping. LinkedIn's crawler is still a
+ * bot through `bot` here and `linkedinbot` in isLinkPreviewBot.
  */
 const BOT_UA_RE =
-  /bot|crawler|spider|preview|headless|facebookexternalhit|facebookcatalog|whatsapp|slack|telegram|discord|twitter|linkedin|skype|imessage|snapchat|pinterest|embedly|quora|vkshare|outbrain|w3c_validator|curl\/|wget\/|python-requests|go-http-client|okhttp/i
+  /bot|crawler|spider|preview|headless|facebookexternalhit|facebookcatalog|whatsapp|slack|telegram|discord|twitter|skype|imessage|snapchat|pinterest|embedly|quora|vkshare|outbrain|w3c_validator|curl\/|wget\/|python-requests|go-http-client|okhttp/i
 
 export function looksLikeBot(userAgent: string | null): boolean {
   if (!userAgent) return true

@@ -1,6 +1,6 @@
 import { after, NextRequest, NextResponse } from 'next/server'
 import { trackAnonymousServer } from '@/lib/amplitude.server'
-import { MAIL_LINK_EVENT, mailLinkRateKey, resolveMailLink, type MailLink } from '@/lib/mail-links'
+import { MAIL_LINK_EVENT, mailCampaign, mailLinkRateKey, resolveMailLink, type MailLink } from '@/lib/mail-links'
 import { checkRateLimitStrict } from '@/lib/db'
 import { clientIp, looksLikeBot } from '@/lib/referral'
 
@@ -82,7 +82,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ mail: strin
           return
         }
         await trackAnonymousServer(MAIL_LINK_EVENT, {
-          campaign: 'alt605',
+          campaign: mailCampaign(target.mail),
           mail: target.mail,
           link: target.link,
           mail_link: `${target.mail}/${target.link}`,

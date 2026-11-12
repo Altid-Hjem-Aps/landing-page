@@ -91,6 +91,8 @@ afterEach(() => {
 describe('/m/<mail>/<link>', () => {
   it('sends every known code to its store with that mail campaign', async () => {
     for (const mail of MAIL_CODES) {
+      // li-werner is covered by its own tests below, with literal URLs.
+      if (mail === 'li-werner') continue
       for (const link of LINK_CODES) {
         const res = await get(mail, link, IPHONE)
         expect(res.status).toBe(302)
@@ -126,6 +128,97 @@ describe('/m/<mail>/<link>', () => {
     const android = await get('invite', 'header', ANDROID)
     // A share, not an email: Play must not file it under utm_medium=email.
     expect(android.headers.get('location')).toBe(
+      `${PLAY}&referrer=${encodeURIComponent('utm_source=invite&utm_medium=share&utm_campaign=invite&utm_content=header')}`,
+    )
+  })
+
+  it('sends Werner\'s LinkedIn post (/hent -> li-werner/header) to the store of the phone with its own campaign', async () => {
+    for (const ua of [IPHONE, IPAD]) {
+      const res = await get('li-werner', 'header', ua)
+      expect(res.status).toBe(302)
+      expect(res.headers.get('x-altid-mail-link')).toBe('valid')
+      expect(res.headers.get('location')).toBe(
+        'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_linkedin_werner&mt=8',
+      )
+    }
+    const android = await get('li-werner', 'header', ANDROID)
+    expect(android.headers.get('location')).toBe(
+      `${PLAY}&referrer=${encodeURIComponent('utm_source=linkedin&utm_medium=social&utm_campaign=ah_1_linkedin_werner&utm_content=header')}`,
+    )
+    const referrer = new URLSearchParams(new URL(android.headers.get('location')!).searchParams.get('referrer')!)
+    expect(Object.fromEntries(referrer)).toEqual({
+      utm_source: 'linkedin',
+      utm_medium: 'social',
+      utm_campaign: 'ah_1_linkedin_werner',
+      utm_content: 'header',
+    })
+  })
+
+  it('counts the LinkedIn post under the hard-launch campaign, and the invite and mails still under alt605', async () => {
+    await get('li-werner', 'header', IPHONE)
+    await get('invite', 'header', IPHONE)
+    await get('m2h', 'header', ANDROID)
+    expect(tracked).toEqual([
+      {
+        event: 'Launch Mail Link Clicked',
+        props: { campaign: 'hard-launch', mail: 'li-werner', link: 'header', mail_link: 'li-werner/header', store: 'appstore', valid: true, env: 'production' },
+      },
+      {
+        event: 'Launch Mail Link Clicked',
+        props: { campaign: 'alt605', mail: 'invite', link: 'header', mail_link: 'invite/header', store: 'appstore', valid: true, env: 'production' },
+      },
+      {
+        event: 'Launch Mail Link Clicked',
+        props: { campaign: 'alt605', mail: 'm2h', link: 'header', mail_link: 'm2h/header', store: 'play', valid: true, env: 'production' },
+      },
+    ])
+  })
+
+  it('still sends an unknown link on the LinkedIn post to the store, under its own campaign, counted as invalid', async () => {
+    const res = await get('li-werner', 'foo', ANDROID)
+    expect(res.status).toBe(302)
+    expect(res.headers.get('x-altid-mail-link')).toBe('invalid')
+    expect(res.headers.get('location')).toBe(
+      'https://play.google.com/store/apps/details?id=dk.altidhjem.app&referrer=utm_source%3Dlinkedin%26utm_medium%3Dsocial%26utm_campaign%3Dah_1_linkedin_werner%26utm_content%3Dunknown',
+    )
+    expect(tracked).toEqual([
+      {
+        event: 'Launch Mail Link Clicked',
+        props: { campaign: 'hard-launch', mail: 'li-werner', link: 'unknown', mail_link: 'li-werner/unknown', store: 'play', valid: false, env: 'production' },
+      },
+    ])
+  })
+
+  it('counts a tap from the LinkedIn app\'s own browser, and not LinkedIn\'s crawler', async () => {
+    const linkedinApp =
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 [LinkedInApp]/9.30.1'
+    const app = await get('li-werner', 'header', linkedinApp)
+    expect(app.status).toBe(302)
+    expect(tracked).toEqual([
+      {
+        event: 'Launch Mail Link Clicked',
+        props: { campaign: 'hard-launch', mail: 'li-werner', link: 'header', mail_link: 'li-werner/header', store: 'appstore', valid: true, env: 'production' },
+      },
+    ])
+    trackMock.mockClear()
+    const crawler = await get('li-werner', 'header', 'LinkedInBot/1.0 (compatible; Mozilla/5.0; Apache-HttpClient +http://www.linkedin.com)')
+    expect(crawler.status).toBe(302)
+    expect(trackMock).not.toHaveBeenCalled()
+  })
+
+  it('keeps the existing codes\' store URLs exactly as before the LinkedIn code', async () => {
+    const before: Record<string, string> = {
+      a1a: 'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_mail_a1a&mt=8',
+      m2h: 'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_mail_m2h&mt=8',
+      invite: 'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_mail_invite&mt=8',
+    }
+    for (const [mail, url] of Object.entries(before)) {
+      expect((await get(mail, 'header', IPHONE)).headers.get('location')).toBe(url)
+    }
+    expect((await get('m2h', 'header', ANDROID)).headers.get('location')).toBe(
+      `${PLAY}&referrer=${encodeURIComponent('utm_source=mail_m2h&utm_medium=email&utm_campaign=ah_1_mail_m2h&utm_content=header')}`,
+    )
+    expect((await get('invite', 'header', ANDROID)).headers.get('location')).toBe(
       `${PLAY}&referrer=${encodeURIComponent('utm_source=invite&utm_medium=share&utm_campaign=invite&utm_content=header')}`,
     )
   })

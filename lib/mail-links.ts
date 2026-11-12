@@ -25,7 +25,11 @@ export const MAIL_LINK_EVENT = 'Launch Mail Link Clicked'
 // (www.altidhjem.dk/app redirects to /m/invite/header), so a friend lands in
 // the store with campaign ah_1_mail_invite.
 // m2f (4 Nov 2026) is mail 2 to the Altid Forsikring waitlist: A1f recipients who did not open it.
-export const MAIL_CODES = ['a1a', 'a1c', 'a1b', 'a1d', 'a1f', 'm0', 'm2h', 'm2m', 'm3', 'invite', 'm2f'] as const
+// li-werner is not a mail: it is Werner's public LinkedIn post for the hard
+// launch of 16 Nov 2026 (www.altidhjem.dk/hent redirects to
+// /m/li-werner/header), so its taps are counted apart from invitations and
+// mails, with campaign ah_1_linkedin_werner.
+export const MAIL_CODES = ['a1a', 'a1c', 'a1b', 'a1d', 'a1f', 'm0', 'm2h', 'm2m', 'm3', 'invite', 'm2f', 'li-werner'] as const
 export type MailCode = (typeof MAIL_CODES)[number]
 
 export type Store = 'appstore' | 'play'
@@ -114,16 +118,31 @@ function storeForDevice(userAgent: string | null): Store {
 }
 
 export function storeUrl(store: Store, mail: string, link: string): string {
-  const campaign = `ah_1_mail_${mail}`
+  // Werner's LinkedIn post is a site of its own in the ah_1_<site> scheme.
+  const campaign = mail === 'li-werner' ? 'ah_1_linkedin_werner' : `ah_1_mail_${mail}`
   if (store === 'appstore') {
     return `${APP_STORE_BASE}?pt=${APP_STORE_PROVIDER_TOKEN}&ct=${campaign}&mt=8`
   }
   // A shared invite is not an email: Play reports it as its own share source.
+  // Nor is the LinkedIn post: Play reports it as LinkedIn, a social source.
   const referrer =
     mail === 'invite'
       ? `utm_source=invite&utm_medium=share&utm_campaign=invite&utm_content=${link}`
-      : `utm_source=mail_${mail}&utm_medium=email&utm_campaign=${campaign}&utm_content=${link}`
+      : mail === 'li-werner'
+        ? `utm_source=linkedin&utm_medium=social&utm_campaign=${campaign}&utm_content=${link}`
+        : `utm_source=mail_${mail}&utm_medium=email&utm_campaign=${campaign}&utm_content=${link}`
   return `${PLAY_BASE}&referrer=${encodeURIComponent(referrer)}`
+}
+
+/** The Amplitude `campaign` of a tap. ALT-605's mails and the invite link
+ * are `alt605`, and so is an unknown code (as before). A hard launch code
+ * gets one line here. */
+const CAMPAIGN_OF_MAIL: Readonly<Partial<Record<MailCode, string>>> = {
+  'li-werner': 'hard-launch',
+}
+
+export function mailCampaign(mail: string): string {
+  return Object.hasOwn(CAMPAIGN_OF_MAIL, mail) ? CAMPAIGN_OF_MAIL[mail as MailCode]! : 'alt605'
 }
 
 /** A code as typed. Mail programs that show plain text can capitalise a link
