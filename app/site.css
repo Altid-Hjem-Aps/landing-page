@@ -1757,6 +1757,259 @@
     }
   }
 
+  /* Values: the four values as a small ledger on the cream, what you always get and what you
+     never meet. On a computer three columns, the Altid column on one tall mint panel from its
+     head through the last row; on a phone one block per value with the Altid line on a mint card. */
+  .va {
+    padding-bottom: 0;
+    --va-line: rgba(0, 60, 22, 0.12);
+    --va-in: calc(var(--u) * 44);
+  }
+  /* The same width and left edge as the steps above. */
+  .va-in {
+    width: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
+    margin-inline: auto;
+  }
+  .va-body {
+    max-width: 30em;
+    margin-top: 24px;
+  }
+  .va-table {
+    display: grid;
+    grid-template-columns: max-content 1fr 1fr;
+    margin-top: calc(var(--u) * 72);
+
+    /* Our side of the table: one mint panel behind the Altid column, head and rows. */
+    &::before {
+      content: '';
+      grid-column: 2;
+      grid-row: 1 / 3;
+      border-radius: 24px;
+      background: var(--mint);
+    }
+  }
+  .va-heads,
+  .va-list,
+  .va-row {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+  }
+  .va-heads {
+    grid-row: 1;
+    padding-block: calc(var(--u) * 40) calc(var(--u) * 30);
+  }
+  .va-list {
+    grid-row: 2;
+  }
+  .va-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(26px, 22px + 0.6vw, 32px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--forest);
+
+    &[data-kind='always'] {
+      grid-column: 2;
+      padding-inline: var(--va-in);
+    }
+    &[data-kind='never'] {
+      grid-column: 3;
+      padding-left: calc(var(--u) * 48);
+      color: var(--stone);
+    }
+  }
+  .va-head-mark {
+    flex: none;
+    width: 1.1em;
+    height: 1.1em;
+  }
+  .va-disc {
+    fill: var(--forest);
+  }
+  .va-mark[data-kind='always'] .va-glyph {
+    stroke: var(--signal);
+  }
+  .va-mark[data-kind='never'] :is(.va-ring, .va-glyph) {
+    stroke: var(--stone);
+  }
+  /* A row: the three columns on one baseline, a hairline above it across the cream, and inside
+     the panel a hairline held in from the panel's edges. */
+  .va-row {
+    position: relative;
+    align-items: first baseline;
+    padding-block: calc(var(--u) * 40);
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      height: 1px;
+    }
+    &::before {
+      grid-column: 1 / -1;
+      left: 0;
+      right: 0;
+      background: var(--va-line);
+    }
+    &::after {
+      grid-column: 2 / 3;
+      left: 0;
+      right: 0;
+      --hair: color-mix(in srgb, var(--forest) 14%, var(--mint));
+      background: linear-gradient(
+        to right,
+        var(--mint) var(--va-in),
+        var(--hair) var(--va-in),
+        var(--hair) calc(100% - var(--va-in)),
+        var(--mint) calc(100% - var(--va-in))
+      );
+    }
+  }
+  .va-row:last-child {
+    padding-bottom: calc(var(--u) * 48);
+  }
+  .va-value {
+    padding-right: calc(var(--u) * 72);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: var(--h3);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--forest);
+  }
+  /* Each line repeats its column's mark, so a row reads without the heads. */
+  .va-line {
+    --mk: 0.95em;
+    position: relative;
+    padding-left: calc(var(--mk) + 14px);
+    font-size: var(--body);
+    line-height: 1.3;
+    text-wrap: pretty;
+
+    &[data-kind='always'] {
+      margin-inline: var(--va-in);
+      font-weight: 600;
+      color: var(--forest);
+    }
+    &[data-kind='never'] {
+      margin-left: calc(var(--u) * 48);
+      color: var(--stone);
+    }
+  }
+  /* "Altid: " and "Aldrig: " in front of each line: for screen readers only on a computer. */
+  .va-pre {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .va-line-mark {
+    position: absolute;
+    left: 0;
+    top: calc((1lh - var(--mk)) / 2);
+    width: var(--mk);
+    height: var(--mk);
+  }
+  /* Each mark pops in, a moment after its row has risen. */
+  &[data-reveal-on] .va-row .va-mark {
+    transition:
+      scale 0.36s cubic-bezier(0.34, 1.6, 0.64, 1) calc(var(--rd, 0ms) + 220ms),
+      opacity 0.2s ease calc(var(--rd, 0ms) + 220ms);
+  }
+  &[data-reveal-on] .va-row:not([data-revealed]) .va-mark {
+    scale: 0.6;
+    opacity: 0;
+  }
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .va {
+      --va-in: 28px;
+    }
+    .va-row {
+      padding-block: 30px;
+    }
+    .va-value {
+      padding-right: 32px;
+      font-size: 26px;
+    }
+  }
+  @media (max-width: 767px) {
+    .va {
+      padding-bottom: var(--pad);
+    }
+    .va-in {
+      width: auto;
+      margin-inline: calc(var(--u) * 17);
+    }
+    .va-table {
+      display: block;
+      margin-top: 40px;
+
+      &::before {
+        content: none;
+      }
+    }
+    .va-heads {
+      display: none;
+    }
+    .va-list,
+    .va-row {
+      display: block;
+    }
+    .va-row {
+      padding-block: 28px;
+
+      &::after {
+        content: none;
+      }
+    }
+    .va-row:last-child {
+      padding-bottom: 0;
+    }
+    .va-value {
+      padding-right: 0;
+    }
+    .va-line {
+      padding-left: calc(20px + var(--mk) + 12px);
+      padding-right: 20px;
+
+      &[data-kind='always'] {
+        margin: 16px 0 0;
+        padding-block: 16px;
+        border-radius: 18px;
+        background: var(--mint);
+      }
+      &[data-kind='never'] {
+        margin: 14px 0 0;
+        padding-right: 0;
+      }
+    }
+    .va-line-mark {
+      left: 20px;
+    }
+    /* No column heads on a phone, so the word itself leads each line. */
+    .va-pre {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip-path: none;
+      white-space: normal;
+      font-family: var(--display);
+      font-weight: 700;
+    }
+    .va-line[data-kind='always'] .va-line-mark {
+      top: calc(16px + (1lh - var(--mk)) / 2);
+    }
+  }
+
   /* 8. Privacy: a Dark forest panel with the MitID lock and the banks in white. */
   .x-panel {
     display: flex;

@@ -129,6 +129,7 @@ describe('the page', () => {
       'Se, hvor I står, før måneden er gået',
       'Ikke mere “hvad skal vi spise?”',
       'Og der er mere',
+      'På jeres side. Altid.',
       'Jeres tal er jeres egne',
       'Lavet med omhu til danske hjem',
       'Læs mere om Altid Hjem',

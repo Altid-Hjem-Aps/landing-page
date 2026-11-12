@@ -17,6 +17,7 @@ import Proof from '@/components/site/Proof'
 import Reveal from '@/components/site/Reveal'
 import SiteFooter from '@/components/site/SiteFooter'
 import SiteNav from '@/components/site/SiteNav'
+import Values from '@/components/site/Values'
 import Blog from '@/components/sections/Blog'
 import './site.css'
 
@@ -58,6 +59,7 @@ export default function Home() {
           <Proof />
           <MadDark />
           <Steps />
+          <Values />
           <Privacy />
           <Zoomer>
             <Story />

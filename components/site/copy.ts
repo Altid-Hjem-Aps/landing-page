@@ -194,6 +194,21 @@ export const STEPS = {
   ],
 } as const
 
+// What the name Altid stands for: four values, and for each one what you always get and what
+// you never meet (Thor 12/11).
+export const VALUES = {
+  title: 'På jeres side. Altid.',
+  body: 'Navnet Altid er et løfte. Vi står på forbrugernes side, og det skal kunne mærkes i alt, vi laver. Her er, hvad I altid får hos os, og hvad I aldrig møder.',
+  always: 'Altid',
+  never: 'Aldrig',
+  rows: [
+    { value: 'Fair', always: 'Frit valg af, hvad I vil bruge', never: 'Krav om at forbinde jeres bank' },
+    { value: 'Gennemsigtigt', always: 'Klar besked om, hvad I betaler for og hvorfor', never: 'Skjulte gebyrer' },
+    { value: 'Nemt', always: 'Ét overblik og ét login', never: 'Papirarbejde, når I skifter aftale' },
+    { value: 'Billigt', always: 'Gratis at hente appen og oprette en konto', never: 'Betaling for noget, I ikke selv har valgt' },
+  ],
+} as const
+
 export const BANKS = {
   title: 'Virker med alle danske banker',
   // The app connects through Subaio, whose own text in the app says all Danish banks. Logos
