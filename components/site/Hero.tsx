@@ -4,6 +4,7 @@ import AppRating from './AppRating'
 import { HERO, PRESS } from './copy'
 import CyclingPhone from './CyclingPhone'
 import Float from './Float'
+import GetAppButton from './GetAppButton'
 import HeroLanes from './HeroLanes'
 import HeroOrbit from './HeroOrbit'
 import QrCard from './QrCard'
@@ -22,8 +23,9 @@ export default function Hero() {
         <p className="t-body h-line" data-rise="1">
           {HERO.line}
         </p>
-        <div className="h-pills" data-rise="2">
-          <StoreBadges position="hero" variant="cream" size="lg" className="justify-center" />
+        <div className="h-pills" data-rise="2" data-hero-store>
+          <StoreBadges position="hero" variant="cream" size="lg" className="store-row justify-center" />
+          <GetAppButton position="hero" />
         </div>
         <AppRating />
       </div>

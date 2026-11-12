@@ -430,6 +430,44 @@
       display: grid;
     }
   }
+  /* Phones on the front page: "Hent appen" between the logo and the burger, once the hero's
+     own store button has scrolled out of view (SiteNav). It keeps its place while hidden, so
+     nothing in the pill moves when it fades in. */
+  .nav-get {
+    display: none;
+  }
+  @media (max-width: 767px) {
+    .nav-pill:has(.nav-get) {
+      gap: 12px;
+    }
+    .nav-get {
+      display: flex;
+      margin-left: auto;
+      opacity: 0;
+      visibility: hidden;
+      translate: 0 -4px;
+      transition: opacity 0.3s, visibility 0.3s, translate 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+
+      &[data-shown='true'] {
+        opacity: 1;
+        visibility: visible;
+        translate: 0 0;
+      }
+      .nav-cta {
+        display: flex;
+        align-items: center;
+        min-height: 40px;
+        padding: 0 16px;
+        font-size: 15px;
+        line-height: 20px;
+      }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-get {
+      transition: none;
+    }
+  }
   .sheet {
     position: fixed;
     inset: 0;
@@ -488,6 +526,52 @@
     }
   }
 
+  /* Phones: one wide button to the visitor's own store instead of the two pills (GetAppButton). */
+  .get {
+    display: none;
+  }
+  @media (max-width: 767px) {
+    .store-row {
+      display: none;
+    }
+    .get {
+      display: flex;
+      justify-content: center;
+      padding-inline: 17px;
+    }
+    .st-more .get {
+      justify-content: flex-start;
+      margin-top: 18px;
+      padding-inline: 0;
+    }
+  }
+  .get-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 340px;
+    height: 52px;
+    border-radius: 999px;
+    background: var(--forest);
+    color: var(--cream);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    transition: opacity 0.15s, transform 0.15s;
+
+    &:active {
+      transform: scale(0.98);
+    }
+    svg {
+      flex: none;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
   /* 1. Hero */
   /* Clipped at the sides only, so the Ekstra Bladet card can float over the edge below. */
   .h {
@@ -522,6 +606,10 @@
     font-size: 15px;
     line-height: 18px;
     color: var(--stone);
+  }
+  /* Each half of the line stays whole; a phone puts them on two lines (below). */
+  .h-rating-part {
+    white-space: nowrap;
   }
   /* Five stars in Honey over five faint ones, cut at the average. */
   .h-stars {
@@ -973,6 +1061,15 @@
       flex-direction: column;
       gap: 6px;
       font-size: 14px;
+    }
+    .h-rating-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .h-rating-dot {
+      display: none;
     }
     .h-pills {
       margin-top: calc(var(--u) * 40);
@@ -2825,6 +2922,52 @@
     z-index: 1;
     margin-top: calc(var(--u) * 40);
   }
+  /* Computers: the hero QR card's look, still, under the pills where "Hent appen" lands. */
+  .e-qr {
+    display: none;
+  }
+  @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+    .e-qr {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      margin: 24px auto 0;
+      padding: 6px 20px 6px 8px;
+      border-radius: 16px;
+      background: var(--forest);
+      color: var(--cream);
+      text-align: left;
+
+      figure {
+        margin: 0;
+        flex: none;
+        width: 57px;
+      }
+      img {
+        display: block;
+        width: 57px;
+        height: 57px;
+        border-radius: 4px;
+        background: var(--cream);
+      }
+      figcaption {
+        margin-top: 2px;
+        font-size: 8px;
+        line-height: 10px;
+        text-align: center;
+        white-space: nowrap;
+      }
+      .qr-line {
+        margin-left: 8px;
+        font-size: 14px;
+        line-height: 18px;
+        color: var(--cream);
+      }
+    }
+  }
   .e-lay {
     margin-top: calc(var(--u) * -3);
 
@@ -3005,7 +3148,7 @@
     box-shadow: 0 0 0 1px rgba(0, 60, 22, 0.14);
     color: var(--forest);
     cursor: pointer;
-    transition: opacity 0.2s, visibility 0.2s, translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition: opacity 0.2s, visibility 0.2s;
 
     /* Nothing in view runs by itself, so there is nothing to pause. */
     &[data-idle='true'] {
@@ -3013,84 +3156,106 @@
       visibility: hidden;
     }
   }
-  @media (max-width: 767px) {
-    &:has(.appbar[data-shown='true']) .pause {
-      translate: 0 -104px;
+  /* Leave popup (computers): cream card, the QR codes, a short fade and rise in. */
+  .leave {
+    width: min(100% - 32px, 460px);
+    max-width: none;
+    /* The reset takes the browser's own centring away; margin: auto puts it back. */
+    margin: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+
+    &::backdrop {
+      background: rgba(0, 60, 22, 0.3);
+    }
+    &:focus {
+      outline: none;
     }
   }
-
-  /* Phone download bar: slides up when scrolling up, away when scrolling down */
-  .appbar {
-    display: none;
+  .leave-card {
+    position: relative;
+    padding: 48px 32px 32px;
+    border-radius: 24px;
+    background: var(--cream);
+    text-align: center;
+    box-shadow: 0 24px 64px rgba(0, 30, 10, 0.25);
   }
-  @media (max-width: 767px) {
-    .appbar {
-      position: fixed;
-      z-index: 35;
-      inset: auto 16px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      height: 88px;
-      padding: 8px 16px 8px 8px;
-      border-radius: 22px;
-      background: #fff;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-      translate: 0 120px;
-      visibility: hidden;
-      transition: translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), visibility 0.45s;
+  .leave-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--forest);
+    cursor: pointer;
+    transition: opacity 0.15s;
 
-      &[data-shown='true'] {
-        translate: 0 0;
-        visibility: visible;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+  .leave-title {
+    text-wrap: balance;
+    font-family: var(--display);
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--forest);
+  }
+  .leave-body {
+    text-wrap: balance;
+    margin-top: 12px;
+    font-size: 17px;
+    line-height: 1.4;
+    color: var(--stone);
+  }
+  .leave-codes {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 28px;
+
+    figure {
+      margin: 0;
+    }
+    /* Two px per module. */
+    img {
+      display: block;
+      width: 114px;
+      height: 114px;
+    }
+    figcaption {
+      margin-top: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 18px;
+      color: var(--forest);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .leave[open] {
+      .leave-card {
+        animation: site-rise 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+      &::backdrop {
+        animation: site-fade 0.25s ease;
       }
     }
   }
-  .appbar-who {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
-
-    img {
-      flex: none;
-      width: 72px;
-      height: 72px;
-    }
-  }
-  .appbar-name {
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 21px;
-    color: var(--forest);
-  }
-  .appbar-sub {
-    margin-top: 2px;
-    font-size: 14px;
-    line-height: 16px;
-    color: var(--stone);
-  }
-  .appbar-cta {
-    flex: none;
-    padding: 9px 16px;
-    border-radius: 128px;
-    background: var(--forest);
-    color: var(--cream);
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 22px;
-    white-space: nowrap;
-  }
 }
 
-html[data-platform='android'] .site .appbar-cta-ios,
-html:not([data-platform='android']) .site .appbar-cta-play {
+/* The visitor's own store: Google Play on Android, the App Store everywhere else. */
+html[data-platform='android'] .site .for-appstore,
+html:not([data-platform='android']) .site .for-play {
   display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .site .appbar,
   .site .pause {
     transition: none;
   }
@@ -3121,7 +3286,8 @@ html[data-platform='android'] .site .site-pill.store-badge-appstore[data-variant
   border-color: #fdfaf4 !important;
 }
 
-html:has(.sheet[open]) {
+html:has(.sheet[open]),
+html:has(.leave[open]) {
   overflow: hidden;
 }
 

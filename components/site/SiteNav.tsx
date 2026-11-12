@@ -5,17 +5,31 @@ import { useEffect, useRef, useState } from 'react'
 import StoreBadges from '@/components/StoreBadges'
 import { STORE_ANCHOR } from '@/lib/store-links'
 import { NAV } from './copy'
+import StoreLink from './StoreLink'
 
 // Fixed floating pill. A sibling of main on purpose: backdrop-filter on an ancestor of the
 // Altid Mad section's fixed phones would break them. The sheet is a native modal dialog,
 // so the browser holds focus inside, closes on Escape and returns focus to the burger.
 // The pill is glass: it turns light on the page's dark blocks (data-surface="dark").
 // `base` is '' on the front page and '/' elsewhere, so the in-page links lead back to it.
-export default function SiteNav({ base = '' }: { base?: '' | '/' }) {
+// `getApp` (the front page): on a phone a compact "Hent appen" to the visitor's own store
+// fades in once the hero's store button has scrolled up out of view, and stays from there on.
+export default function SiteNav({ base = '', getApp = false }: { base?: '' | '/'; getApp?: boolean }) {
   const at = (href: string) => (href.startsWith('#') ? base + href : href)
   const sheet = useRef<HTMLDialogElement>(null)
   const header = useRef<HTMLElement>(null)
   const [surface, setSurface] = useState<'light' | 'dark'>('light')
+  const [heroPassed, setHeroPassed] = useState(false)
+
+  useEffect(() => {
+    if (!getApp) return
+    const hero = document.querySelector('[data-hero-store]')
+    if (!hero) throw new Error('SiteNav getApp needs the hero store button ([data-hero-store])')
+    // Passed means above the top edge; below the screen (a short window) does not count.
+    const observer = new IntersectionObserver(([entry]) => setHeroPassed(!entry.isIntersecting && entry.boundingClientRect.top < 0))
+    observer.observe(hero)
+    return () => observer.disconnect()
+  }, [getApp])
 
   useEffect(() => {
     const bar = header.current as HTMLElement
@@ -58,6 +72,16 @@ export default function SiteNav({ base = '' }: { base?: '' | '/' }) {
             <Image src="/site/brand/lockup-deep-forest.svg" alt="" width={96} height={30} loading="eager" className="nav-logo-light" />
             <Image src="/site/brand/lockup-white.svg" alt="" width={96} height={30} loading="eager" className="nav-logo-dark" />
           </a>
+          {getApp ? (
+            <div className="nav-get" data-shown={heroPassed}>
+              <StoreLink store="appstore" position="nav" className="nav-cta for-appstore">
+                {NAV.cta}
+              </StoreLink>
+              <StoreLink store="play" position="nav" className="nav-cta for-play">
+                {NAV.cta}
+              </StoreLink>
+            </div>
+          ) : null}
           <nav className="nav-main" aria-label={NAV.ariaMain}>
             <div className="nav-links">
               {NAV.links.map((link) => (

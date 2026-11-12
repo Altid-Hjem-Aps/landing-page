@@ -4,6 +4,7 @@ import Image, { getImageProps } from 'next/image'
 import { type CSSProperties, useEffect, useRef, useState } from 'react'
 import StoreBadges from '@/components/StoreBadges'
 import { STEPS } from './copy'
+import GetAppButton from './GetAppButton'
 import StagedNote from './StagedNote'
 import { STEP_SCREENS, STEP_VIEW } from './stepScreens'
 
@@ -116,7 +117,12 @@ export default function Steps() {
                 <div className="st-more">
                   <div>
                     <p className="st-card-body">{step.body}</p>
-                    {i === 0 ? <StoreBadges position="how-it-works" variant="cream" size="lg" className="st-pills" /> : null}
+                    {i === 0 ? (
+                      <>
+                        <StoreBadges position="how-it-works" variant="cream" size="lg" className="st-pills store-row" />
+                        <GetAppButton position="how-it-works" />
+                      </>
+                    ) : null}
                     <div className="st-inline">
                       <StepPhoto step={step} slot="inline" alt={step.alt} sizes="(max-width: 767px) 120vw, 1px" quality={75} />
                     </div>

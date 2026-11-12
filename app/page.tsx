@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
-import AppBar from '@/components/site/AppBar'
 import { META, NAV } from '@/components/site/copy'
 import FaqSection from '@/components/site/FaqSection'
 import FinalCta from '@/components/site/FinalCta'
 import { dmSans } from '@/components/site/fonts'
 import Hero from '@/components/site/Hero'
+import LeavePopup from '@/components/site/LeavePopup'
 import { jsonLdScript } from '@/components/site/jsonLd'
 import MadDark from '@/components/site/MadDark'
 import Steps from '@/components/site/Steps'
@@ -19,11 +19,13 @@ import SiteFooter from '@/components/site/SiteFooter'
 import SiteNav from '@/components/site/SiteNav'
 import Values from '@/components/site/Values'
 import Blog from '@/components/sections/Blog'
+import { APP_STORE_ID } from '@/lib/store-links'
 import './site.css'
 
 const IMAGE = { url: '/opengraph-image.png', width: 1200, height: 630, alt: META.imageAlt }
 
 // Full Open Graph and Twitter here: nested objects replace the layout's, they do not merge.
+// itunes: Safari on an iPhone shows Apple's own app banner on this page only.
 export const metadata: Metadata = {
   title: META.title,
   description: META.description,
@@ -43,6 +45,7 @@ export const metadata: Metadata = {
     description: META.description,
     images: [IMAGE],
   },
+  itunes: { appId: APP_STORE_ID },
 }
 
 export default function Home() {
@@ -53,7 +56,7 @@ export default function Home() {
         <a href="#indhold" className="skip">
           {NAV.skip}
         </a>
-        <SiteNav />
+        <SiteNav getApp />
         <main id="indhold">
           <Hero />
           <Proof />
@@ -69,7 +72,7 @@ export default function Home() {
           <FinalCta />
         </main>
         <PauseButton />
-        <AppBar />
+        <LeavePopup />
       </MotionPrefs>
       <SiteFooter />
       <Reveal />

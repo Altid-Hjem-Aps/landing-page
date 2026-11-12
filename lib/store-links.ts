@@ -6,7 +6,9 @@
 // The site's badges use the ALT-894 campaign scheme ah_1_<site>. Sent mails have
 // their own campaign per mail (lib/mail-links.ts).
 
-export const APP_STORE_URL = 'https://apps.apple.com/dk/app/altid-hjem/id6794330094'
+/** The app's App Store id: the listing URL, the rating lookup and Apple's app banner. */
+export const APP_STORE_ID = '6794330094'
+export const APP_STORE_URL = `https://apps.apple.com/dk/app/altid-hjem/id${APP_STORE_ID}`
 export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=dk.altidhjem.app'
 /** Apple's provider token for the Altid Hjem developer account. */
 export const APP_STORE_PROVIDER_TOKEN = '129212732'

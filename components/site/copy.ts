@@ -28,8 +28,11 @@ export const NAV = {
 export const HERO = {
   title: 'Hele hjemmets økonomi i én app',
   line: 'Hent Altid Hjem gratis i dag, og få overblik over jeres mad, strøm, forsikring og økonomi.',
-  // {average} and {count} come from the App Store (AppRating.tsx).
-  rating: '{average} ud af 5 · {count} i App Store',
+  // {average} comes from the App Store (AppRating.tsx). The user count is PROOF.title's.
+  // On a phone the line breaks at the middle dot.
+  rating: '{average} ud af 5 i App Store · Over 4.000 danskere har appen',
+  // The single button phones see instead of the two store pills (GetAppButton).
+  getApp: 'Hent appen gratis',
   // The hero phones show these in turn.
   mainScreens: [
     { src: '/site/app/hjem-top.webp', alt: 'Forsiden i Altid Hjem: 8.166 kr. tilbage, søjler for resten af måneden og en besked om, at du er 3.000 kr. foran.' },
@@ -301,6 +304,13 @@ export const QR = {
   label: 'Hent appen med din telefon',
 } as const
 
+// The popup a computer shows once per visit when the mouse heads for the tab bar (LeavePopup).
+export const LEAVE = {
+  title: 'Tag Altid Hjem med på telefonen',
+  body: 'Scan koden med din telefon, og hent appen gratis.',
+  close: 'Luk',
+} as const
+
 export const FOOTER = {
   company: 'Altid Hjem ApS, CVR 45637476',
   home: 'Altid Hjem, til forsiden',
@@ -338,13 +348,6 @@ export const META = {
   title: 'Altid Hjem: hele hjemmets økonomi i én app',
   description: 'Altid Hjem samler jeres mad, strøm, forsikring og økonomi i én app. Ét overblik, ét login. Hent appen gratis i App Store og Google Play.',
   imageAlt: 'Altid Hjem: hele hjemmets økonomi i én app. Tre telefoner med appen og de fire tjenester.',
-} as const
-
-export const APP_BAR = {
-  label: 'Hent appen',
-  name: 'Altid Hjem',
-  sub: 'Gratis at hente',
-  cta: 'Hent appen',
 } as const
 
 export const NOTES = {

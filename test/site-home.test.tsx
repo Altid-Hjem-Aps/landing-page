@@ -16,7 +16,7 @@ vi.mock('next/navigation', () => ({
 // The rating reads the App Store over the network (test/app-rating.test.tsx covers that).
 vi.mock('@/components/site/AppRating', async (original) => {
   const { RatingLine } = await original<typeof import('@/components/site/AppRating')>()
-  return { default: () => <RatingLine rating={{ average: 4.33333, count: 6 }} /> }
+  return { default: () => <RatingLine rating={{ average: 4.33333 }} /> }
 })
 
 // Literal on purpose, not built from lib/store-links.
@@ -244,7 +244,7 @@ describe('the page', () => {
   it('shows the App Store rating under the pills, stars filled to the average', () => {
     const { container } = render(<Home />)
     const rating = container.querySelector('#top .h-rating') as HTMLElement
-    expect(rating).toHaveTextContent('4,3 ud af 5 · 6 bedømmelser i App Store')
+    expect(rating).toHaveTextContent('4,3 ud af 5 i App Store · Over 4.000 danskere har appen')
     expect(rating.querySelector('.h-stars')).toHaveAttribute('aria-hidden', 'true')
     expect((rating.querySelector('.h-stars') as HTMLElement).style.getPropertyValue('--fill')).toBe('86.6666%')
   })
@@ -769,46 +769,34 @@ describe('the list on a phone', () => {
   })
 })
 
-describe('the phone download bar', () => {
-  const bar = (container: HTMLElement) => container.querySelector('.appbar') as HTMLElement
-  const scrollTo = (y: number) => {
-    Object.defineProperty(window, 'scrollY', { value: y, configurable: true })
-    fireEvent.scroll(window)
-  }
-  afterEach(() => {
-    Object.defineProperty(window, 'scrollY', { value: 0, configurable: true })
-  })
-
-  it('shows on the way up, hides on the way down, and stays away over the hero', () => {
-    const { container } = render(<Home />)
-    expect(bar(container)).toHaveAttribute('data-shown', 'false')
-    scrollTo(3000)
-    expect(bar(container)).toHaveAttribute('data-shown', 'false')
-    scrollTo(2800)
-    expect(bar(container)).toHaveAttribute('data-shown', 'true')
-    scrollTo(2802)
-    expect(bar(container)).toHaveAttribute('data-shown', 'true')
-    scrollTo(2900)
-    expect(bar(container)).toHaveAttribute('data-shown', 'false')
-    scrollTo(2700)
-    expect(bar(container)).toHaveAttribute('data-shown', 'true')
-    scrollTo(400)
-    expect(bar(container)).toHaveAttribute('data-shown', 'false')
-  })
-
-  it('links to both stores with the campaign and counts the click under its own position', async () => {
+describe('the phone header button', () => {
+  it('links to both stores with the campaign and counts the click under position nav', async () => {
     const beacon = vi.fn(() => true)
     vi.stubGlobal('navigator', Object.assign(Object.create(navigator), { sendBeacon: beacon }))
     const { container } = render(<Home />)
-    const ios = container.querySelector('.appbar-cta-ios') as HTMLAnchorElement
-    const play = container.querySelector('.appbar-cta-play') as HTMLAnchorElement
+    const ios = container.querySelector('.nav-get .for-appstore') as HTMLAnchorElement
+    const play = container.querySelector('.nav-get .for-play') as HTMLAnchorElement
     expect(ios).toHaveAttribute('href', APP_STORE)
     expect(play).toHaveAttribute('href', PLAY)
     ios.addEventListener('click', (event) => event.preventDefault())
     fireEvent.click(ios)
     const [url, body] = beacon.mock.calls[0] as unknown as [string, Blob]
     expect(url).toBe('/api/forside/store-click')
-    expect(JSON.parse(await body.text())).toEqual({ store: 'appstore', position: 'bar' })
+    expect(JSON.parse(await body.text())).toEqual({ store: 'appstore', position: 'nav' })
+  })
+
+  it('shows once the hero store button has scrolled up out of view', () => {
+    const { container } = render(<Home />)
+    const get = container.querySelector('.nav-get') as HTMLElement
+    expect(get).toHaveAttribute('data-shown', 'false')
+    act(() => {
+      for (const { element, callback } of observed) {
+        if (element.matches('[data-hero-store]')) {
+          callback([{ isIntersecting: false, boundingClientRect: { top: -200 } } as IntersectionObserverEntry], {} as IntersectionObserver)
+        }
+      }
+    })
+    expect(get).toHaveAttribute('data-shown', 'true')
   })
 })
 
