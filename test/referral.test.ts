@@ -136,6 +136,18 @@ describe('lib/referral', () => {
     expect(looksLikeBot(null)).toBe(true)
   })
 
+  it('counts a tap in the LinkedIn app\'s own browser as a person, and LinkedIn\'s crawler still as a bot', () => {
+    expect(
+      looksLikeBot('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 [LinkedInApp]/9.30.1'),
+    ).toBe(false)
+    expect(
+      looksLikeBot(
+        'Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/UD1A; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/120.0 Mobile Safari/537.36 [LinkedInApp]',
+      ),
+    ).toBe(false)
+    expect(looksLikeBot('LinkedInBot/1.0 (compatible; Mozilla/5.0; Apache-HttpClient +http://www.linkedin.com)')).toBe(true)
+  })
+
   it('tells card-drawing unfurlers apart from the rest of the crawlers', () => {
     expect(isLinkPreviewBot('facebookexternalhit/1.1')).toBe(true)
     expect(isLinkPreviewBot('WhatsApp/2.23.20.0')).toBe(true)
