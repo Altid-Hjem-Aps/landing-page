@@ -198,7 +198,7 @@ export const STEPS = {
   title: 'Fire trin til ét overblik',
   steps: [
     { n: '01', photo: '/site/people/trin-1-sofa.webp', photoFocus: '90% 50%', screens: [], tone: 'mint', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
-    { n: '02', photo: '/site/people/trin-2-bord.webp', photoFocus: '70% 50%', screens: ['/site/app/okonomi-top.webp'], tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
+    { n: '02', photo: '/site/people/trin-2-bord.webp', photoFocus: '70% 50%', screens: ['/site/app/okonomi-top.webp'], tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen.\nDet er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
     { n: '03', photo: '/site/people/trin-3-koekken.webp', photoFocus: '40% 50%', screens: ['/site/app/mad-meal_plan.webp'], tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Mad, energi, forsikring eller økonomi. Tag det, der passer jer.', src: '/site/app/mad-meal_plan.webp', alt: 'Ugens madplan i appen: en ret til hver dag og 130 kr. tilbage.' },
     { n: '04', photo: '/site/people/trin-4-par.webp', photoFocus: '64% 50%', screens: ['/site/app/partner-venter.webp', '/site/app/partner-inviteret.webp'], tone: 'honey', title: 'Inviter din partner', body: 'Så har I et fælles overblik over hjemmets økonomi.', src: '/site/app/partner-venter.webp', alt: 'Et par i sofaen med hver sin telefon: på Sofies er Mads’ halvdel af huset tom, på Mads’ står der Sofie har inviteret dig.' },
   ],
@@ -210,7 +210,7 @@ export const STEPS = {
 // What the name Altid stands for: four values, and for each one what you always get and what
 // you never meet (Thor 12/11).
 export const VALUES = {
-  title: 'På jeres side. Altid.',
+  title: 'På jeres side. Altid',
   body: 'Navnet Altid er et løfte. Vi står på forbrugernes side, og det skal kunne mærkes i alt, vi gør. Her er, hvad I altid kan forvente af os, og hvad I aldrig skal bekymre jer om.',
   always: 'Altid',
   never: 'Aldrig',

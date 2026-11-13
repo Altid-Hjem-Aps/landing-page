@@ -19,6 +19,7 @@ import Reveal from '@/components/site/Reveal'
 import SiteFooter from '@/components/site/SiteFooter'
 import SiteNav from '@/components/site/SiteNav'
 import GetAppSticky from '@/components/site/GetAppSticky'
+import EnergiSticky from '@/components/site/EnergiSticky'
 import Values from '@/components/site/Values'
 import Blog from '@/components/sections/Blog'
 import { APP_STORE_ID } from '@/lib/store-links'
@@ -77,6 +78,7 @@ export default async function Home() {
           <FinalCta />
         </main>
         <GetAppSticky />
+        <EnergiSticky />
         <CopyEditGate />
         <LeavePopup proof={LEAVE.proof.replace('{thousands}', usersThousands(users))} />
       </MotionPrefs>
