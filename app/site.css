@@ -19,6 +19,10 @@
   --lavender: #bdb0f9;
   --rose: #ffbab8;
 
+  /* How the fixed QR card and Altid Energi's offer come and go: the same fade and slide. */
+  --stick-fade: opacity 0.3s, visibility 0.3s, translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  --stick-shift: 24px;
+
   --display: var(--font-dm-sans), system-ui, sans-serif;
   --text: var(--font-onest), system-ui, sans-serif;
 
@@ -1134,9 +1138,11 @@
     }
   }
 
-  /* The one QR code bottom right on computers (GetAppSticky): the hero's old low dark card, the
-     code on the left and the text on the right, narrow and low so the hero's notifications and
-     service marks stay clear of it. Stickies sets data-shown. */
+  /* The one QR code on computers (GetAppSticky): the hero's old dark card, the code on a white
+     tile with room around it on the left, the text on the right. Top right, under the menu's
+     height, where the hero's notifications and service marks never come (measured); it comes
+     and goes as Altid Energi's offer does, sliding towards its own edge. Stickies sets
+     data-shown. */
   .gs {
     display: none;
   }
@@ -1144,68 +1150,78 @@
     .gs {
       position: fixed;
       z-index: 35;
-      right: 12px;
-      bottom: 12px;
+      top: 92px;
+      right: 16px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      width: 200px;
-      height: 60px;
-      padding: 4px 10px 4px 4px;
-      border-radius: 16px;
+      gap: 14px;
+      width: 272px;
+      padding: 8px 16px 8px 8px;
+      border-radius: 22px;
       background: var(--forest);
-      box-shadow: 0 10px 26px rgba(0, 30, 10, 0.18);
+      box-shadow: 0 12px 30px rgba(0, 30, 10, 0.2);
       color: #fff;
-      transition:
-        opacity 0.3s,
-        visibility 0.3s,
-        translate 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+      transition: var(--stick-fade);
 
       &[data-shown='false'] {
         opacity: 0;
         visibility: hidden;
-        translate: 0 12px;
+        translate: 0 calc(var(--stick-shift) * -1);
       }
       @media (prefers-reduced-motion: no-preference) {
-        animation: site-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s both;
+        /* backwards, not both: a held end state would stop the fade from running later. */
+        animation: site-stick-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s backwards;
       }
     }
   }
-  /* A window under 860 px high has the hero's notification and service marks in its bottom
-     right corner (1280 x 800, 1366 x 768), so the card sits top right, under the menu's height. */
-  @media (min-width: 1024px) and (max-height: 859px) and (hover: hover) and (pointer: fine) {
+  /* 1024 to 1199 wide: the hero's heading reaches further right, so the card is narrower, with
+     the same code, and its line wraps. */
+  @media (min-width: 1024px) and (max-width: 1199px) and (hover: hover) and (pointer: fine) {
     .gs {
-      top: 92px;
-      bottom: auto;
+      right: 12px;
+      gap: 10px;
+      width: 206px;
+      padding: 8px 10px 8px 8px;
+
+      .gs-title {
+        font-size: 15px;
+        line-height: 19px;
+      }
+      .gs-line {
+        font-size: 12px;
+        line-height: 15px;
+      }
     }
   }
-  /* The code on a white tile; its own quiet zone is part of the image. */
+  /* Two px per module, so every module is whole on any screen, and 10 px of white around the
+     code's own quiet zone, so the tile's corners never crowd its corner marks. */
   .gs-tile {
     flex: none;
-    padding: 2px;
-    border-radius: 8px;
+    padding: 10px;
+    border-radius: 14px;
     background: #fff;
 
     img {
       display: block;
-      width: 48px;
-      height: 48px;
+      width: 74px;
+      height: 74px;
     }
   }
   .gs-text {
     display: flex;
     flex-direction: column;
+    gap: 2px;
     min-width: 0;
   }
   .gs-title {
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 600;
-    line-height: 18px;
+    line-height: 21px;
   }
   .gs-line {
-    font-size: 11px;
-    line-height: 14px;
-    color: rgba(255, 255, 255, 0.72);
+    font-size: 13px;
+    line-height: 17px;
+    color: rgba(255, 255, 255, 0.76);
   }
   @media (prefers-reduced-motion: reduce) {
     .gs {
@@ -1223,18 +1239,15 @@
   .eo {
     position: fixed;
     z-index: 35;
-    right: 20px;
+    left: 20px;
     bottom: 20px;
     width: 440px;
-    transition:
-      opacity 0.3s,
-      visibility 0.3s,
-      translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition: var(--stick-fade);
 
     &[data-shown='false'] {
       opacity: 0;
       visibility: hidden;
-      translate: 0 24px;
+      translate: 0 var(--stick-shift);
 
       .float {
         animation-play-state: paused;
@@ -1357,6 +1370,10 @@
     white-space: nowrap;
     rotate: 4deg;
   }
+  /* The pause button sits bottom left too: it steps up above the offer while it is there. */
+  .pause:has(~ .eo[data-shown='true']) {
+    translate: 0 -136px;
+  }
   /* Phones and tablets: across the bottom, 16 px from the edges and clear of the home bar, a
      more compact element; the pause button steps up above it while it is there. */
   @media (max-width: 1023px) {
@@ -1407,7 +1424,7 @@
       line-height: 16px;
     }
     .pause:has(~ .eo[data-shown='true']) {
-      translate: 0 -132px;
+      translate: 0 -122px;
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -3316,65 +3333,44 @@
     }
   }
 
-  /* A piece: placed by its band (computers) or the stage (phones) from --x, --y and --w in
-     design px; turned by --r inside, so the entrance and the drift stay separate. */
-  .e-piece {
-    position: absolute;
-    z-index: 1;
-    left: calc(50% + var(--x) * var(--u));
-    top: calc(var(--y) * var(--u));
-    width: calc(var(--w) * var(--u));
-    text-align: left;
-  }
-  /* The drawn pieces float over the photos and screens they touch. */
-  .e-piece:not([data-kind='photo'], [data-kind='screen']) {
-    z-index: 2;
-  }
-  .e-piece-in {
-    rotate: var(--r);
-  }
-  /* A photo fills a portrait tile; a screen sits whole on a card in its tone. Same corners. */
-  .e-photo {
+  /* A tile, as in the old "Lavet med omhu" block: rounded, on its tone; a dish fitted in,
+     a photo, screen or painting filling it. --h is its height in design px. */
+  .e-tile {
     position: relative;
-    aspect-ratio: 3 / 4;
+    display: grid;
+    place-items: center;
+    height: calc(var(--h) * var(--u));
+    border-radius: calc(var(--u) * 30);
     overflow: hidden;
-    border-radius: calc(var(--u) * 35);
-    background: var(--sand);
-    box-shadow: 0 14px 30px rgba(0, 30, 10, 0.1);
-
-    img {
-      object-fit: cover;
-    }
+    background: var(--tint, var(--sand));
+    color: var(--forest);
   }
-  .e-shot {
-    padding: calc(var(--u) * 10);
-    border-radius: calc(var(--u) * 35);
-    background: var(--tint);
-    box-shadow: 0 14px 30px rgba(0, 30, 10, 0.1);
-
-    img {
-      display: block;
-      width: 100%;
-      height: auto;
-      border-radius: calc(var(--u) * 25);
-    }
+  .e-cover {
+    outline: 1px solid rgba(0, 60, 22, 0.1);
+    outline-offset: -1px;
   }
-  /* The assistant's notification and the bill, as in the hero, at the place's width. */
-  .e-note-card,
-  .e-piece .hl-paper {
-    width: 100%;
+  .e-plate img {
+    width: 104%;
+    max-width: none;
+    height: auto;
   }
-  /* Sized in the collage's unit throughout, so it keeps its shape at any window width. */
+  .e-art img {
+    padding: 22%;
+  }
+  /* The notification on its tile, sized in the collage's unit so it keeps its shape. */
   .e-note-card {
-    gap: calc(var(--u) * 12);
-    padding: calc(var(--u) * 12) calc(var(--u) * 16) calc(var(--u) * 14) calc(var(--u) * 12);
-    border-radius: calc(var(--u) * 22);
-    font-size: calc(var(--u) * 16);
+    width: 86%;
+    gap: calc(var(--u) * 10);
+    padding: calc(var(--u) * 10) calc(var(--u) * 12) calc(var(--u) * 12) calc(var(--u) * 10);
+    border-radius: calc(var(--u) * 18);
+    font-size: calc(var(--u) * 14);
+    text-align: left;
+    rotate: -2deg;
 
     img {
-      width: calc(var(--u) * 36);
-      height: calc(var(--u) * 36);
-      border-radius: calc(var(--u) * 9);
+      width: calc(var(--u) * 30);
+      height: calc(var(--u) * 30);
+      border-radius: calc(var(--u) * 8);
     }
     .hl-text {
       display: flex;
@@ -3383,146 +3379,40 @@
       min-width: 0;
     }
     .hl-note-body {
-      font-size: calc(var(--u) * 14);
+      font-size: calc(var(--u) * 13);
     }
     .hl-note-top small {
-      font-size: calc(var(--u) * 13);
+      font-size: calc(var(--u) * 12);
     }
     .hl-done {
-      gap: calc(var(--u) * 6);
-      margin-top: calc(var(--u) * 10);
-      padding: calc(var(--u) * 6) calc(var(--u) * 12);
-      font-size: calc(var(--u) * 13);
+      gap: calc(var(--u) * 5);
+      margin-top: calc(var(--u) * 8);
+      padding: calc(var(--u) * 5) calc(var(--u) * 10);
+      font-size: calc(var(--u) * 12);
       animation: none;
 
       svg {
-        width: calc(var(--u) * 14);
-        height: calc(var(--u) * 14);
+        width: calc(var(--u) * 12);
+        height: calc(var(--u) * 12);
       }
     }
   }
-  /* A service's round mark, as the hero's ring draws them. */
-  .e-orb {
-    display: grid;
-    place-items: center;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: var(--tint);
-    box-shadow:
-      0 0 0 calc(var(--u) * 4) #fff,
-      0 calc(var(--u) * 8) calc(var(--u) * 20) rgba(0, 30, 10, 0.18);
-    color: var(--forest);
-
-    svg {
-      width: 44%;
-      height: 44%;
-    }
+  .e-note {
+    position: relative;
+    z-index: 2;
+    margin-top: 24px;
   }
-  /* "Kommer snart" as the app shows it: a frosted card with three round marks. */
-  .e-soon {
-    padding: calc(var(--u) * 14) calc(var(--u) * 16) calc(var(--u) * 16);
-    border-radius: calc(var(--u) * 22);
-    background: rgba(236, 238, 232, 0.92);
-    box-shadow: 0 12px 30px rgba(0, 40, 14, 0.12);
-    color: #1f2a24;
-  }
-  .e-soon-title {
-    font-family: var(--display);
-    font-size: calc(var(--u) * 15);
-    font-weight: 700;
-    line-height: 1.2;
-  }
-  .e-soon-row {
-    display: flex;
-    justify-content: space-between;
-    margin-top: calc(var(--u) * 12);
-  }
-  .e-soon-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: calc(var(--u) * 6);
-    font-size: calc(var(--u) * 12);
-    line-height: 1.2;
-    color: var(--stone);
-  }
-  .e-soon-mark {
-    display: grid;
-    width: calc(var(--u) * 42);
-    height: calc(var(--u) * 42);
-    place-items: center;
-    border-radius: 50%;
-    background: #fff;
-    color: var(--stone);
-
-    svg {
-      width: 46%;
-      height: 46%;
-    }
-  }
-  /* One of the app menu's rows on its own: the service's mark, its name and a line. */
-  .e-row {
-    display: flex;
-    align-items: center;
-    gap: calc(var(--u) * 12);
-    padding: calc(var(--u) * 12) calc(var(--u) * 14) calc(var(--u) * 12) calc(var(--u) * 12);
-    border-radius: calc(var(--u) * 22);
-    background: #fff;
-    box-shadow: 0 12px 30px rgba(0, 40, 14, 0.12);
-    color: #1f2a24;
-  }
-  .e-row-mark {
-    display: grid;
-    flex: none;
-    width: calc(var(--u) * 42);
-    height: calc(var(--u) * 42);
-    place-items: center;
-    border-radius: 50%;
-    background: var(--tint);
-    color: var(--forest);
-
-    svg {
-      width: 48%;
-      height: 48%;
-    }
-  }
-  .e-row-text {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    min-width: 0;
-
-    b {
-      font-family: var(--display);
-      font-size: calc(var(--u) * 17);
-      font-weight: 700;
-      line-height: 1.2;
-    }
-    small {
-      font-size: calc(var(--u) * 13);
-      line-height: 1.3;
-      color: var(--stone);
-    }
-    small[data-offer] {
-      color: #1f8a3a;
-    }
-  }
-  .e-row-go {
-    flex: none;
-    width: calc(var(--u) * 18);
-    height: calc(var(--u) * 18);
-    color: rgba(31, 42, 36, 0.4);
-  }
-  .e-stage {
+  .e-few {
     display: none;
   }
 
-  /* Computers: the text with a calm space around it, and three bands of pieces: above it,
-     beside it (from its middle) and below it. */
+  /* Computers: the text with a calm space around it, and the columns in three bands on a
+     stage as wide as the design (1440, growing to 1800): above the text, beside it (from its
+     middle) and below it. */
   @media (min-width: 1024px) {
     .e {
-      --e-top: 440;
-      --e-bottom: 600;
+      --e-top: 420;
+      --e-bottom: 500;
       padding-top: calc(var(--pad) * 0.5);
     }
     .e-wall {
@@ -3539,8 +3429,10 @@
     .e-band {
       --u: var(--cu);
       position: absolute;
-      inset-inline: 0;
       z-index: 1;
+      left: 50%;
+      width: calc(1440 * var(--cu));
+      translate: -50% 0;
       pointer-events: none;
     }
     .e-band[data-band='above'] {
@@ -3555,36 +3447,48 @@
       bottom: 0;
       height: calc(var(--e-bottom) * var(--cu));
     }
-    .e-band[data-band='beside'] .e-piece {
+    .e-col {
+      position: absolute;
+      left: calc(var(--x) * var(--u));
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--u) * 20);
+      width: calc(var(--w) * var(--u));
+    }
+    /* 80 of calm space plus the most a column can drift (24) towards the text. */
+    .e-band[data-band='above'] .e-col {
+      bottom: calc((104 + var(--y)) * var(--u));
+    }
+    .e-band[data-band='beside'] .e-col {
       top: calc(50% + var(--y) * var(--u));
     }
+    .e-band[data-band='below'] .e-col {
+      top: calc((104 + var(--y)) * var(--u));
+    }
   }
-  /* Phones and tablets: one stage of pieces under the text, 390 design px wide, still. */
+  /* Phones and tablets: three columns of two under the text, still. */
   @media (max-width: 1023px) {
     .e-band {
       display: none;
     }
-    .e-stage {
-      --u: calc(min(100vw, 600px) / 390);
-      position: relative;
-      display: block;
-      width: calc(var(--u) * 390);
-      height: calc(var(--h) * var(--u));
-      margin: 48px auto 0;
+    .e-few {
+      --u: calc(min(100vw, 560px) / 390);
+      display: flex;
+      gap: calc(var(--u) * 10);
+      align-items: flex-start;
+      width: calc(var(--u) * 358);
+      margin: 44px auto 0;
     }
-    .e-stage .e-shot {
-      padding: calc(var(--u) * 8);
-      border-radius: calc(var(--u) * 26);
-
-      img {
-        border-radius: calc(var(--u) * 18);
-      }
+    .e-few-col {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: calc(var(--u) * 10);
+      min-width: 0;
+      margin-top: calc(var(--y) * var(--u));
     }
-    .e-stage .e-photo {
-      border-radius: calc(var(--u) * 26);
-    }
-    .e-stage .e-piece {
-      left: calc(var(--x) * var(--u));
+    .e-tile {
+      border-radius: calc(var(--u) * 24);
     }
   }
   @media (max-width: 767px) {
@@ -4054,6 +3958,14 @@ body:has(.site) {
     transform: translateY(20px);
   }
 }
+/* The QR card's first arrival, as it comes back after the slider: from above, fading in. */
+@keyframes site-stick-in {
+  from {
+    opacity: 0;
+    translate: 0 calc(var(--stick-shift) * -1);
+  }
+}
+
 @keyframes site-fade {
   from {
     opacity: 0;

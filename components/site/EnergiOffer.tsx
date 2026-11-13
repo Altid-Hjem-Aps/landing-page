@@ -1,3 +1,4 @@
+import type { Ref } from 'react'
 import { ENERGI_OFFER } from './copy'
 import Float from './Float'
 import ServiceIcon from './ServiceIcon'
@@ -5,12 +6,12 @@ import ServiceIcon from './ServiceIcon'
 // Altid Energi's first month free, as the app's own floating "Bliv kunde" element: a light sky
 // card turned a little over a paler one, the bulb in a white circle, a round Deep forest
 // button, a honey badge over the corner and the offer's fine print. Fixed at the bottom of the
-// screen while the Energi card is in the middle of it (Stickies): bottom right on a computer,
+// screen while the Energi card is in the middle of it (Stickies): bottom left on a computer,
 // across the bottom on a phone. It floats gently while shown (Float). On every device it is
 // one link to the signup, in a new tab (Thor 13/11).
-export default function EnergiOffer({ shown }: { shown: boolean }) {
+export default function EnergiOffer({ shown, ref }: { shown: boolean; ref?: Ref<HTMLDivElement> }) {
   return (
-    <div className="eo" data-shown={shown}>
+    <div ref={ref} className="eo" data-shown={shown}>
       <Float className="ek-float">
         <div className="ek-offer">
           <a className="ek-link" href={ENERGI_OFFER.href} target="_blank" rel="noopener noreferrer">

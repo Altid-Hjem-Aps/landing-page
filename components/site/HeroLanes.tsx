@@ -18,8 +18,7 @@ type Phase = 'bill' | 'note' | 'tap' | 'done' | 'leave'
 const TIMES: Record<Phase, number> = { bill: 4500, note: 2800, tap: 600, done: 2600, leave: 900 }
 const NEXT: Record<Phase, Phase> = { bill: 'note', note: 'tap', tap: 'done', done: 'leave', leave: 'bill' }
 
-/** A paper bill, as in the bills mockup. Also one of the final block's collage pieces. */
-export function Bill({ bill }: { bill: (typeof HERO.lanes)[number]['bill'] }) {
+function Bill({ bill }: { bill: (typeof HERO.lanes)[number]['bill'] }) {
   return (
     <div className="hl-paper">
       <span className="hl-paper-top">

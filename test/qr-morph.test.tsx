@@ -73,7 +73,10 @@ function renderStickies() {
   proof.innerHTML = '<div class="v"></div>'
   const energi = document.createElement('article')
   energi.id = 'energi'
-  document.body.append(proof, energi)
+  const forsikring = document.createElement('article')
+  forsikring.id = 'forsikring'
+  forsikring.innerHTML = '<h3 class="d-card-title">Alle jeres forsikringer samlet ét sted</h3>'
+  document.body.append(proof, energi, forsikring)
   return render(
     <MotionPrefs>
       <Stickies />
@@ -119,6 +122,35 @@ describe('the sticky QR code and the Altid Energi offer', () => {
     setInView('#energi', false)
     expect(offer.dataset.shown).toBe('false')
     expect(qr.dataset.shown).toBe('true')
+  })
+
+  it('hides the offer before the next card’s heading reaches it, and shows it again above', () => {
+    // Frames run at once; 0 as the handle, as if each had already been drawn.
+    vi.stubGlobal('requestAnimationFrame', (run: FrameRequestCallback) => {
+      run(0)
+      return 0
+    })
+    const { container } = renderStickies()
+    const offer = container.querySelector('.eo') as HTMLElement
+    // The offer rests 20 px above the bottom of a 900 px window; the heading may come to 40 px
+    // under its bottom edge.
+    window.innerHeight = 900
+    offer.style.bottom = '20px'
+    const heading = document.querySelector('#forsikring .d-card-title') as HTMLElement
+    let top = 1200
+    heading.getBoundingClientRect = () => ({ top }) as DOMRect
+    fireEvent(window, new Event('resize'))
+    setInView('#energi', true)
+    expect(offer.dataset.shown).toBe('true')
+    top = 921
+    fireEvent.scroll(window)
+    expect(offer.dataset.shown).toBe('true')
+    top = 919
+    fireEvent.scroll(window)
+    expect(offer.dataset.shown).toBe('false')
+    top = 1000
+    fireEvent.scroll(window)
+    expect(offer.dataset.shown).toBe('true')
   })
 
   for (const device of ['a phone', 'a computer']) {
@@ -218,23 +250,27 @@ describe('the final block’s store pills', () => {
 })
 
 describe('the final block’s collage', () => {
-  it('mixes five photos and three screens, each named, with drawn pieces of the app hidden from screen readers', () => {
+  it('has seventeen tiles on a computer and six on a phone: dishes, the painting, the coins, five photos and two screens, each named', () => {
     const { container } = renderFinal()
-    const wall = Array.from(container.querySelectorAll('.e-band .e-piece'))
-    expect(wall).toHaveLength(19)
-    const kinds = wall.map((piece) => (piece as HTMLElement).dataset.kind)
-    expect(kinds.filter((k) => k === 'photo')).toHaveLength(5)
-    expect(kinds.filter((k) => k === 'screen')).toHaveLength(3)
-    for (const kind of ['note', 'bill', 'orb', 'soon', 'row']) expect(kinds).toContain(kind)
-    const named = wall.filter((piece) => ['photo', 'screen'].includes((piece as HTMLElement).dataset.kind as string))
-    const alts = named.map((piece) => piece.querySelector('img')?.getAttribute('alt'))
+    const wall = Array.from(container.querySelectorAll('.e-band .e-tile'))
+    expect(wall).toHaveLength(17)
+    expect(container.querySelectorAll('.e-few .e-tile')).toHaveLength(6)
+    const sources = wall.map((tile) => decodeURIComponent(tile.querySelector('img')?.getAttribute('src') ?? ''))
+    expect(sources.filter((src) => src.includes('/site/plates/'))).toHaveLength(7)
+    expect(sources.filter((src) => src.includes('/site/gallery/') || src.includes('faq-familie'))).toHaveLength(5)
+    expect(sources.filter((src) => src.includes('/site/app/') && !src.includes('painting'))).toHaveLength(2)
+    expect(sources.some((src) => src.includes('painting'))).toBe(true)
+    expect(sources.some((src) => src.includes('coin-stack'))).toBe(true)
+    // Every tile but the notification is named; the notification is decoration.
+    const named = wall.filter((tile) => !tile.classList.contains('e-note-tile'))
+    const alts = named.map((tile) => tile.querySelector('img')?.getAttribute('alt'))
     expect(alts.every(Boolean)).toBe(true)
-    expect(new Set(alts).size).toBe(8)
-    for (const piece of wall.filter((p) => !named.includes(p))) expect(piece.querySelector('[aria-hidden="true"]')).not.toBeNull()
-    // No screen with a menu or sheet open.
+    expect(new Set(alts).size).toBe(16)
+    expect(container.querySelector('.e-note-tile')?.getAttribute('aria-hidden')).toBe('true')
+    // No service icons, no menu screen, no staged-screens note; the dishes are said to be AI images.
+    expect(container.querySelector('.e-orb, .e-soon, .e-row')).toBeNull()
     expect(container.querySelector('img[src*="mere-sheet"]')).toBeNull()
-    expect(container.querySelectorAll('.e-stage .e-piece')).toHaveLength(8)
-    expect(container.querySelector('.mq')).toBeNull()
     expect(container.textContent).not.toContain('Skærmbilleder fra appen med eksempeldata.')
+    expect(container.textContent).toContain('Billederne af retterne er AI-genererede, ligesom i appen.')
   })
 })
