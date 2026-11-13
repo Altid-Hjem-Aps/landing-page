@@ -197,13 +197,14 @@ export const PRIVACY = {
 export const STEPS = {
   title: 'Fire trin til ét overblik',
   steps: [
-    { n: '01', photo: '/site/people/trin-1-sofa.webp', photoFocus: '90% 50%', screens: [], tone: 'honey', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
+    { n: '01', photo: '/site/people/trin-1-sofa.webp', photoFocus: '90% 50%', screens: [], tone: 'mint', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
     { n: '02', photo: '/site/people/trin-2-bord.webp', photoFocus: '70% 50%', screens: ['/site/app/okonomi-top.webp'], tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
     { n: '03', photo: '/site/people/trin-3-koekken.webp', photoFocus: '40% 50%', screens: ['/site/app/mad-meal_plan.webp'], tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Mad, energi, forsikring eller økonomi. Tag det, der passer jer.', src: '/site/app/mad-meal_plan.webp', alt: 'Ugens madplan i appen: en ret til hver dag og 130 kr. tilbage.' },
-    { n: '04', photo: '/site/people/trin-4-par.webp', photoFocus: '64% 50%', screens: ['/site/app/partner-venter.webp', '/site/app/partner-inviteret.webp'], tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik over hjemmets økonomi.', src: '/site/app/partner-venter.webp', alt: 'Et par i sofaen med hver sin telefon: på Sofies er Mads’ halvdel af huset tom, på Mads’ står der Sofie har inviteret dig.' },
+    { n: '04', photo: '/site/people/trin-4-par.webp', photoFocus: '64% 50%', screens: ['/site/app/partner-venter.webp', '/site/app/partner-inviteret.webp'], tone: 'honey', title: 'Inviter din partner', body: 'Så har I et fælles overblik over hjemmets økonomi.', src: '/site/app/partner-venter.webp', alt: 'Et par i sofaen med hver sin telefon: på Sofies er Mads’ halvdel af huset tom, på Mads’ står der Sofie har inviteret dig.' },
   ],
-  // Thor's own words (13/11), as he wrote them: the app's speech bubble while step 03 is open.
-  psst: { lead: 'Psst..', text: ' og vi lancerer flere tjenester løbende. Snart kommer mobil, opladning og alarm' },
+  // The app's speech bubble while step 03 is open: Thor's line (13/11) in ChatGPT's smoother
+  // version, which he asked for. A no-break space keeps the dots with Psst.
+  psst: { lead: 'Psst ...', text: ' vi lancerer løbende flere tjenester. Snart kommer mobil, opladning og alarm.' },
 } as const
 
 // What the name Altid stands for: four values, and for each one what you always get and what

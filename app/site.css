@@ -2015,8 +2015,13 @@
     grid-column: 1 / -1;
     white-space: nowrap;
   }
+  /* As tall as the photo beside it (the photo's top margin plus its height), so the Psst bubble
+     at the foot of this column ends level with the photo's bottom. */
   .st-left {
+    display: flex;
+    flex-direction: column;
     align-self: start;
+    height: calc(min(calc(var(--u) * 660), calc(100svh - 230px)) + var(--u) * 24);
   }
   /* The step's photo, seen from the user's side with the screen in the phone, as a card. */
   .st-visual {
@@ -2053,49 +2058,68 @@
       opacity: 1;
     }
   }
-  /* Psst (Thor 13/11): the app icon and its speech bubble slide in from the right over the
-     photo's top corner, clear of the phone in the hand; the bubble pops out of the icon a beat
-     later. Leaving, both slide back out and the box is hidden once they are gone. */
+  /* Psst (Thor 13/11): the app icon, then its speech bubble, as a message reads on a phone. On a
+     computer it sits at the foot of the left column, in the free space under the steps, level
+     with the bottom of the photo. It slides in from the left as it fades in, and the bubble pops
+     out of the icon a beat later; leaving, it slides back and is hidden once it is gone. */
   .st-psst {
-    position: absolute;
-    z-index: 1;
-    top: 24px;
-    right: 24px;
+    align-self: flex-start;
     display: flex;
     align-items: flex-end;
-    gap: 10px;
-    max-width: min(370px, 100% - 48px);
-    translate: calc(100% + 48px) 0;
+    gap: 12px;
+    max-width: calc(var(--u) * 480);
+    margin-top: auto;
+    padding-top: 20px;
+    opacity: 0;
+    translate: -120px 0;
     visibility: hidden;
     transition:
       translate 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.45s,
       visibility 0s 0.7s;
 
     &[data-shown='true'] {
+      opacity: 1;
       translate: 0 0;
       visibility: visible;
       transition:
         translate 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.45s,
         visibility 0s;
     }
+  }
+  /* On a phone, over the top left of step 03's own photo, coming in from its left edge. */
+  .st-inline .st-psst {
+    position: absolute;
+    z-index: 1;
+    top: 12px;
+    left: 12px;
+    gap: 8px;
+    max-width: calc(100% - 24px);
+    margin-top: 0;
+    padding-top: 0;
+    translate: calc(-100% - 24px) 0;
+  }
+  .st-inline .st-psst[data-shown='true'] {
+    translate: 0 0;
   }
   .st-psst-icon {
     flex: none;
     width: 56px;
     height: 56px;
     border-radius: 14px;
-    box-shadow: 0 12px 26px rgba(0, 40, 15, 0.28);
+    box-shadow: 0 12px 26px rgba(0, 40, 15, 0.22);
   }
-  /* The tail is the bubble's small corner, pointing at the icon. */
+  /* The tail is the bubble's small corner, pointing back at the icon. */
   .st-psst-bubble {
-    padding: 13px 17px 14px;
-    border-radius: 20px 20px 5px 20px;
+    padding: 13px 18px 14px;
+    border-radius: 20px 20px 20px 5px;
     background: #fff;
     color: var(--forest);
-    font-size: 16px;
+    font-size: 17px;
     line-height: 1.38;
-    box-shadow: 0 14px 34px rgba(0, 40, 15, 0.2);
-    transform-origin: 100% 100%;
+    box-shadow: 0 14px 34px rgba(0, 40, 15, 0.14);
+    transform-origin: 0 100%;
     scale: 0.6;
     opacity: 0;
     transition:
@@ -2116,15 +2140,14 @@
   }
   /* With reduced motion it fades in and out where it stands. */
   @media (prefers-reduced-motion: reduce) {
-    .st .st-psst {
+    .st .st-psst,
+    .st .st-inline .st-psst {
       translate: none;
-      opacity: 0;
       transition:
         opacity 0.3s,
         visibility 0s 0.3s;
 
       &[data-shown='true'] {
-        opacity: 1;
         transition:
           opacity 0.3s,
           visibility 0s;
@@ -2210,9 +2233,6 @@
   .st-inline {
     display: none;
   }
-  .st-note {
-    margin-top: 14px;
-  }
   @media (max-width: 767px) {
     .st {
       height: auto;
@@ -2256,12 +2276,12 @@
       border-radius: 18px;
       overflow: hidden;
     }
-    .st-psst {
-      top: 12px;
-      right: 12px;
-      gap: 8px;
-      max-width: calc(100% - 24px);
-      translate: calc(100% + 24px) 0;
+    .st-left {
+      display: block;
+      height: auto;
+    }
+    .st-left > .st-psst {
+      display: none;
     }
     .st-psst-icon {
       width: 40px;
@@ -2270,7 +2290,7 @@
     }
     .st-psst-bubble {
       padding: 9px 12px 10px;
-      border-radius: 16px 16px 4px 16px;
+      border-radius: 16px 16px 16px 4px;
       font-size: 13.5px;
     }
   }

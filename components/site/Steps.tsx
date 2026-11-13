@@ -5,7 +5,6 @@ import { type CSSProperties, useEffect, useRef, useState } from 'react'
 import StoreBadges from '@/components/StoreBadges'
 import { STEPS } from './copy'
 import GetAppButton from './GetAppButton'
-import StagedNote from './StagedNote'
 import { STEP_SCREENS, STEP_VIEW } from './stepScreens'
 
 type Step = (typeof STEPS.steps)[number]
@@ -53,18 +52,19 @@ function StepPhoto({ step, slot, alt, sizes, quality, shown }: { step: Step; slo
   )
 }
 
-// Psst (Thor 13/11): the app icon with a speech bubble saying more services are on the way. It
-// slides in from the side over step 03's photo once the reader keeps scrolling with 03 open,
-// and back out when 04 opens. On a phone it comes in over step 03's own photo when that is in
-// view. Hidden, it is also out of the accessibility tree.
+// Psst (Thor 13/11): the app icon, then its speech bubble, as a message reads on a phone, saying
+// more services are on the way. On a computer it slides in from the left into the free space
+// under the steps, level with the bottom of the photo, once the reader keeps scrolling with 03
+// open, and back out when 04 opens. On a phone it comes in over step 03's own photo when that
+// is in view. Hidden, it is also out of the accessibility tree.
 function Psst({ shown }: { shown: boolean }) {
   return (
     <div className="st-psst" data-shown={shown ? 'true' : undefined}>
+      <Image className="st-psst-icon" src="/app-badge.png" alt="" width={112} height={112} />
       <p className="st-psst-bubble">
         <strong>{STEPS.psst.lead}</strong>
         {STEPS.psst.text}
       </p>
-      <Image className="st-psst-icon" src="/app-badge.png" alt="" width={112} height={112} />
     </div>
   )
 }
@@ -165,13 +165,12 @@ export default function Steps() {
               </li>
             ))}
           </ol>
-          <StagedNote className="st-note" />
+          <Psst shown={psstWide} />
         </div>
-        <div className="st-visual">
+        <div className="st-visual" aria-hidden="true">
           {STEPS.steps.map((step, i) => (
             <StepPhoto key={step.photo} step={step} slot="visual" alt="" sizes="(max-width: 767px) 1px, 70vw" quality={90} shown={i === active} />
           ))}
-          <Psst shown={psstWide} />
         </div>
         <p className="sr-only" aria-live="polite">
           {STEPS.steps[active].alt}
