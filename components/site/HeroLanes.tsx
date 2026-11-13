@@ -18,8 +18,8 @@ type Phase = 'bill' | 'note' | 'tap' | 'done' | 'leave'
 const TIMES: Record<Phase, number> = { bill: 4500, note: 2800, tap: 600, done: 2600, leave: 900 }
 const NEXT: Record<Phase, Phase> = { bill: 'note', note: 'tap', tap: 'done', done: 'leave', leave: 'bill' }
 
-function Bill({ index }: { index: number }) {
-  const bill = HERO.lanes[index].bill
+/** A paper bill, as in the bills mockup. Also one of the final block's collage pieces. */
+export function Bill({ bill }: { bill: (typeof HERO.lanes)[number]['bill'] }) {
   return (
     <div className="hl-paper">
       <span className="hl-paper-top">
@@ -99,7 +99,7 @@ export default function HeroLanes() {
         ? // Three bills go in, one after another; the note is about the first.
           [0, 1, 2].map((k) => (
             <div key={`bill-${index}-${k}`} className="hl-bill-fly" style={{ '--k': k } as CSSProperties}>
-              <Bill index={(index + k) % HERO.lanes.length} />
+              <Bill bill={HERO.lanes[(index + k) % HERO.lanes.length].bill} />
             </div>
           ))
         : null}

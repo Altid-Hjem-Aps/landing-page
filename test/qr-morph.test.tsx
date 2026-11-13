@@ -1,13 +1,13 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import EnergiOffer from '@/components/site/EnergiOffer'
 import FinalCta from '@/components/site/FinalCta'
-import GetAppSticky from '@/components/site/GetAppSticky'
 import { MotionPrefs } from '@/components/site/MotionPrefs'
+import Stickies from '@/components/site/Stickies'
 
-// The front page's QR codes and links (Thor 13/11, second round): the sticky bottom right is
-// just the QR code; the Energi offer is one link everywhere; the final block's store pills open
-// into the QR code on a computer and are store links elsewhere; the final block's collage.
+// The front page's QR codes and links (Thor 13/11, third round): the QR code bottom right until
+// the testimonials' slider arrives; Altid Energi's offer fixed at the bottom while the Energi
+// card is in view, one link everywhere, never with the QR code; the final block's store pills
+// open into the QR code on a computer and are store links elsewhere; the final block's collage.
 // Faked at the boundary only: matchMedia, IntersectionObserver, ResizeObserver and sendBeacon.
 
 const SIGNUP = 'https://tilmeld.altidenergi.dk/signup/altid-hjem'
@@ -66,12 +66,19 @@ function setInView(selector: string, isIntersecting: boolean) {
   })
 }
 
-// The Ekstra Bladet card the sticky watches.
-function renderSticky() {
-  const press = document.createElement('a')
-  press.className = 'h-press'
-  document.body.append(press)
-  return render(<GetAppSticky />)
+// The testimonials' slider and the Energi card the stickies watch.
+function renderStickies() {
+  const proof = document.createElement('section')
+  proof.dataset.b = 'proof'
+  proof.innerHTML = '<div class="v"></div>'
+  const energi = document.createElement('article')
+  energi.id = 'energi'
+  document.body.append(proof, energi)
+  return render(
+    <MotionPrefs>
+      <Stickies />
+    </MotionPrefs>,
+  )
 }
 
 const renderFinal = () =>
@@ -81,59 +88,54 @@ const renderFinal = () =>
     </MotionPrefs>,
   )
 
-describe('the sticky QR code', () => {
-  it('is the one QR code with its title and line, and no button', () => {
-    const { container } = renderSticky()
-    expect(screen.getByAltText(QR_ALT).getAttribute('src')).toContain('/site/qr/app.svg')
-    expect(container.textContent).toContain('Hent appen')
-    expect(container.textContent).toContain('Scan koden med din telefon')
-    expect(screen.queryByRole('button')).toBeNull()
-    expect(screen.queryByRole('link')).toBeNull()
+describe('the sticky QR code and the Altid Energi offer', () => {
+  it('shows the one QR code with its title and line, and no button', () => {
+    const { container } = renderStickies()
+    const qr = container.querySelector('.gs') as HTMLElement
+    expect(qr.dataset.shown).toBe('true')
+    expect(within(qr).getByAltText(QR_ALT).getAttribute('src')).toContain('/site/qr/app.svg')
+    expect(qr.textContent).toBe('Hent appenScan koden med din telefon')
+    expect(within(qr).queryByRole('button')).toBeNull()
+    expect(within(qr).queryByRole('link')).toBeNull()
   })
 
-  it('fades once Ekstra Bladet has scrolled past and comes back above it', () => {
-    const { container } = renderSticky()
-    const sticky = container.querySelector('.gs') as HTMLElement
-    expect(sticky.dataset.shown).toBe('true')
-    setInView('.h-press', false)
-    expect(sticky.dataset.shown).toBe('false')
-    setInView('.h-press', true)
-    expect(sticky.dataset.shown).toBe('true')
+  it('hides the QR code once the slider arrives, and shows it again above it', () => {
+    const { container } = renderStickies()
+    const qr = container.querySelector('.gs') as HTMLElement
+    setInView('.v', true)
+    expect(qr.dataset.shown).toBe('false')
+    setInView('.v', false)
+    expect(qr.dataset.shown).toBe('true')
   })
-})
 
-describe('the Altid Energi offer in the Energi card', () => {
+  it('shows the offer while the Energi card is in view, never together with the QR code', () => {
+    const { container } = renderStickies()
+    const qr = container.querySelector('.gs') as HTMLElement
+    const offer = container.querySelector('.eo') as HTMLElement
+    expect(offer.dataset.shown).toBe('false')
+    setInView('#energi', true)
+    expect(offer.dataset.shown).toBe('true')
+    expect(qr.dataset.shown).toBe('false')
+    setInView('#energi', false)
+    expect(offer.dataset.shown).toBe('false')
+    expect(qr.dataset.shown).toBe('true')
+  })
+
   for (const device of ['a phone', 'a computer']) {
-    it(`is one link to the signup, in a new tab, on ${device}, with no QR code`, () => {
+    it(`makes the offer one link to the signup, in a new tab, with its fine print, on ${device}`, () => {
       computer = device === 'a computer'
-      const { container } = render(
-        <MotionPrefs>
-          <EnergiOffer />
-        </MotionPrefs>,
-      )
-      const link = screen.getByRole('link')
+      const { container } = renderStickies()
+      const offer = container.querySelector('.eo') as HTMLElement
+      const link = within(offer).getByRole('link')
+      expect(within(offer).getAllByRole('link')).toHaveLength(1)
       expect(link.getAttribute('href')).toBe(SIGNUP)
       expect(link.getAttribute('target')).toBe('_blank')
-      expect(link.textContent).toContain('Bliv kunde hos Altid Energi')
-      expect(link.textContent).toContain('Gebyrfri strøm til indkøbspris')
-      expect(link.textContent).toContain('Første måned gratis')
-      expect(container.textContent).toContain('100 % rabat på elabonnementet den første måned, når du bliver kunde via Altid Hjem.')
-      expect(screen.queryByRole('button')).toBeNull()
-      expect(container.querySelector('img[src*="qr"]')).toBeNull()
+      for (const text of ['Bliv kunde hos Altid Energi', 'Gebyrfri strøm til indkøbspris', 'Første måned gratis', '100 % rabat på elabonnementet den første måned, når du bliver kunde via Altid Hjem.']) {
+        expect(link.textContent).toContain(text)
+      }
+      expect(offer.querySelector('img[src*="qr"]')).toBeNull()
     })
   }
-
-  it('floats only while on screen', () => {
-    const { container } = render(
-      <MotionPrefs>
-        <EnergiOffer />
-      </MotionPrefs>,
-    )
-    const float = container.querySelector('.float') as HTMLElement
-    expect(float.dataset.running).toBe('true')
-    setInView('.float', false)
-    expect(float.dataset.running).toBe('false')
-  })
 })
 
 describe('the final block’s store pills', () => {
@@ -216,19 +218,23 @@ describe('the final block’s store pills', () => {
 })
 
 describe('the final block’s collage', () => {
-  it('has twelve tiles on a computer and six on a phone, screens on a tone and five photos, each named', () => {
+  it('mixes five photos and three screens, each named, with drawn pieces of the app hidden from screen readers', () => {
     const { container } = renderFinal()
-    const wall = Array.from(container.querySelectorAll('.e-wall .e-tile'))
-    const few = Array.from(container.querySelectorAll('.e-few .e-tile'))
-    expect(wall).toHaveLength(12)
-    expect(few).toHaveLength(6)
-    const photos = wall.filter((tile) => tile.classList.contains('e-photo'))
-    expect(photos).toHaveLength(5)
-    for (const tile of wall.filter((t) => t.classList.contains('e-shot'))) expect(tile.getAttribute('data-tone')).toBeTruthy()
-    const alts = wall.map((tile) => tile.querySelector('img')?.getAttribute('alt'))
+    const wall = Array.from(container.querySelectorAll('.e-band .e-piece'))
+    expect(wall).toHaveLength(19)
+    const kinds = wall.map((piece) => (piece as HTMLElement).dataset.kind)
+    expect(kinds.filter((k) => k === 'photo')).toHaveLength(5)
+    expect(kinds.filter((k) => k === 'screen')).toHaveLength(3)
+    for (const kind of ['note', 'bill', 'orb', 'soon', 'row']) expect(kinds).toContain(kind)
+    const named = wall.filter((piece) => ['photo', 'screen'].includes((piece as HTMLElement).dataset.kind as string))
+    const alts = named.map((piece) => piece.querySelector('img')?.getAttribute('alt'))
     expect(alts.every(Boolean)).toBe(true)
-    expect(new Set(alts).size).toBe(12)
+    expect(new Set(alts).size).toBe(8)
+    for (const piece of wall.filter((p) => !named.includes(p))) expect(piece.querySelector('[aria-hidden="true"]')).not.toBeNull()
+    // No screen with a menu or sheet open.
+    expect(container.querySelector('img[src*="mere-sheet"]')).toBeNull()
+    expect(container.querySelectorAll('.e-stage .e-piece')).toHaveLength(8)
     expect(container.querySelector('.mq')).toBeNull()
-    expect(container.textContent).toContain('Skærmbilleder fra appen med eksempeldata.')
+    expect(container.textContent).not.toContain('Skærmbilleder fra appen med eksempeldata.')
   })
 })

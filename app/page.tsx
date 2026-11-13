@@ -3,7 +3,6 @@ import { META, NAV, LEAVE } from '@/components/site/copy'
 import FaqSection from '@/components/site/FaqSection'
 import FinalCta from '@/components/site/FinalCta'
 import { dmSans } from '@/components/site/fonts'
-import GetAppSticky from '@/components/site/GetAppSticky'
 import Hero from '@/components/site/Hero'
 import LeavePopup from '@/components/site/LeavePopup'
 import { readUserCount, usersThousands } from '@/lib/user-count'
@@ -19,6 +18,7 @@ import Proof from '@/components/site/Proof'
 import Reveal from '@/components/site/Reveal'
 import SiteFooter from '@/components/site/SiteFooter'
 import SiteNav from '@/components/site/SiteNav'
+import Stickies from '@/components/site/Stickies'
 import Values from '@/components/site/Values'
 import Blog from '@/components/sections/Blog'
 import { APP_STORE_ID } from '@/lib/store-links'
@@ -77,7 +77,7 @@ export default async function Home() {
           <FinalCta />
         </main>
         <PauseButton />
-        <GetAppSticky />
+        <Stickies />
         <LeavePopup proof={LEAVE.proof.replace('{thousands}', usersThousands(users))} />
       </MotionPrefs>
       <SiteFooter />

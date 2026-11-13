@@ -300,26 +300,32 @@ export const FAQ: { title: string; items: readonly FaqItem[] } = {
 export const FINAL = {
   title: 'Hent Altid Hjem i dag',
   body: 'Vi glæder os til at se jer. Appen er gratis at hente, og det er gratis at oprette en konto.',
-  // A colourful collage around the text (Thor 13/11, in place of the loop): app screens, each
-  // whole on a card in one of the site's tones, mixed with candid photos that fill their tile
-  // (Thor's picks, graded to match the FAQ photo). On a computer the collage has 12 places,
-  // filled in this order: the left column top and bottom, the second column top and bottom,
-  // the third above and below the text, the middle one above, the fifth above and below, the
-  // sixth, the right column top and bottom (FinalGallery). A phone shows the six marked
-  // `phone`, two per column. Neighbours never share a tone. A photo's `focus` is its
-  // object-position in the portrait tile.
+  // A collage around the text (Thor 13/11, in place of the loop): candid photos (Thor's picks,
+  // graded to match the FAQ photo), a few app screens whole on a card in one of the site's
+  // tones, and pieces of the app drawn in HTML: the assistant's notification, a bill, the round
+  // service marks, the "Kommer snart" row and the menu's rows, each on its own. FinalGallery
+  // places them in this order (19 places on a computer, see WALL there); a phone shows the
+  // eight marked `phone`. Photos and screens are named for screen readers; the drawn pieces
+  // are decoration. A photo's `focus` is its object-position in the portrait tile.
   gallery: [
     { kind: 'photo', src: '/faq-familie.jpg', alt: 'Far med datter på skuldrene i stuen', focus: '8% 50%', phone: true },
-    { kind: 'screen', src: HERO.mainScreens[0].src, alt: HERO.mainScreens[0].alt, tone: 'honey', phone: true },
-    { kind: 'screen', src: HERO.secondScreens[0].src, alt: HERO.secondScreens[0].alt, tone: 'lavender', phone: true },
-    { kind: 'photo', src: '/site/gallery/galleri-pige-sofa.webp', alt: 'Pige med høretelefoner og tablet i sofaen', focus: '50% 60%', phone: true },
-    { kind: 'screen', src: HERO.mainScreens[1].src, alt: HERO.mainScreens[1].alt, tone: 'mint', phone: false },
-    { kind: 'photo', src: '/site/gallery/galleri-bamse.webp', alt: 'Uldsokker og en bamse på gulvtæppet', focus: '55% 50%', phone: true },
-    { kind: 'screen', src: '/site/app/mere-sheet.webp', alt: 'Menuen i appen: Profil, Energi med første måned gratis, Mad, Forsikring og Økonomi.', tone: 'rose', phone: false },
+    { kind: 'note', title: 'Altid Hjem', time: 'nu', body: HERO.lanes[2].done, done: 'Klaret', phone: true },
+    { kind: 'orb', service: 'okonomi', tone: 'honey', phone: true },
+    { kind: 'screen', src: HERO.mainScreens[0].src, alt: HERO.mainScreens[0].alt, tone: 'mint', phone: true },
+    { kind: 'row', service: 'energi', tone: 'sky', title: 'Energi', line: '1. måned gratis', offer: true, phone: true },
     { kind: 'photo', src: '/site/gallery/galleri-far-og-datter.webp', alt: 'Far og datter krammer i sofaen', focus: '50% 15%', phone: false },
-    { kind: 'screen', src: HERO.secondScreens[2].src, alt: HERO.secondScreens[2].alt, tone: 'sky', phone: true },
-    { kind: 'screen', src: HERO.mainScreens[2].src, alt: HERO.mainScreens[2].alt, tone: 'honey', phone: false },
-    { kind: 'screen', src: '/site/app/partner-inviteret.webp', alt: 'En invitation i appen: Sofie har inviteret dig, og dine egne konti ser kun du.', tone: 'lavender', phone: false },
+    { kind: 'orb', service: 'mad', tone: 'lavender', phone: true },
+    { kind: 'bill', bill: HERO.lanes[1].bill, phone: false },
+    { kind: 'soon', title: 'Kommer snart', items: ['Opladning', 'Alarm', 'Mobil'], phone: false },
+    { kind: 'orb', service: 'forsikring', tone: 'rose', phone: false },
+    { kind: 'screen', src: HERO.secondScreens[2].src, alt: HERO.secondScreens[2].alt, tone: 'lavender', phone: true },
+    { kind: 'photo', src: '/site/gallery/galleri-pige-sofa.webp', alt: 'Pige med høretelefoner og tablet i sofaen', focus: '50% 60%', phone: false },
+    { kind: 'row', service: 'mad', tone: 'lavender', title: 'Mad', line: 'Jeres madplan', offer: false, phone: false },
+    { kind: 'screen', src: HERO.secondScreens[0].src, alt: HERO.secondScreens[0].alt, tone: 'honey', phone: false },
+    { kind: 'photo', src: '/site/gallery/galleri-bamse.webp', alt: 'Uldsokker og en bamse på gulvtæppet', focus: '55% 50%', phone: true },
+    { kind: 'row', service: 'forsikring', tone: 'rose', title: 'Forsikring', line: 'Tjek jeres forsikringer', offer: false, phone: false },
+    { kind: 'row', service: 'okonomi', tone: 'honey', title: 'Økonomi', line: 'Jeres økonomi samlet ét sted', offer: false, phone: false },
+    { kind: 'orb', service: 'energi', tone: 'sky', phone: false },
     { kind: 'photo', src: '/site/gallery/galleri-elbil.webp', alt: 'En elbil lades op ved huset', focus: '40% 50%', phone: false },
   ],
 } as const
@@ -335,8 +341,8 @@ export const QR = {
   close: 'Luk QR-koden',
 } as const
 
-// Altid Energi's first month free, inside the Energi card (EnergiOffer), drawn after the app's
-// own floating "Bliv kunde" element: one link to the signup on every device.
+// Altid Energi's first month free (EnergiOffer), the app's own floating "Bliv kunde" element,
+// fixed at the bottom of the screen while the Energi card is in view: one link to the signup.
 export const ENERGI_OFFER = {
   title: 'Bliv kunde hos Altid Energi',
   line: 'Gebyrfri strøm til indkøbspris',
