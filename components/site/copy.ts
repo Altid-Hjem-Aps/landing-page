@@ -5,11 +5,13 @@ export const NAV = {
   ariaMain: 'Forside',
   ariaMenu: 'Menu',
   links: [
+    { href: '#tjenesterne', label: 'Tjenesterne' },
     { href: '#spoergsmaal', label: 'Spørgsmål' },
     { href: '/kontakt', label: 'Kontakt' },
   ],
   // Presse is not in the menus (Thor 11/11): the page is reached from the footer.
   sheet: [
+    { href: '#tjenesterne', label: 'Tjenesterne' },
     { href: '#okonomi', label: 'Økonomi' },
     { href: '#mad', label: 'Mad' },
     { href: '#energi', label: 'Energi' },
@@ -93,9 +95,9 @@ export const PROOF = {
 } as const
 
 export const OKONOMI = {
-  titleFirst: 'Ikke mere',
-  titleSecond: '“hvor blev pengene af?”',
-  line: 'Forbind banken sikkert med MitID, og se, hvad der er tilbage til lønningsdag, hvor pengene går hen, og hvilke udgifter der er på vej.',
+  // The old front page's heading for what is in the app (Thor 13/11): one short line, the
+  // cards below show the rest.
+  title: 'Hvad finder du i appen?',
   // The seven feature blocks of the launch mail (Figma 9366:329 and 9366:211), word for word,
   // each with its phone and lifted pieces exported from the same frames.
   cards: [

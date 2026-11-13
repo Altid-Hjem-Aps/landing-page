@@ -9,14 +9,11 @@ import { OKONOMI } from './copy'
 export default function MadDark() {
   return (
     <>
-      <section id="okonomi-universet" data-b="features" className="sec d">
+      <section id="tjenesterne" data-b="features" className="sec d">
         <header className="d-head">
           <h2 className="t-h2 d-title" data-reveal>
-            <span className="d-title-dim">{OKONOMI.titleFirst}</span> {OKONOMI.titleSecond}
+            {OKONOMI.title}
           </h2>
-          <div className="d-para" data-reveal>
-            <p className="t-body">{OKONOMI.line}</p>
-          </div>
         </header>
         <div className="d-cards">
           {OKONOMI.cards.map((card) => (
