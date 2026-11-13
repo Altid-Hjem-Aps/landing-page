@@ -249,47 +249,40 @@ describe('the final block’s store pills', () => {
 })
 
 describe('the final block’s gallery', () => {
-  it('is bevel’s eight columns of fourteen tiles, in four areas, each pairing life with the app', () => {
+  it('is Thor’s Figma frame on a computer: every tile at his place, the screens without their beta badge', () => {
     const { container } = renderFinal()
     const tiles = Array.from(container.querySelectorAll<HTMLElement>('.e-tile[data-view="wall"]'))
-    expect(tiles).toHaveLength(14)
-    const at = (id: string) => {
-      const t = container.querySelector(`[data-view="wall"][data-tile="${id}"]`) as HTMLElement
-      return [Number(t.style.getPropertyValue('--col')), Number(t.style.getPropertyValue('--top')), Number(t.style.getPropertyValue('--h'))]
-    }
-    // Bevel's columns: two tiles of 230, three of 166, then four of 356, mirrored.
-    const columns = Array.from({ length: 8 }, (_, c) => tiles.filter((t) => Number(t.style.getPropertyValue('--col')) === c + 1).map((t) => Number(t.style.getPropertyValue('--h'))))
-    expect(columns).toEqual([[230, 230], [166, 166, 166], [356], [356], [356], [356], [166, 166, 166], [230, 230]])
-    // Økonomi top left, Mad top right, Forsikring bottom left, Energi og Opladning bottom right.
-    for (const id of ['maleri', 'okonomi', 'hjem', 'droem']) expect(at(id)[0]).toBeLessThanOrEqual(4)
-    for (const id of ['madplan', 'familie', 'tacos', 'risotto']) expect(at(id)[0]).toBeGreaterThanOrEqual(5)
-    for (const id of ['pige', 'forsikring', 'besked']) expect(at(id)[0]).toBeLessThanOrEqual(2)
-    for (const id of ['energi', 'elpris', 'elbil']) expect(at(id)[0]).toBeGreaterThanOrEqual(7)
+    expect(tiles.map((t) => t.dataset.tile)).toEqual(['bamse', 'familie', 'maleri', 'droem', 'hjem', 'energi', 'besked', 'elbil', 'strand', 'madplan', 'tacos', 'okonomi'])
+    const at = (id: string) => ['--x', '--y', '--w', '--h'].map((p) => Number((container.querySelector(`[data-view="wall"][data-tile="${id}"]`) as HTMLElement).style.getPropertyValue(p)))
+    expect(at('strand')).toEqual([707, 635, 163, 200])
+    expect(at('madplan')).toEqual([1136, 358, 160, 320])
+    expect(at('besked')).toEqual([446.8, 130.1, 329, 160])
     const sources = tiles.map((tile) => decodeURIComponent(tile.querySelector('img')?.getAttribute('src') ?? ''))
-    expect(sources.filter((src) => src.includes('/site/plates/'))).toHaveLength(2)
-    expect(sources.some((src) => src.includes('forsikring-top'))).toBe(true)
-    expect(sources.some((src) => src.includes('mad-meal_plan'))).toBe(true)
-    const screens = Array.from(container.querySelectorAll('[data-view="wall"].e-screen'))
-    expect(screens).toHaveLength(6)
-    for (const tile of screens) expect(tile.getAttribute('data-tone')).toBeTruthy()
-    // The drawn pieces are decoration; everything else is named.
-    const drawn = tiles.filter((t) => t.getAttribute('aria-hidden') === 'true').map((t) => t.dataset.tile)
-    expect(drawn).toEqual(['besked', 'elpris'])
-    const alts = tiles.filter((t) => !drawn.includes(t.dataset.tile)).map((tile) => tile.querySelector('img')?.getAttribute('alt'))
+    for (const screen of ['hjem-top', 'okonomi-top', 'mad-meal_plan']) {
+      expect(sources.some((src) => src.includes(`${screen}-uden-beta`))).toBe(true)
+      expect(sources.some((src) => src.includes(`${screen}.webp`))).toBe(false)
+    }
+    expect(sources.filter((src) => src.includes('/site/plates/'))).toHaveLength(1)
+    for (const tile of container.querySelectorAll('[data-view="wall"].e-screen')) expect(tile.getAttribute('data-tone')).toBeTruthy()
+    // The notification, word for word from his frame, is decoration; everything else is named.
+    const note = container.querySelector('[data-view="wall"][data-tile="besked"]') as HTMLElement
+    expect(note.getAttribute('aria-hidden')).toBe('true')
+    expect(note.textContent).toBe('Altid HjemnuJeres faste udgifter er faldet med 380 kr. siden sidste måned!Se budget')
+    const alts = tiles.filter((t) => t !== note).map((tile) => tile.querySelector('img')?.getAttribute('alt'))
     expect(alts.every(Boolean)).toBe(true)
-    expect(new Set(alts).size).toBe(12)
-    expect(container.querySelector('[data-tile="elpris"]')?.textContent).toBe('0,62 kr. pr. kWhBilligren elpris, kl. 17-18')
-    expect(container.textContent).not.toContain('AI-genererede')
-    // A phone: the middle four columns, Økonomi and Mad over the text, Forsikring and Energi under it.
+    expect(new Set(alts).size).toBe(11)
+    // His line, broken where he broke it.
+    const line = container.querySelector('.e-line') as HTMLElement
+    expect(line.textContent).toBe('Vi glæder os til at se jer. Appen er gratis at hente, og det er gratis at oprette en konto.')
+    expect(line.querySelector('br')).not.toBeNull()
+    // A phone: the middle four columns, four tiles over the text and four under it, all from the same set.
     const phone = Array.from(container.querySelectorAll<HTMLElement>('.e-tile[data-view="phone"]'))
-    const row = (below: boolean) => phone.filter((t) => (t.dataset.below === 'true') === below).map((t) => [t.dataset.tile, Number(t.style.getPropertyValue('--col'))])
-    expect(row(false)).toEqual([['maleri', 3], ['hjem', 4], ['madplan', 5], ['familie', 6]])
-    expect(row(true)).toEqual([['pige', 3], ['forsikring', 4], ['energi', 5], ['elbil', 6]])
+    expect(phone.map((t) => t.dataset.tile)).toEqual(['maleri', 'hjem', 'madplan', 'familie', 'bamse', 'okonomi', 'energi', 'elbil'])
   })
 })
 
 describe('arranging the final block’s gallery', () => {
-  const KEY = 'altid-final-layout-bevel'
+  const KEY = 'altid-final-layout-figma'
   const tile = (container: HTMLElement, id: string) => container.querySelector(`[data-view="wall"][data-tile="${id}"]`) as HTMLElement
 
   beforeEach(() => {
@@ -303,38 +296,38 @@ describe('arranging the final block’s gallery', () => {
     window.history.replaceState(null, '', '/')
     const { container } = renderFinal()
     expect(screen.queryByRole('button', { name: 'Kopiér layout' })).toBeNull()
-    expect(tile(container, 'pige').hasAttribute('data-reveal')).toBe(true)
+    expect(tile(container, 'strand').hasAttribute('data-reveal')).toBe(true)
   })
 
-  it('moves a tile to another column and up or down, keeps it in this browser, copies and resets', async () => {
+  it('moves a tile in the stage’s design px, keeps it in this browser, copies and resets', async () => {
     const writes: string[] = []
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (text: string) => void writes.push(text) } })
     const { container } = renderFinal()
-    const pige = tile(container, 'pige')
-    expect(pige.hasAttribute('data-reveal')).toBe(false)
-    // Tiles 143 px wide here, so one column is 159 px across.
-    pige.getBoundingClientRect = () => ({ width: 143, height: 230, left: 0, top: 0 }) as DOMRect
-    fireEvent.pointerDown(pige, { clientX: 100, clientY: 100, pointerId: 1 })
-    fireEvent.pointerMove(pige, { clientX: 100 + 2 * 159 + 20, clientY: 140, pointerId: 1 })
-    fireEvent.pointerUp(pige, { clientX: 100 + 2 * 159 + 20, clientY: 140, pointerId: 1 })
-    expect(pige.style.getPropertyValue('--col')).toBe('3')
-    expect(pige.style.getPropertyValue('--top')).toBe('-159')
-    expect(JSON.parse(window.localStorage.getItem(KEY) as string).wall.pige).toEqual({ col: 3, top: -159, h: 230 })
+    const strand = tile(container, 'strand')
+    expect(strand.hasAttribute('data-reveal')).toBe(false)
+    // The stage is drawn 720 px wide here, half its 1440 design px: 10 px on screen is 20.
+    ;(container.querySelector('.e-wall') as HTMLElement).getBoundingClientRect = () => ({ width: 720, height: 460, left: 0, top: 0 }) as DOMRect
+    fireEvent.pointerDown(strand, { clientX: 100, clientY: 100, pointerId: 1 })
+    fireEvent.pointerMove(strand, { clientX: 110, clientY: 95, pointerId: 1 })
+    fireEvent.pointerUp(strand, { clientX: 110, clientY: 95, pointerId: 1 })
+    expect(strand.style.getPropertyValue('--x')).toBe('727')
+    expect(strand.style.getPropertyValue('--y')).toBe('625')
+    expect(JSON.parse(window.localStorage.getItem(KEY) as string).wall.strand).toEqual({ x: 727, y: 625, w: 163, h: 200 })
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Kopiér layout' }))
     })
-    expect(JSON.parse(writes[0]).wall.pige.col).toBe(3)
+    expect(JSON.parse(writes[0]).wall.strand.x).toBe(727)
     expect(screen.getByRole('button', { name: 'Kopieret' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Nulstil' }))
-    expect(pige.style.getPropertyValue('--col')).toBe('1')
+    expect(strand.style.getPropertyValue('--x')).toBe('707')
     expect(window.localStorage.getItem(KEY)).toBeNull()
   })
 
   it('opens with the layout kept in this browser and ignores the earlier galleries’', () => {
-    window.localStorage.setItem('altid-final-layout-universes', JSON.stringify({ wall: {}, phone: {} }))
-    window.localStorage.setItem(KEY, JSON.stringify({ ...FINAL_LAYOUT, wall: { ...FINAL_LAYOUT.wall, pige: { col: 4, top: 0, h: 230 } } }))
+    window.localStorage.setItem('altid-final-layout-bevel', JSON.stringify({ wall: {}, phone: {} }))
+    window.localStorage.setItem(KEY, JSON.stringify({ ...FINAL_LAYOUT, wall: { ...FINAL_LAYOUT.wall, strand: { x: 40, y: 40, w: 163, h: 200 } } }))
     const { container } = renderFinal()
-    expect(tile(container, 'pige').style.getPropertyValue('--col')).toBe('4')
-    expect(tile(container, 'maleri').style.getPropertyValue('--col')).toBe('1')
+    expect(tile(container, 'strand').style.getPropertyValue('--x')).toBe('40')
+    expect(tile(container, 'bamse').style.getPropertyValue('--x')).toBe('249.5')
   })
 })

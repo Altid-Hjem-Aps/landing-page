@@ -3,9 +3,10 @@ import { FINAL } from './copy'
 import FinalGallery from './FinalGallery'
 import FinalPills from './FinalPills'
 
-// Where every "Hent appen" lands: the heading, the line and the store pills in the middle of a
-// collage of four small universes of photos, app screens and dishes (FinalGallery). On a computer the pills open into the one
-// QR code (FinalPills). The anchor is the text, so the heading shows above the pills on arrival.
+// Where every "Hent appen" lands: the heading, the line and the store pills in the middle of
+// Thor's gallery (FinalGallery). On a computer the pills open into the one QR code (FinalPills).
+// The anchor is the text, so the heading shows above the pills on arrival. The line breaks where
+// Thor broke it on a computer and runs on on a phone (CSS).
 export default function FinalCta() {
   return (
     <section data-b="final" className="sec e">
@@ -15,7 +16,8 @@ export default function FinalCta() {
             {FINAL.title}
           </h2>
           <p className="t-body e-line" data-reveal>
-            {FINAL.body}
+            {FINAL.body[0]} <br className="e-break" />
+            {FINAL.body[1]}
           </p>
           <FinalPills />
         </div>

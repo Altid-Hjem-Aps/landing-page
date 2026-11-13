@@ -38,6 +38,9 @@
   font-family: var(--text);
   font-size: 18px;
   line-height: 1.4;
+  /* DM Sans is the variable font now; it keeps its default optical size, as the static weights
+     before it, except where a rule lets it follow the type size (the final block's heading). */
+  font-optical-sizing: none;
   -webkit-font-smoothing: antialiased;
 
   @media (max-width: 767px) {
@@ -3217,38 +3220,24 @@
     }
   }
 
-  /* 11. Final CTA: the heading, line and store pills under a gallery rebuilt 1:1 on
-     bevel.health's "Crafted with Care" (FinalGallery): eight columns 16 px apart over a width of
-     88.94vw - 22.8px, never under 856 px (a phone sees its middle) nor over 1320 px; tiles keep
-     their heights in px; the middle columns stand over the heading, the outer ones run down beside
-     it. Under the pills there is room for the QR card they open into. */
+  /* 11. Final CTA: the heading, line and store pills in the middle of Thor's gallery
+     (FinalGallery). A computer: his Figma frame "Galleri · 1440" (10945:3), a 1440 x 921 stage
+     scaled by --cu with the window (to 1800 wide), every tile and the text at his place and size.
+     A phone: bevel.health's grid from before, the middle four of eight columns over the heading
+     and a second row under the button. */
   .e {
-    padding-top: calc(var(--pad) * 0.5);
-    padding-bottom: 300px;
+    --cu: calc(min(100vw, 1800px) / 1440);
+    padding-bottom: 64px;
     text-align: center;
     overflow: clip;
-  }
-  .e-wall {
-    --gw: clamp(856px, 88.94vw - 22.8px, 1320px);
-    --gap: 16px;
-    --cw: calc((var(--gw) - 7 * var(--gap)) / 8);
-    /* The gallery's top is 472 px above the heading's top. */
-    position: relative;
-    padding-top: 472px;
   }
   .e-text {
     position: relative;
     z-index: 2;
-    width: min(100% - 34px, var(--gw) * 0.534);
-    margin-inline: auto;
-  }
-  .e-line {
-    margin: 16px auto 0;
   }
   .e-pills {
     position: relative;
     z-index: 3;
-    margin-top: calc(var(--u) * 40);
   }
   /* The pills' row opening into the one QR code (QrMorph): Deep forest, as the first pill. */
   .e-qm {
@@ -3276,55 +3265,31 @@
     }
   }
 
-  /* A tile in bevel's grid: --col 1 to 8, --top in px from the heading's top, --h in px. Rounded
-     as theirs (32 px at 1440, about 21 on a phone). A photo or the painting fills it, a dish sits
-     in it, a screen lies on its toned card. */
+  /* A tile: a photo filling it, a screen on its toned card, a dish on its tone, or the
+     notification on its tone. Rounded 32 design px on a computer. */
   .e-tile {
     position: absolute;
     z-index: 1;
-    left: calc(50% - var(--gw) / 2 + (var(--col) - 1) * (var(--cw) + var(--gap)));
-    top: calc(472px + var(--top) * 1px);
     display: grid;
     place-items: center;
-    width: var(--cw);
-    height: calc(var(--h) * 1px);
-    border-radius: clamp(20px, 16.6px + 1.065vw, 32px);
     overflow: hidden;
     background: var(--tint, var(--sand));
     color: var(--forest);
-  }
-  /* The computer's layout from 1024 px, the phone's below; the phone's second row hangs from the
-     bottom of the text and buttons (the section's padding under it holds it). */
-  .e-tile[data-view='phone'] {
-    display: none;
-  }
-  .e-tile[data-below] {
-    top: calc(100% + var(--top) * 1px);
-  }
-  @media (max-width: 1023px) {
-    .e-tile[data-view='wall'] {
-      display: none;
-    }
-    .e-tile[data-view='phone'] {
-      display: grid;
-    }
   }
   .e-cover {
     outline: 1px solid rgba(0, 60, 22, 0.1);
     outline-offset: -1px;
   }
-  /* A screen across its card's width with room all round, from the top; the card's tone shows
-     wherever the screen ends first. */
-  .e-screen {
-    align-items: start;
-    padding: 9px;
+  /* A photo's picture: the whole tile, or on a computer the box Thor gave it in his frame. */
+  .e-crop {
+    position: absolute;
+    inset: 0;
   }
   .e-screen-in {
     display: block;
     width: 100%;
     max-height: 100%;
     overflow: hidden;
-    border-radius: clamp(13px, 10px + 0.8vw, 23px);
 
     img {
       display: block;
@@ -3332,107 +3297,204 @@
       height: auto;
     }
   }
+  .e-screen {
+    align-items: start;
+  }
   .e-plate img {
     width: 104%;
     max-width: none;
     height: auto;
   }
-  /* The reminder, upright to fit a column: the app mark and name, the line, and Klaret. */
-  .e-note-tile {
-    padding: 9px;
+
+  /* A computer: Thor's frame. --x, --y, --w and --h are design px of the 1440 x 921 stage. */
+  @media (min-width: 1024px) {
+    .e {
+      padding-top: calc(var(--pad) * 0.5);
+    }
+    .e-wall {
+      position: relative;
+      width: calc(1440 * var(--cu));
+      height: calc(921 * var(--cu));
+      margin-inline: auto;
+    }
+    .e-tile[data-view='phone'] {
+      display: none;
+    }
+    .e-tile[data-view='wall'] {
+      left: calc(var(--x) * var(--cu));
+      top: calc(var(--y) * var(--cu));
+      width: calc(var(--w) * var(--cu));
+      height: calc(var(--h) * var(--cu));
+      border-radius: calc(32 * var(--cu));
+    }
+    .e-screen[data-view='wall'] {
+      padding: calc(10.67 * var(--cu));
+
+      .e-screen-in {
+        border-radius: calc(22.4 * var(--cu));
+      }
+    }
+    /* Text, line and pills where Thor put them: centred 2 px right of the middle, the heading's
+       top at 333.78, the line's at 418, the pills' at 509.2. */
+    .e-text {
+      position: absolute;
+      top: calc(333.78 * var(--cu));
+      left: 0;
+      right: 0;
+      translate: calc(2 * var(--cu)) 0;
+
+      /* DM Sans with its optical size following the type size, as Figma draws it. */
+      .t-h2 {
+        font-optical-sizing: auto;
+        font-size: calc(63.072 * var(--cu));
+        letter-spacing: calc(-1.8922 * var(--cu));
+        line-height: calc(82 * var(--cu));
+        white-space: nowrap;
+      }
+    }
+    .e-line {
+      width: calc(700 * var(--cu));
+      margin: calc(2.22 * var(--cu)) auto 0;
+      font-size: calc(21.53 * var(--cu));
+      line-height: calc(28 * var(--cu));
+    }
+    .e-pills {
+      margin-top: calc(35.2 * var(--cu));
+
+      .store-row {
+        column-gap: calc(10.8 * var(--cu));
+      }
+      .site-pill {
+        gap: calc(7 * var(--cu));
+        min-height: 0;
+        height: calc(48.2 * var(--cu));
+        padding: 0 calc(17.6 * var(--cu));
+        font-size: calc(15.424 * var(--cu));
+
+        svg {
+          width: calc(15 * var(--cu));
+          height: calc(15 * var(--cu));
+        }
+      }
+    }
   }
+
+  /* The notification in Thor's frame: a white card turned -2deg in the middle of its tile, the
+     app mark, "Altid Hjem" and "nu", the message, and its pill. Design px of the stage. */
   .e-note-card {
-    flex-direction: column;
-    gap: 6px;
-    width: 100%;
-    padding: 10px 10px 12px;
-    border-radius: 18px;
-    text-align: left;
-
-    .hl-note-top {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-
-      img {
-        width: 20px;
-        height: 20px;
-        border-radius: 5px;
-      }
-      small {
-        margin-left: auto;
-        font-size: 11px;
-      }
-    }
-    .hl-note-body {
-      margin: 0;
-      font-size: 12px;
-      line-height: 1.3;
-    }
-    .hl-done {
-      gap: 4px;
-      margin-top: 2px;
-      padding: 4px 9px;
-      font-size: 11px;
-      animation: none;
-
-      svg {
-        width: 11px;
-        height: 11px;
-      }
-    }
-  }
-  /* The electricity price, as the app's Energi screen shows it. */
-  .e-price-tile {
-    padding: 9px;
-  }
-  .e-price {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    padding: 14px 12px;
-    border-radius: 18px;
-    background: var(--dark-forest);
-    color: #fff;
+    align-items: flex-start;
+    gap: calc(10.667 * var(--cu));
+    width: calc(286.8 * var(--cu));
+    padding: calc(10.667 * var(--cu)) calc(12.8 * var(--cu)) calc(12.8 * var(--cu)) calc(10.667 * var(--cu));
+    border-radius: calc(19.2 * var(--cu));
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 calc(12 * var(--cu)) calc(30 * var(--cu)) rgba(0, 40, 14, 0.14);
+    color: var(--forest);
     text-align: left;
+    rotate: -2deg;
   }
-  .e-price-value {
-    font-size: 12px;
-    line-height: 1;
-    color: rgba(255, 255, 255, 0.8);
-
-    /* The figure on its own line, the unit under it, as narrow columns need. */
-    b {
-      display: block;
-      margin-bottom: 4px;
-      font-family: var(--display);
-      font-size: clamp(22px, 16px + 0.6vw, 28px);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: #fff;
-    }
+  .e-note-icon {
+    flex: none;
+    width: calc(32 * var(--cu));
+    height: calc(32 * var(--cu));
+    border-radius: calc(8.534 * var(--cu));
   }
-  .e-price-row {
+  /* As in his frame: the name row 21.57 high, the message from 21 down, two lines 21.77 apart,
+     the pill from 65.53 down; the text column 99.71 high. */
+  .e-note-text {
     display: flex;
-    flex-wrap: wrap;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    min-height: calc(99.71 * var(--cu));
+  }
+  .e-note-top {
+    display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: space-between;
+    align-self: stretch;
+    height: calc(21.57 * var(--cu));
 
+    b {
+      font-size: calc(14.934 * var(--cu));
+      font-weight: 700;
+    }
     small {
-      font-size: 11px;
-      line-height: 1.2;
-      color: rgba(255, 255, 255, 0.7);
+      font-size: calc(12.8 * var(--cu));
     }
   }
-  .e-price-tag {
-    padding: 2px 8px;
+  .e-note-body {
+    margin-top: calc(-0.57 * var(--cu));
+    font-size: calc(13 * var(--cu));
+    line-height: calc(21.77 * var(--cu));
+    letter-spacing: calc(-0.13 * var(--cu));
+  }
+  .e-note-action {
+    display: inline-flex;
+    margin-top: calc(0.99 * var(--cu));
+    align-items: center;
+    gap: calc(5.333 * var(--cu));
+    padding: calc(5.333 * var(--cu)) calc(10.667 * var(--cu));
     border-radius: 999px;
     background: var(--signal);
-    font-size: 11px;
+    font-size: calc(12.8 * var(--cu));
     font-weight: 600;
-    color: var(--forest);
+
+    svg {
+      width: calc(12.8 * var(--cu));
+      height: calc(12.8 * var(--cu));
+    }
+  }
+
+  /* A phone and a tablet: bevel's grid as before. Eight columns 16 px apart over a width that
+     never goes under 856 px, so only the middle four are on the screen; tiles keep their heights
+     in px; the heading's top is 472 px under the gallery's; the second row hangs from the bottom
+     of the text and button. */
+  @media (max-width: 1023px) {
+    .e {
+      padding-bottom: 440px;
+    }
+    .e-wall {
+      --gw: clamp(856px, 88.94vw - 22.8px, 1320px);
+      --cw: calc((var(--gw) - 7 * 16px) / 8);
+      position: relative;
+      padding-top: 472px;
+    }
+    .e-text {
+      width: min(100% - 34px, var(--gw) * 0.534);
+      margin-inline: auto;
+    }
+    .e-line {
+      margin: 16px auto 0;
+    }
+    .e-break {
+      display: none;
+    }
+    .e-pills {
+      margin-top: calc(var(--u) * 40);
+    }
+    .e-tile[data-view='wall'] {
+      display: none;
+    }
+    .e-tile[data-view='phone'] {
+      left: calc(50% - var(--gw) / 2 + (var(--col) - 1) * (var(--cw) + 16px));
+      top: calc(472px + var(--top) * 1px);
+      width: var(--cw);
+      height: calc(var(--h) * 1px);
+      border-radius: clamp(20px, 16.6px + 1.065vw, 32px);
+    }
+    .e-tile[data-below] {
+      top: calc(100% + var(--top) * 1px);
+    }
+    .e-screen[data-view='phone'] {
+      padding: 9px;
+
+      .e-screen-in {
+        border-radius: clamp(13px, 10px + 0.8vw, 23px);
+      }
+    }
   }
 
   /* Arrange mode (?arrange): every tile can be picked up; a small panel bottom left. */
@@ -3473,12 +3535,6 @@
       font: inherit;
       font-weight: 600;
       cursor: pointer;
-    }
-  }
-  /* Phones: no QR card under the pills; the room under them holds the second row of tiles. */
-  @media (max-width: 1023px) {
-    .e {
-      padding-bottom: 440px;
     }
   }
 
