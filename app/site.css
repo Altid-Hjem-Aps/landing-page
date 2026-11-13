@@ -1645,6 +1645,14 @@
   }
   /* The mail's type: headline DM Sans Bold, 120 % leading, -3.5 % tracking; body Onest
      Regular, 140 % leading; both #163223, with the mail's 16 px gap under a 22 px headline (0.73) kept. */
+  /* Thor's line breaks in the card texts and the story paragraph hold from tablet up; on a
+     phone the narrow column wraps them by itself. */
+  @media (min-width: 768px) {
+    .d-card-body,
+    .sy-body {
+      white-space: pre-line;
+    }
+  }
   .d-card-title {
     font-family: var(--display);
     font-weight: 700;

@@ -109,7 +109,7 @@ export const OKONOMI = {
     {
       tone: 'honey',
       title: '“Bruger vi for meget\npå takeaway?”',
-      body: 'Forbind banken sikkert med MitID, og se hvordan pengene bliver brugt.',
+      body: 'Forbind banken sikkert med MitID, og se\nhvordan pengene bliver brugt.',
       id: 'okonomi',
       src: '/site/mail/takeaway.webp',
       alt: 'Økonomi i appen: 1.955 kr. brugt siden løn, fordelt på Transport, Restaurant og takeaway, Andet og Tøj.',
@@ -117,7 +117,7 @@ export const OKONOMI = {
     {
       tone: 'lavender',
       title: 'Ikke mere\n“hvad skal vi spise?”',
-      body: 'Få en komplet madplan på få minutter, tilpasset dig og din familie.',
+      body: 'Få en komplet madplan på få minutter,\ntilpasset dig og din familie.',
       id: 'mad',
       src: '/site/mail/mad.webp',
       alt: 'Madplanen i appen: 437 kr. tilbage og ugens retter, blandt andet hjemmelavet pizza med tomat og mozzarella.',
@@ -126,7 +126,7 @@ export const OKONOMI = {
       tone: 'sand',
       // The mail's headline for its shopping block ("Blok 04"), with its source line (Thor 11/11).
       title: 'Spar 11.207 kr. om\nåret på dagligvarer*',
-      body: 'Appen finder automatisk de billigste varer på tværs af de butikker, I handler i.',
+      body: 'Appen finder automatisk de billigste varer\npå tværs af de butikker, I handler i.',
       source: { text: 'Baseret på Altid Mad Q3-rapporten', href: '/madrapport' },
       src: '/site/mail/indkob-liste.webp',
       alt: 'Indkøbslisten i appen: 47 varer tilbage, sorteret efter butik, med priser.',
@@ -134,7 +134,7 @@ export const OKONOMI = {
     {
       tone: 'sky',
       title: '“Hvornår skal opvasken sættes over?”',
-      body: 'Følg elprisen time for time og få besked, når strømmen er billigst.',
+      body: 'Følg elprisen time for time og få besked,\nnår strømmen er billigst.',
       id: 'energi',
       src: '/site/mail/energi.webp',
       alt: 'Elprisen i appen: 0,62 kr. pr. kWh lige nu og prisen time for time.',
@@ -142,7 +142,7 @@ export const OKONOMI = {
     {
       tone: 'rose',
       title: 'Alle jeres forsikringer\nsamlet ét sted',
-      body: 'Se, hvad I betaler, og få et forsikringstjek. Helt gratis og uforpligtende.',
+      body: 'Se, hvad I betaler, og få et forsikringstjek.\nHelt gratis og uforpligtende.',
       id: 'forsikring',
       src: '/site/mail/forsikring.webp',
       alt: 'Forsikringer i appen: 1.397 kr. om måneden for bil, hus, indbo og ulykke.',
@@ -199,8 +199,8 @@ export const STEPS = {
   steps: [
     { n: '01', photo: '/site/people/trin-1-sofa.webp', photoFocus: '90% 50%', screens: [], tone: 'honey', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
     { n: '02', photo: '/site/people/trin-2-bord.webp', photoFocus: '70% 50%', screens: ['/site/app/okonomi-top.webp'], tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen. Det er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
-    { n: '03', photo: '/site/people/trin-3-koekken.webp', photoFocus: '40% 50%', screens: ['/site/app/mad-meal_plan.webp'], tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Madplan, elpris og forsikringstjek. Tag det, der passer jer.', src: '/site/app/mad-meal_plan.webp', alt: 'Ugens madplan i appen: en ret til hver dag og 130 kr. tilbage.' },
-    { n: '04', photo: '/site/people/trin-4-par.webp', photoFocus: '64% 50%', screens: ['/site/app/partner-venter.webp', '/site/app/partner-inviteret.webp'], tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik og hver jeres egne tal.', src: '/site/app/partner-venter.webp', alt: 'Et par i sofaen med hver sin telefon: på Sofies er Mads’ halvdel af huset tom, på Mads’ står der Sofie har inviteret dig.' },
+    { n: '03', photo: '/site/people/trin-3-koekken.webp', photoFocus: '40% 50%', screens: ['/site/app/mad-meal_plan.webp'], tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Mad, energi, forsikring eller økonomi. Tag det, der passer jer.', src: '/site/app/mad-meal_plan.webp', alt: 'Ugens madplan i appen: en ret til hver dag og 130 kr. tilbage.' },
+    { n: '04', photo: '/site/people/trin-4-par.webp', photoFocus: '64% 50%', screens: ['/site/app/partner-venter.webp', '/site/app/partner-inviteret.webp'], tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik over hjemmets økonomi.', src: '/site/app/partner-venter.webp', alt: 'Et par i sofaen med hver sin telefon: på Sofies er Mads’ halvdel af huset tom, på Mads’ står der Sofie har inviteret dig.' },
   ],
 } as const
 
@@ -250,7 +250,7 @@ export const PRESS = {
 export const STORY = {
   quote: '“Vi startede med at gøre op med skjulte gebyrer i elmarkedet. Nu gør vi det samme på tværs af alle hjemmets faste udgifter.”',
   title: 'Fair, gennemsigtigt og billigt',
-  body: 'Altid Hjem er skabt af teamet bag Altid Energi, som gjorde op med skjulte gebyrer i elmarkedet. Med over 15.000 kunder har vi bevist, at fair og gennemsigtige priser virker. Nu tager vi samme tilgang til hjemmets faste udgifter, så du altid ved, hvad du betaler for, og hvorfor. Ingen skjulte gebyrer. Fuld gennemsigtighed. Altid.',
+  body: 'Altid Hjem er skabt af teamet bag Altid Energi,\nsom gjorde op med skjulte gebyrer i elmarkedet. Med over 15.000 kunder har vi bevist, at fair og gennemsigtige priser virker. Nu tager vi samme tilgang til hjemmets faste udgifter, så du altid ved, hvad du betaler for, og hvorfor. Altid.',
 } as const
 
 // One FAQ, one source: the visible answers and the JSON-LD both read this. `link` names
