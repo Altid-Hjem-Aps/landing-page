@@ -26,8 +26,8 @@ export const NAV = {
 } as const
 
 // How many have the app, in one place: the hero, the reviews heading and the leave popup read it.
-// 13 Nov 2026: 2.306 people opened the app in the last 7 days (admin dashboard, Aktive brugere).
-export const USERS = 'over 2.000'
+// 13 Nov 2026: 4.087 Altid Energi customers have logged into the app (activations KPI) plus 654 Altid Hjem accounts without Energi.
+export const USERS = 'over 4.000'
 const capitalised = (text: string) => text[0].toUpperCase() + text.slice(1)
 
 export const HERO = {
