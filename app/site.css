@@ -1062,6 +1062,168 @@
     line-height: 15px;
     color: rgba(255, 255, 255, 0.72);
   }
+
+  /* Altid Energi's first month free, while the Energi card is on screen (EnergiOffer). On a
+     computer a card in the hero QR card's corner and style; on a phone a pill at the bottom. */
+  .eo,
+  .eo-pill {
+    display: none;
+  }
+  @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+    .eo {
+      position: fixed;
+      z-index: 35;
+      right: 8px;
+      bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      width: 384px;
+      padding: 12px 16px 12px 12px;
+      border-radius: 16px;
+      background: var(--forest);
+      color: #fff;
+      box-shadow: 0 14px 34px rgba(0, 30, 10, 0.18);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+
+      &[data-shown='true'] {
+        opacity: 1;
+        visibility: visible;
+      }
+      :focus-visible {
+        outline-color: var(--signal);
+      }
+    }
+  }
+  .eo-code {
+    flex: none;
+    width: 82px;
+    margin: 0;
+
+    /* Two px per module, so every module lands on whole pixels. */
+    img {
+      display: block;
+      width: 82px;
+      height: 82px;
+      border-radius: 6px;
+      background: #fff;
+    }
+    figcaption {
+      margin-top: 6px;
+      font-size: 10px;
+      line-height: 13px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.72);
+    }
+  }
+  .eo-text {
+    min-width: 0;
+  }
+  .eo-badge {
+    display: inline-flex;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--signal);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 15px;
+    color: var(--forest);
+  }
+  .eo-title {
+    margin-top: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 22px;
+
+    /* The whole card is the link, for those who would rather sign up on this computer. */
+    a::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+    }
+  }
+  .eo:hover .eo-title a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .eo-line {
+    margin-top: 2px;
+    font-size: 12px;
+    line-height: 16px;
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .eo-fine {
+    margin-top: 6px;
+    font-size: 10px;
+    line-height: 13px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  @media (max-width: 767px) {
+    .eo-pill {
+      position: fixed;
+      z-index: 35;
+      left: calc(16px + env(safe-area-inset-left));
+      right: calc(16px + env(safe-area-inset-right));
+      bottom: calc(16px + env(safe-area-inset-bottom));
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 60px;
+      padding: 8px 14px 8px 8px;
+      border-radius: 999px;
+      background: var(--cream);
+      box-shadow:
+        0 0 0 1px rgba(0, 60, 22, 0.12),
+        0 12px 30px rgba(0, 30, 10, 0.16);
+      color: var(--forest);
+      opacity: 0;
+      visibility: hidden;
+      translate: 0 calc(100% + 16px + env(safe-area-inset-bottom));
+      transition: opacity 0.3s, visibility 0.3s, translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+
+      &[data-shown='true'] {
+        opacity: 1;
+        visibility: visible;
+        translate: 0 0;
+      }
+      &:active {
+        scale: 0.98;
+      }
+    }
+    /* The pause button steps up above the pill while it is there. */
+    .pause:has(~ .eo-pill[data-shown='true']) {
+      translate: 0 calc(-60px - 8px);
+    }
+  }
+  .eo-mark {
+    display: grid;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--sky);
+  }
+  .eo-pill-text {
+    flex: 1;
+    min-width: 0;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 19px;
+  }
+  .eo-chevron {
+    flex: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .eo,
+    .eo-pill {
+      transition: none;
+      translate: none;
+    }
+  }
   @media (max-width: 767px) {
     .h {
       min-height: max(100svh, calc(var(--u) * 879));
@@ -3151,7 +3313,7 @@
     box-shadow: 0 0 0 1px rgba(0, 60, 22, 0.14);
     color: var(--forest);
     cursor: pointer;
-    transition: opacity 0.2s, visibility 0.2s;
+    transition: opacity 0.2s, visibility 0.2s, translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
 
     /* Nothing in view runs by itself, so there is nothing to pause. */
     &[data-idle='true'] {

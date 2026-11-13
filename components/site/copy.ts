@@ -313,6 +313,19 @@ export const QR = {
   label: 'Hent appen med din telefon',
 } as const
 
+// Altid Energi's first month free, shown while the Energi card is on screen (EnergiOffer): a card
+// with a QR code on a computer, a pill at the bottom on a phone.
+export const ENERGI_OFFER = {
+  badge: 'Gratis elabonnement første måned',
+  title: 'Bliv kunde hos Altid Energi',
+  line: 'Dit gebyrfri elselskab. Strøm til indkøbspris, fri for gebyrer, spottillæg og binding.',
+  fine: '100 % rabat på elabonnementet den første måned, når du bliver kunde via Altid Hjem.',
+  qr: 'Scan koden med din telefon',
+  phone: 'Gratis elabonnement første måned hos Altid Energi',
+  qrAlt: 'QR-kode til tilmelding hos Altid Energi',
+  href: 'https://tilmeld.altidenergi.dk/signup/altid-hjem',
+} as const
+
 // The popup a computer shows once per visit when the mouse heads for the tab bar (LeavePopup).
 // The QR codes under the text take their captions from QR.
 export const LEAVE = {
