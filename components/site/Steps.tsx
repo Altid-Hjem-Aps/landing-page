@@ -61,8 +61,9 @@ function StepPhoto({ step, slot, alt, sizes, quality, shown }: { step: Step; slo
 //
 // Step 04, "Inviter din partner" (computers): the bubble folds away and a second icon, the
 // partner, hops in from the left and leaps over the first to land beside it. The first gives a
-// little start, then the two lean into each other, hold, and do two happy jumps together; they
-// stay leaning in, and every few seconds hop together again. Back to 03, the partner leaps back out and the bubble
+// little start, then the two lean into each other and hold, straighten up and do two happy jumps
+// side by side without touching, and then stand side by side, each breathing, glancing at the
+// other and bobbing now and then on its own clock. Back to 03, the partner leaps back out and the bubble
 // returns; to 02, or on past 04 out of the steps, both hop out to the left.
 type PsstState = 'in' | 'out' | undefined
 

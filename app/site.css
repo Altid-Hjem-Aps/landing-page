@@ -2239,7 +2239,7 @@
   }
   .st-pair {
     position: absolute;
-    left: 62px;
+    left: 66px;
     bottom: 0;
     width: 56px;
     height: 56px;
@@ -2269,12 +2269,12 @@
     .st-pair-lean {
       animation:
         st-pair-snuggle 1.9s 1.4s both,
-        st-pair-happy 4.2s 3.3s infinite;
+        st-pair-alive 5.3s ease-in-out 3.3s infinite;
     }
     .st-psst-lean {
       animation:
         st-psst-snuggle 2.15s 1.15s both,
-        st-psst-happy 4.2s 3.22s infinite;
+        st-psst-alive 4.6s ease-in-out 3.3s infinite;
     }
     /* The bubble folds away for the pair (and wins over the shown bubble's rule below). */
     &[data-state] .st-psst-bubble {
@@ -2286,7 +2286,7 @@
     }
   }
   /* Leaving 04: the partner leaps back over the first icon and away to the left, and the first
-     straightens up again. */
+     gives a little wobble after it. */
   .st-psst[data-pair='out'] {
     .st-pair {
       visibility: hidden;
@@ -4573,11 +4573,11 @@ body:has(.site) {
 @keyframes st-pair-across {
   0%,
   6% {
-    translate: calc(var(--hop) * -1 - 62px) 0;
+    translate: calc(var(--hop) * -1 - 66px) 0;
   }
   28%,
   42% {
-    translate: -124px 0;
+    translate: -132px 0;
   }
   76%,
   100% {
@@ -4661,8 +4661,8 @@ body:has(.site) {
     rotate: 0deg;
   }
 }
-/* The partner leans in (the main action), holds against the first icon, then the two do two
-   happy jumps together; it ends leaning in. */
+/* The partner leans in (the main action) and holds against the first icon; then both straighten
+   up, apart, and do two happy jumps side by side without touching, ending upright. */
 @keyframes st-pair-snuggle {
   0% {
     translate: 0 0;
@@ -4681,58 +4681,60 @@ body:has(.site) {
     scale: 1 1;
     rotate: -9deg;
   }
-  /* the hold */
-  40% {
+  /* the hold, leaning in */
+  48% {
     translate: -3px 0;
     scale: 1 1;
     rotate: -9deg;
     animation-timing-function: ease-in-out;
   }
-  54% {
-    translate: -3px 0;
+  /* they straighten up, apart, before jumping */
+  55% {
+    translate: 0 0;
     scale: 1 1;
-    rotate: -9deg;
+    rotate: 0deg;
     animation-timing-function: ease-out;
   }
-  /* two happy jumps together: crouch, up, land squashed, up again, land */
-  58% {
-    translate: -3px 0;
-    scale: 1.14 0.86;
-    rotate: -6deg;
+  /* two happy jumps side by side, tipping a little away from each other in the air */
+  59% {
+    translate: 0 0;
+    scale: 1.08 0.9;
+    rotate: 0deg;
     animation-timing-function: cubic-bezier(0.25, 0.6, 0.45, 1);
   }
-  66% {
-    translate: -3px -26px;
-    scale: 0.92 1.1;
-    rotate: -3deg;
+  67% {
+    translate: 0 -26px;
+    scale: 0.95 1.07;
+    rotate: 3deg;
     animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
   }
-  74% {
-    translate: -3px 0;
-    scale: 1.14 0.86;
-    rotate: -10deg;
+  75% {
+    translate: 0 0;
+    scale: 1.08 0.9;
+    rotate: 0deg;
     animation-timing-function: cubic-bezier(0.25, 0.6, 0.45, 1);
   }
-  81% {
-    translate: -3px -18px;
-    scale: 0.95 1.06;
-    rotate: -5deg;
+  82% {
+    translate: 0 -16px;
+    scale: 0.97 1.04;
+    rotate: 2deg;
     animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
   }
-  88% {
-    translate: -3px 0;
-    scale: 1.08 0.92;
-    rotate: -10deg;
+  89% {
+    translate: 0 0;
+    scale: 1.05 0.95;
+    rotate: 0deg;
     animation-timing-function: ease-out;
   }
   100% {
-    translate: -3px 0;
+    translate: 0 0;
     scale: 1 1;
-    rotate: -8deg;
+    rotate: 0deg;
   }
 }
 /* The first icon's answer, a beat behind: a little start as the partner lands, then it leans
-   back in, holds, and jumps with it (the timing lines its jumps up with the partner's). */
+   back in, holds, straightens and jumps with it (the timing lines its jumps up with the
+   partner's). */
 @keyframes st-psst-snuggle {
   0% {
     translate: 0 0;
@@ -4757,166 +4759,149 @@ body:has(.site) {
     scale: 1 1;
     rotate: 13deg;
   }
-  /* the hold */
-  40% {
+  /* the hold, leaning in */
+  48% {
     translate: 3px 0;
     scale: 1 1;
     rotate: 9deg;
     animation-timing-function: ease-in-out;
   }
-  54% {
-    translate: 3px 0;
+  /* they straighten up, apart, before jumping */
+  55% {
+    translate: 0 0;
     scale: 1 1;
-    rotate: 9deg;
+    rotate: 0deg;
     animation-timing-function: ease-out;
   }
-  /* two happy jumps together: crouch, up, land squashed, up again, land */
-  58% {
-    translate: 3px 0;
-    scale: 1.14 0.86;
-    rotate: 6deg;
+  /* two happy jumps side by side, tipping a little away from each other in the air */
+  59% {
+    translate: 0 0;
+    scale: 1.08 0.9;
+    rotate: 0deg;
     animation-timing-function: cubic-bezier(0.25, 0.6, 0.45, 1);
   }
-  66% {
-    translate: 3px -26px;
-    scale: 0.92 1.1;
-    rotate: 3deg;
-    animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
-  }
-  74% {
-    translate: 3px 0;
-    scale: 1.14 0.86;
-    rotate: 10deg;
-    animation-timing-function: cubic-bezier(0.25, 0.6, 0.45, 1);
-  }
-  81% {
-    translate: 3px -18px;
-    scale: 0.95 1.06;
-    rotate: 5deg;
-    animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
-  }
-  88% {
-    translate: 3px 0;
-    scale: 1.08 0.92;
-    rotate: 10deg;
-    animation-timing-function: ease-out;
-  }
-  100% {
-    translate: 3px 0;
-    scale: 1 1;
-    rotate: 8deg;
-  }
-}
-/* Then happy: both keep leaning in and breathe, and every few seconds they do a little double
-   hop together, the partner a beat behind. */
-@keyframes st-pair-happy {
-  0% {
-    translate: -3px 0;
-    scale: 1 1;
-    rotate: -8deg;
-    animation-timing-function: ease-in-out;
-  }
-  30% {
-    translate: -3px 0;
-    scale: 1.02 0.98;
-    rotate: -6deg;
-    animation-timing-function: ease-in-out;
-  }
-  60% {
-    translate: -3px 0;
-    scale: 1 1;
-    rotate: -8deg;
-    animation-timing-function: ease-out;
-  }
-  64% {
-    translate: -3px 0;
-    scale: 1.12 0.88;
-    rotate: -6deg;
-    animation-timing-function: cubic-bezier(0.25, 0.6, 0.45, 1);
-  }
-  70% {
-    translate: -3px -18px;
-    scale: 0.94 1.08;
+  67% {
+    translate: 0 -26px;
+    scale: 0.95 1.07;
     rotate: -3deg;
     animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
   }
-  76% {
-    translate: -3px 0;
-    scale: 1.12 0.88;
-    rotate: -9deg;
+  75% {
+    translate: 0 0;
+    scale: 1.08 0.9;
+    rotate: 0deg;
     animation-timing-function: cubic-bezier(0.25, 0.6, 0.45, 1);
   }
-  81% {
-    translate: -3px -11px;
+  82% {
+    translate: 0 -16px;
     scale: 0.97 1.04;
-    rotate: -5deg;
+    rotate: -2deg;
     animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
   }
-  86% {
-    translate: -3px 0;
-    scale: 1.06 0.94;
-    rotate: -9deg;
+  89% {
+    translate: 0 0;
+    scale: 1.05 0.95;
+    rotate: 0deg;
     animation-timing-function: ease-out;
   }
   100% {
-    translate: -3px 0;
+    translate: 0 0;
     scale: 1 1;
-    rotate: -8deg;
+    rotate: 0deg;
   }
 }
-@keyframes st-psst-happy {
+/* Then side by side: each breathes, now and then glances at the other and bobs, on its own
+   clock (different lengths), so they never move in lockstep and feel alive. */
+@keyframes st-pair-alive {
   0% {
-    translate: 3px 0;
+    translate: 0 0;
     scale: 1 1;
-    rotate: 8deg;
-    animation-timing-function: ease-in-out;
+    rotate: 0deg;
   }
-  30% {
-    translate: 3px 0;
-    scale: 1.02 0.98;
-    rotate: 6deg;
-    animation-timing-function: ease-in-out;
+  /* a breath */
+  18% {
+    scale: 0.985 1.025;
   }
-  60% {
-    translate: 3px 0;
+  34% {
     scale: 1 1;
-    rotate: 8deg;
-    animation-timing-function: ease-out;
+    rotate: 0deg;
+  }
+  /* a glance at the other one */
+  42%,
+  56% {
+    rotate: -5deg;
   }
   64% {
-    translate: 3px 0;
-    scale: 1.12 0.88;
-    rotate: 6deg;
-    animation-timing-function: cubic-bezier(0.25, 0.6, 0.45, 1);
+    translate: 0 0;
+    scale: 1 1;
+    rotate: 0deg;
   }
-  70% {
-    translate: 3px -18px;
-    scale: 0.94 1.08;
-    rotate: 3deg;
-    animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
-  }
+  /* a little bob */
   76% {
-    translate: 3px 0;
-    scale: 1.12 0.88;
-    rotate: 9deg;
+    translate: 0 0;
+    scale: 1.05 0.95;
     animation-timing-function: cubic-bezier(0.25, 0.6, 0.45, 1);
   }
   81% {
-    translate: 3px -11px;
-    scale: 0.97 1.04;
-    rotate: 5deg;
+    translate: 0 -7px;
+    scale: 0.97 1.03;
     animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
   }
   86% {
-    translate: 3px 0;
-    scale: 1.06 0.94;
-    rotate: 9deg;
-    animation-timing-function: ease-out;
+    translate: 0 0;
+    scale: 1.04 0.96;
   }
+  92%,
   100% {
-    translate: 3px 0;
+    translate: 0 0;
     scale: 1 1;
-    rotate: 8deg;
+    rotate: 0deg;
+  }
+}
+@keyframes st-psst-alive {
+  0% {
+    translate: 0 0;
+    scale: 1 1;
+    rotate: 0deg;
+  }
+  /* a breath */
+  18% {
+    scale: 0.985 1.025;
+  }
+  34% {
+    scale: 1 1;
+    rotate: 0deg;
+  }
+  /* a glance at the other one */
+  42%,
+  56% {
+    rotate: 5deg;
+  }
+  64% {
+    translate: 0 0;
+    scale: 1 1;
+    rotate: 0deg;
+  }
+  /* a little bob */
+  76% {
+    translate: 0 0;
+    scale: 1.05 0.95;
+    animation-timing-function: cubic-bezier(0.25, 0.6, 0.45, 1);
+  }
+  81% {
+    translate: 0 -7px;
+    scale: 0.97 1.03;
+    animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
+  }
+  86% {
+    translate: 0 0;
+    scale: 1.04 0.96;
+  }
+  92%,
+  100% {
+    translate: 0 0;
+    scale: 1 1;
+    rotate: 0deg;
   }
 }
 /* The partner leaving: a crouch and a leap back over the first icon, then out. */
@@ -4927,7 +4912,7 @@ body:has(.site) {
   }
   50%,
   56% {
-    translate: -124px 0;
+    translate: -132px 0;
   }
   82%,
   100% {
@@ -4989,18 +4974,15 @@ body:has(.site) {
 }
 @keyframes st-psst-unlean {
   0% {
-    translate: 3px 0;
-    rotate: 8deg;
+    rotate: 0deg;
   }
-  45% {
-    translate: 0 0;
-    rotate: -5deg;
+  40% {
+    rotate: -6deg;
   }
-  75% {
+  70% {
     rotate: 2deg;
   }
   100% {
-    translate: 0 0;
     rotate: 0deg;
   }
 }
