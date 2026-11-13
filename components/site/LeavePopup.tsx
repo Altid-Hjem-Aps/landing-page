@@ -1,15 +1,15 @@
 'use client'
 
-import Image from 'next/image'
-import { useEffect, useRef } from 'react'
+import dynamic from 'next/dynamic'
+import { useEffect, useState } from 'react'
 import { readCookieChoice } from '@/lib/cookie-consent'
-import { LEAVE, QR } from './copy'
 
 // Computers only: when the mouse leaves the window through the top, headed for the tab bar,
 // the QR codes once more, once per browser session. The trigger is the old site's waitlist
 // popup (ExitIntentModal): armed after a few seconds, the top zone or a fast upward flick,
-// never on top of another dialog. A native modal dialog, so the browser holds focus inside
-// and Escape closes it; a click on the backdrop closes it too.
+// never on top of another dialog. The popup itself (LeaveDialog) loads only when it is needed.
+const LeaveDialog = dynamic(() => import('./LeaveDialog'), { ssr: false })
+
 const ARM_DELAY_MS = 5000
 // Browsers sample the pointer, so a fast move to the tab bar reports its exit inside the page.
 const EXIT_TOP_ZONE_PX = 50
@@ -42,9 +42,7 @@ function track(event: 'Exit Intent Shown' | 'Exit Intent Dismissed') {
 }
 
 export default function LeavePopup() {
-  const dialog = useRef<HTMLDialogElement>(null)
-  const restore = useRef<HTMLElement | null>(null)
-  const pressOnBackdrop = useRef(false)
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     let armed = false
@@ -52,6 +50,8 @@ export default function LeavePopup() {
     let lastMoveY = -Infinity
     const arm = window.setTimeout(() => {
       armed = true
+      // A computer that may see the popup: fetch its script now, so the letter opens at once.
+      if (window.matchMedia(DESKTOP).matches && !shownThisSession()) void import('./LeaveDialog')
     }, ARM_DELAY_MS)
 
     const maybeOpen = (e: MouseEvent) => {
@@ -66,10 +66,7 @@ export default function LeavePopup() {
       shown = true
       rememberShown()
       teardown()
-      restore.current = document.activeElement as HTMLElement | null
-      const element = dialog.current as HTMLDialogElement
-      element.showModal()
-      element.focus()
+      setOpen(true)
       track('Exit Intent Shown')
     }
     const onMouseMove = (e: MouseEvent) => {
@@ -95,48 +92,13 @@ export default function LeavePopup() {
     }
   }, [])
 
-  // Every way out (Escape, the button, the backdrop) ends in the dialog's close event.
-  const onClose = () => {
-    track('Exit Intent Dismissed')
-    restore.current?.focus?.()
-  }
-  const close = () => dialog.current?.close()
-
+  if (!open) return null
   return (
-    <dialog
-      ref={dialog}
-      className="leave"
-      tabIndex={-1}
-      aria-labelledby="leave-title"
-      onClose={onClose}
-      onPointerDown={(e) => {
-        pressOnBackdrop.current = e.target === e.currentTarget
+    <LeaveDialog
+      onClose={() => {
+        track('Exit Intent Dismissed')
+        setOpen(false)
       }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget && pressOnBackdrop.current) close()
-      }}
-    >
-      <div className="leave-card">
-        <button type="button" className="leave-close" aria-label={LEAVE.close} onClick={close}>
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-            <path d="M6 6l12 12M18 6L6 18" />
-          </svg>
-        </button>
-        <h2 id="leave-title" className="leave-title">
-          {LEAVE.title}
-        </h2>
-        <p className="leave-body">{LEAVE.body}</p>
-        <div className="leave-codes">
-          <figure>
-            <Image src="/site/qr/app-store.svg" alt={QR.appStoreAlt} width={57} height={57} loading="lazy" />
-            <figcaption>{QR.appStore}</figcaption>
-          </figure>
-          <figure>
-            <Image src="/site/qr/google-play.svg" alt={QR.googlePlayAlt} width={57} height={57} loading="lazy" />
-            <figcaption>{QR.googlePlay}</figcaption>
-          </figure>
-        </div>
-      </div>
-    </dialog>
+    />
   )
 }

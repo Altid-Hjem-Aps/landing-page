@@ -19,8 +19,11 @@ describe('App Store rating', () => {
   it('renders what the App Store answers, stars filled to the average', async () => {
     answer(200, { results: [{ averageUserRating: 4.33333, userRatingCount: 6 }] })
     const { container } = render(await AppRating())
-    expect(container).toHaveTextContent('4,3 ud af 5 i App Store · Over 4.000 danskere har appen')
-    expect((container.querySelector('.h-stars') as HTMLElement).style.getPropertyValue('--fill')).toBe('86.6666%')
+    expect(container).toHaveTextContent(/^Over 4\.000 danskere har appen$/)
+    const stars = container.querySelector('.h-stars') as HTMLElement
+    expect(stars).toHaveAttribute('role', 'img')
+    expect(stars).toHaveAccessibleName('4,3 ud af 5 stjerner i App Store')
+    expect(stars.style.getPropertyValue('--fill')).toBe('86.6666%')
   })
 
   it('fails when the App Store answers with an error or without a rating', async () => {
@@ -30,8 +33,8 @@ describe('App Store rating', () => {
     await expect(readAppRating()).rejects.toThrow('App Store lookup has no rating')
   })
 
-  it('writes the average the Danish way, to one decimal', () => {
-    expect(ratingText({ average: 4.75 })).toBe('4,8 ud af 5 i App Store · Over 4.000 danskere har appen')
-    expect(ratingText({ average: 5 })).toBe('5 ud af 5 i App Store · Over 4.000 danskere har appen')
+  it('names the stars with the average written the Danish way, to one decimal', () => {
+    expect(ratingText({ average: 4.75 })).toBe('4,8 ud af 5 stjerner i App Store')
+    expect(ratingText({ average: 5 })).toBe('5 ud af 5 stjerner i App Store')
   })
 })

@@ -25,12 +25,17 @@ export const NAV = {
   close: 'Luk menu',
 } as const
 
+// How many have the app, in one place: the hero, the reviews heading and the leave popup read it.
+export const USERS = 'over 800'
+const capitalised = (text: string) => text[0].toUpperCase() + text.slice(1)
+
 export const HERO = {
   title: 'Hele hjemmets økonomi i én app',
   line: 'Hent Altid Hjem gratis i dag, og få overblik over jeres mad, strøm, forsikring og økonomi.',
-  // {average} comes from the App Store (AppRating.tsx). The user count is PROOF.title's.
-  // On a phone the line breaks at the middle dot.
-  rating: '{average} ud af 5 i App Store · Over 4.000 danskere har appen',
+  // The line beside the stars. The stars' own name for screen readers carries the rating;
+  // {average} comes from the App Store (AppRating.tsx).
+  rating: `${capitalised(USERS)} danskere har appen`,
+  ratingStars: '{average} ud af 5 stjerner i App Store',
   // The single button phones see instead of the two store pills (GetAppButton).
   getApp: 'Hent appen gratis',
   // The hero phones show these in turn.
@@ -80,7 +85,7 @@ export const HERO = {
 export const PROOF = {
   // Apple featured the app as App of the Day in Finance (Thor, 10 Nov 2026). Apple's own English wording.
   award: { lines: ['App of the Day', 'Finance'] },
-  title: 'Hør, hvorfor over 4.000 danskere har appen',
+  title: `Hør, hvorfor ${USERS} danskere har appen`,
   voicesLabel: 'Udtalelser',
   voiceLabel: (i: number) => `Gå til udtalelse ${i + 1}`,
 } as const
@@ -305,9 +310,13 @@ export const QR = {
 } as const
 
 // The popup a computer shows once per visit when the mouse heads for the tab bar (LeavePopup).
+// The QR codes under the text take their captions from QR.
 export const LEAVE = {
-  title: 'Tag Altid Hjem med på telefonen',
-  body: 'Scan koden med din telefon, og hent appen gratis.',
+  title: 'Gå ikke glip af overblikket over hjemmets økonomi',
+  proof: `Gør som ${USERS} andre danskere`,
+  body: 'Hent Altid Hjem gratis, og få overblik over jeres mad, strøm, forsikring og økonomi.',
+  free: 'Gratis at hente.',
+  always: 'Altid.',
   close: 'Luk',
 } as const
 

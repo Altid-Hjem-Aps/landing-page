@@ -607,8 +607,8 @@
     line-height: 18px;
     color: var(--stone);
   }
-  /* Each half of the line stays whole; a phone puts them on two lines (below). */
-  .h-rating-part {
+  /* Stars then the text on one line; a phone puts the stars above (below). */
+  .h-rating-text {
     white-space: nowrap;
   }
   /* Five stars in Honey over five faint ones, cut at the average. */
@@ -1061,15 +1061,6 @@
       flex-direction: column;
       gap: 6px;
       font-size: 14px;
-    }
-    .h-rating-text {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-    }
-    .h-rating-dot {
-      display: none;
     }
     .h-pills {
       margin-top: calc(var(--u) * 40);
@@ -3156,42 +3147,64 @@
       visibility: hidden;
     }
   }
-  /* Leave popup (computers): cream card, the QR codes, a short fade and rise in. */
+  /* Leave popup (computers): Thor's popup from the old site, same numbers (ExitIntentDialog).
+     The dialog fills the window and centres the card; the backdrop is the old overlay. */
   .leave {
-    width: min(100% - 32px, 460px);
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     max-width: none;
-    /* The reset takes the browser's own centring away; margin: auto puts it back. */
-    margin: auto;
-    padding: 0;
+    max-height: none;
+    margin: 0;
+    padding: 24px;
     border: 0;
     background: transparent;
-    overflow: visible;
+    overflow: hidden;
 
+    &[open] {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     &::backdrop {
-      background: rgba(0, 60, 22, 0.3);
+      background: rgba(10, 25, 16, 0.55);
     }
-    &:focus {
-      outline: none;
-    }
+  }
+  /* The letter the card is delivered in. */
+  .leave-letter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    pointer-events: none;
   }
   .leave-card {
     position: relative;
-    padding: 48px 32px 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 560px;
+    width: 100%;
+    max-width: 1120px;
+    max-height: 92vh;
+    overflow-y: auto;
     border-radius: 24px;
-    background: var(--cream);
-    text-align: center;
-    box-shadow: 0 24px 64px rgba(0, 30, 10, 0.25);
+    background: var(--dark-forest);
+    outline: none;
   }
   .leave-close {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
     display: grid;
     width: 44px;
     height: 44px;
     place-items: center;
     border-radius: 50%;
-    color: var(--forest);
+    /* The old button sat on plain cream; on the photo it gets a cream disc so it stays readable. */
+    background: rgba(253, 250, 244, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--dark-forest);
     cursor: pointer;
     transition: opacity 0.15s;
 
@@ -3199,52 +3212,96 @@
       opacity: 0.7;
     }
   }
+  .leave-text {
+    padding: 48px 40px 40px;
+    color: #fff;
+  }
   .leave-title {
-    text-wrap: balance;
-    font-family: var(--display);
-    font-size: 32px;
-    font-weight: 700;
-    line-height: 1.1;
-    color: var(--forest);
+    margin-bottom: 16px;
+    font-family: var(--font-dm-sans-regular), system-ui, sans-serif;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 400;
+    line-height: 1.15;
+  }
+  .leave-proof {
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
   }
   .leave-body {
-    text-wrap: balance;
-    margin-top: 12px;
-    font-size: 17px;
-    line-height: 1.4;
-    color: var(--stone);
+    margin-bottom: 24px;
+    font-size: 16px;
+    line-height: 26px;
+    color: rgba(255, 255, 255, 0.7);
   }
-  .leave-codes {
+  /* The old form's place and height: codes at the top, the small line at the bottom. */
+  .leave-get {
     display: flex;
-    justify-content: center;
-    gap: 32px;
-    margin-top: 28px;
+    flex-direction: column;
+    min-height: 390px;
+  }
+  /* The codes and their line sit in the middle of the space above the small line. */
+  .leave-codes {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
 
     figure {
       margin: 0;
     }
-    /* Two px per module. */
-    img {
-      display: block;
-      width: 114px;
-      height: 114px;
-    }
     figcaption {
-      margin-top: 6px;
-      font-size: 14px;
+      margin-top: 10px;
+      font-size: 15px;
       font-weight: 500;
-      line-height: 18px;
-      color: var(--forest);
+      line-height: 20px;
+      text-align: center;
     }
   }
+  /* A white tile; the code's own white border (four modules) is part of the image. */
+  .leave-tile {
+    display: grid;
+    place-items: center;
+    padding: 4px 0;
+    border-radius: 14px;
+    background: #fff;
+
+    /* Three px per module, so every module is whole on any screen. */
+    img {
+      display: block;
+      width: 171px;
+      height: 171px;
+    }
+  }
+  .leave-scan {
+    margin: 20px 0 auto;
+    font-size: 16px;
+    line-height: 26px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .leave-free {
+    margin-top: 24px;
+    font-size: 12px;
+    line-height: 19.5px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.62);
+
+    span {
+      color: #fff;
+    }
+  }
+  /* The photo fills the column edge to edge; the old picture column was 620 px at least. */
+  .leave-photo {
+    position: relative;
+    min-height: 620px;
+    overflow: hidden;
+    background: #fbf9f3;
+  }
   @media (prefers-reduced-motion: no-preference) {
-    .leave[open] {
-      .leave-card {
-        animation: site-rise 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
-      &::backdrop {
-        animation: site-fade 0.25s ease;
-      }
+    .leave[open]::backdrop {
+      animation: site-fade 0.25s ease;
     }
   }
 }
@@ -3289,6 +3346,10 @@ html[data-platform='android'] .site .site-pill.store-badge-appstore[data-variant
 html:has(.sheet[open]),
 html:has(.leave[open]) {
   overflow: hidden;
+}
+/* A computer's scrollbar keeps its room while the popup is open, so the page does not jump. */
+html:has(.leave[open]) {
+  scrollbar-gutter: stable;
 }
 
 body:has(.site) {

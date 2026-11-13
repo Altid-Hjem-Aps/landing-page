@@ -1,4 +1,3 @@
-import { Fragment } from 'react'
 import { APP_STORE_ID } from '@/lib/store-links'
 import { HERO } from './copy'
 
@@ -18,26 +17,18 @@ export async function readAppRating(): Promise<Rating> {
   return { average: app.averageUserRating }
 }
 
+// The stars' name for screen readers, with the rating written the Danish way to one decimal.
 export function ratingText({ average }: Rating) {
-  return HERO.rating.replace('{average}', (Math.round(average * 10) / 10).toLocaleString('da-DK'))
+  return HERO.ratingStars.replace('{average}', (Math.round(average * 10) / 10).toLocaleString('da-DK'))
 }
 
-// Five stars, filled as far as the average reaches, as the reference page shows them.
-// Each half of the line is kept whole, so a phone breaks it at the middle dot.
+// Five stars, filled as far as the average reaches, then the user count. The number itself
+// is only in the stars' name, so screen readers still hear it.
 export function RatingLine({ rating }: { rating: Rating }) {
-  const [first, ...rest] = ratingText(rating).split(' · ')
   return (
     <p className="h-rating">
-      <span className="h-stars" style={{ '--fill': `${(rating.average / 5) * 100}%` } as React.CSSProperties} aria-hidden="true" />
-      <span className="h-rating-text">
-        <span className="h-rating-part">{first}</span>
-        {rest.map((part) => (
-          <Fragment key={part}>
-            <span className="h-rating-dot"> · </span>
-            <span className="h-rating-part">{part}</span>
-          </Fragment>
-        ))}
-      </span>
+      <span className="h-stars" role="img" aria-label={ratingText(rating)} style={{ '--fill': `${(rating.average / 5) * 100}%` } as React.CSSProperties} />
+      <span className="h-rating-text">{HERO.rating}</span>
     </p>
   )
 }

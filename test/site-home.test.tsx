@@ -125,7 +125,7 @@ describe('the page', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Hele hjemmets økonomi i én app')
     expect(Array.from(container.querySelectorAll('h2')).map((h) => h.textContent)).toEqual([
       'Samlet i én app',
-      'Hør, hvorfor over 4.000 danskere har appen',
+      'Hør, hvorfor over 800 danskere har appen',
       'Se, hvor I står, før måneden er gået',
       'Ikke mere “hvad skal vi spise?”',
       'Og der er mere',
@@ -241,12 +241,13 @@ describe('the page', () => {
     expect(JSON.parse(await blob.text())).toEqual({ store: 'appstore', position: 'hero' })
   })
 
-  it('shows the App Store rating under the pills, stars filled to the average', () => {
+  it('shows the stars and the user count under the pills, the rating only in the stars\' name', () => {
     const { container } = render(<Home />)
     const rating = container.querySelector('#top .h-rating') as HTMLElement
-    expect(rating).toHaveTextContent('4,3 ud af 5 i App Store · Over 4.000 danskere har appen')
-    expect(rating.querySelector('.h-stars')).toHaveAttribute('aria-hidden', 'true')
-    expect((rating.querySelector('.h-stars') as HTMLElement).style.getPropertyValue('--fill')).toBe('86.6666%')
+    expect(rating).toHaveTextContent(/^Over 4\.000 danskere har appen$/)
+    const stars = within(rating).getByRole('img', { name: '4,3 ud af 5 stjerner i App Store' })
+    expect(stars).toHaveClass('h-stars')
+    expect(stars.style.getPropertyValue('--fill')).toBe('86.6666%')
   })
 
   it('links the four services by full name to their sections', () => {
