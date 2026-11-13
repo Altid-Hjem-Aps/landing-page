@@ -3263,6 +3263,26 @@
     .qm-caption {
       color: rgba(255, 255, 255, 0.78);
     }
+    /* "Hent appen" in white, centred over the code (Thor 13/11); the close button keeps its
+       corner without pushing the title off centre. */
+    .qm-head {
+      position: relative;
+      justify-content: center;
+      min-height: 32px;
+      padding-left: 0;
+    }
+    .qm-title {
+      color: #fff;
+      font-size: 20px;
+      line-height: 26px;
+      text-align: center;
+    }
+    .qm-close {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      translate: 0 -50%;
+    }
   }
 
   /* A tile: a photo filling it, a screen on its toned card, a dish on its tone, or the
