@@ -22,14 +22,14 @@ describe('App Store rating', () => {
     expect(init.signal).toBeInstanceOf(AbortSignal)
   })
 
-  it('renders what the App Store answers, stars filled to the average', async () => {
+  it('renders the user count, stars filled to at least 4,5 with the real rating as their name', async () => {
     answer(200, { results: [{ averageUserRating: 4.33333, userRatingCount: 6 }] })
     const { container } = render(await AppRating())
     expect(container).toHaveTextContent(/^\+4\.700 danskere har appen$/)
     const stars = container.querySelector('.h-stars') as HTMLElement
     expect(stars).toHaveAttribute('role', 'img')
     expect(stars).toHaveAccessibleName('4,3 ud af 5 stjerner i App Store')
-    expect(stars.style.getPropertyValue('--fill')).toBe('86.6666%')
+    expect(stars.style.getPropertyValue('--fill')).toBe('90%')
   })
 
   it('fails when the App Store answers with an error or without a rating', async () => {

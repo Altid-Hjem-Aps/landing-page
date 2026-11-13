@@ -253,7 +253,7 @@ describe('the page', () => {
     expect(rating).toHaveTextContent(/^\+4\.700 danskere har appen$/)
     const stars = within(rating).getByRole('img', { name: '4,3 ud af 5 stjerner i App Store' })
     expect(stars).toHaveClass('h-stars')
-    expect(stars.style.getPropertyValue('--fill')).toBe('86.6666%')
+    expect(stars.style.getPropertyValue('--fill')).toBe('90%')
   })
 
   it('links the four services by full name to their sections', async () => {

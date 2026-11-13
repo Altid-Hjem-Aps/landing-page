@@ -38,6 +38,8 @@ export const HERO = {
   ratingStars: '{average} ud af 5 stjerner i App Store',
   // The single button phones see instead of the two store pills (GetAppButton).
   getApp: 'Hent appen gratis',
+  // The small link under it to the other store (on an iPhone Google Play, on Android App Store).
+  otherStore: { play: 'Har du Android? Hent i Google Play', appstore: 'Har du iPhone? Hent i App Store' },
   // The hero phones show these in turn.
   mainScreens: [
     { src: '/site/app/hjem-top.webp', alt: 'Forsiden i Altid Hjem: 8.166 kr. tilbage, søjler for resten af måneden og en besked om, at du er 3.000 kr. foran.' },

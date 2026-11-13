@@ -23,12 +23,17 @@ export function ratingText({ average }: Rating) {
   return HERO.ratingStars.replace('{average}', (Math.round(average * 10) / 10).toLocaleString('da-DK'))
 }
 
-// Five stars, filled as far as the average reaches, then the user count. The number itself
+// The stars show at least 4,5 for now (Thor 13/11: the real 4,3 comes from 6 ratings; more
+// ratings are being collected, then the fill follows the App Store again). A higher real
+// average shows as it is. The stars' name for screen readers keeps the real figure.
+const SHOWN_AT_LEAST = 4.5
+
+// Five stars, filled as far as the shown average reaches, then the user count. The number itself
 // is only in the stars' name, so screen readers still hear it.
 export function RatingLine({ rating, users }: { rating: Rating; users: number }) {
   return (
     <p className="h-rating">
-      <span className="h-stars" role="img" aria-label={ratingText(rating)} style={{ '--fill': `${(rating.average / 5) * 100}%` } as React.CSSProperties} />
+      <span className="h-stars" role="img" aria-label={ratingText(rating)} style={{ '--fill': `${(Math.max(rating.average, SHOWN_AT_LEAST) / 5) * 100}%` } as React.CSSProperties} />
       <span className="h-rating-text">{HERO.rating.replace('{hundreds}', usersHundreds(users))}</span>
     </p>
   )
