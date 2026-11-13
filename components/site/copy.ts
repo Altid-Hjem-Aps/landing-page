@@ -25,17 +25,16 @@ export const NAV = {
   close: 'Luk menu',
 } as const
 
-// How many have the app, in one place: the hero, the reviews heading and the leave popup read it.
-// 13 Nov 2026: 4.087 Altid Energi customers have logged into the app (activations KPI) plus 654 Altid Hjem accounts without Energi.
-export const USERS = 'over 4.000'
-const capitalised = (text: string) => text[0].toUpperCase() + text.slice(1)
+// How many have the app is read live (lib/user-count.ts): {hundreds} is the count rounded down
+// to the hundred (+4.700), {thousands} the whole thousand below it (over 4.000, over 5.000 from
+// 5.001). The hero, the reviews heading and the leave popup fill them in.
 
 export const HERO = {
   title: 'Hele hjemmets økonomi i én app',
   line: 'Hent Altid Hjem gratis i dag, og få overblik over jeres mad, strøm, forsikring og økonomi.',
   // The line beside the stars. The stars' own name for screen readers carries the rating;
   // {average} comes from the App Store (AppRating.tsx).
-  rating: `${capitalised(USERS)} danskere har appen`,
+  rating: '+{hundreds} danskere har appen',
   ratingStars: '{average} ud af 5 stjerner i App Store',
   // The single button phones see instead of the two store pills (GetAppButton).
   getApp: 'Hent appen gratis',
@@ -86,7 +85,7 @@ export const HERO = {
 export const PROOF = {
   // Apple featured the app as App of the Day in Finance (Thor, 10 Nov 2026). Apple's own English wording.
   award: { lines: ['App of the Day', 'Finance'] },
-  title: `Hør, hvorfor ${USERS} danskere har appen`,
+  title: 'Hør, hvorfor over {thousands} danskere har appen',
   voicesLabel: 'Udtalelser',
   voiceLabel: (i: number) => `Gå til udtalelse ${i + 1}`,
 } as const
@@ -314,7 +313,7 @@ export const QR = {
 // The QR codes under the text take their captions from QR.
 export const LEAVE = {
   title: 'Gå ikke glip af overblikket over hjemmets økonomi',
-  proof: `Gør som ${USERS} andre danskere`,
+  proof: 'Gør som over {thousands} andre danskere',
   body: 'Hent Altid Hjem gratis, og få overblik over jeres mad, strøm, forsikring og økonomi.',
   free: 'Gratis at hente.',
   always: 'Altid.',

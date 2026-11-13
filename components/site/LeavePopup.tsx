@@ -41,7 +41,7 @@ function track(event: 'Exit Intent Shown' | 'Exit Intent Dismissed') {
   void import('@amplitude/analytics-browser').then((amplitude) => amplitude.track(event, { path: window.location.pathname }))
 }
 
-export default function LeavePopup() {
+export default function LeavePopup({ proof }: { proof: string }) {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -95,6 +95,7 @@ export default function LeavePopup() {
   if (!open) return null
   return (
     <LeaveDialog
+      proof={proof}
       onClose={() => {
         track('Exit Intent Dismissed')
         setOpen(false)

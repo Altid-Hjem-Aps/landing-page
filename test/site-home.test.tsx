@@ -16,8 +16,14 @@ vi.mock('next/navigation', () => ({
 // The rating reads the App Store over the network (test/app-rating.test.tsx covers that).
 vi.mock('@/components/site/AppRating', async (original) => {
   const { RatingLine } = await original<typeof import('@/components/site/AppRating')>()
-  return { default: () => <RatingLine rating={{ average: 4.33333 }} /> }
+  return { default: () => <RatingLine rating={{ average: 4.33333 }} users={4741} /> }
 })
+// The user count reads the admin snapshot over the network; lib/user-count's own test covers
+// the rounding, so here it is a fixed count.
+vi.mock('@/lib/user-count', async (original) => ({
+  ...(await original<typeof import('@/lib/user-count')>()),
+  readUserCount: async () => 4741,
+}))
 
 // Literal on purpose, not built from lib/store-links.
 const APP_STORE = 'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_altidhjem_dk&mt=8'
@@ -119,8 +125,8 @@ const runningPieces = (container: HTMLElement) =>
   Array.from(container.querySelectorAll('[data-running]')).map((el) => el.getAttribute('data-running'))
 
 describe('the page', () => {
-  it('has one H1, and its sections in the order of the page it copies', () => {
-    const { container } = render(<Home />)
+  it('has one H1, and its sections in the order of the page it copies', async () => {
+    const { container } = render(await Home())
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Hele hjemmets økonomi i én app')
     expect(Array.from(container.querySelectorAll('h2')).map((h) => h.textContent)).toEqual([
@@ -142,8 +148,8 @@ describe('the page', () => {
     ])
   })
 
-  it('has no banned word, no dash, no service outside the app and no invented proof', () => {
-    const { container } = render(<Home />)
+  it('has no banned word, no dash, no service outside the app and no invented proof', async () => {
+    const { container } = render(await Home())
     const text = readableText(container).replace(consentSentences('hjem').all, '')
     expect(text).not.toMatch(/venteliste|waitlist|skriv dig op|kommer snart|snart|én regning|Altid Mobil|Altid Alarm|Altid Opladning|–|—/i)
     expect(text).not.toMatch(/Nordens Forsikringshus|Subaio|Spari\b/)
@@ -155,15 +161,15 @@ describe('the page', () => {
     expect(Array.from(container.querySelectorAll('[aria-label*="stars" i], [class*="star" i]'))).toEqual([rating.querySelector('.h-stars')])
   })
 
-  it('never says Mad alone, in visible text or alt text', () => {
-    const { container } = render(<Home />)
+  it('never says Mad alone, in visible text or alt text', async () => {
+    const { container } = render(await Home())
     // The app's own tab says Mad only inside the screenshots. "Mad efter jeres smag" is the common word.
     const brandless = readableStrings(container).filter((text) => /(^|[^d] )Mad\b/.test(text))
     expect(brandless).toEqual(['Mad efter jeres smag'])
   })
 
-  it('has every store pill on the exact campaign links, and one #hent-appen with pills in it', () => {
-    const { container } = render(<Home />)
+  it('has every store pill on the exact campaign links, and one #hent-appen with pills in it', async () => {
+    const { container } = render(await Home())
     const appStore = within(container).getAllByRole('link', { name: 'Hent i App Store', hidden: true })
     const play = within(container).getAllByRole('link', { name: 'Hent i Google Play', hidden: true })
     expect(appStore.length).toBeGreaterThanOrEqual(2)
@@ -177,20 +183,20 @@ describe('the page', () => {
   })
 
   it('counts a final CTA pill under position bottom', async () => {
-    const sendBeacon = vi.fn((url: string, data: Blob) => {
+    const sendBeacon = vi.fn(async (url: string, data: Blob) => {
       void url
       void data
       return true
     })
     vi.stubGlobal('navigator', { ...navigator, sendBeacon })
-    const { container } = render(<Home />)
+    const { container } = render(await Home())
     container.addEventListener('click', (e) => e.preventDefault())
     fireEvent.click(within(container.querySelector('#hent-appen') as HTMLElement).getByRole('link', { name: 'Hent i App Store' }))
     expect(JSON.parse(await sendBeacon.mock.calls[0][1].text())).toEqual({ store: 'appstore', position: 'bottom' })
   })
 
-  it('has one form, the newsletter, in the footer', () => {
-    const { container } = render(<Home />)
+  it('has one form, the newsletter, in the footer', async () => {
+    const { container } = render(await Home())
     expect(container.querySelectorAll('form')).toHaveLength(1)
     const footer = within(container.querySelector('footer') as HTMLElement)
     expect(footer.getByRole('heading', { name: 'Få nyheder fra Altid Hjem' })).toBeInTheDocument()
@@ -200,7 +206,7 @@ describe('the page', () => {
   it('sends a filled-in newsletter form from the footer and thanks', async () => {
     const fetchMock = vi.fn(async () => new Response('{}', { status: 200 }))
     vi.stubGlobal('fetch', fetchMock)
-    const { container } = render(<Home />)
+    const { container } = render(await Home())
     const band = within(container.querySelector('footer') as HTMLElement)
     fireEvent.change(band.getByRole('textbox', { name: 'E-mail' }), { target: { value: 'qa@example.com' } })
     fireEvent.click(band.getByRole('checkbox'))
@@ -209,8 +215,8 @@ describe('the page', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
-  it('points "Hent appen" at the one anchor, keeps the nav to its few links, and keeps Play marked for the Android order', () => {
-    const { container } = render(<Home />)
+  it('points "Hent appen" at the one anchor, keeps the nav to its few links, and keeps Play marked for the Android order', async () => {
+    const { container } = render(await Home())
     const nav = within(screen.getByRole('navigation', { name: 'Forside' }))
     expect(nav.getAllByRole('link').map((a) => [a.textContent, a.getAttribute('href')])).toEqual([
       ['Spørgsmål', '#spoergsmaal'],
@@ -222,13 +228,13 @@ describe('the page', () => {
   })
 
   it('counts a hero pill click under its own position, and lets the navigation go ahead', async () => {
-    const sendBeacon = vi.fn((url: string, data: Blob) => {
+    const sendBeacon = vi.fn(async (url: string, data: Blob) => {
       void url
       void data
       return true
     })
     vi.stubGlobal('navigator', { ...navigator, sendBeacon })
-    const { container } = render(<Home />)
+    const { container } = render(await Home())
     let prevented = true
     container.addEventListener('click', (e) => {
       prevented = e.defaultPrevented
@@ -241,17 +247,17 @@ describe('the page', () => {
     expect(JSON.parse(await blob.text())).toEqual({ store: 'appstore', position: 'hero' })
   })
 
-  it('shows the stars and the user count under the pills, the rating only in the stars\' name', () => {
-    const { container } = render(<Home />)
+  it('shows the stars and the user count under the pills, the rating only in the stars\' name', async () => {
+    const { container } = render(await Home())
     const rating = container.querySelector('#top .h-rating') as HTMLElement
-    expect(rating).toHaveTextContent(/^Over 4\.000 danskere har appen$/)
+    expect(rating).toHaveTextContent(/^\+4\.700 danskere har appen$/)
     const stars = within(rating).getByRole('img', { name: '4,3 ud af 5 stjerner i App Store' })
     expect(stars).toHaveClass('h-stars')
     expect(stars.style.getPropertyValue('--fill')).toBe('86.6666%')
   })
 
-  it('links the four services by full name to their sections', () => {
-    const { container } = render(<Home />)
+  it('links the four services by full name to their sections', async () => {
+    const { container } = render(await Home())
     const row = within(container.querySelector('.w-mq') as HTMLElement)
     expect(row.getAllByRole('link').map((a) => [a.textContent, a.getAttribute('href')])).toEqual([
       ['Økonomi', '#okonomi'],
@@ -261,21 +267,21 @@ describe('the page', () => {
     ])
   })
 
-  it('shows the staged sentence in every section with staged numbers', () => {
-    const { container } = render(<Home />)
+  it('shows the staged sentence in every section with staged numbers', async () => {
+    const { container } = render(await Home())
     const staged = Array.from(container.querySelectorAll('section')).filter((s) => s.querySelector('[data-staged="true"]'))
     expect(staged.length).toBeGreaterThanOrEqual(6)
     for (const section of staged) expect(section.textContent, section.getAttribute('data-b') ?? '').toContain(STAGED)
   })
 
-  it('lands every anchor link on a section that exists', () => {
-    const { container } = render(<Home />)
+  it('lands every anchor link on a section that exists', async () => {
+    const { container } = render(await Home())
     const hrefs = Array.from(container.querySelectorAll('a[href^="#"]')).map((a) => a.getAttribute('href') as string)
     expect(hrefs.length).toBeGreaterThan(10)
     for (const href of new Set(hrefs)) expect(container.querySelector(href), href).not.toBeNull()
   })
 
-  it('sends the HTML finished: text, phones and cards are there before any script runs', () => {
+  it('sends the HTML finished: text, phones and cards are there before any script runs', async () => {
     const html = renderToStaticMarkup(<Home />)
     expect(html).toContain('Hele hjemmets økonomi i én app')
     expect(html).toContain('Tjek jeres forsikringer')
@@ -283,14 +289,14 @@ describe('the page', () => {
     expect(html).not.toMatch(/autoplay/i)
   })
 
-  it('tells that the plates are AI images in each section that shows plates', () => {
-    const { container } = render(<Home />)
+  it('tells that the plates are AI images in each section that shows plates', async () => {
+    const { container } = render(await Home())
     for (const name of ['dark', 'love']) {
       expect(container.querySelector(`[data-b="${name}"]`)?.textContent, name).toContain('Billederne af retterne er AI-genererede, ligesom i appen.')
     }
   })
 
-  it('ships no banned capture in public/site', () => {
+  it('ships no banned capture in public/site', async () => {
     const files = readdirSync(join(process.cwd(), 'public/site/app'))
     for (const banned of [/mad-flow-12/, /mad-savings/, /mad-flow-14/, /b-sent/, /b-welcome-3/, /b-tilbud/, /b-flow-6/, /b-forlob-before/, /^a-/]) {
       expect(files.filter((f) => banned.test(f)), String(banned)).toEqual([])
@@ -299,8 +305,8 @@ describe('the page', () => {
 })
 
 describe('the marquees', () => {
-  it('are one list each for a screen reader and the tab key: the clone is hidden and out of the tab order', () => {
-    const { container } = render(<Home />)
+  it('are one list each for a screen reader and the tab key: the clone is hidden and out of the tab order', async () => {
+    const { container } = render(await Home())
     const marquees = Array.from(container.querySelectorAll('.mq'))
     expect(marquees).toHaveLength(1)
     for (const marquee of marquees) {
@@ -314,8 +320,8 @@ describe('the marquees', () => {
     }
   })
 
-  it('shows the testimonials in their own words, without stars or the sign-up quote', () => {
-    const { container } = render(<Home />)
+  it('shows the testimonials in their own words, without stars or the sign-up quote', async () => {
+    const { container } = render(await Home())
     const slider = within(container.querySelector('[data-b="proof"]') as HTMLElement).getByRole('region', { name: 'Udtalelser' })
     const cards = Array.from(slider.querySelectorAll('figure:not([aria-hidden])'))
     expect(cards.map((c) => c.querySelector('.v-name')?.textContent)).toEqual(['Lone', 'Magnus Svendsen', 'Michael'])
@@ -324,24 +330,24 @@ describe('the marquees', () => {
     expect(slider.querySelector('[aria-label*="stjerner"]')).toBeNull()
   })
 
-  it('names the App Store award in the laurel', () => {
-    const { container } = render(<Home />)
+  it('names the App Store award in the laurel', async () => {
+    const { container } = render(await Home())
     const laurels = container.querySelectorAll('.p-laurel')
     expect(laurels).toHaveLength(1)
     expect(laurels[0]).toHaveTextContent('App of the DayApp Store')
     expect(laurels[0].querySelectorAll('svg[aria-hidden="true"]')).toHaveLength(3)
   })
 
-  it('links the blog posts to the SEO pages, as on the old front page', () => {
-    const { container } = render(<Home />)
+  it('links the blog posts to the SEO pages, as on the old front page', async () => {
+    const { container } = render(await Home())
     const posts = Array.from(container.querySelectorAll('a[href^="/"]')).filter((a) => a.textContent?.includes('Læs mere'))
     expect(posts.length).toBeGreaterThan(0)
     const pages = new Set(readdirSync('app').filter((name) => !name.includes('.')).map((name) => `/${name}`))
     for (const post of posts) expect(pages).toContain(post.getAttribute('href'))
   })
 
-  it('shows the Ekstra Bladet mention with its date and a link to the article', () => {
-    const { container } = render(<Home />)
+  it('shows the Ekstra Bladet mention with its date and a link to the article', async () => {
+    const { container } = render(await Home())
     const press = container.querySelector('[data-b="press"]') as HTMLElement
     expect(press).toHaveTextContent('Omtalt i')
     expect(within(press).getByRole('img', { name: 'Ekstra Bladet' })).toBeInTheDocument()
@@ -368,8 +374,8 @@ describe('the week of plates', () => {
 
   const wait = (ms: number) => act(() => vi.advanceTimersByTime(ms))
 
-  it('has seven tabs with full day names, one selected, and its dish in the panel', () => {
-    render(<Home />)
+  it('has seven tabs with full day names, one selected, and its dish in the panel', async () => {
+    render(await Home())
     const tabs = week().getAllByRole('tab')
     expect(tabs.map((t) => t.getAttribute('aria-label'))).toEqual(['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'])
     expect(tabs.map((t) => t.textContent)).toEqual(['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'])
@@ -378,8 +384,8 @@ describe('the week of plates', () => {
     expect(week().getByRole('tabpanel')).toHaveAttribute('aria-labelledby', selectedDay().id)
   })
 
-  it('follows a swipe, stops advancing, and ignores a short drag or a page scroll', () => {
-    const { container } = render(<Home />)
+  it('follows a swipe, stops advancing, and ignores a short drag or a page scroll', async () => {
+    const { container } = render(await Home())
     const swipe = (from: number, to: number, down = 0) => {
       fireEvent.touchStart(strip(container), { touches: [{ clientX: from, clientY: 400 }] })
       fireEvent.touchEnd(strip(container), { changedTouches: [{ clientX: to, clientY: 400 + down }] })
@@ -404,8 +410,8 @@ describe('the week of plates', () => {
     expect(selectedDay()).toHaveAttribute('aria-label', 'Søndag')
   })
 
-  it('advances by itself and wraps around', () => {
-    render(<Home />)
+  it('advances by itself and wraps around', async () => {
+    render(await Home())
     wait(5000)
     expect(selectedDay()).toHaveAttribute('aria-label', 'Onsdag')
     expect(week().getByRole('tabpanel')).toHaveTextContent('Kyllingewok')
@@ -413,8 +419,8 @@ describe('the week of plates', () => {
     expect(selectedDay()).toHaveAttribute('aria-label', 'Mandag')
   })
 
-  it('stops advancing while paused, off screen, in a hidden tab or with reduced motion', () => {
-    render(<Home />)
+  it('stops advancing while paused, off screen, in a hidden tab or with reduced motion', async () => {
+    render(await Home())
     fireEvent.click(screen.getByRole('button', { name: PAUSE }))
     wait(20000)
     expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
@@ -436,8 +442,8 @@ describe('the week of plates', () => {
     visibility.mockRestore()
   })
 
-  it('hover pauses without selecting, and leaving lets it go on', () => {
-    const { container } = render(<Home />)
+  it('hover pauses without selecting, and leaving lets it go on', async () => {
+    const { container } = render(await Home())
     fireEvent.pointerEnter(strip(container), { pointerType: 'mouse' })
     wait(20000)
     expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
@@ -446,8 +452,8 @@ describe('the week of plates', () => {
     expect(selectedDay()).toHaveAttribute('aria-label', 'Onsdag')
   })
 
-  it('a manual pick selects the day and stops the advance for good', () => {
-    render(<Home />)
+  it('a manual pick selects the day and stops the advance for good', async () => {
+    render(await Home())
     fireEvent.click(week().getByRole('tab', { name: 'Torsdag' }))
     expect(selectedDay()).toHaveAttribute('aria-label', 'Torsdag')
     expect(week().getByRole('tabpanel')).toHaveTextContent('Hjemmelavet pizza')
@@ -455,8 +461,8 @@ describe('the week of plates', () => {
     expect(selectedDay()).toHaveAttribute('aria-label', 'Torsdag')
   })
 
-  it('follows the tabs pattern on the keyboard, and a key counts as a manual pick', () => {
-    render(<Home />)
+  it('follows the tabs pattern on the keyboard, and a key counts as a manual pick', async () => {
+    render(await Home())
     const tabbable = () => week().getAllByRole('tab').filter((t) => t.tabIndex === 0)
     expect(tabbable()).toHaveLength(1)
     expect(tabbable()[0]).toBe(selectedDay())
@@ -480,8 +486,8 @@ describe('the week of plates', () => {
 })
 
 describe('Økonomi, Altid Energi and Altid Forsikring', () => {
-  it('has the three one-word cards, each with its real screen', () => {
-    const { container } = render(<Home />)
+  it('has the three one-word cards, each with its real screen', async () => {
+    const { container } = render(await Home())
     const cards = Array.from(container.querySelectorAll('.f-card'))
     expect(cards.map((c) => c.querySelector('h3')?.textContent)).toEqual(['Tilbage', 'Brugt', 'Regninger'])
     expect(cards.map((c) => c.querySelector('.ph-screen img')?.getAttribute('src'))).toEqual([
@@ -491,15 +497,15 @@ describe('Økonomi, Altid Energi and Altid Forsikring', () => {
     ])
   })
 
-  it('shows Altid Energi with the question and its screens', () => {
-    const { container } = render(<Home />)
+  it('shows Altid Energi with the question and its screens', async () => {
+    const { container } = render(await Home())
     const card = within(container.querySelector('#altid-energi') as HTMLElement)
     expect(card.getByRole('heading', { level: 3 })).toHaveTextContent('“Hvornår skal opvasken sættes over?”')
     expect(card.getAllByRole('img')).toHaveLength(2)
   })
 
-  it('makes no promise and names no insurer in the Altid Forsikring block', () => {
-    const { container } = render(<Home />)
+  it('makes no promise and names no insurer in the Altid Forsikring block', async () => {
+    const { container } = render(await Home())
     const text = readableText(container.querySelector('#altid-forsikring') as HTMLElement)
     expect(text).toContain('Gratis og helt uforpligtende.')
     expect(text).not.toMatch(/snart|inden for|uger|kr\./i)
@@ -508,8 +514,8 @@ describe('Økonomi, Altid Energi and Altid Forsikring', () => {
 })
 
 describe('the Altid Mad section', () => {
-  it('reads the savings line as the app does, as a plain figure, with its footnote and report link', () => {
-    const { container } = render(<Home />)
+  it('reads the savings line as the app does, as a plain figure, with its footnote and report link', async () => {
+    const { container } = render(await Home())
     const para = container.querySelector('.d-para') as HTMLElement
     expect(para.textContent).toContain('Spar i gennemsnit 11.207 kr. om året på dagligvarer*')
     expect(para.textContent).toContain('*En gennemsnitlig husstand på fire personer kan spare 11.207 kr. om året på dagligvarer med Altid Mad. Kilde: Altid Mad Q3-rapporten')
@@ -518,8 +524,8 @@ describe('the Altid Mad section', () => {
     expect(link).toHaveAttribute('target', '_blank')
   })
 
-  it('has four cards, each with its own phone showing a real capture, in the order asked for', () => {
-    const { container } = render(<Home />)
+  it('has four cards, each with its own phone showing a real capture, in the order asked for', async () => {
+    const { container } = render(await Home())
     const cards = Array.from(container.querySelectorAll('.d-card'))
     expect(cards.map((c) => c.querySelector('h3')?.textContent)).toEqual([
       'En hel uge på få minutter',
@@ -549,8 +555,8 @@ describe('the list of small things', () => {
 
   const wait = (ms: number) => act(() => vi.advanceTimersByTime(ms))
 
-  it('has the nine rows, and the staged sentence by the phone', () => {
-    const { container } = render(<Home />)
+  it('has the nine rows, and the staged sentence by the phone', async () => {
+    const { container } = render(await Home())
     expect(within(list(container)).getAllByRole('tab').map((t) => t.querySelector('.m-row-title')?.textContent)).toEqual([
       'Drømme',
       'Ting til dig i dag',
@@ -565,8 +571,8 @@ describe('the list of small things', () => {
     expect(panel().textContent).toContain(STAGED)
   })
 
-  it('advances by itself, shows the screen, and stops when paused or off screen', () => {
-    const { container } = render(<Home />)
+  it('advances by itself, shows the screen, and stops when paused or off screen', async () => {
+    const { container } = render(await Home())
     wait(6100)
     expect(active(container).textContent).toContain('Ting til dig i dag')
     expect(within(list(container)).getByAltText(/kortet 2 ting til dig i dag/)).toBeInTheDocument()
@@ -582,15 +588,15 @@ describe('the list of small things', () => {
     expect(active(container).textContent).toContain('Her brugte du mest')
   })
 
-  it('does not advance with reduced motion', () => {
-    const { container } = render(<Home />)
+  it('does not advance with reduced motion', async () => {
+    const { container } = render(await Home())
     setReduced(true)
     wait(30000)
     expect(active(container).textContent).toContain('Drømme')
   })
 
-  it('a manual pick stops the advance for good, on the keyboard too', () => {
-    const { container } = render(<Home />)
+  it('a manual pick stops the advance for good, on the keyboard too', async () => {
+    const { container } = render(await Home())
     fireEvent.keyDown(active(container), { key: 'ArrowDown' })
     expect(active(container).textContent).toContain('Ting til dig i dag')
     expect(document.activeElement).toBe(active(container))
@@ -601,15 +607,15 @@ describe('the list of small things', () => {
     expect(within(list(container)).getByAltText(/Forløbet i Altid Forsikring/)).toBeInTheDocument()
   })
 
-  it('a click stops the advance for good, even with focus elsewhere', () => {
-    const { container } = render(<Home />)
+  it('a click stops the advance for good, even with focus elsewhere', async () => {
+    const { container } = render(await Home())
     fireEvent.click(within(list(container)).getByRole('tab', { name: /Alle faste udgifter/ }))
     wait(60000)
     expect(active(container).textContent).toContain('Alle faste udgifter')
   })
 
-  it('fetches a screen only when it is the current or the next one', () => {
-    const { container } = render(<Home />)
+  it('fetches a screen only when it is the current or the next one', async () => {
+    const { container } = render(await Home())
     const screens = () => list(container).querySelectorAll('.m-screen').length
     expect(screens()).toBe(2)
     wait(6100)
@@ -618,8 +624,8 @@ describe('the list of small things', () => {
 })
 
 describe('privacy', () => {
-  it('states the facts plainly and links to the policy', () => {
-    const { container } = render(<Home />)
+  it('states the facts plainly and links to the policy', async () => {
+    const { container } = render(await Home())
     const section = container.querySelector('[data-b="privacy"]') as HTMLElement
     expect(section.textContent).toContain('Forbindelsen til jeres bank giver kun adgang til at læse oplysninger, og vi kan ikke flytte penge.')
     expect(section.textContent).toContain('Vi sælger ikke jeres bankoplysninger.')
@@ -631,15 +637,15 @@ describe('privacy', () => {
 describe('FAQ and JSON-LD', () => {
   const graph = (container: HTMLElement) => JSON.parse(container.querySelector('script[type="application/ld+json"]')?.innerHTML ?? '')['@graph']
 
-  it('has native disclosures with only the first open', () => {
-    const { container } = render(<Home />)
+  it('has native disclosures with only the first open', async () => {
+    const { container } = render(await Home())
     const items = Array.from(container.querySelectorAll('#spoergsmaal details'))
     expect(items.length).toBeGreaterThan(5)
     expect(items.map((d) => d.hasAttribute('open'))).toEqual(items.map((_, i) => i === 0))
   })
 
-  it('tells the JSON-LD exactly what it shows', () => {
-    const { container } = render(<Home />)
+  it('tells the JSON-LD exactly what it shows', async () => {
+    const { container } = render(await Home())
     const faq = graph(container).find((n: { '@type': string }) => n['@type'] === 'FAQPage')
     const visible = Array.from(container.querySelectorAll('#spoergsmaal details')).map((d) => ({
       q: d.querySelector('summary')?.textContent,
@@ -648,22 +654,22 @@ describe('FAQ and JSON-LD', () => {
     expect(faq.mainEntity.map((q: { name: string; acceptedAnswer: { text: string } }) => ({ q: q.name, a: q.acceptedAnswer.text }))).toEqual(visible)
   })
 
-  it('describes the company and the app, with no rating and no offer', () => {
-    const { container } = render(<Home />)
+  it('describes the company and the app, with no rating and no offer', async () => {
+    const { container } = render(await Home())
     expect(graph(container).map((n: { '@type': string }) => n['@type'])).toEqual(['Organization', 'MobileApplication', 'FAQPage'])
     const raw = container.querySelector('script[type="application/ld+json"]')?.innerHTML ?? ''
     expect(raw).not.toMatch(/aggregateRating|offers/)
   })
 
-  it('escapes a < in the script so it cannot end the tag', () => {
+  it('escapes a < in the script so it cannot end the tag', async () => {
     const serialized = serializeForScript({ a: '</script><b>' })
     expect(serialized).not.toContain('<')
     expect(JSON.parse(serialized)).toEqual({ a: '</script><b>' })
     expect(JSON.parse(jsonLdScript())['@graph']).toHaveLength(3)
   })
 
-  it('links the report and the delete page in their answers, and does not say the bank thing twice', () => {
-    const { container } = render(<Home />)
+  it('links the report and the delete page in their answers, and does not say the bank thing twice', async () => {
+    const { container } = render(await Home())
     const faq = within(container.querySelector('#spoergsmaal') as HTMLElement)
     expect(faq.getByRole('link', { name: 'læse hele rapporten her', hidden: true })).toHaveAttribute('href', 'https://altidmad.dk/altid-mad-kvartalsrapport-q3.pdf')
     expect(faq.getByRole('link', { name: 'her på siden', hidden: true })).toHaveAttribute('href', '/slet-konto')
@@ -673,14 +679,14 @@ describe('FAQ and JSON-LD', () => {
     expect(questions).toContain('Skal jeg forbinde min bank?')
   })
 
-  it('never makes the promises the old answers did', () => {
-    const { container } = render(<Home />)
+  it('never makes the promises the old answers did', async () => {
+    const { container } = render(await Home())
     const text = container.querySelector('#spoergsmaal')?.textContent ?? ''
     expect(text).not.toMatch(/langt over 1\.000|det klarer vi|opsige/i)
     expect(text).toMatch(/Din partner ser aldrig dine konti, saldi eller posteringer/)
   })
 
-  it('has full metadata with no launch wording', () => {
+  it('has full metadata with no launch wording', async () => {
     expect(metadata.title).toBe('Altid Hjem: hele hjemmets økonomi i én app')
     const og = metadata.openGraph as { title: string; images: { url: string; alt: string }[] }
     const twitter = metadata.twitter as { card: string; images: unknown[] }
@@ -695,16 +701,16 @@ describe('FAQ and JSON-LD', () => {
 describe('the QR card', () => {
   const card = () => screen.getByRole('complementary', { name: 'Hent appen med din telefon', hidden: true })
 
-  it('belongs to the hero, with both codes, each named for its store', () => {
-    const { container } = render(<Home />)
+  it('belongs to the hero, with both codes, each named for its store', async () => {
+    const { container } = render(await Home())
     expect((container.querySelector('#top') as HTMLElement).contains(card())).toBe(true)
     expect(within(card()).getByAltText('QR-kode til Altid Hjem i App Store').getAttribute('src')).toContain('qr/app-store.svg')
     expect(within(card()).getByAltText('QR-kode til Altid Hjem i Google Play').getAttribute('src')).toContain('qr/google-play.svg')
     expect(card().textContent).toContain('Scan koden med din telefon')
   })
 
-  it('fades out with scrolling and is gone by 900 px, as measured on the reference', () => {
-    render(<Home />)
+  it('fades out with scrolling and is gone by 900 px, as measured on the reference', async () => {
+    render(await Home())
     const element = card()
     const scrollTo = (y: number) => {
       vi.stubGlobal('scrollY', y)
@@ -722,9 +728,9 @@ describe('the QR card', () => {
 })
 
 describe('reduced motion on the scroll-driven pieces', () => {
-  it('leaves everything at rest', () => {
+  it('leaves everything at rest', async () => {
     reduced = true
-    const { container } = render(<Home />)
+    const { container } = render(await Home())
     expect((container.querySelector('.rings') as HTMLElement).style.getPropertyValue('--ring-p')).toBe('0.5')
     expect((container.querySelector('.f-float') as HTMLElement).style.transform).toBe('')
     expect(container.querySelector('[data-pan]')).toBeNull()
@@ -736,8 +742,8 @@ describe('the auto-advancing tabs while someone is using them', () => {
   beforeEach(() => vi.useFakeTimers())
   afterEach(() => vi.useRealTimers())
 
-  it.each(['.plates', '.m-list'])('%s holds while focus is inside and goes on after blur', (root) => {
-    const { container } = render(<Home />)
+  it.each(['.plates', '.m-list'])('%s holds while focus is inside and goes on after blur', async (root) => {
+    const { container } = render(await Home())
     const first = selected(container, root)
     fireEvent.focus(first)
     act(() => vi.advanceTimersByTime(30000))
@@ -747,8 +753,8 @@ describe('the auto-advancing tabs while someone is using them', () => {
     expect(selected(container, root)).not.toBe(first)
   })
 
-  it.each(['.plates', '.m-grid'])('%s: a touch does not count as hovering', (root) => {
-    const { container } = render(<Home />)
+  it.each(['.plates', '.m-grid'])('%s: a touch does not count as hovering', async (root) => {
+    const { container } = render(await Home())
     const first = selected(container, root)
     const area = (first.closest(root) as HTMLElement)
     fireEvent.pointerEnter(area, { pointerType: 'touch' })
@@ -761,8 +767,8 @@ describe('the list on a phone', () => {
   beforeEach(() => vi.useFakeTimers())
   afterEach(() => vi.useRealTimers())
 
-  it('stops advancing once a finger has touched it, so a swipe is not pulled back', () => {
-    const { container } = render(<Home />)
+  it('stops advancing once a finger has touched it, so a swipe is not pulled back', async () => {
+    const { container } = render(await Home())
     const first = container.querySelector('.m-list [role="tab"][aria-selected="true"]') as HTMLElement
     fireEvent.pointerDown(first, { pointerType: 'touch' })
     act(() => vi.advanceTimersByTime(30000))
@@ -774,7 +780,7 @@ describe('the phone header button', () => {
   it('links to both stores with the campaign and counts the click under position nav', async () => {
     const beacon = vi.fn(() => true)
     vi.stubGlobal('navigator', Object.assign(Object.create(navigator), { sendBeacon: beacon }))
-    const { container } = render(<Home />)
+    const { container } = render(await Home())
     const ios = container.querySelector('.nav-get .for-appstore') as HTMLAnchorElement
     const play = container.querySelector('.nav-get .for-play') as HTMLAnchorElement
     expect(ios).toHaveAttribute('href', APP_STORE)
@@ -786,8 +792,8 @@ describe('the phone header button', () => {
     expect(JSON.parse(await body.text())).toEqual({ store: 'appstore', position: 'nav' })
   })
 
-  it('shows once the hero store button has scrolled up out of view', () => {
-    const { container } = render(<Home />)
+  it('shows once the hero store button has scrolled up out of view', async () => {
+    const { container } = render(await Home())
     const get = container.querySelector('.nav-get') as HTMLElement
     expect(get).toHaveAttribute('data-shown', 'false')
     act(() => {
@@ -802,8 +808,8 @@ describe('the phone header button', () => {
 })
 
 describe('motion', () => {
-  it('the control steps aside while nothing that runs is on screen', () => {
-    render(<Home />)
+  it('the control steps aside while nothing that runs is on screen', async () => {
+    render(await Home())
     const control = screen.getByRole('button', { name: PAUSE })
     expect(control).toHaveAttribute('data-idle', 'false')
     setOnScreen('[data-running]', false)
@@ -812,13 +818,13 @@ describe('motion', () => {
     expect(control).toHaveAttribute('data-idle', 'false')
   })
 
-  it('runs by default', () => {
-    const { container } = render(<Home />)
+  it('runs by default', async () => {
+    const { container } = render(await Home())
     expect(runningPieces(container)).toEqual(ALL_RUNNING)
   })
 
-  it('has one control: it pauses every piece, and pressing again starts them', () => {
-    const { container } = render(<Home />)
+  it('has one control: it pauses every piece, and pressing again starts them', async () => {
+    const { container } = render(await Home())
     expect(screen.getAllByRole('button', { name: PAUSE })).toHaveLength(1)
     fireEvent.click(screen.getByRole('button', { name: PAUSE }))
     expect(runningPieces(container)).toEqual(ALL_STOPPED)
@@ -826,22 +832,22 @@ describe('motion', () => {
     expect(runningPieces(container)).toEqual(ALL_RUNNING)
   })
 
-  it('has no video and no soft gradient behind the hero', () => {
-    const { container } = render(<Home />)
+  it('has no video and no soft gradient behind the hero', async () => {
+    const { container } = render(await Home())
     expect(container.querySelector('video')).toBeNull()
     expect(readFileSync('app/site.css', 'utf8')).not.toMatch(/rgba\(var\(--/)
   })
 
-  it('a pause survives scrolling away and back', () => {
-    const { container } = render(<Home />)
+  it('a pause survives scrolling away and back', async () => {
+    const { container } = render(await Home())
     fireEvent.click(screen.getByRole('button', { name: PAUSE }))
     setOnScreen('.plates', false)
     setOnScreen('.plates', true)
     expect(runningPieces(container)).toEqual(ALL_STOPPED)
   })
 
-  it('stops a piece off screen without touching the others, and resumes it', () => {
-    const { container } = render(<Home />)
+  it('stops a piece off screen without touching the others, and resumes it', async () => {
+    const { container } = render(await Home())
     setOnScreen('.plates', false)
     expect(container.querySelector('.plates')).toHaveAttribute('data-running', 'false')
     expect(container.querySelector('.w-mq')).toHaveAttribute('data-running', 'true')
@@ -849,8 +855,8 @@ describe('motion', () => {
     expect(container.querySelector('.plates')).toHaveAttribute('data-running', 'true')
   })
 
-  it('stops everything in a hidden tab', () => {
-    const { container } = render(<Home />)
+  it('stops everything in a hidden tab', async () => {
+    const { container } = render(await Home())
     const visibility = vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden')
     act(() => {
       document.dispatchEvent(new Event('visibilitychange'))
@@ -863,8 +869,8 @@ describe('motion', () => {
     expect(runningPieces(container)).toEqual(ALL_RUNNING)
   })
 
-  it('follows a reduced-motion change after mount: nothing runs and no control is left', () => {
-    const { container } = render(<Home />)
+  it('follows a reduced-motion change after mount: nothing runs and no control is left', async () => {
+    const { container } = render(await Home())
     setReduced(true)
     expect(runningPieces(container)).toEqual(ALL_STOPPED)
     expect(screen.queryByRole('button', { name: PAUSE })).toBeNull()
@@ -875,7 +881,7 @@ describe('motion', () => {
 
 describe('the glass nav', () => {
   it('is light glass over the hero, turns dark over a dark block and light again over a card in it', async () => {
-    const { container } = render(<Home />)
+    const { container } = render(await Home())
     const nav = container.querySelector('header.nav') as HTMLElement
     expect(nav).toHaveAttribute('data-on', 'light')
     vi.mocked(document.elementsFromPoint).mockReturnValue([container.querySelector('.d-head') ?? (container.querySelector('#altid-mad') as Element)])
@@ -888,8 +894,8 @@ describe('the glass nav', () => {
 })
 
 describe('the nav sheet', () => {
-  it('opens from the burger with the anchors and store pills, and closes by its named button', () => {
-    const { container } = render(<Home />)
+  it('opens from the burger with the anchors and store pills, and closes by its named button', async () => {
+    const { container } = render(await Home())
     const dialog = container.querySelector('dialog') as HTMLDialogElement
     expect(dialog).not.toHaveAttribute('open')
     fireEvent.click(screen.getByRole('button', { name: 'Åbn menu' }))
@@ -900,14 +906,14 @@ describe('the nav sheet', () => {
     expect(dialog).not.toHaveAttribute('open')
   })
 
-  it('takes focus itself on opening, so a tap draws no ring on the close button', () => {
-    const { container } = render(<Home />)
+  it('takes focus itself on opening, so a tap draws no ring on the close button', async () => {
+    const { container } = render(await Home())
     fireEvent.click(screen.getByRole('button', { name: 'Åbn menu' }))
     expect(document.activeElement).toBe(container.querySelector('dialog'))
   })
 
-  it('closes when a link in it is followed', () => {
-    const { container } = render(<Home />)
+  it('closes when a link in it is followed', async () => {
+    const { container } = render(await Home())
     const dialog = container.querySelector('dialog') as HTMLDialogElement
     fireEvent.click(screen.getByRole('button', { name: 'Åbn menu' }))
     fireEvent.click(within(dialog).getByRole('link', { name: 'Altid Mad' }))

@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
-import { META, NAV } from '@/components/site/copy'
+import { META, NAV, LEAVE } from '@/components/site/copy'
 import FaqSection from '@/components/site/FaqSection'
 import FinalCta from '@/components/site/FinalCta'
 import { dmSans } from '@/components/site/fonts'
 import Hero from '@/components/site/Hero'
 import LeavePopup from '@/components/site/LeavePopup'
+import { readUserCount, usersThousands } from '@/lib/user-count'
 import { jsonLdScript } from '@/components/site/jsonLd'
 import MadDark from '@/components/site/MadDark'
 import Steps from '@/components/site/Steps'
@@ -48,7 +49,10 @@ export const metadata: Metadata = {
   itunes: { appId: APP_STORE_ID },
 }
 
-export default function Home() {
+export default async function Home() {
+  // How many have the app, read once here for the reviews heading and the leave popup; the
+  // hero's line reads it in AppRating (lib/user-count.ts caches the read for an hour).
+  const users = await readUserCount()
   return (
     <div className={`site ${dmSans.variable}`}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript() }} />
@@ -59,7 +63,7 @@ export default function Home() {
         <SiteNav getApp />
         <main id="indhold">
           <Hero />
-          <Proof />
+          <Proof users={users} />
           <MadDark />
           <Steps />
           <Values />
@@ -72,7 +76,7 @@ export default function Home() {
           <FinalCta />
         </main>
         <PauseButton />
-        <LeavePopup />
+        <LeavePopup proof={LEAVE.proof.replace('{thousands}', usersThousands(users))} />
       </MotionPrefs>
       <SiteFooter />
       <Reveal />

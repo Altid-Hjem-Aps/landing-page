@@ -1,4 +1,5 @@
 import { APP_STORE_ID } from '@/lib/store-links'
+import { readUserCount, usersHundreds } from '@/lib/user-count'
 import { HERO } from './copy'
 
 // The app's rating in the Danish App Store, read at build and again at most once an hour.
@@ -24,15 +25,16 @@ export function ratingText({ average }: Rating) {
 
 // Five stars, filled as far as the average reaches, then the user count. The number itself
 // is only in the stars' name, so screen readers still hear it.
-export function RatingLine({ rating }: { rating: Rating }) {
+export function RatingLine({ rating, users }: { rating: Rating; users: number }) {
   return (
     <p className="h-rating">
       <span className="h-stars" role="img" aria-label={ratingText(rating)} style={{ '--fill': `${(rating.average / 5) * 100}%` } as React.CSSProperties} />
-      <span className="h-rating-text">{HERO.rating}</span>
+      <span className="h-rating-text">{HERO.rating.replace('{hundreds}', usersHundreds(users))}</span>
     </p>
   )
 }
 
 export default async function AppRating() {
-  return <RatingLine rating={await readAppRating()} />
+  const [rating, users] = await Promise.all([readAppRating(), readUserCount()])
+  return <RatingLine rating={rating} users={users} />
 }

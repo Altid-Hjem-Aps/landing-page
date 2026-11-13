@@ -2,6 +2,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import AppRating, { readAppRating, ratingText } from '@/components/site/AppRating'
 
+// The user count has its own test (test/user-count.test.ts); here it is a fixed count.
+vi.mock('@/lib/user-count', async (original) => ({
+  ...(await original<typeof import('@/lib/user-count')>()),
+  readUserCount: async () => 4741,
+}))
+
 afterEach(() => vi.unstubAllGlobals())
 
 const answer = (status: number, body: unknown) => vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify(body), { status })))
@@ -19,7 +25,7 @@ describe('App Store rating', () => {
   it('renders what the App Store answers, stars filled to the average', async () => {
     answer(200, { results: [{ averageUserRating: 4.33333, userRatingCount: 6 }] })
     const { container } = render(await AppRating())
-    expect(container).toHaveTextContent(/^Over 4\.000 danskere har appen$/)
+    expect(container).toHaveTextContent(/^\+4\.700 danskere har appen$/)
     const stars = container.querySelector('.h-stars') as HTMLElement
     expect(stars).toHaveAttribute('role', 'img')
     expect(stars).toHaveAccessibleName('4,3 ud af 5 stjerner i App Store')

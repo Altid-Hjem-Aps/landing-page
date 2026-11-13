@@ -16,7 +16,7 @@ const dmSansRegular = DM_Sans({ subsets: ['latin'], weight: '400', preload: fals
 // same sizes and the same delivery: a big letter pops in, opens, and the card grows out of it
 // while the letter drops away. Loaded only when the popup opens, so framer-motion stays out of
 // the page's own script. A native modal dialog: the browser holds focus inside, Escape closes.
-export default function LeaveDialog({ onClose }: { onClose: () => void }) {
+export default function LeaveDialog({ proof, onClose }: { proof: string; onClose: () => void }) {
   const { reduced } = useMotionPrefs()
   const dialog = useRef<HTMLDialogElement>(null)
   const panel = useRef<HTMLDivElement>(null)
@@ -90,7 +90,7 @@ export default function LeaveDialog({ onClose }: { onClose: () => void }) {
           <h2 id="leave-title" className="leave-title">
             {LEAVE.title}
           </h2>
-          <p className="leave-proof">{LEAVE.proof}</p>
+          <p className="leave-proof">{proof}</p>
           <p className="leave-body">{LEAVE.body}</p>
 
           {/* Where the old form was, at its height: the two codes, then the small line. */}
