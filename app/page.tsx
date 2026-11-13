@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { META, NAV, LEAVE } from '@/components/site/copy'
+import CopyEditGate from '@/components/site/CopyEditGate'
 import FaqSection from '@/components/site/FaqSection'
 import FinalCta from '@/components/site/FinalCta'
 import { dmSans } from '@/components/site/fonts'
@@ -76,6 +77,7 @@ export default async function Home() {
           <FinalCta />
         </main>
         <GetAppSticky />
+        <CopyEditGate />
         <LeavePopup proof={LEAVE.proof.replace('{thousands}', usersThousands(users))} />
       </MotionPrefs>
       <SiteFooter />

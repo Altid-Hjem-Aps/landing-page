@@ -317,7 +317,7 @@ export const FINAL = {
     { id: 'energi', kind: 'screen', src: HERO.secondScreens[2].src, alt: HERO.secondScreens[2].alt, tone: 'sky' },
     { id: 'besked', kind: 'note', title: 'Altid Hjem', time: 'nu', body: 'Jeres faste udgifter er faldet med 380 kr. siden sidste måned!', action: 'Se budget', tone: 'mint' },
     { id: 'elbil', kind: 'photo', src: '/site/gallery/galleri-elbil.webp', alt: 'En elbil lades op ved huset', crop: { x: -72.01, y: 0, w: 280.03, h: 100 }, focus: '40% 50%' },
-    { id: 'strand', kind: 'photo', src: '/site/gallery/galleri-strand.webp', alt: 'En familie går langs vandkanten på stranden', crop: { x: -44.93, y: -0.17, w: 219.96, h: 119.36 }, focus: '45% 50%', plain: true },
+    { id: 'strand', kind: 'photo', src: '/site/gallery/galleri-strand-hd.webp', alt: 'En familie går langs vandkanten på stranden', crop: { x: -44.93, y: -0.17, w: 219.96, h: 119.36 }, focus: '45% 50%', plain: true },
     { id: 'madplan', kind: 'screen', src: '/site/app/mad-meal_plan-uden-beta.webp', alt: HERO.secondScreens[0].alt, tone: 'lavender' },
     { id: 'tacos', kind: 'plate', plate: 0, tone: 'honey' },
     { id: 'okonomi', kind: 'screen', src: '/site/app/okonomi-top-uden-beta.webp', alt: HERO.mainScreens[1].alt, tone: 'lavender' },
