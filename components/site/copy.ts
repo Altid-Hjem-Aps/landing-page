@@ -174,7 +174,7 @@ export const MAD = {
 export const PRIVACY = {
   title: 'Jeres tal er jeres egne',
   // Thor's wording, 10/11.
-  body: 'I forbinder jeres bank sikkert med MitID. Appen kan kun læse jeres konti, saldi og posteringer og kan aldrig flytte penge eller foretage betalinger. Vi sælger aldrig jeres bankoplysninger og deler dem ikke med andre til markedsføring.',
+  body: 'I forbinder jeres bank sikkert med MitID og vælger selv, hvilke konti appen må se. Appen kan kun læse jeres transaktioner, aldrig flytte penge eller foretage betalinger. Vi sælger eller deler aldrig jeres bankoplysninger med tredjeparter.',
   link: 'Læs privatlivspolitikken',
 } as const
 
@@ -207,7 +207,7 @@ export const STEPS = {
 // What the name Altid stands for: four values, and for each one what you always get and what
 // you never meet (Thor 12/11).
 export const VALUES = {
-  title: 'På jeres side. Altid',
+  title: 'På jeres side. Altid.',
   body: 'Navnet Altid er et løfte. Vi står på forbrugernes side, og det skal kunne mærkes i alt, vi gør. Her er, hvad I altid kan forvente af os, og hvad I aldrig skal bekymre jer om.',
   always: 'Altid',
   never: 'Aldrig',
