@@ -202,6 +202,8 @@ export const STEPS = {
     { n: '03', photo: '/site/people/trin-3-koekken.webp', photoFocus: '40% 50%', screens: ['/site/app/mad-meal_plan.webp'], tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Mad, energi, forsikring eller økonomi. Tag det, der passer jer.', src: '/site/app/mad-meal_plan.webp', alt: 'Ugens madplan i appen: en ret til hver dag og 130 kr. tilbage.' },
     { n: '04', photo: '/site/people/trin-4-par.webp', photoFocus: '64% 50%', screens: ['/site/app/partner-venter.webp', '/site/app/partner-inviteret.webp'], tone: 'mint', title: 'Inviter din partner', body: 'Så har I et fælles overblik over hjemmets økonomi.', src: '/site/app/partner-venter.webp', alt: 'Et par i sofaen med hver sin telefon: på Sofies er Mads’ halvdel af huset tom, på Mads’ står der Sofie har inviteret dig.' },
   ],
+  // Thor's own words (13/11), as he wrote them: the app's speech bubble while step 03 is open.
+  psst: { lead: 'Psst..', text: ' og vi lancerer flere tjenester løbende. Snart kommer mobil, opladning og alarm' },
 } as const
 
 // What the name Altid stands for: four values, and for each one what you always get and what

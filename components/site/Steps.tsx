@@ -53,6 +53,26 @@ function StepPhoto({ step, slot, alt, sizes, quality, shown }: { step: Step; slo
   )
 }
 
+// Psst (Thor 13/11): the app icon with a speech bubble saying more services are on the way. It
+// slides in from the side over step 03's photo once the reader keeps scrolling with 03 open,
+// and back out when 04 opens. On a phone it comes in over step 03's own photo when that is in
+// view. Hidden, it is also out of the accessibility tree.
+function Psst({ shown }: { shown: boolean }) {
+  return (
+    <div className="st-psst" data-shown={shown ? 'true' : undefined}>
+      <p className="st-psst-bubble">
+        <strong>{STEPS.psst.lead}</strong>
+        {STEPS.psst.text}
+      </p>
+      <Image className="st-psst-icon" src="/app-badge.png" alt="" width={112} height={112} />
+    </div>
+  )
+}
+
+/** Step 03 is index 2; the bubble waits until this share of 03's scroll has passed. */
+const PSST_STEP = 2
+const PSST_AFTER = 0.3
+
 // Four steps. On a computer the whole block stays put (sticky) while the page scrolls through
 // the section: the title, all four steps and a photo are in view, and the scroll moves the open
 // step from one to four while the photo changes with it. Each photo is seen from the user's
@@ -60,7 +80,18 @@ function StepPhoto({ step, slot, alt, sizes, quality, shown }: { step: Step; slo
 // On a phone the steps stack, each open with its own photo.
 export default function Steps() {
   const [active, setActive] = useState(0)
+  const [psstWide, setPsstWide] = useState(false)
+  const [psstNarrow, setPsstNarrow] = useState(false)
   const section = useRef<HTMLElement>(null)
+  const psstPhoto = useRef<HTMLDivElement>(null)
+
+  // On a phone: step 03's photo at least 60 % in view.
+  useEffect(() => {
+    const photo = psstPhoto.current as HTMLDivElement
+    const watch = new IntersectionObserver(([entry]) => setPsstNarrow(entry.intersectionRatio >= 0.6), { threshold: [0, 0.6, 1] })
+    watch.observe(photo)
+    return () => watch.disconnect()
+  }, [])
 
   useEffect(() => {
     let frame = 0
@@ -72,7 +103,9 @@ export default function Steps() {
       const travel = box.height - window.innerHeight
       if (travel <= 0) return
       const progress = Math.min(0.999, Math.max(0, -box.top / travel))
-      setActive(Math.floor(progress * STEPS.steps.length))
+      const steps = STEPS.steps.length
+      setActive(Math.floor(progress * steps))
+      setPsstWide(progress >= (PSST_STEP + PSST_AFTER) / steps && progress < (PSST_STEP + 1) / steps)
     }
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(read)
@@ -123,8 +156,9 @@ export default function Steps() {
                         <GetAppButton position="how-it-works" />
                       </>
                     ) : null}
-                    <div className="st-inline">
+                    <div className="st-inline" ref={i === PSST_STEP ? psstPhoto : undefined}>
                       <StepPhoto step={step} slot="inline" alt={step.alt} sizes="(max-width: 767px) 120vw, 1px" quality={75} />
+                      {i === PSST_STEP ? <Psst shown={psstNarrow} /> : null}
                     </div>
                   </div>
                 </div>
@@ -133,10 +167,11 @@ export default function Steps() {
           </ol>
           <StagedNote className="st-note" />
         </div>
-        <div className="st-visual" aria-hidden="true">
+        <div className="st-visual">
           {STEPS.steps.map((step, i) => (
             <StepPhoto key={step.photo} step={step} slot="visual" alt="" sizes="(max-width: 767px) 1px, 70vw" quality={90} shown={i === active} />
           ))}
+          <Psst shown={psstWide} />
         </div>
         <p className="sr-only" aria-live="polite">
           {STEPS.steps[active].alt}
