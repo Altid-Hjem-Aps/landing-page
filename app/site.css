@@ -2162,7 +2162,7 @@
      turned to a little too big and back, and the bubble pops out of it a beat later; leaving,
      both shrink and fade, and the box is hidden once they are gone. */
   .st-psst {
-    align-self: flex-start;
+    align-self: center;
     display: flex;
     align-items: flex-end;
     gap: 12px;
@@ -2177,36 +2177,42 @@
       transition: visibility 0s;
     }
   }
-  /* On a phone, over the top left of step 03's own photo. */
+  /* On a phone, over the bottom left of step 03's own photo, with headroom for the hops. */
   .st-inline .st-psst {
     position: absolute;
     z-index: 1;
-    top: 12px;
+    bottom: 12px;
     left: 12px;
     gap: 8px;
     max-width: calc(100% - 24px);
     margin-block: 0;
     padding-top: 0;
   }
-  .st-psst-icon {
+  /* The hop: the wrapper carries the icon across (steady sideways speed, so each hop is an arc),
+     the icon itself does the up and down, the squash and stretch and the tilt around its feet. */
+  .st-psst-hop {
     flex: none;
+    display: block;
+  }
+  .st-psst-icon {
+    display: block;
     width: 56px;
     height: 56px;
     border-radius: 14px;
     box-shadow: 0 12px 26px rgba(0, 40, 15, 0.22);
-    scale: 0.3;
-    rotate: -24deg;
+    transform-origin: 50% 100%;
     opacity: 0;
-    transition:
-      scale 0.3s ease-in,
-      rotate 0.3s ease-in,
-      opacity 0.25s;
+    transition: opacity 0.25s;
   }
-  .st-psst[data-shown='true'] .st-psst-icon {
-    scale: 1;
-    rotate: 0deg;
-    opacity: 1;
-    animation: st-psst-pop 0.7s cubic-bezier(0.3, 0.7, 0.4, 1);
+  .st-psst[data-shown='true'] {
+    .st-psst-hop {
+      animation: st-psst-across 1.9s linear both;
+    }
+    .st-psst-icon {
+      opacity: 1;
+      transition: none;
+      animation: st-psst-bounce 1.9s both;
+    }
   }
   /* The tail is the bubble's small corner, pointing back at the icon. */
   .st-psst-bubble {
@@ -2233,13 +2239,14 @@
     scale: 1;
     opacity: 1;
     transition:
-      scale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s,
-      opacity 0.25s 0.5s;
+      scale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.75s,
+      opacity 0.25s 1.75s;
   }
   /* With reduced motion both fade in and out where they stand. */
   @media (prefers-reduced-motion: reduce) {
     .st-psst-icon,
     .st-psst-bubble,
+    .st-psst[data-shown='true'] .st-psst-hop,
     .st-psst[data-shown='true'] .st-psst-icon,
     .st-psst[data-shown='true'] .st-psst-bubble {
       scale: 1;
@@ -4211,25 +4218,162 @@ body:has(.site) {
   }
 }
 
-/* The Psst icon's pop (Steps), at the top level: a keyframes rule cannot sit inside .site. */
-@keyframes st-psst-pop {
-  0% {
-    scale: 0.3;
-    rotate: -24deg;
-    opacity: 0;
+/* The Psst icon's hop in (Steps), at the top level: a keyframes rule cannot sit inside .site.
+   Three hops from off the left edge, each a crouch (squash, the anticipation), a take-off
+   (stretch, rising fast and slowing to the top of the arc), a fall (speeding up, stretching) and
+   a landing (squash). Each hop is lower and shorter than the last, as if it is tiring. The third
+   lands on its front edge and trips: it tips forward, skids a little past its place, catches
+   itself leaning back, and wobbles still. Sideways it moves at a steady speed while in the air
+   and stands still on the ground, so each hop draws an arc. */
+@keyframes st-psst-across {
+  0%,
+  7% {
+    translate: calc(var(--hop) * -1) 0;
   }
-  55% {
-    scale: 1.16;
-    rotate: 8deg;
-    opacity: 1;
+  24%,
+  31% {
+    translate: calc(var(--hop) * -0.62) 0;
   }
-  78% {
-    scale: 0.95;
-    rotate: -3deg;
+  46%,
+  53% {
+    translate: calc(var(--hop) * -0.28) 0;
+  }
+  64% {
+    translate: -6px 0;
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  72% {
+    translate: 16px 0;
+    animation-timing-function: ease-in-out;
+  }
+  84% {
+    translate: -3px 0;
   }
   100% {
-    scale: 1;
+    translate: 0 0;
+  }
+}
+@keyframes st-psst-bounce {
+  0% {
+    translate: 0 0;
+    scale: 1 1;
     rotate: 0deg;
-    opacity: 1;
+  }
+  /* hop 1 */
+  7% {
+    translate: 0 0;
+    scale: 1.2 0.78;
+    rotate: 4deg;
+    animation-timing-function: ease-out;
+  }
+  10% {
+    translate: 0 -16px;
+    scale: 0.86 1.18;
+    rotate: -6deg;
+    animation-timing-function: cubic-bezier(0.25, 0.6, 0.45, 1);
+  }
+  16% {
+    translate: 0 -78px;
+    scale: 1 1;
+    rotate: -2deg;
+    animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
+  }
+  22% {
+    translate: 0 -14px;
+    scale: 0.9 1.12;
+    rotate: 4deg;
+    animation-timing-function: ease-in;
+  }
+  24% {
+    translate: 0 0;
+    scale: 1.24 0.76;
+    rotate: 0deg;
+    animation-timing-function: ease-out;
+  }
+  /* hop 2 */
+  31% {
+    translate: 0 0;
+    scale: 1.16 0.82;
+    rotate: 3deg;
+    animation-timing-function: ease-out;
+  }
+  34% {
+    translate: 0 -14px;
+    scale: 0.88 1.15;
+    rotate: -7deg;
+    animation-timing-function: cubic-bezier(0.25, 0.6, 0.45, 1);
+  }
+  39% {
+    translate: 0 -58px;
+    scale: 1 1;
+    rotate: -3deg;
+    animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
+  }
+  44% {
+    translate: 0 -10px;
+    scale: 0.92 1.1;
+    rotate: 5deg;
+    animation-timing-function: ease-in;
+  }
+  46% {
+    translate: 0 0;
+    scale: 1.2 0.8;
+    rotate: 0deg;
+    animation-timing-function: ease-out;
+  }
+  /* hop 3, the one that trips */
+  53% {
+    translate: 0 0;
+    scale: 1.12 0.86;
+    rotate: 2deg;
+    animation-timing-function: ease-out;
+  }
+  56% {
+    translate: 0 -10px;
+    scale: 0.9 1.12;
+    rotate: -9deg;
+    animation-timing-function: cubic-bezier(0.25, 0.6, 0.45, 1);
+  }
+  60% {
+    translate: 0 -36px;
+    scale: 1 1;
+    rotate: -12deg;
+    animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
+  }
+  64% {
+    translate: 0 0;
+    scale: 1.14 0.86;
+    rotate: 24deg;
+    animation-timing-function: ease-out;
+  }
+  69% {
+    translate: 0 -5px;
+    scale: 1.04 0.96;
+    rotate: 32deg;
+    animation-timing-function: ease-in-out;
+  }
+  75% {
+    translate: 0 -9px;
+    scale: 0.95 1.06;
+    rotate: -15deg;
+    animation-timing-function: ease-in-out;
+  }
+  81% {
+    translate: 0 0;
+    scale: 1.08 0.93;
+    rotate: 8deg;
+  }
+  87% {
+    scale: 0.98 1.02;
+    rotate: -4deg;
+  }
+  93% {
+    scale: 1.01 0.99;
+    rotate: 1.5deg;
+  }
+  100% {
+    translate: 0 0;
+    scale: 1 1;
+    rotate: 0deg;
   }
 }

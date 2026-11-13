@@ -1,7 +1,7 @@
 'use client'
 
 import Image, { getImageProps } from 'next/image'
-import { type CSSProperties, useEffect, useRef, useState } from 'react'
+import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import StoreBadges from '@/components/StoreBadges'
 import { STEPS } from './copy'
 import GetAppButton from './GetAppButton'
@@ -53,14 +53,29 @@ function StepPhoto({ step, slot, alt, sizes, quality, shown }: { step: Step; slo
 }
 
 // Psst (Thor 13/11): the app icon, then its speech bubble, as a message reads on a phone, saying
-// more services are on the way. On a computer it slides in from the left into the free space
-// under the steps, level with the bottom of the photo, once the reader keeps scrolling with 03
-// open, and back out when 04 opens. On a phone it comes in over step 03's own photo when that
-// is in view. Hidden, it is also out of the accessibility tree.
+// more services are on the way. On a computer it sits centred in the free space under the steps
+// once the reader keeps scrolling with 03 open, and goes when 04 opens; on a phone it sits over
+// step 03's own photo when that is in view. The icon hops in like a little character from off
+// the left edge (of the window, or of the photo on a phone): two hops and a third that trips,
+// then the bubble pops out of it. --hop is how far it travels, measured as it comes in. Hidden,
+// it is also out of the accessibility tree.
 function Psst({ shown }: { shown: boolean }) {
+  const box = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    if (!shown) return
+    const element = box.current as HTMLDivElement
+    const clip = element.closest('.st-inline')
+    const edge = clip ? clip.getBoundingClientRect().left : 0
+    const icon = element.querySelector('.st-psst-icon') as HTMLElement
+    element.style.setProperty('--hop', `${Math.round(element.getBoundingClientRect().left - edge + icon.offsetWidth + 16)}px`)
+  }, [shown])
+
   return (
-    <div className="st-psst" data-shown={shown ? 'true' : undefined}>
-      <Image className="st-psst-icon" src="/app-badge.png" alt="" width={112} height={112} />
+    <div ref={box} className="st-psst" data-shown={shown ? 'true' : undefined}>
+      <span className="st-psst-hop">
+        <Image className="st-psst-icon" src="/app-badge.png" alt="" width={112} height={112} />
+      </span>
       <p className="st-psst-bubble">
         <strong>{STEPS.psst.lead}</strong>
         {STEPS.psst.text}
