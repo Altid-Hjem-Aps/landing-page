@@ -54,25 +54,46 @@ function StepPhoto({ step, slot, alt, sizes, quality, shown }: { step: Step; slo
 
 // Psst (Thor 13/11): the app icon, then its speech bubble, as a message reads on a phone, saying
 // more services are on the way. On a computer it sits centred in the free space under the steps
-// once the reader keeps scrolling with 03 open, and goes when 04 opens; on a phone it sits over
-// step 03's own photo when that is in view. The icon hops in like a little character from off
-// the left edge (of the window, or of the photo on a phone): two hops and a third that trips,
-// then the bubble pops out of it. --hop is how far it travels, measured as it comes in. Hidden,
-// it is also out of the accessibility tree.
-function Psst({ shown }: { shown: boolean }) {
+// while step 03 is open; on a phone over step 03's own photo while that is in view. It comes a
+// second after 03 is reached, the icon hopping in like a little character from off the left
+// edge (of the window, or of the photo on a phone): two hops and a third that trips, then the
+// bubble pops out of it. When 02 or 04 opens it hops back out, and it hops in again each time
+// 03 is reached. --hop is how far it travels, measured as it comes in. Hidden, it is also out
+// of the accessibility tree.
+type PsstState = 'in' | 'out' | undefined
+
+/** How long 03 has to be open before the icon comes. */
+const PSST_DELAY = 1000
+
+function Psst({ here }: { here: boolean }) {
   const box = useRef<HTMLDivElement>(null)
+  const [ready, setReady] = useState(false)
+  const [state, setState] = useState<PsstState>(undefined)
+
+  useEffect(() => {
+    if (!here) return
+    const timer = window.setTimeout(() => setReady(true), PSST_DELAY)
+    return () => {
+      window.clearTimeout(timer)
+      setReady(false)
+    }
+  }, [here])
+
+  // 'out' only after it has been in, so it never hops out of a page that has just opened.
+  const next: PsstState = ready ? 'in' : state === 'in' ? 'out' : state
+  if (next !== state) setState(next)
 
   useLayoutEffect(() => {
-    if (!shown) return
+    if (state !== 'in') return
     const element = box.current as HTMLDivElement
     const clip = element.closest('.st-inline')
     const edge = clip ? clip.getBoundingClientRect().left : 0
     const icon = element.querySelector('.st-psst-icon') as HTMLElement
     element.style.setProperty('--hop', `${Math.round(element.getBoundingClientRect().left - edge + icon.offsetWidth + 16)}px`)
-  }, [shown])
+  }, [state])
 
   return (
-    <div ref={box} className="st-psst" data-shown={shown ? 'true' : undefined}>
+    <div ref={box} className="st-psst" data-state={state}>
       <span className="st-psst-hop">
         <Image className="st-psst-icon" src="/app-badge.png" alt="" width={112} height={112} />
       </span>
@@ -84,9 +105,8 @@ function Psst({ shown }: { shown: boolean }) {
   )
 }
 
-/** Step 03 is index 2; the bubble waits until this share of 03's scroll has passed. */
+/** Step 03 is index 2. */
 const PSST_STEP = 2
-const PSST_AFTER = 0.3
 
 // Four steps. On a computer the whole block stays put (sticky) while the page scrolls through
 // the section: the title, all four steps and a photo are in view, and the scroll moves the open
@@ -95,7 +115,6 @@ const PSST_AFTER = 0.3
 // On a phone the steps stack, each open with its own photo.
 export default function Steps() {
   const [active, setActive] = useState(0)
-  const [psstWide, setPsstWide] = useState(false)
   const [psstNarrow, setPsstNarrow] = useState(false)
   const section = useRef<HTMLElement>(null)
   const psstPhoto = useRef<HTMLDivElement>(null)
@@ -118,9 +137,7 @@ export default function Steps() {
       const travel = box.height - window.innerHeight
       if (travel <= 0) return
       const progress = Math.min(0.999, Math.max(0, -box.top / travel))
-      const steps = STEPS.steps.length
-      setActive(Math.floor(progress * steps))
-      setPsstWide(progress >= (PSST_STEP + PSST_AFTER) / steps && progress < (PSST_STEP + 1) / steps)
+      setActive(Math.floor(progress * STEPS.steps.length))
     }
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(read)
@@ -173,14 +190,14 @@ export default function Steps() {
                     ) : null}
                     <div className="st-inline" ref={i === PSST_STEP ? psstPhoto : undefined}>
                       <StepPhoto step={step} slot="inline" alt={step.alt} sizes="(max-width: 767px) 120vw, 1px" quality={75} />
-                      {i === PSST_STEP ? <Psst shown={psstNarrow} /> : null}
+                      {i === PSST_STEP ? <Psst here={psstNarrow} /> : null}
                     </div>
                   </div>
                 </div>
               </li>
             ))}
           </ol>
-          <Psst shown={psstWide} />
+          <Psst here={active === PSST_STEP} />
         </div>
         <div className="st-visual" aria-hidden="true">
           {STEPS.steps.map((step, i) => (
