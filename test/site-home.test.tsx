@@ -30,8 +30,6 @@ const APP_STORE = 'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=1292
 const PLAY =
   'https://play.google.com/store/apps/details?id=dk.altidhjem.app&referrer=utm_source%3Daltidhjem_dk%26utm_campaign%3Dah_1_altidhjem_dk'
 const STAGED = 'Skærmbilleder fra appen med eksempeldata.'
-const PAUSE = 'Sæt bevægelsen på pause'
-const PLAY_MOTION = 'Start bevægelsen igen'
 // The service row, the plates, the list.
 const ALL_RUNNING = ['true', 'true', 'true']
 const ALL_STOPPED = ['false', 'false', 'false']
@@ -419,12 +417,8 @@ describe('the week of plates', () => {
     expect(selectedDay()).toHaveAttribute('aria-label', 'Mandag')
   })
 
-  it('stops advancing while paused, off screen, in a hidden tab or with reduced motion', async () => {
+  it('stops advancing off screen, in a hidden tab or with reduced motion', async () => {
     render(await Home())
-    fireEvent.click(screen.getByRole('button', { name: PAUSE }))
-    wait(20000)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
-    fireEvent.click(screen.getByRole('button', { name: PLAY_MOTION }))
     setOnScreen('.plates', false)
     wait(20000)
     expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
@@ -571,15 +565,11 @@ describe('the list of small things', () => {
     expect(panel().textContent).toContain(STAGED)
   })
 
-  it('advances by itself, shows the screen, and stops when paused or off screen', async () => {
+  it('advances by itself, shows the screen, and stops off screen', async () => {
     const { container } = render(await Home())
     wait(6100)
     expect(active(container).textContent).toContain('Ting til dig i dag')
     expect(within(list(container)).getByAltText(/kortet 2 ting til dig i dag/)).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: PAUSE }))
-    wait(30000)
-    expect(active(container).textContent).toContain('Ting til dig i dag')
-    fireEvent.click(screen.getByRole('button', { name: PLAY_MOTION }))
     setOnScreen('.m-grid', false)
     wait(30000)
     expect(active(container).textContent).toContain('Ting til dig i dag')
@@ -779,27 +769,8 @@ describe('the phone header button', () => {
 })
 
 describe('motion', () => {
-  it('the control steps aside while nothing that runs is on screen', async () => {
-    render(await Home())
-    const control = screen.getByRole('button', { name: PAUSE })
-    expect(control).toHaveAttribute('data-idle', 'false')
-    setOnScreen('[data-running]', false)
-    expect(control).toHaveAttribute('data-idle', 'true')
-    setOnScreen('.plates', true)
-    expect(control).toHaveAttribute('data-idle', 'false')
-  })
-
   it('runs by default', async () => {
     const { container } = render(await Home())
-    expect(runningPieces(container)).toEqual(ALL_RUNNING)
-  })
-
-  it('has one control: it pauses every piece, and pressing again starts them', async () => {
-    const { container } = render(await Home())
-    expect(screen.getAllByRole('button', { name: PAUSE })).toHaveLength(1)
-    fireEvent.click(screen.getByRole('button', { name: PAUSE }))
-    expect(runningPieces(container)).toEqual(ALL_STOPPED)
-    fireEvent.click(screen.getByRole('button', { name: PLAY_MOTION }))
     expect(runningPieces(container)).toEqual(ALL_RUNNING)
   })
 
@@ -807,14 +778,6 @@ describe('motion', () => {
     const { container } = render(await Home())
     expect(container.querySelector('video')).toBeNull()
     expect(readFileSync('app/site.css', 'utf8')).not.toMatch(/rgba\(var\(--/)
-  })
-
-  it('a pause survives scrolling away and back', async () => {
-    const { container } = render(await Home())
-    fireEvent.click(screen.getByRole('button', { name: PAUSE }))
-    setOnScreen('.plates', false)
-    setOnScreen('.plates', true)
-    expect(runningPieces(container)).toEqual(ALL_STOPPED)
   })
 
   it('stops a piece off screen without touching the others, and resumes it', async () => {
@@ -840,11 +803,10 @@ describe('motion', () => {
     expect(runningPieces(container)).toEqual(ALL_RUNNING)
   })
 
-  it('follows a reduced-motion change after mount: nothing runs and no control is left', async () => {
+  it('follows a reduced-motion change after mount: nothing runs', async () => {
     const { container } = render(await Home())
     setReduced(true)
     expect(runningPieces(container)).toEqual(ALL_STOPPED)
-    expect(screen.queryByRole('button', { name: PAUSE })).toBeNull()
     setReduced(false)
     expect(runningPieces(container)).toEqual(ALL_RUNNING)
   })

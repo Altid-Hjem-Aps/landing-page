@@ -19,7 +19,7 @@
   --lavender: #bdb0f9;
   --rose: #ffbab8;
 
-  /* How the fixed QR card and Altid Energi's offer come and go: the same fade and slide. */
+  /* How a fixed piece (the QR card) leaves: a fade and a short slide. */
   --stick-fade: opacity 0.3s, visibility 0.3s, translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
   --stick-shift: 24px;
 
@@ -1138,11 +1138,10 @@
     }
   }
 
-  /* The one QR code on computers (GetAppSticky): the hero's old dark card, the code on a white
-     tile with room around it on the left, the text on the right. Top right, under the menu's
-     height, where the hero's notifications and service marks never come (measured); it comes
-     and goes as Altid Energi's offer does, sliding towards its own edge. Stickies sets
-     data-shown. */
+  /* The one QR code on computers (GetAppSticky): the hero's old dark card, bottom right, the
+     code on a white tile with room around it on the left, the text on the right. Hidden when
+     the page opens; it eases in (a fade and a short rise) once the hero's animation has
+     scrolled up past it, and leaves with the shared fade before the testimonials' slider. */
   .gs {
     display: none;
   }
@@ -1150,8 +1149,8 @@
     .gs {
       position: fixed;
       z-index: 35;
-      top: 92px;
       right: 16px;
+      bottom: 16px;
       display: flex;
       align-items: center;
       gap: 14px;
@@ -1161,35 +1160,18 @@
       background: var(--forest);
       box-shadow: 0 12px 30px rgba(0, 30, 10, 0.2);
       color: #fff;
-      transition: var(--stick-fade);
+      /* Coming in: half a second, easing out softly. */
+      transition:
+        opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0.5s,
+        translate 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 
+      /* Going: the fade the site's fixed pieces share. */
       &[data-shown='false'] {
         opacity: 0;
         visibility: hidden;
-        translate: 0 calc(var(--stick-shift) * -1);
-      }
-      @media (prefers-reduced-motion: no-preference) {
-        /* backwards, not both: a held end state would stop the fade from running later. */
-        animation: site-stick-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s backwards;
-      }
-    }
-  }
-  /* 1024 to 1199 wide: the hero's heading reaches further right, so the card is narrower, with
-     the same code, and its line wraps. */
-  @media (min-width: 1024px) and (max-width: 1199px) and (hover: hover) and (pointer: fine) {
-    .gs {
-      right: 12px;
-      gap: 10px;
-      width: 206px;
-      padding: 8px 10px 8px 8px;
-
-      .gs-title {
-        font-size: 15px;
-        line-height: 19px;
-      }
-      .gs-line {
-        font-size: 12px;
-        line-height: 15px;
+        translate: 0 var(--stick-shift);
+        transition: var(--stick-fade);
       }
     }
   }
@@ -1230,29 +1212,21 @@
     }
   }
 
-  /* Altid Energi's first month free (EnergiOffer), as the app's own floating "Bliv kunde"
-     element: a light sky card turned a little over a paler one behind it, like a stack, the bulb
-     in a white circle, a round Deep forest button, a honey badge over the corner and the fine
-     print. Fixed at the bottom while the Energi card is in the middle of the window (Stickies):
-     bottom right on a computer, across the bottom on a phone. It slides up and fades in, and
-     floats a few px while shown (Float). */
-  .eo {
-    position: fixed;
-    z-index: 35;
-    left: 20px;
-    bottom: 20px;
-    width: 440px;
-    transition: var(--stick-fade);
-
-    &[data-shown='false'] {
-      opacity: 0;
-      visibility: hidden;
-      translate: 0 var(--stick-shift);
-
-      .float {
-        animation-play-state: paused;
-      }
-    }
+  /* Altid Energi's first month free (EnergiOffer), over the Energi card's phone where the app's
+     own floating "Bliv kunde" element sits in the screenshot, covering it: a light sky card turned
+     a little over a paler one behind it, the bulb in a white circle, a round Deep forest button,
+     a honey badge over the corner and the fine print. A little wider than the phone, so it floats
+     over its edges as the app's does. Everything is sized from the phone (--phone, 370 design px
+     on a computer), with a floor under the type so it stays readable on a phone. The export
+     (866 x 1477, the 646 px phone at 110, 70) has the element from 64 to 786 across and 742 to
+     1006 down, so it is placed and sized from those. */
+  .ek {
+    position: absolute;
+    z-index: 1;
+    left: calc(var(--phone) * (60 - 110) / 646);
+    top: calc(var(--phone) * (748 - 70) / 646);
+    width: calc(var(--phone) * 730 / 646);
+    pointer-events: auto;
   }
   .ek-float {
     --float-y: -5px;
@@ -1261,7 +1235,7 @@
   .ek-offer {
     --ek-ground: #d4ebff;
     position: relative;
-    rotate: -2deg;
+    rotate: -3deg;
     color: #163223;
 
     /* The paler card behind, turned the other way and showing above and to the right. */
@@ -1269,20 +1243,21 @@
       content: '';
       position: absolute;
       inset: 0;
-      border-radius: 24px;
-      background: rgba(234, 244, 255, 0.92);
+      border-radius: calc(var(--phone) * 24 / 370);
+      background: rgba(234, 244, 255, 0.96);
       box-shadow: 0 8px 22px rgba(0, 45, 100, 0.12);
       rotate: 3.5deg;
-      translate: 6px -9px;
+      translate: calc(var(--phone) * 6 / 370) calc(var(--phone) * -10 / 370);
     }
   }
   .ek-link {
     position: relative;
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 16px 14px 14px 16px;
-    border-radius: 24px;
+    gap: calc(var(--phone) * 12 / 370);
+    min-height: calc(var(--phone) * 150 / 370);
+    padding: calc(var(--phone) * 18 / 370) calc(var(--phone) * 14 / 370) calc(var(--phone) * 14 / 370) calc(var(--phone) * 16 / 370);
+    border-radius: calc(var(--phone) * 24 / 370);
     background: var(--ek-ground);
     box-shadow:
       0 26px 50px rgba(0, 45, 100, 0.22),
@@ -1310,12 +1285,17 @@
   .ek-mark {
     display: grid;
     flex: none;
-    width: 52px;
-    height: 52px;
+    width: calc(var(--phone) * 52 / 370);
+    height: calc(var(--phone) * 52 / 370);
     place-items: center;
     border-radius: 50%;
     background: var(--cream);
     color: #163223;
+
+    svg {
+      width: 46%;
+      height: 46%;
+    }
   }
   .ek-text {
     display: flex;
@@ -1326,114 +1306,65 @@
   }
   .ek-title {
     font-family: var(--display);
-    font-size: 18px;
+    font-size: max(13px, calc(var(--phone) * 18 / 370));
     font-weight: 700;
-    line-height: 22px;
+    line-height: 1.2;
     letter-spacing: -0.01em;
     text-wrap: balance;
   }
   .ek-line {
-    font-size: 14px;
-    line-height: 18px;
+    font-size: max(11px, calc(var(--phone) * 14 / 370));
+    line-height: 1.3;
   }
   .ek-fine {
-    margin-top: 4px;
-    font-size: 11px;
-    line-height: 14px;
+    margin-top: 3px;
+    font-size: max(9px, calc(var(--phone) * 11 / 370));
+    line-height: 1.25;
     opacity: 0.72;
   }
   .ek-go {
     display: grid;
     flex: none;
-    width: 44px;
-    height: 44px;
+    width: calc(var(--phone) * 44 / 370);
+    height: calc(var(--phone) * 44 / 370);
     place-items: center;
     border-radius: 50%;
     background: var(--dark-forest);
     color: #fff;
     transition: background-color 0.2s;
+
+    svg {
+      width: 46%;
+      height: 46%;
+    }
   }
   .ek-badge {
     position: absolute;
     z-index: 1;
-    top: -14px;
-    right: 22px;
-    padding: 4px 12px;
+    top: calc(var(--phone) * -14 / 370);
+    right: calc(var(--phone) * 22 / 370);
+    padding: calc(var(--phone) * 4 / 370) calc(var(--phone) * 12 / 370);
     border-radius: 999px;
     background: #efb02a;
     box-shadow: 0 4px 10px rgba(0, 30, 10, 0.12);
     color: #163223;
     font-family: var(--display);
-    font-size: 13px;
+    font-size: max(10px, calc(var(--phone) * 13 / 370));
     font-weight: 700;
-    line-height: 18px;
+    line-height: 1.35;
     white-space: nowrap;
     rotate: 4deg;
   }
-  /* The pause button sits bottom left too: it steps up above the offer while it is there. */
-  .pause:has(~ .eo[data-shown='true']) {
-    translate: 0 -136px;
-  }
-  /* Phones and tablets: across the bottom, 16 px from the edges and clear of the home bar, a
-     more compact element; the pause button steps up above it while it is there. */
-  @media (max-width: 1023px) {
-    .eo {
-      left: calc(16px + env(safe-area-inset-left));
-      right: calc(16px + env(safe-area-inset-right));
-      bottom: calc(16px + env(safe-area-inset-bottom));
-      width: auto;
-      max-width: 480px;
-      margin-inline: auto;
-
-      &[data-shown='false'] {
-        translate: 0 calc(100% + 16px + env(safe-area-inset-bottom));
-      }
-    }
-    .ek-offer {
-      rotate: -1.5deg;
-    }
-    .ek-link {
-      gap: 10px;
-      padding: 16px 10px 12px 12px;
-    }
-    .ek-mark {
-      width: 40px;
-      height: 40px;
-    }
-    .ek-title {
-      font-size: 15px;
-      line-height: 19px;
-    }
-    .ek-line {
-      font-size: 13px;
-      line-height: 17px;
-    }
-    .ek-fine {
-      font-size: 10.5px;
-      line-height: 13px;
-    }
-    .ek-go {
-      width: 36px;
-      height: 36px;
-    }
-    .ek-badge {
-      top: -12px;
-      right: 16px;
-      padding: 3px 10px;
-      font-size: 12px;
-      line-height: 16px;
-    }
-    .pause:has(~ .eo[data-shown='true']) {
-      translate: 0 -122px;
+  /* Phones: the card shows more of its phone, so the whole element is in it. */
+  @media (max-width: 767px) {
+    #energi .d-fixed {
+      height: calc(var(--u) * 372);
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .eo,
-    .eo[data-shown='false'],
     .ek-link,
     .ek-go {
       transition: none;
-      translate: none;
     }
   }
   @media (max-width: 767px) {
@@ -3349,6 +3280,17 @@
     outline: 1px solid rgba(0, 60, 22, 0.1);
     outline-offset: -1px;
   }
+  /* An app screen on its own toned card, with room all round. */
+  .e-screen {
+    padding: calc(var(--u) * 10);
+  }
+  .e-screen-in {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: calc(var(--u) * 21);
+  }
   .e-plate img {
     width: 104%;
     max-width: none;
@@ -3411,8 +3353,8 @@
      middle) and below it. */
   @media (min-width: 1024px) {
     .e {
-      --e-top: 420;
-      --e-bottom: 500;
+      --e-top: 320;
+      --e-bottom: 380;
       padding-top: calc(var(--pad) * 0.5);
     }
     .e-wall {
@@ -3452,18 +3394,18 @@
       left: calc(var(--x) * var(--u));
       display: flex;
       flex-direction: column;
-      gap: calc(var(--u) * 20);
+      gap: calc(var(--u) * 16);
       width: calc(var(--w) * var(--u));
     }
-    /* 80 of calm space plus the most a column can drift (24) towards the text. */
+    /* 72 of calm space plus the most a column can drift (16) towards the text. */
     .e-band[data-band='above'] .e-col {
-      bottom: calc((104 + var(--y)) * var(--u));
+      bottom: calc((88 + var(--y)) * var(--u));
     }
     .e-band[data-band='beside'] .e-col {
       top: calc(50% + var(--y) * var(--u));
     }
     .e-band[data-band='below'] .e-col {
-      top: calc((104 + var(--y)) * var(--u));
+      top: calc((88 + var(--y)) * var(--u));
     }
   }
   /* Phones and tablets: three columns of two under the text, still. */
@@ -3632,31 +3574,6 @@
     }
   }
 
-  /* Pause */
-  .pause {
-    position: fixed;
-    z-index: 30;
-    left: 12px;
-    bottom: 12px;
-    display: grid;
-    width: 32px;
-    height: 32px;
-    place-items: center;
-    border-radius: 50%;
-    background: rgba(253, 250, 244, 0.72);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 0 0 1px rgba(0, 60, 22, 0.14);
-    color: var(--forest);
-    cursor: pointer;
-    transition: opacity 0.2s, visibility 0.2s, translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
-
-    /* Nothing in view runs by itself, so there is nothing to pause. */
-    &[data-idle='true'] {
-      opacity: 0;
-      visibility: hidden;
-    }
-  }
   /* Leave popup (computers): Thor's popup from the old site, same numbers (ExitIntentDialog).
      The dialog fills the window and centres the card; the backdrop is the old overlay. */
   .leave {
@@ -3807,12 +3724,6 @@ html:not([data-platform='android']) .site .for-play {
   display: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .site .pause {
-    transition: none;
-  }
-}
-
 html:has(.site) {
   /* Anchors and keyboard focus stop below the fixed nav. */
   scroll-padding-top: 96px;
@@ -3958,14 +3869,6 @@ body:has(.site) {
     transform: translateY(20px);
   }
 }
-/* The QR card's first arrival, as it comes back after the slider: from above, fading in. */
-@keyframes site-stick-in {
-  from {
-    opacity: 0;
-    translate: 0 calc(var(--stick-shift) * -1);
-  }
-}
-
 @keyframes site-fade {
   from {
     opacity: 0;

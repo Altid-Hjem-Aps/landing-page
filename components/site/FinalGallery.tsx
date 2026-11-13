@@ -6,50 +6,49 @@ import { FINAL, MAD } from './copy'
 import { useMotionPrefs } from './MotionPrefs'
 
 // The final block's collage, in the style of the old "Lavet med omhu til danske hjem" block
-// (Thor 13/11): columns of rounded tiles in the site's tones holding the dishes, the coast
-// painting and the coin stack, candid photos and app screens filling their tiles, and the
-// assistant's notification on a tile of its own. What goes where is FINAL.gallery in copy.ts,
-// in order; this file holds the columns.
+// (Thor 13/11): close columns of rounded tiles in the site's tones around the block's text:
+// candid photos, app screens each on a toned card, the coast painting, the coin stack, two
+// dishes and the assistant's notification on a tile of its own. What goes where is
+// FINAL.gallery in copy.ts, in order; this file holds the columns.
 //
 // Computers (from 1024 px, CSS): a 1440 design px wide stage (growing to 1800 with the window)
-// in three bands around the text, which keeps a calm space of 80 design px on every side.
-// Columns beside the text are placed from its middle; columns above it end 80 above it; columns
-// below it start under it, and the middle stays free for the QR card the store pills open into
-// (tiles there start 274 under the text). Everything sits inside the block with room to spare for the drift:
-// as the block passes, the columns move up to 24 px at their own speeds (transform only), and
-// each tile rises in the first time it is seen (data-reveal). Neither with reduced motion.
-// Phones and tablets: three columns of two under the text, still.
+// in three bands around the text, which keeps a calm space of 72 design px on every side.
+// Columns beside the text are placed from its middle; columns above it end over the calm
+// space; columns below it start under it, either side of the middle, which stays free for the
+// QR card the store pills open into. Everything sits inside the block with room to spare for
+// the drift: as the block passes, the columns move up to 16 px at their own speeds (transform
+// only), and each tile rises in the first time it is seen (data-reveal). Neither with reduced
+// motion. Phones and tablets: three columns of two under the text, still.
 
 type Entry = (typeof FINAL.gallery)[number]
 type Band = 'above' | 'beside' | 'below'
-/** x: the left edge from the stage's left, in design px. y: above, the gap under the column
+/** A screen tile is never taller than its screen at the tile's width (150 wide: 300 high), so
+ * the screen is only cut at the bottom. x: the left edge from the stage's left, in design px. y: above, the gap under the column
  * beyond the calm space; beside, the top from the text's middle; below, the gap over the
- * column beyond the calm space. The calm space above and below is 80 plus the most a column
- * drifts towards the text, 24 (CSS). Heights of the column's tiles in design px. */
+ * column beyond the calm space. Above and below, the calm space is 72 plus the most a column
+ * drifts towards the text, 16 (CSS). Heights of the column's tiles in design px. */
 type Column = { band: Band; x: number; y: number; w: number; tiles: number[]; speed: number }
 
 const COLUMNS: Column[] = [
-  { band: 'beside', x: 20, y: -400, w: 140, tiles: [220, 180, 300], speed: -0.8 },
-  { band: 'beside', x: 180, y: -170, w: 140, tiles: [200, 240], speed: 0.6 },
-  { band: 'above', x: 410, y: 0, w: 140, tiles: [230], speed: -0.4 },
-  { band: 'below', x: 410, y: 20, w: 140, tiles: [220], speed: 0.5 },
-  { band: 'above', x: 570, y: 20, w: 300, tiles: [180], speed: 0.3 },
-  { band: 'below', x: 570, y: 170, w: 140, tiles: [180], speed: -0.5 },
-  { band: 'below', x: 730, y: 170, w: 140, tiles: [180], speed: 0.4 },
-  { band: 'above', x: 890, y: 50, w: 140, tiles: [190], speed: -0.6 },
-  { band: 'below', x: 890, y: 0, w: 140, tiles: [300], speed: 0.6 },
-  { band: 'beside', x: 1120, y: -330, w: 140, tiles: [240, 190], speed: -0.6 },
-  { band: 'beside', x: 1280, y: -260, w: 140, tiles: [190, 240, 200], speed: 0.8 },
+  { band: 'beside', x: 12, y: -330, w: 150, tiles: [250, 300], speed: -0.8 },
+  { band: 'beside', x: 178, y: -230, w: 150, tiles: [170, 200, 240], speed: 0.6 },
+  { band: 'above', x: 396, y: 0, w: 150, tiles: [210], speed: -0.4 },
+  { band: 'below', x: 396, y: 0, w: 150, tiles: [240], speed: 0.5 },
+  { band: 'above', x: 562, y: 20, w: 316, tiles: [150], speed: 0.3 },
+  { band: 'above', x: 894, y: 10, w: 150, tiles: [170], speed: -0.6 },
+  { band: 'below', x: 894, y: 0, w: 150, tiles: [260], speed: 0.6 },
+  { band: 'beside', x: 1112, y: -360, w: 150, tiles: [260, 300], speed: -0.6 },
+  { band: 'beside', x: 1278, y: -140, w: 150, tiles: [170, 260], speed: 0.8 },
 ]
 /** The phone's three columns: the top offset and the tiles' heights, in design px of 390. */
 const PHONE: { y: number; tiles: number[] }[] = [
-  { y: 0, tiles: [155, 140] },
-  { y: 40, tiles: [200, 140] },
-  { y: 16, tiles: [155, 140] },
+  { y: 0, tiles: [155, 220] },
+  { y: 40, tiles: [130, 155] },
+  { y: 16, tiles: [220, 155] },
 ]
 
 /** The most a column drifts, in px, at speed 1. */
-const DRIFT = 24
+const DRIFT = 16
 
 const wallTiles = COLUMNS.reduce((sum, column) => sum + column.tiles.length, 0)
 const phoneTiles = PHONE.reduce((sum, column) => sum + column.tiles.length, 0)
@@ -75,9 +74,12 @@ function Tile({ entry, h, delay, sizes }: { entry: Entry; h: number; delay: numb
         </div>
       )
     case 'screen':
+      // On its own toned card, with room all round, as the screens lived before.
       return (
-        <div className="e-tile e-cover e-screen" data-reveal style={style}>
-          <Image src={entry.src} alt={entry.alt} fill sizes={sizes} style={{ objectFit: 'cover', objectPosition: '50% 0%' }} />
+        <div className="e-tile e-screen" data-tone={entry.tone} data-reveal style={style}>
+          <span className="e-screen-in">
+            <Image src={entry.src} alt={entry.alt} fill sizes={sizes} style={{ objectFit: 'cover', objectPosition: '50% 0%' }} />
+          </span>
         </div>
       )
     case 'art':

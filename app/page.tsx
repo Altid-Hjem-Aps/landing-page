@@ -12,13 +12,12 @@ import Steps from '@/components/site/Steps'
 import Story from '@/components/site/Story'
 import Zoomer from '@/components/site/Zoomer'
 import { MotionPrefs } from '@/components/site/MotionPrefs'
-import PauseButton from '@/components/site/PauseButton'
 import Privacy from '@/components/site/Privacy'
 import Proof from '@/components/site/Proof'
 import Reveal from '@/components/site/Reveal'
 import SiteFooter from '@/components/site/SiteFooter'
 import SiteNav from '@/components/site/SiteNav'
-import Stickies from '@/components/site/Stickies'
+import GetAppSticky from '@/components/site/GetAppSticky'
 import Values from '@/components/site/Values'
 import Blog from '@/components/sections/Blog'
 import { APP_STORE_ID } from '@/lib/store-links'
@@ -76,8 +75,7 @@ export default async function Home() {
           <Blog />
           <FinalCta />
         </main>
-        <PauseButton />
-        <Stickies />
+        <GetAppSticky />
         <LeavePopup proof={LEAVE.proof.replace('{thousands}', usersThousands(users))} />
       </MotionPrefs>
       <SiteFooter />

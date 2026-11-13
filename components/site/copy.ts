@@ -20,8 +20,6 @@ export const NAV = {
     { href: '/kontakt', label: 'Kontakt' },
   ],
   cta: 'Hent appen',
-  pause: 'Sæt bevægelsen på pause',
-  play: 'Start bevægelsen igen',
   skip: 'Spring til indhold',
   open: 'Åbn menu',
   close: 'Luk menu',
@@ -300,31 +298,28 @@ export const FAQ: { title: string; items: readonly FaqItem[] } = {
 export const FINAL = {
   title: 'Hent Altid Hjem i dag',
   body: 'Vi glæder os til at se jer. Appen er gratis at hente, og det er gratis at oprette en konto.',
-  // A collage around the text in the style of the old "Lavet med omhu til danske hjem" block
-  // (Thor 13/11, fourth round): rounded tiles in the site's tones holding the dishes, the coast
-  // painting and the coin stack, Thor's candid photos and two app screens filling their tiles,
-  // and the assistant's notification on a tile of its own. FinalGallery places them in this
-  // order (17 places on a computer, see COLUMNS there); a phone shows the six marked `phone`.
-  // Everything but the notification is named for screen readers. `plate` is an index into
-  // MAD.plates; a photo's or a cover's `focus` is its object-position.
+  // A compact collage around the text in the style of the old "Lavet med omhu til danske hjem"
+  // block (Thor 13/11): rounded tiles in the site's tones, Thor's candid photos, app screens each
+  // on a toned card, the coast painting, the coin stack, two dishes and the assistant's
+  // notification on a tile of its own. FinalGallery places them in this order (14 places on a
+  // computer, see COLUMNS there); a phone shows the six marked `phone`. Everything but the
+  // notification is named for screen readers. `plate` is an index into MAD.plates; a photo's
+  // or a cover's `focus` is its object-position.
   gallery: [
     { kind: 'photo', src: '/faq-familie.jpg', alt: 'Far med datter på skuldrene i stuen', focus: '8% 50%', phone: true },
+    { kind: 'screen', src: HERO.mainScreens[0].src, alt: HERO.mainScreens[0].alt, tone: 'mint', phone: true },
     { kind: 'plate', plate: 0, tone: 'honey', phone: true },
-    { kind: 'screen', src: HERO.mainScreens[0].src, alt: HERO.mainScreens[0].alt, phone: true },
-    { kind: 'plate', plate: 1, tone: 'lavender', phone: true },
+    { kind: 'photo', src: '/site/gallery/galleri-bamse.webp', alt: 'Uldsokker og en bamse på gulvtæppet', focus: '55% 50%', phone: true },
     { kind: 'photo', src: '/site/gallery/galleri-pige-sofa.webp', alt: 'Pige med høretelefoner og tablet i sofaen', focus: '50% 60%', phone: false },
     { kind: 'art', src: '/site/app/painting.webp', alt: 'Maleriet af en kystby fra drømmen om en familieferie.', tone: 'sand', cover: true, focus: '55% 85%', phone: false },
-    { kind: 'photo', src: '/site/gallery/galleri-bamse.webp', alt: 'Uldsokker og en bamse på gulvtæppet', focus: '55% 50%', phone: true },
+    { kind: 'screen', src: HERO.mainScreens[1].src, alt: HERO.mainScreens[1].alt, tone: 'lavender', phone: false },
     { kind: 'note', title: 'Altid Hjem', time: 'nu', body: HERO.lanes[2].done, done: 'Klaret', tone: 'mint', phone: false },
-    { kind: 'plate', plate: 2, tone: 'sky', phone: false },
-    { kind: 'plate', plate: 3, tone: 'rose', phone: true },
     { kind: 'art', src: '/site/brand/coin-stack.svg', alt: 'En stak mønter fra forsiden i appen.', tone: 'honey', cover: false, focus: '50% 50%', phone: false },
-    { kind: 'screen', src: HERO.secondScreens[2].src, alt: HERO.secondScreens[2].alt, phone: false },
-    { kind: 'photo', src: '/site/gallery/galleri-far-og-datter.webp', alt: 'Far og datter krammer i sofaen', focus: '50% 15%', phone: false },
-    { kind: 'plate', plate: 4, tone: 'mint', phone: false },
-    { kind: 'plate', plate: 5, tone: 'rose', phone: false },
+    { kind: 'screen', src: HERO.secondScreens[2].src, alt: HERO.secondScreens[2].alt, tone: 'sky', phone: true },
+    { kind: 'photo', src: '/site/gallery/galleri-far-og-datter.webp', alt: 'Far og datter krammer i sofaen', focus: '50% 15%', phone: true },
+    { kind: 'screen', src: HERO.secondScreens[1].src, alt: HERO.secondScreens[1].alt, tone: 'rose', phone: false },
+    { kind: 'plate', plate: 1, tone: 'lavender', phone: false },
     { kind: 'photo', src: '/site/gallery/galleri-elbil.webp', alt: 'En elbil lades op ved huset', focus: '40% 50%', phone: false },
-    { kind: 'plate', plate: 6, tone: 'sky', phone: false },
   ],
 } as const
 
