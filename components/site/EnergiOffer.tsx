@@ -1,55 +1,47 @@
 'use client'
 
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
 import { ENERGI_OFFER } from './copy'
+import QrMorph from './QrMorph'
 import ServiceIcon from './ServiceIcon'
 
-// Altid Energi's first month free, while the Energi card (#energi in MadDark) is on screen. A
-// computer (from 1024 px, fine pointer, CSS) gets a card in the hero QR card's corner, with a
-// QR code for the phone and the heading as a link for this computer. A phone (under 768 px) gets
-// a pill at the bottom of the screen. One IntersectionObserver sets data-shown; CSS fades and
-// slides, and with reduced motion it only shows and hides.
-const BAND = '-20% 0px -20% 0px'
-
+// Altid Energi's first month free, in the Energi card's text under its paragraph, drawn after
+// the app's own floating "Bliv kunde" element: a light card turned a little, the bulb in a white
+// circle, a round Deep forest button, and a honey badge over the corner. On a phone or a tablet
+// the whole element is the link to the signup; on a computer it turns into the signup's QR
+// code, with a small link for signing up on this computer.
 export default function EnergiOffer() {
-  const [shown, setShown] = useState(false)
-
-  useEffect(() => {
-    const card = document.getElementById('energi')
-    if (!card) throw new Error('EnergiOffer needs the #energi card on the page')
-    const observer = new IntersectionObserver(([entry]) => setShown(entry.isIntersecting), { rootMargin: BAND })
-    observer.observe(card)
-    return () => observer.disconnect()
-  }, [])
-
   return (
-    <>
-      <aside className="eo" data-shown={shown} aria-label={ENERGI_OFFER.title}>
-        <figure className="eo-code">
-          <Image src="/site/qr/altid-energi.svg" alt={ENERGI_OFFER.qrAlt} width={82} height={82} />
-          <figcaption>{ENERGI_OFFER.qr}</figcaption>
-        </figure>
-        <div className="eo-text">
-          <p className="eo-badge">{ENERGI_OFFER.badge}</p>
-          <p className="eo-title">
-            <a href={ENERGI_OFFER.href} target="_blank" rel="noopener noreferrer">
-              {ENERGI_OFFER.title}
-            </a>
-          </p>
-          <p className="eo-line">{ENERGI_OFFER.line}</p>
-          <p className="eo-fine">{ENERGI_OFFER.fine}</p>
-        </div>
-      </aside>
-      <a className="eo-pill" data-shown={shown} href={ENERGI_OFFER.href} target="_blank" rel="noopener noreferrer">
-        <span className="eo-mark">
-          <ServiceIcon name="energi" size={20} />
+    <div className="ek" data-reveal>
+      <QrMorph
+        className="ek-offer"
+        anchor="bottom-left"
+        href={ENERGI_OFFER.href}
+        newTab
+        qr={{ src: '/site/qr/altid-energi.svg', alt: ENERGI_OFFER.qrAlt, size: 164 }}
+        head={ENERGI_OFFER.title}
+        caption={ENERGI_OFFER.qr}
+        closeLabel={ENERGI_OFFER.close}
+        extra={
+          <a className="ek-here" href={ENERGI_OFFER.href} target="_blank" rel="noopener noreferrer">
+            {ENERGI_OFFER.here}
+          </a>
+        }
+        decor={<span className="ek-badge qm-decor">{ENERGI_OFFER.badge}</span>}
+      >
+        <span className="ek-mark">
+          <ServiceIcon name="energi" size={24} />
         </span>
-        <span className="eo-pill-text">{ENERGI_OFFER.phone}</span>
-        <svg className="eo-chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="m9 6 6 6-6 6" />
-        </svg>
-      </a>
-    </>
+        <span className="ek-text">
+          <span className="ek-title">{ENERGI_OFFER.title}</span>
+          <span className="ek-line">{ENERGI_OFFER.line}</span>
+        </span>
+        <span className="ek-go" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m9.5 6 6 6-6 6" />
+          </svg>
+        </span>
+      </QrMorph>
+      <p className="ek-fine">{ENERGI_OFFER.fine}</p>
+    </div>
   )
 }

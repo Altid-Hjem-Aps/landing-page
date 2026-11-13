@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { META, NAV, LEAVE } from '@/components/site/copy'
 import FaqSection from '@/components/site/FaqSection'
 import FinalCta from '@/components/site/FinalCta'
-import EnergiOffer from '@/components/site/EnergiOffer'
 import { dmSans } from '@/components/site/fonts'
+import GetAppSticky from '@/components/site/GetAppSticky'
 import Hero from '@/components/site/Hero'
 import LeavePopup from '@/components/site/LeavePopup'
 import { readUserCount, usersThousands } from '@/lib/user-count'
@@ -77,7 +77,7 @@ export default async function Home() {
           <FinalCta />
         </main>
         <PauseButton />
-        <EnergiOffer />
+        <GetAppSticky />
         <LeavePopup proof={LEAVE.proof.replace('{thousands}', usersThousands(users))} />
       </MotionPrefs>
       <SiteFooter />

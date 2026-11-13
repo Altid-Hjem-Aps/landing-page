@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { OKONOMI } from './copy'
+import EnergiOffer from './EnergiOffer'
 
 // On the page's light ground: the heading, then the seven feature blocks of the launch mail, word for word and
 // in its type styles, with the phone and lifted pieces exported from the mail's Figma frames. The phone
@@ -32,6 +33,8 @@ export default function MadDark() {
                     <a href={card.source.href}>{card.source.text}</a>
                   </p>
                 ) : null}
+                {/* Altid Energi's first month free, as the app's own "Bliv kunde" element. */}
+                {'id' in card && card.id === 'energi' ? <EnergiOffer /> : null}
               </div>
               <div className="d-fixed">
                 <div className="d-content">

@@ -698,35 +698,6 @@ describe('FAQ and JSON-LD', () => {
   })
 })
 
-describe('the QR card', () => {
-  const card = () => screen.getByRole('complementary', { name: 'Hent appen med din telefon', hidden: true })
-
-  it('belongs to the hero, with both codes, each named for its store', async () => {
-    const { container } = render(await Home())
-    expect((container.querySelector('#top') as HTMLElement).contains(card())).toBe(true)
-    expect(within(card()).getByAltText('QR-kode til Altid Hjem i App Store').getAttribute('src')).toContain('qr/app-store.svg')
-    expect(within(card()).getByAltText('QR-kode til Altid Hjem i Google Play').getAttribute('src')).toContain('qr/google-play.svg')
-    expect(card().textContent).toContain('Scan koden med din telefon')
-  })
-
-  it('fades out with scrolling and is gone by 900 px, as measured on the reference', async () => {
-    render(await Home())
-    const element = card()
-    const scrollTo = (y: number) => {
-      vi.stubGlobal('scrollY', y)
-      act(() => {
-        window.dispatchEvent(new Event('scroll'))
-      })
-    }
-    scrollTo(0)
-    expect(element.style.opacity).toBe('1')
-    scrollTo(900)
-    expect(element.style.visibility).toBe('hidden')
-    scrollTo(0)
-    expect(element.style.visibility).toBe('visible')
-  })
-})
-
 describe('reduced motion on the scroll-driven pieces', () => {
   it('leaves everything at rest', async () => {
     reduced = true

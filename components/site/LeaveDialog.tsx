@@ -93,22 +93,11 @@ export default function LeaveDialog({ proof, onClose }: { proof: string; onClose
           <p className="leave-proof">{proof}</p>
           <p className="leave-body">{LEAVE.body}</p>
 
-          {/* Where the old form was, at its height: the two codes, then the small line. */}
+          {/* Where the old form was, at its height: the one code, then the small line. */}
           <div className="leave-get">
-            <div className="leave-codes">
-              <figure>
-                <span className="leave-tile">
-                  <Image src="/site/qr/app-store.svg" alt={QR.appStoreAlt} width={57} height={57} />
-                </span>
-                <figcaption>{QR.appStore}</figcaption>
-              </figure>
-              <figure>
-                <span className="leave-tile">
-                  <Image src="/site/qr/google-play.svg" alt={QR.googlePlayAlt} width={57} height={57} />
-                </span>
-                <figcaption>{QR.googlePlay}</figcaption>
-              </figure>
-            </div>
+            <span className="leave-tile">
+              <Image src="/site/qr/app.svg" alt={QR.alt} width={185} height={185} />
+            </span>
             <p className="leave-scan">{QR.line}</p>
             <p className="leave-free">
               {LEAVE.free} <span>{LEAVE.always}</span>

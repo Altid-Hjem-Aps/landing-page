@@ -999,229 +999,430 @@
       animation-play-state: paused;
     }
   }
-  .qr-frame {
-    display: none;
-    position: absolute;
-    z-index: 3;
-    inset: 8px 8px auto;
-    height: min(calc(100vh - 16px), calc(100% - 16px));
-    pointer-events: none;
+  /* A button that turns into a QR card in its own place (QrMorph), on computers. The box eases
+     its width, height and corners from the button's shape to the card's, with a slight
+     overshoot; the face fades out at once, and the card fades in once the box has settled.
+     Closing runs back: the card goes first, then the box, then the face. Each use sets the
+     sizes and colours: --qm-w0, --qm-h0, --qm-r0 closed, --qm-w1, --qm-r1 open (the open
+     height, --qm-h1, is measured), --qm-bg0, --qm-bg1 and --qm-shadow. */
+  .qm {
+    position: relative;
   }
-  @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
-    .qr-frame {
-      display: block;
-    }
+  .qm[data-mode='morph'] {
+    width: var(--qm-w0);
+    height: var(--qm-h0);
   }
-  .qr {
+  .qm-box {
     position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--qm-r0);
+    background: var(--qm-bg0);
+    box-shadow: var(--qm-shadow);
+    transition:
+      width 0.38s cubic-bezier(0.4, 0, 0.2, 1) 0.1s,
+      height 0.38s cubic-bezier(0.4, 0, 0.2, 1) 0.1s,
+      border-radius 0.38s cubic-bezier(0.4, 0, 0.2, 1) 0.1s,
+      background-color 0.3s ease 0.1s;
+  }
+  .qm[data-open='true'] .qm-box {
+    width: var(--qm-w1);
+    height: var(--qm-h1);
+    border-radius: var(--qm-r1);
+    background: var(--qm-bg1, var(--qm-bg0));
+    transition:
+      width 0.5s cubic-bezier(0.34, 1.3, 0.64, 1),
+      height 0.5s cubic-bezier(0.34, 1.3, 0.64, 1),
+      border-radius 0.5s cubic-bezier(0.34, 1.3, 0.64, 1),
+      background-color 0.3s ease;
+  }
+  .qm[data-anchor='bottom-left'] :is(.qm-box, .qm-face, .qm-panel) {
+    left: 0;
+    bottom: 0;
+  }
+  .qm[data-anchor='bottom-right'] :is(.qm-box, .qm-face, .qm-panel) {
     right: 0;
     bottom: 0;
+  }
+  .qm-face {
+    position: absolute;
     display: flex;
     align-items: center;
+    width: var(--qm-w0);
+    height: var(--qm-h0);
+    padding: 0;
+    border: 0;
+    border-radius: var(--qm-r0);
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: opacity 0.22s ease 0.34s;
+  }
+  .qm[data-open='true'] .qm-face {
+    opacity: 0;
+    transition: opacity 0.12s ease;
+  }
+  .qm-link {
+    display: flex;
+    align-items: center;
+  }
+  .qm-panel {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: var(--qm-w1);
+    padding: 12px 12px 18px;
+    opacity: 0;
+    scale: 0.94;
+    transition:
+      opacity 0.12s ease,
+      scale 0.12s ease;
+  }
+  .qm[data-anchor='bottom-left'] .qm-panel {
+    transform-origin: 0 100%;
+  }
+  .qm[data-anchor='bottom-right'] .qm-panel {
+    transform-origin: 100% 100%;
+  }
+  .qm[data-open='true'] .qm-panel {
+    opacity: 1;
+    scale: 1;
+    transition:
+      opacity 0.26s ease-out 0.24s,
+      scale 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) 0.24s;
+  }
+  .qm-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 8px;
-    width: 310px;
-    height: 88px;
-    padding: 6px 12px 6px 8px;
-    border-radius: 16px;
-    background: var(--forest);
-    color: #fff;
-    pointer-events: auto;
+    align-self: stretch;
+    margin-bottom: 8px;
+    padding-left: 6px;
+  }
+  .qm .qm-title {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: -0.01em;
+  }
+  .qm-close {
+    display: grid;
+    flex: none;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--qm-close-bg);
+    color: inherit;
+    cursor: pointer;
+    transition: background-color 0.15s;
 
-    figure {
-      margin: 0;
-      flex: none;
-      width: 57px;
+    &:hover {
+      background: var(--qm-close-hover);
     }
-    /* Exactly one px per module, so a normal-density screen draws every module. */
+  }
+  .qm-tile {
+    display: block;
+
     img {
       display: block;
-      width: 57px;
-      height: 57px;
-      border-radius: 4px;
+    }
+  }
+  .qm .qm-caption {
+    margin: 10px 0 0;
+    font-size: 13px;
+    line-height: 17px;
+    text-align: center;
+  }
+  /* Something hung over the box's edge, like a badge: it leaves before the box grows. */
+  .qm-decor {
+    transition: opacity 0.2s ease 0.34s;
+  }
+  .qm[data-open='true'] .qm-decor {
+    opacity: 0;
+    transition: opacity 0.1s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .qm[data-mode] :is(.qm-box, .qm-face, .qm-panel, .qm-decor) {
+      transition: none;
+    }
+  }
+
+  /* "Hent appen" bottom right on computers (GetAppSticky): from the moment the page opens until
+     Ekstra Bladet's card has scrolled past the top; pressed, it turns into the one QR code. */
+  .gs {
+    display: none;
+  }
+  @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+    .gs {
+      position: fixed;
+      z-index: 35;
+      right: 16px;
+      bottom: 16px;
+      display: block;
+      transition:
+        opacity 0.3s,
+        visibility 0.3s,
+        translate 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+
+      &[data-shown='false'] {
+        opacity: 0;
+        visibility: hidden;
+        translate: 0 12px;
+      }
+    }
+  }
+  .gs-get {
+    --qm-w0: 216px;
+    --qm-h0: 60px;
+    --qm-r0: 30px;
+    --qm-w1: 236px;
+    --qm-r1: 22px;
+    --qm-bg0: var(--forest);
+    --qm-shadow: 0 14px 34px rgba(0, 30, 10, 0.22), 0 2px 6px rgba(0, 30, 10, 0.12);
+    --qm-close-bg: rgba(255, 255, 255, 0.12);
+    --qm-close-hover: rgba(255, 255, 255, 0.22);
+    color: #fff;
+
+    .qm-face {
+      gap: 10px;
+      padding: 0 18px 0 10px;
+    }
+    .qm-face:hover .gs-icon {
+      scale: 1.06;
+    }
+    .qm-box :focus-visible {
+      outline-color: var(--signal);
+      outline-offset: -3px;
+    }
+    /* A white tile under the code; the code's own quiet zone is part of the image. */
+    .qm-tile {
+      padding: 4px;
+      border-radius: 14px;
       background: #fff;
     }
-    figcaption {
-      margin-top: 2px;
-      font-size: 8px;
-      line-height: 10px;
-      text-align: center;
-      white-space: nowrap;
+    /* Four px per module, so every module is whole on any screen. */
+    .qm-tile img {
+      width: 148px;
+      height: 148px;
+    }
+    .qm-caption {
+      color: rgba(255, 255, 255, 0.78);
     }
   }
-  .qr-text {
-    margin-left: 4px;
-    min-width: 0;
+  .gs-icon {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    transition: scale 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
-  .qr-title {
+  .gs-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .gs-title {
     font-size: 16px;
-    font-weight: 500;
-    line-height: 22px;
+    font-weight: 600;
+    line-height: 20px;
   }
-  .qr-line {
+  .gs-line {
     font-size: 12px;
     line-height: 15px;
     color: rgba(255, 255, 255, 0.72);
   }
-
-  /* Altid Energi's first month free, while the Energi card is on screen (EnergiOffer). On a
-     computer a card in the hero QR card's corner and style; on a phone a pill at the bottom. */
-  .eo,
-  .eo-pill {
-    display: none;
-  }
-  @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
-    .eo {
-      position: fixed;
-      z-index: 35;
-      right: 8px;
-      bottom: 8px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      width: 384px;
-      padding: 12px 16px 12px 12px;
-      border-radius: 16px;
-      background: var(--forest);
-      color: #fff;
-      box-shadow: 0 14px 34px rgba(0, 30, 10, 0.18);
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s, visibility 0.3s;
-
-      &[data-shown='true'] {
-        opacity: 1;
-        visibility: visible;
-      }
-      :focus-visible {
-        outline-color: var(--signal);
-      }
+  @media (prefers-reduced-motion: reduce) {
+    .gs {
+      transition: none;
+      translate: none;
     }
   }
-  .eo-code {
-    flex: none;
-    width: 82px;
-    margin: 0;
 
-    /* Two px per module, so every module lands on whole pixels. */
-    img {
-      display: block;
-      width: 82px;
-      height: 82px;
-      border-radius: 6px;
-      background: #fff;
-    }
-    figcaption {
-      margin-top: 6px;
-      font-size: 10px;
-      line-height: 13px;
-      text-align: center;
-      color: rgba(255, 255, 255, 0.72);
-    }
+  /* Altid Energi's first month free in the Energi card (EnergiOffer), after the app's own
+     "Bliv kunde" element: a light sky card turned a little, with a paler one behind it, the
+     bulb in a white circle, a round Deep forest button and a honey badge over the corner. */
+  .ek {
+    margin-top: calc(var(--title) * 0.6);
   }
-  .eo-text {
-    min-width: 0;
-  }
-  .eo-badge {
-    display: inline-flex;
-    padding: 3px 9px;
-    border-radius: 999px;
-    background: var(--signal);
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 15px;
-    color: var(--forest);
-  }
-  .eo-title {
-    margin-top: 6px;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 22px;
+  .ek-offer {
+    --ek-ground: #d4ebff;
+    --qm-w0: min(calc(var(--u) * 560), 440px);
+    --qm-h0: 84px;
+    --qm-r0: 24px;
+    --qm-w1: 272px;
+    --qm-r1: 24px;
+    --qm-bg0: var(--ek-ground);
+    --qm-bg1: #fff;
+    --qm-shadow: 0 16px 34px rgba(0, 45, 100, 0.16), 0 2px 6px rgba(0, 45, 100, 0.08);
+    --qm-close-bg: rgba(22, 50, 35, 0.07);
+    --qm-close-hover: rgba(22, 50, 35, 0.14);
+    rotate: -2deg;
+    color: #163223;
+    transition: rotate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
 
-    /* The whole card is the link, for those who would rather sign up on this computer. */
-    a::after {
+    /* The paler card behind, turned a little further, as in the app. */
+    &::before {
       content: '';
       position: absolute;
       inset: 0;
-      border-radius: 16px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.5);
+      rotate: -2.5deg;
+      translate: -4px -6px;
+      transition: opacity 0.2s ease 0.34s;
     }
-  }
-  .eo:hover .eo-title a {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .eo-line {
-    margin-top: 2px;
-    font-size: 12px;
-    line-height: 16px;
-    color: rgba(255, 255, 255, 0.82);
-  }
-  .eo-fine {
-    margin-top: 6px;
-    font-size: 10px;
-    line-height: 13px;
-    color: rgba(255, 255, 255, 0.6);
-  }
-  @media (max-width: 767px) {
-    .eo-pill {
-      position: fixed;
-      z-index: 35;
-      left: calc(16px + env(safe-area-inset-left));
-      right: calc(16px + env(safe-area-inset-right));
-      bottom: calc(16px + env(safe-area-inset-bottom));
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-height: 60px;
-      padding: 8px 14px 8px 8px;
-      border-radius: 999px;
-      background: var(--cream);
-      box-shadow:
-        0 0 0 1px rgba(0, 60, 22, 0.12),
-        0 12px 30px rgba(0, 30, 10, 0.16);
-      color: var(--forest);
-      opacity: 0;
-      visibility: hidden;
-      translate: 0 calc(100% + 16px + env(safe-area-inset-bottom));
-      transition: opacity 0.3s, visibility 0.3s, translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+    &[data-open='true'] {
+      rotate: 0deg;
 
-      &[data-shown='true'] {
-        opacity: 1;
-        visibility: visible;
-        translate: 0 0;
-      }
-      &:active {
-        scale: 0.98;
+      &::before {
+        opacity: 0;
+        transition: opacity 0.1s ease;
       }
     }
-    /* The pause button steps up above the pill while it is there. */
-    .pause:has(~ .eo-pill[data-shown='true']) {
-      translate: 0 calc(-60px - 8px);
+    :is(.qm-face, .qm-link) {
+      gap: 14px;
+      padding: 0 14px 0 16px;
+    }
+    .qm-link {
+      position: relative;
+      min-height: 84px;
+      border-radius: 24px;
+      background: var(--ek-ground);
+      box-shadow: var(--qm-shadow);
+    }
+    .qm-tile img {
+      width: 164px;
+      height: 164px;
     }
   }
-  .eo-mark {
+  .ek-mark {
+    display: grid;
+    flex: none;
+    width: 52px;
+    height: 52px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--cream);
+    color: #163223;
+  }
+  .ek-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .ek-title {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .ek-line {
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .ek-go {
     display: grid;
     flex: none;
     width: 44px;
     height: 44px;
     place-items: center;
     border-radius: 50%;
-    background: var(--sky);
+    background: var(--dark-forest);
+    color: #fff;
+    transition: scale 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
-  .eo-pill-text {
-    flex: 1;
-    min-width: 0;
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 19px;
+  .ek-offer :is(.qm-face, .qm-link):hover .ek-go {
+    scale: 1.08;
   }
-  .eo-chevron {
-    flex: none;
+  .ek-badge {
+    position: absolute;
+    z-index: 1;
+    top: -14px;
+    right: 22px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #efb02a;
+    box-shadow: 0 4px 10px rgba(0, 30, 10, 0.12);
+    color: #163223;
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 18px;
+    white-space: nowrap;
+    rotate: 4deg;
+    pointer-events: none;
+  }
+  .ek-here {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 17px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .d-card-text .ek-fine {
+    margin-top: 14px;
+    max-width: 30em;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #163223;
+    opacity: 0.8;
+  }
+  /* Tablets: the card grows by the offer's height, so its text still clears the card's edges. */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .d-card:has(.ek) {
+      height: calc(var(--u) * 620 + 150px);
+    }
+  }
+  /* Phones and tablets: a narrower text column, so smaller parts, and room above the text for
+     the badge. */
+  @media (max-width: 1023px) {
+    .ek {
+      margin-top: 24px;
+    }
+    .ek-offer {
+      rotate: -1.5deg;
+
+      .qm-link {
+        gap: 10px;
+        min-height: 76px;
+        padding: 20px 10px 14px 12px;
+      }
+    }
+    .ek-mark {
+      width: 44px;
+      height: 44px;
+    }
+    .ek-title {
+      font-size: 16px;
+      line-height: 20px;
+    }
+    .ek-line {
+      font-size: 13px;
+      line-height: 17px;
+    }
+    .ek-go {
+      width: 40px;
+      height: 40px;
+    }
   }
   @media (prefers-reduced-motion: reduce) {
-    .eo,
-    .eo-pill {
+    .ek-offer,
+    .ek-offer::before {
       transition: none;
-      translate: none;
     }
   }
   @media (max-width: 767px) {
@@ -3087,7 +3288,7 @@
     z-index: 1;
     margin-top: calc(var(--u) * 40);
   }
-  /* Computers: the hero QR card's look, still, under the pills where "Hent appen" lands. */
+  /* Computers: the one QR code under the pills, where "Hent appen" lands. */
   .e-qr {
     display: none;
   }
@@ -3100,30 +3301,20 @@
       gap: 8px;
       width: fit-content;
       margin: 24px auto 0;
-      padding: 6px 20px 6px 8px;
+      padding: 6px 20px 6px 6px;
       border-radius: 16px;
       background: var(--forest);
       color: var(--cream);
       text-align: left;
 
-      figure {
-        margin: 0;
-        flex: none;
-        width: 57px;
-      }
+      /* Two px per module, so every module lands on whole pixels. */
       img {
         display: block;
-        width: 57px;
-        height: 57px;
-        border-radius: 4px;
+        flex: none;
+        width: 74px;
+        height: 74px;
+        border-radius: 10px;
         background: var(--cream);
-      }
-      figcaption {
-        margin-top: 2px;
-        font-size: 8px;
-        line-height: 10px;
-        text-align: center;
-        white-space: nowrap;
       }
       .qr-line {
         margin-left: 8px;
@@ -3133,31 +3324,50 @@
       }
     }
   }
-  .e-lay {
-    margin-top: calc(var(--u) * -3);
+  /* The app's own screens, passing slowly edge to edge: no captions, no fading edges. One
+     tile and its gap every 3.5 s. */
+  .e-mq {
+    --mq-time: 42s;
+    margin-top: calc(var(--u) * 64);
+
+    /* Room for the tiles' shadow inside the clipped row. */
+    .mq-list {
+      padding-block: 16px 28px;
+    }
+  }
+  .e-screen {
+    flex: none;
+    width: 240px;
+    height: 520px;
+    margin-right: 28px;
+    border-radius: 36px;
+    overflow: hidden;
+    background: var(--sand);
+    box-shadow: 0 10px 24px rgba(0, 30, 10, 0.1);
 
     img {
       display: block;
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 0;
     }
   }
   .e-note {
-    position: absolute;
-    inset: auto 0 calc(var(--u) * 120);
+    margin-top: 4px;
   }
   @media (max-width: 767px) {
     .e {
-      padding-bottom: 0;
+      padding-bottom: 24px;
     }
-    .e-lay {
-      position: relative;
-      width: calc(var(--u) * 975);
-      margin: calc(var(--u) * 0) 0 0 calc(var(--u) * -292);
+    .e-mq {
+      margin-top: 40px;
     }
-    .e-note {
-      position: static;
-      padding-bottom: 12px;
+    .e-screen {
+      width: 166px;
+      height: 360px;
+      margin-right: 16px;
+      border-radius: 26px;
     }
   }
 
@@ -3415,37 +3625,22 @@
     flex-direction: column;
     min-height: 390px;
   }
-  /* The codes and their line sit in the middle of the space above the small line. */
-  .leave-codes {
-    margin-top: auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-
-    figure {
-      margin: 0;
-    }
-    figcaption {
-      margin-top: 10px;
-      font-size: 15px;
-      font-weight: 500;
-      line-height: 20px;
-      text-align: center;
-    }
-  }
-  /* A white tile; the code's own white border (four modules) is part of the image. */
+  /* The code and its line sit in the middle of the space above the small line, on a white
+     tile; the code's own quiet zone (four modules) is part of the image. */
   .leave-tile {
     display: grid;
     place-items: center;
-    padding: 4px 0;
-    border-radius: 14px;
+    align-self: center;
+    margin-top: auto;
+    padding: 6px;
+    border-radius: 18px;
     background: #fff;
 
-    /* Three px per module, so every module is whole on any screen. */
+    /* Five px per module, so every module is whole on any screen. */
     img {
       display: block;
-      width: 171px;
-      height: 171px;
+      width: 185px;
+      height: 185px;
     }
   }
   .leave-scan {

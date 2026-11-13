@@ -300,34 +300,41 @@ export const FAQ: { title: string; items: readonly FaqItem[] } = {
 export const FINAL = {
   title: 'Hent Altid Hjem i dag',
   body: 'Vi glæder os til at se jer. Appen er gratis at hente, og det er gratis at oprette en konto.',
-  alt: 'Telefon med forsiden i Altid Hjem, omgivet af ting fra hjemmet: husnøgler, en kop kaffe, en tallerken mad, en indkøbsseddel, en elpære og en paraply.',
+  // The app's own screens loop slowly under the text, edge to edge, with no captions and no
+  // fading edges (Thor 13/11, in place of the flat-lay): the old proof loop's screens that are
+  // still in public/site/app, in its order, with the hero's alt texts.
+  screens: [HERO.secondScreens[0], HERO.secondScreens[2], HERO.secondScreens[1], HERO.mainScreens[1], HERO.mainScreens[2], HERO.mainScreens[0]],
+  screensLabel: 'Skærmbilleder fra Altid Hjem',
 } as const
 
+// One QR code for the app everywhere on the page: /qr sends an iPhone to the App Store and an
+// Android phone to Google Play (app/qr/route.ts). On a computer the sticky "Hent appen" bottom
+// right turns into the code when pressed (GetAppSticky), until Ekstra Bladet's card has
+// scrolled past; the final block and the leave popup show it too.
 export const QR = {
   title: 'Hent appen',
+  sticky: 'Scan med din telefon',
   line: 'Scan koden med din telefon',
-  appStore: 'App Store',
-  googlePlay: 'Google Play',
-  appStoreAlt: 'QR-kode til Altid Hjem i App Store',
-  googlePlayAlt: 'QR-kode til Altid Hjem i Google Play',
-  label: 'Hent appen med din telefon',
+  alt: 'QR-kode til Altid Hjem i App Store og Google Play',
+  close: 'Luk QR-koden',
 } as const
 
-// Altid Energi's first month free, shown while the Energi card is on screen (EnergiOffer): a card
-// with a QR code on a computer, a pill at the bottom on a phone.
+// Altid Energi's first month free, inside the Energi card (EnergiOffer), drawn after the app's
+// own "Bliv kunde" element. A link on a phone; on a computer it turns into a QR code.
 export const ENERGI_OFFER = {
-  badge: 'Gratis elabonnement første måned',
   title: 'Bliv kunde hos Altid Energi',
-  line: 'Dit gebyrfri elselskab. Strøm til indkøbspris, fri for gebyrer, spottillæg og binding.',
+  line: 'Gebyrfri strøm til indkøbspris',
+  badge: 'Første måned gratis',
   fine: '100 % rabat på elabonnementet den første måned, når du bliver kunde via Altid Hjem.',
   qr: 'Scan koden med din telefon',
-  phone: 'Gratis elabonnement første måned hos Altid Energi',
   qrAlt: 'QR-kode til tilmelding hos Altid Energi',
+  here: 'Eller bliv kunde her',
+  close: 'Luk QR-koden',
   href: 'https://tilmeld.altidenergi.dk/signup/altid-hjem',
 } as const
 
 // The popup a computer shows once per visit when the mouse heads for the tab bar (LeavePopup).
-// The QR codes under the text take their captions from QR.
+// The QR code under the text takes its caption from QR.
 export const LEAVE = {
   title: 'Gå ikke glip af overblikket over hjemmets økonomi',
   proof: 'Gør som over {thousands} andre danskere',
@@ -341,6 +348,7 @@ export const FOOTER = {
   company: 'Altid Hjem ApS, CVR 45637476',
   home: 'Altid Hjem, til forsiden',
   heads: { app: 'Appen', more: 'Læs mere', help: 'Hjælp', legal: 'Juridisk' },
+  stores: { appStore: 'App Store', googlePlay: 'Google Play' },
   app: [
     { href: '#okonomi', label: 'Økonomi' },
     { href: '#mad', label: 'Mad' },

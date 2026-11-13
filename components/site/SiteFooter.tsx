@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import CookieSettingsLink from '@/components/CookieSettingsLink'
 import NewsletterForm from '@/components/NewsletterForm'
-import { FOOTER, QR } from './copy'
+import { FOOTER } from './copy'
 import { SOCIAL } from './social'
 import StoreLink from './StoreLink'
 
@@ -48,12 +48,12 @@ export default function SiteFooter({ base = '' }: { base?: '' | '/' }) {
             ))}
             <li>
               <StoreLink store="appstore" position="footer">
-                {QR.appStore}
+                {FOOTER.stores.appStore}
               </StoreLink>
             </li>
             <li>
               <StoreLink store="play" position="footer">
-                {QR.googlePlay}
+                {FOOTER.stores.googlePlay}
               </StoreLink>
             </li>
           </ul>

@@ -3,10 +3,24 @@ import StoreBadges from '@/components/StoreBadges'
 import { STORE_ANCHOR } from '@/lib/store-links'
 import { FINAL, QR } from './copy'
 import GetAppButton from './GetAppButton'
+import Marquee from './Marquee'
 import StagedNote from './StagedNote'
 
-// Where every "Hent appen" lands. On a computer the two QR codes sit under the pills
-// (from 1024 px with a fine pointer, CSS), the way the hero's card shows them, but still.
+// Each list holds the screens twice, so one list is wider than any window and the loop never
+// shows a gap. Only the very first round carries the alt texts; the rest is hidden from
+// screen readers.
+const screens = (hidden: boolean) =>
+  [...FINAL.screens, ...FINAL.screens].map((screen, i) => {
+    const repeat = hidden || i >= FINAL.screens.length
+    return (
+      <li key={`${screen.src}-${i}`} className="e-screen" aria-hidden={repeat && !hidden ? true : undefined}>
+        <Image src={screen.src} alt={repeat ? '' : screen.alt} width={900} height={1951} sizes="(max-width: 767px) 166px, 240px" />
+      </li>
+    )
+  })
+
+// Where every "Hent appen" lands. On a computer the one QR code sits under the pills (from
+// 1024 px with a fine pointer, CSS). Under it the app's own screens pass slowly, edge to edge.
 export default function FinalCta() {
   return (
     <section data-b="final" className="sec e">
@@ -21,18 +35,11 @@ export default function FinalCta() {
         <GetAppButton position="bottom" />
       </div>
       <div className="e-qr">
-        <figure>
-          <Image src="/site/qr/app-store.svg" alt={QR.appStoreAlt} width={57} height={57} />
-          <figcaption>{QR.appStore}</figcaption>
-        </figure>
-        <figure>
-          <Image src="/site/qr/google-play.svg" alt={QR.googlePlayAlt} width={57} height={57} />
-          <figcaption>{QR.googlePlay}</figcaption>
-        </figure>
+        <Image src="/site/qr/app.svg" alt={QR.alt} width={74} height={74} />
         <p className="qr-line">{QR.line}</p>
       </div>
-      <div className="e-lay" data-staged="true">
-        <Image src="/site/render/flatlay.webp" alt={FINAL.alt} width={2160} height={920} sizes="(max-width: 767px) 975px, 100vw" />
+      <div data-staged="true">
+        <Marquee label={FINAL.screensLabel} className="e-mq" first={screens(false)} second={screens(true)} scrollsByKey />
       </div>
       <StagedNote className="e-note" />
     </section>

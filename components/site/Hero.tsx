@@ -7,7 +7,6 @@ import Float from './Float'
 import GetAppButton from './GetAppButton'
 import HeroLanes from './HeroLanes'
 import HeroOrbit from './HeroOrbit'
-import QrCard from './QrCard'
 
 // Hero: the text on the page's light ground, Ekstra Bladet's article as a small floating card
 // in the open space under the phones on a computer, one tilted phone and a smaller one in front of
@@ -61,7 +60,6 @@ export default function Hero() {
           </div>
         </div>
       </div>
-      <QrCard />
     </section>
   )
 }
