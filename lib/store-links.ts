@@ -18,7 +18,7 @@ const CAMPAIGN = `ah_1_${SITE}`
 
 export const STORES = ['appstore', 'play'] as const
 export type Store = (typeof STORES)[number]
-export const STORE_POSITIONS = ['hero', 'founder', 'how-it-works', 'bottom', 'nav', 'bar', 'footer'] as const
+export const STORE_POSITIONS = ['hero', 'founder', 'how-it-works', 'bottom', 'nav', 'bar', 'footer', 'side'] as const
 export type StorePosition = (typeof STORE_POSITIONS)[number]
 
 /** The element every "Hent appen" control scrolls to: the final CTA's text and pills on

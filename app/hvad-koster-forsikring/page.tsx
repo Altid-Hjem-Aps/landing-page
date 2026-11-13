@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import Nav from '@/components/Nav'
-import BottomCta from '@/components/sections/BottomCta'
-import Footer from '@/components/Footer'
 import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
+import Guide, { GuideFigure, type GuideFaq } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Hvad koster forsikring i 2026? Se priser | Altid Hjem',
@@ -19,8 +16,6 @@ export const metadata: Metadata = {
   },
 }
 
-const FOREST_TEXT = 'rgba(26,61,34,0.75)'
-
 // Vejledende månedspriser (DK, 2026) som INTERVALLER — forsikringspris afhænger
 // stærkt af profil, dækning og selskab. Pointen er spredningen, ikke et præcist tal.
 const PRISER: { type: string; interval: string; note: string }[] = [
@@ -32,7 +27,7 @@ const PRISER: { type: string; interval: string; note: string }[] = [
 ]
 
 // FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).
-const FAQ: { q: string; a: string[] }[] = [
+const FAQ: GuideFaq[] = [
   {
     q: 'Hvad koster en indboforsikring?',
     a: [
@@ -92,250 +87,109 @@ const FAQ: { q: string; a: string[] }[] = [
 ]
 
 export default function HvadKosterForsikring() {
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: FAQ.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a.join(' ') },
-    })),
-  }
-
   return (
-    <>
-      <Nav
-        banner={{
-          longPrefix: 'Mange husstande betaler dobbelt for forsikring uden at vide det. ',
-          shortPrefix: 'Er du dobbeltforsikret uden at vide det? ',
-          source: 'forsikring-banner',
-          cta: 'Se om du betaler for meget →',
-        }}
-      />
-      <script
-        type="application/ld+json"
-        // '<' escapes som <: JSON.stringify escaper ikke '<', så en
-        // fremtidig FAQ-tekst med '</script>' kunne ellers bryde ud af tagget.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
-      />
-      <main className="min-h-screen" style={{ fontFamily: 'var(--font-onest)' }}>
-        {/* pt-32 (128px) = kampagnebanner (~36px) + nav (84px) + luft. */}
-        <div className="pt-32 pb-20" style={{ background: 'var(--cream)' }}>
-          <div className="max-w-2xl mx-auto px-6">
-
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-sm mb-10 transition-opacity hover:opacity-70"
-              style={{ color: 'rgba(26,61,34,0.55)' }}
-            >
-              <span aria-hidden="true">←</span> Tilbage
-            </Link>
-
-            <h1 className="text-3xl sm:text-4xl font-bold mb-1" style={{ color: 'var(--forest)' }}>
-              Hvad koster forsikring i Danmark?
-            </h1>
-            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juni 2026</p>
-
-            <div className="space-y-10 text-sm leading-relaxed" style={{ color: FOREST_TEXT }}>
-
-              {/* Kort svar — målrettet Googles "fremhævede uddrag". */}
-              <section>
-                <p className="mb-3">
-                  Det korte svar: De fleste private forsikringer i Danmark koster mellem{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>30 og 900 kr. om måneden</span>{' '}
-                  afhængigt af typen. En indboforsikring ligger typisk i den lave ende, en bilforsikring i den høje.
-                </p>
-                <p>
-                  Men gennemsnittet er sjældent det vigtigste. Det afgørende er, om{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>du betaler for meget</span>{' '}
-                  for den dækning, du faktisk har brug for.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="font-semibold text-base mb-4" style={{ color: 'var(--forest)' }}>
-                  Hvad koster de mest almindelige forsikringer?
-                </h2>
-                <div
-                  className="rounded-xl overflow-hidden"
-                  style={{ background: '#ffffff', border: '1px solid rgba(26,61,34,0.1)', boxShadow: '0 1px 3px rgba(26,61,34,0.06)' }}
-                >
-                  {PRISER.map((p, i) => (
-                    <div
-                      key={p.type}
-                      className="flex items-baseline justify-between gap-4 px-5 py-4"
-                      style={i > 0 ? { borderTop: '1px solid rgba(26,61,34,0.08)' } : undefined}
-                    >
-                      <div>
-                        <p className="font-medium" style={{ color: 'var(--forest)' }}>{p.type}</p>
-                        <p className="text-xs mt-0.5" style={{ color: 'rgba(26,61,34,0.5)' }}>{p.note}</p>
-                      </div>
-                      <p className="font-semibold whitespace-nowrap" style={{ color: 'var(--forest)' }}>{p.interval}</p>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-xs mt-3" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Vejledende priser for 2026. Din konkrete pris kan ligge både under og over intervallerne,
-                  afhængigt af din profil, dækning og dit forsikringsselskab.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="font-semibold text-base mb-3" style={{ color: 'var(--forest)' }}>
-                  Derfor svinger forsikringspriserne så meget
-                </h2>
-                <p className="mb-3">
-                  To naboer kan have samme bil, samme boligtype og samme forsikring og stadig betale vidt
-                  forskellige priser. Det skyldes, at selskaberne vurderer risiko forskelligt og prissætter
-                  blandt andet efter:
-                </p>
-                <ul className="space-y-2 mb-3">
-                  {['Hvor du bor og dit postnummer', 'Din alder og skadehistorik', 'Din selvrisiko', 'Din valgte dækning og tilvalg', 'Om dine forsikringer er samlet samme sted (samlerabat)'].map((x) => (
-                    <li key={x} className="flex gap-2.5">
-                      <span aria-hidden="true" style={{ color: 'var(--forest)' }}>•</span>
-                      <span>{x}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="mb-3">
-                  Derfor kan forskellen mellem det billigste og dyreste tilbud nemt være{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>flere tusinde kroner om året</span>{' '}
-                  for den samme dækning.
-                </p>
-                <p>
-                  Samlerabat kan hjælpe, men er ikke automatisk lig med den bedste pris. Det afgørende er
-                  den samlede pris for hele husstanden.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="font-semibold text-base mb-4" style={{ color: 'var(--forest)' }}>
-                  5 tegn på, at du betaler for meget
-                </h2>
-                <div className="space-y-3">
-                  {[
-                    'Du har ikke tjekket dine forsikringer i mere end to år.',
-                    'Du er blevet hos samme selskab af gammel vane.',
-                    'Du har flere forsikringer spredt på forskellige logins og regninger.',
-                    'Du betaler for dækninger eller tilvalg, du ikke bruger.',
-                    'Du ved ikke, hvad husstanden betaler samlet hver måned.',
-                  ].map((x, i) => (
-                    <div key={x} className="flex gap-3 items-start">
-                      <span
-                        className="shrink-0 flex items-center justify-center rounded-full text-xs font-semibold"
-                        style={{ width: 22, height: 22, background: 'var(--sage)', color: 'var(--forest)' }}
-                      >
-                        {i + 1}
-                      </span>
-                      <span>{x}</span>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              <section>
-                <h2 className="font-semibold text-base mb-3" style={{ color: 'var(--forest)' }}>
-                  Er du dobbeltforsikret uden at vide det?
-                </h2>
-                <p className="mb-3">
-                  En af de dyreste fejl er også en af de nemmeste at overse:{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>dobbeltdækning</span>.
-                </p>
-                <p className="mb-3">
-                  Det sker, når to personer i samme husstand betaler for den samme dækning hver for sig. Det
-                  kan være to indboforsikringer, to rejseforsikringer, et barn der står på begge forældres
-                  police eller en dækning, der allerede ligger som del af en anden forsikring.
-                </p>
-                <p className="mb-3">
-                  Problemet er sjældent, at folk ikke vil rydde op. Problemet er, at de ikke kan se det:
-                  policerne ligger hos forskellige selskaber, med hver sin login og regning.
-                </p>
-                <p className="mb-6">
-                  Altid Hjem samler{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>hele husstandens forsikringer ét sted</span>
-                  , så I selv kan se, hvor I kan være dækket dobbelt. Så kan I beholde den rigtige dækning og
-                  opsige det, I ikke har brug for.
-                </p>
-
-                {/* Animeret kort: husstandens forsikringer som ét overblik. Ingen beløb, ingen assistent. */}
-                <div
-                  className="rounded-3xl flex justify-center py-10 px-4"
-                  style={{ background: 'linear-gradient(160deg, rgba(168,224,99,0.12) 0%, rgba(26,61,34,0.05) 100%)' }}
-                >
-                  <ForsikringHusstandMockup />
-                </div>
-                <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Et samlet overblik gør det lettere at se mulige dobbeltdækninger. Illustration, ikke et
-                  skærmbillede fra appen.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="font-semibold text-base mb-3" style={{ color: 'var(--forest)' }}>
-                  Sådan får du overblik over forsikringerne med Altid Hjem
-                </h2>
-                <p className="mb-3">
-                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app. Du får{' '}
-                  <span className="font-medium" style={{ color: 'var(--forest)' }}>ét overblik, ét login</span>{' '}
-                  og kan se, hvad hjemmet koster hver måned.
-                </p>
-                <p className="mb-3">
-                  Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted. Vil I
-                  have et tilbud, kan I bede om det i appen, og I bliver ringet op, når det er klart. Det er gratis
-                  og uforpligtende.
-                </p>
-                <p>
-                  Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 15.000 danskere allerede får
-                  gennemsigtig strøm til en fair pris. Nu tager vi samme princip videre til resten af hjemmet:
-                  færre skjulte udgifter, færre spredte regninger og mere kontrol.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="font-semibold text-base mb-4" style={{ color: 'var(--forest)' }}>
-                  Ofte stillede spørgsmål
-                </h2>
-                <div className="space-y-3">
-                  {FAQ.map((f) => (
-                    <details
-                      key={f.q}
-                      className="group rounded-xl overflow-hidden transition-colors"
-                      style={{ background: '#ffffff', border: '1px solid rgba(26,61,34,0.1)', boxShadow: '0 1px 3px rgba(26,61,34,0.06)' }}
-                    >
-                      <summary
-                        className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden"
-                        style={{ WebkitTapHighlightColor: 'transparent' }}
-                      >
-                        <h3 className="font-medium text-sm" style={{ color: 'var(--forest)' }}>{f.q}</h3>
-                        <span
-                          aria-hidden="true"
-                          className="shrink-0 text-lg leading-none transition-transform duration-200 group-open:rotate-45"
-                          style={{ color: 'var(--forest)' }}
-                        >
-                          +
-                        </span>
-                      </summary>
-                      <div className="px-5 pb-5 pt-0 space-y-3">
-                        {f.a.map((paragraph) => (
-                          <p key={paragraph}>{paragraph}</p>
-                        ))}
-                      </div>
-                    </details>
-                  ))}
-                </div>
-              </section>
-
-            </div>
-          </div>
+    <Guide
+      title="Hvad koster forsikring i Danmark?"
+      lead={
+        <>
+          <p>
+            Det korte svar: De fleste private forsikringer i Danmark koster mellem <strong>30 og 900 kr. om måneden</strong> afhængigt af typen. En indboforsikring ligger
+            typisk i den lave ende, en bilforsikring i den høje.
+          </p>
+          <p>
+            Men gennemsnittet er sjældent det vigtigste. Det afgørende er, om <strong>du betaler for meget</strong> for den dækning, du faktisk har brug for.
+          </p>
+        </>
+      }
+      meta="Opdateret: juni 2026"
+      faq={FAQ}
+      cta={{
+        eyebrow: 'Alle jeres forsikringer ét sted',
+        heading: 'Hent Altid Hjem, og saml jeres forsikringer',
+        subtitle: 'Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted.',
+      }}
+    >
+      <section>
+        <h2>Hvad koster de mest almindelige forsikringer?</h2>
+        <div className="gd-table">
+          <table>
+            <tbody>
+              {PRISER.map((p) => (
+                <tr key={p.type}>
+                  <th scope="row">{p.type}</th>
+                  <td>{p.note}</td>
+                  <td>{p.interval}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-
-        <BottomCta
-          eyebrow='Alle jeres forsikringer ét sted'
-          heading='Hent Altid Hjem, og saml jeres forsikringer'
-          subtitle='Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted.'
-        />
-      </main>
-      <Footer />
-    </>
+        <p>
+          Vejledende priser for 2026. Din konkrete pris kan ligge både under og over intervallerne, afhængigt af din profil, dækning og dit forsikringsselskab.
+        </p>
+      </section>
+      <section>
+        <h2>Derfor svinger forsikringspriserne så meget</h2>
+        <p>
+          To naboer kan have samme bil, samme boligtype og samme forsikring og stadig betale vidt forskellige priser. Det skyldes, at selskaberne vurderer risiko
+          forskelligt og prissætter blandt andet efter:
+        </p>
+        <ul>
+          <li>Hvor du bor og dit postnummer</li>
+          <li>Din alder og skadehistorik</li>
+          <li>Din selvrisiko</li>
+          <li>Din valgte dækning og tilvalg</li>
+          <li>Om dine forsikringer er samlet samme sted (samlerabat)</li>
+        </ul>
+        <p>
+          Derfor kan forskellen mellem det billigste og dyreste tilbud nemt være <strong>flere tusinde kroner om året</strong> for den samme dækning.
+        </p>
+        <p>Samlerabat kan hjælpe, men er ikke automatisk lig med den bedste pris. Det afgørende er den samlede pris for hele husstanden.</p>
+      </section>
+      <section>
+        <h2>5 tegn på, at du betaler for meget</h2>
+        <ol>
+          <li>Du har ikke tjekket dine forsikringer i mere end to år.</li>
+          <li>Du er blevet hos samme selskab af gammel vane.</li>
+          <li>Du har flere forsikringer spredt på forskellige logins og regninger.</li>
+          <li>Du betaler for dækninger eller tilvalg, du ikke bruger.</li>
+          <li>Du ved ikke, hvad husstanden betaler samlet hver måned.</li>
+        </ol>
+      </section>
+      <section>
+        <h2>Er du dobbeltforsikret uden at vide det?</h2>
+        <p>
+          En af de dyreste fejl er også en af de nemmeste at overse: <strong>dobbeltdækning</strong>.
+        </p>
+        <p>
+          Det sker, når to personer i samme husstand betaler for den samme dækning hver for sig. Det kan være to indboforsikringer, to rejseforsikringer, et barn der står
+          på begge forældres police eller en dækning, der allerede ligger som del af en anden forsikring.
+        </p>
+        <p>
+          Problemet er sjældent, at folk ikke vil rydde op. Problemet er, at de ikke kan se det: policerne ligger hos forskellige selskaber, med hver sin login og regning.
+        </p>
+        <p>
+          Altid Hjem samler <strong>hele husstandens forsikringer ét sted</strong>, så I selv kan se, hvor I kan være dækket dobbelt. Så kan I beholde den rigtige dækning
+          og opsige det, I ikke har brug for.
+        </p>
+        <GuideFigure tone="mint" caption="Et samlet overblik gør det lettere at se mulige dobbeltdækninger. Illustration, ikke et skærmbillede fra appen.">
+          <ForsikringHusstandMockup />
+        </GuideFigure>
+      </section>
+      <section>
+        <h2>Sådan får du overblik over forsikringerne med Altid Hjem</h2>
+        <p>
+          Altid Hjem samler madplan, strøm, forsikring og økonomi i én app. Du får <strong>ét overblik, ét login</strong> og kan se, hvad hjemmet koster hver måned.
+        </p>
+        <p>
+          Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted. Vil I have et tilbud, kan I bede om det i appen, og I bliver ringet op,
+          når det er klart. Det er gratis og uforpligtende.
+        </p>
+        <p>
+          Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 15.000 danskere allerede får gennemsigtig strøm til en fair pris. Nu tager vi samme princip videre
+          til resten af hjemmet: færre skjulte udgifter, færre spredte regninger og mere kontrol.
+        </p>
+      </section>
+    </Guide>
   )
 }

@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import Nav from '@/components/Nav'
-import BottomCta from '@/components/sections/BottomCta'
-import Footer from '@/components/Footer'
 import LadeboksCalculator from '@/components/LadeboksCalculator'
+import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Hvad koster en ladeboks? Priser og valg | Altid Hjem',
@@ -19,16 +16,8 @@ export const metadata: Metadata = {
   },
 }
 
-function A({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link href={href} className="underline underline-offset-4 hover:opacity-70" style={{ color: 'var(--forest)' }}>
-      {children}
-    </Link>
-  )
-}
-
 // FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).
-const FAQ: { q: string; a: string[] }[] = [
+const FAQ: GuideFaq[] = [
   {
     q: 'Hvad koster en ladeboks med installation?',
     a: [
@@ -81,203 +70,125 @@ const FAQ: { q: string; a: string[] }[] = [
 ]
 
 export default function HvadKosterEnLadeboks() {
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: FAQ.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a.join(' ') },
-    })),
-  }
-
   return (
-    <>
-      <Nav
-        banner={{
-          longPrefix: 'Ladeboks og elaftale hænger sammen. Regn din ladepris ud her. ',
-          shortPrefix: 'Hvad koster hjemmeladning? ',
-          source: 'ladeboks-banner',
-          cta: 'Beregn din ladeudgift →',
-        }}
-      />
-      <script
-        type="application/ld+json"
-        // '<' escapes som \u003c: JSON.stringify escaper ikke '<', så en
-        // fremtidig FAQ-tekst med '</script>' kunne ellers bryde ud af tagget.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
-      />
-      <main className="min-h-screen" style={{ fontFamily: 'var(--font-onest)' }}>
-        {/* pt-32 (128px) = kampagnebanner (~36px) + nav (84px) + luft. */}
-        <div className="pt-32 pb-20" style={{ background: 'var(--cream)' }}>
-          <div className="max-w-2xl mx-auto px-6">
-
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-sm mb-10 transition-opacity hover:opacity-70"
-              style={{ color: 'rgba(26,61,34,0.55)' }}
-            >
-              <span aria-hidden="true">←</span> Tilbage
-            </Link>
-
-            <h1 className="text-3xl sm:text-4xl font-bold mb-1 text-balance" style={{ color: 'var(--forest)' }}>
-              Hvad koster en ladeboks?
-            </h1>
-            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026 · Priserne er vejledende markedsintervaller · Se også <a href="https://fdm.dk/vaerd-at-vide/ladeloesninger/hvad-koster-det-at-lade-en-elbil-op-hjemme" className="underline" target="_blank" rel="noopener noreferrer">FDM om hjemmeladning</a></p>
-
-            <div className="space-y-10 text-sm leading-relaxed text-pretty" style={{ color: 'rgba(26,61,34,0.75)' }}>
-
-              {/* Kort svar — målrettet Googles "fremhævede uddrag". */}
-              <section>
-                <p className="mb-3">
-                  En ladeboks med standardinstallation koster typisk samlet 4.000-7.000 kr. Selve boksen ligger vejledende på 2.500-6.000 kr., mens installation typisk koster 1.500-3.500 kr.
-                </p>
-                <p>
-                  Du kan også leje en ladeboks for typisk 79-199 kr. om måneden. En serviceaftale med refusion koster typisk 0-79 kr. om måneden og kan ændre det samlede regnestykke mærkbart.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Prisen på selve ladeboksen
-                </h2>
-                <p className="mb-3">
-                  Selve ladeboksen koster typisk 2.500-6.000 kr. Prisen afhænger blandt andet af ladeeffekt, funktioner, app-styring og om boksen sælges alene eller som del af en samlet løsning.
-                </p>
-                <p className="mb-3">
-                  Installation koster typisk yderligere 1.500-3.500 kr. Derfor ender boks og standardinstallation normalt på cirka 4.000-7.000 kr. samlet.
-                </p>
-                <p>
-                  Prisen kan blive højere, hvis eltavlen skal opgraderes, kablet skal føres langt, eller installationen kræver ekstra arbejde. Bed derfor om et tilbud, der tydeligt viser, hvad standardinstallationen omfatter.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Skal du købe eller leje ladeboksen?
-                </h2>
-                <p className="mb-3">
-                  Ved køb betaler du typisk en større engangsudgift, men ejer selv boksen. Det kan give mening, hvis du forventer at blive boende længe og ønsker frihed til at vælge serviceaftale.
-                </p>
-                <p className="mb-3">
-                  Leje koster typisk 79-199 kr. om måneden. Det kan være attraktivt, hvis du foretrækker en lavere startudgift, men undersøg den samlede pris over flere år, bindingsperioden og vilkårene ved opsigelse.
-                </p>
-                <p>
-                  Sammenlign også, hvem der betaler for installation, service, reparation og udskiftning. En lav månedspris er ikke nødvendigvis den billigste løsning samlet set.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Det egentlige regnestykke er strømmen
-                </h2>
-                <p className="mb-3">
-                  Hjemmeladning koster typisk 2,00-3,50 kr. pr. kWh før refusion. Prisen varierer med elaftalen, tidspunktet for opladning, nettariffer, elafgift og eventuelle tillæg og gebyrer.
-                </p>
-                <p className="mb-3">
-                  Med en refusionsaftale kan den effektive pris i et eksempel lande omkring 0,73 kr. pr. kWh. Det er ikke en fast pris eller en garanti, da både elpris, refusionsbeløb og aftalevilkår kan ændre sig.
-                </p>
-                <p>
-                  En moderne elbil bruger typisk 15-22 kWh pr. 100 km. Indtast dit månedlige kørselsbehov, bilens forbrug og din elpris i beregneren her på siden for at få et vejledende estimat baseret på dine egne tal.
-                </p>
-
-                {/* Animeret side-komponent i gradient-rammen (forsikring-side-mønstret). */}
-                <div
-                  className="rounded-3xl flex justify-center py-10 px-4 mt-6"
-                  style={{ background: 'linear-gradient(160deg, rgba(168,224,99,0.12) 0%, rgba(26,61,34,0.05) 100%)' }}
-                >
-                  <LadeboksCalculator />
-                </div>
-                <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Beregn din månedlige ladeudgift med dine egne tal. Intet gemmes.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Refusionsaftaler, og hvad du skal kontrollere
-                </h2>
-                <p className="mb-3">
-                  En serviceaftale med elafgiftsrefusion koster typisk 0-79 kr. om måneden. Den kan være økonomisk fordelagtig, hvis den mulige refusion overstiger abonnementsprisen og øvrige omkostninger.
-                </p>
-                <p className="mb-3">
-                  Tjek, hvilken sats aftalen bruger, hvordan forbruget måles, og hvornår refusionen udbetales. Undersøg også krav til ladeboks, elaftale og installation samt eventuelle begrænsninger, bindinger og opsigelsesvilkår.
-                </p>
-                <p>
-                  Sammenlign altid nettogevinsten efter abonnementet. Vilkår og din husstands forhold afgør, om en refusionsaftale reelt kan betale sig.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Ladeboks og elaftale hænger sammen
-                </h2>
-                <p className="mb-3">
-                  En billig ladeboks sikrer ikke nødvendigvis billig opladning. Elprisen består af spotpris, nettariffer, elafgift samt elselskabets tillæg og gebyrer, så den løbende strømpris kan få stor betydning over tid.
-                </p>
-                <p className="mb-3">
-                  Du kan ofte påvirke udgiften ved at lade, når spotprisen er lav. Læs mere om <A href="/hvornar-er-strommen-billigst">hvornår strømmen er billigst</A>, og se, hvad du bør sammenligne, når du leder efter <A href="/billigste-elselskab">det billigste elselskab</A>.
-                </p>
-                <p>
-                  Altid Energi er gebyrfrit og har ingen faste gebyrer eller abonnement. Når du sammenligner elaftaler, bør du stadig tage udgangspunkt i dit eget forbrug, dit lademønster og aftalens samlede pris.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvad Altid Hjem kan i dag
-                </h2>
-                <p className="mb-3">
-                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så du får ét overblik, ét login. Opladning og ladebokse er ikke en del af appen.
-                </p>
-                <p className="mb-3">
-                  I appen ser du elprisen time for time og kan få besked, når strømmen er billig. Det kan du bruge, når du vil vælge, hvornår bilen skal lades.
-                </p>
-                <p>
-                  Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder. Du kan hente appen gratis i App Store og Google Play.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="font-semibold text-base mb-4" style={{ color: 'var(--forest)' }}>
-                  Ofte stillede spørgsmål
-                </h2>
-                <div className="space-y-3">
-                  {FAQ.map((f) => (
-                    <details
-                      key={f.q}
-                      className="group rounded-xl overflow-hidden transition-colors"
-                      style={{ background: '#ffffff', border: '1px solid rgba(26,61,34,0.1)', boxShadow: '0 1px 3px rgba(26,61,34,0.06)' }}
-                    >
-                      <summary
-                        className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden"
-                        style={{ WebkitTapHighlightColor: 'transparent' }}
-                      >
-                        <h3 className="font-medium text-sm" style={{ color: 'var(--forest)' }}>{f.q}</h3>
-                        <span
-                          aria-hidden="true"
-                          className="shrink-0 text-lg leading-none transition-transform duration-200 group-open:rotate-45"
-                          style={{ color: 'var(--forest)' }}
-                        >
-                          +
-                        </span>
-                      </summary>
-                      <div className="px-5 pb-5 pt-0 space-y-3">
-                        {f.a.map((paragraph) => (
-                          <p key={paragraph}>{paragraph}</p>
-                        ))}
-                      </div>
-                    </details>
-                  ))}
-                </div>
-              </section>
-
-            </div>
-          </div>
-        </div>
-
-        <BottomCta
-          eyebrow='Ét overblik over hjemmets udgifter'
-          heading='Hent Altid Hjem, og få overblik over husstanden'
-          subtitle='Appen er gratis og viser elprisen time for time, så du kan se, hvornår strømmen er billig.'
-        />
-      </main>
-      <Footer />
-    </>
+    <Guide
+      title="Hvad koster en ladeboks?"
+      lead={
+        <>
+          <p>
+            En ladeboks med standardinstallation koster typisk samlet 4.000-7.000 kr. Selve boksen ligger vejledende på 2.500-6.000 kr., mens installation typisk koster
+            1.500-3.500 kr.
+          </p>
+          <p>
+            Du kan også leje en ladeboks for typisk 79-199 kr. om måneden. En serviceaftale med refusion koster typisk 0-79 kr. om måneden og kan ændre det samlede
+            regnestykke mærkbart.
+          </p>
+        </>
+      }
+      meta={
+        <>
+          Opdateret: juli 2026 · Priserne er vejledende markedsintervaller · Se også{' '}
+          <a href="https://fdm.dk/vaerd-at-vide/ladeloesninger/hvad-koster-det-at-lade-en-elbil-op-hjemme" target="_blank" rel="noopener noreferrer">
+            FDM om hjemmeladning
+          </a>
+        </>
+      }
+      faq={FAQ}
+      cta={{
+        eyebrow: 'Ét overblik over hjemmets udgifter',
+        heading: 'Hent Altid Hjem, og få overblik over husstanden',
+        subtitle: 'Appen er gratis og viser elprisen time for time, så du kan se, hvornår strømmen er billig.',
+      }}
+    >
+      <section>
+        <h2>Prisen på selve ladeboksen</h2>
+        <p>
+          Selve ladeboksen koster typisk 2.500-6.000 kr. Prisen afhænger blandt andet af ladeeffekt, funktioner, app-styring og om boksen sælges alene eller som del af en
+          samlet løsning.
+        </p>
+        <p>
+          Installation koster typisk yderligere 1.500-3.500 kr. Derfor ender boks og standardinstallation normalt på cirka 4.000-7.000 kr. samlet.
+        </p>
+        <p>
+          Prisen kan blive højere, hvis eltavlen skal opgraderes, kablet skal føres langt, eller installationen kræver ekstra arbejde. Bed derfor om et tilbud, der tydeligt
+          viser, hvad standardinstallationen omfatter.
+        </p>
+      </section>
+      <section>
+        <h2>Skal du købe eller leje ladeboksen?</h2>
+        <p>
+          Ved køb betaler du typisk en større engangsudgift, men ejer selv boksen. Det kan give mening, hvis du forventer at blive boende længe og ønsker frihed til at
+          vælge serviceaftale.
+        </p>
+        <p>
+          Leje koster typisk 79-199 kr. om måneden. Det kan være attraktivt, hvis du foretrækker en lavere startudgift, men undersøg den samlede pris over flere år,
+          bindingsperioden og vilkårene ved opsigelse.
+        </p>
+        <p>
+          Sammenlign også, hvem der betaler for installation, service, reparation og udskiftning. En lav månedspris er ikke nødvendigvis den billigste løsning samlet set.
+        </p>
+      </section>
+      <section>
+        <h2>Det egentlige regnestykke er strømmen</h2>
+        <p>
+          Hjemmeladning koster typisk 2,00-3,50 kr. pr. kWh før refusion. Prisen varierer med elaftalen, tidspunktet for opladning, nettariffer, elafgift og eventuelle
+          tillæg og gebyrer.
+        </p>
+        <p>
+          Med en refusionsaftale kan den effektive pris i et eksempel lande omkring 0,73 kr. pr. kWh. Det er ikke en fast pris eller en garanti, da både elpris,
+          refusionsbeløb og aftalevilkår kan ændre sig.
+        </p>
+        <p>
+          En moderne elbil bruger typisk 15-22 kWh pr. 100 km. Indtast dit månedlige kørselsbehov, bilens forbrug og din elpris i beregneren her på siden for at få et
+          vejledende estimat baseret på dine egne tal.
+        </p>
+        <GuideFigure tone="sky" caption="Beregn din månedlige ladeudgift med dine egne tal. Intet gemmes.">
+          <LadeboksCalculator />
+        </GuideFigure>
+      </section>
+      <section>
+        <h2>Refusionsaftaler, og hvad du skal kontrollere</h2>
+        <p>
+          En serviceaftale med elafgiftsrefusion koster typisk 0-79 kr. om måneden. Den kan være økonomisk fordelagtig, hvis den mulige refusion overstiger
+          abonnementsprisen og øvrige omkostninger.
+        </p>
+        <p>
+          Tjek, hvilken sats aftalen bruger, hvordan forbruget måles, og hvornår refusionen udbetales. Undersøg også krav til ladeboks, elaftale og installation samt
+          eventuelle begrænsninger, bindinger og opsigelsesvilkår.
+        </p>
+        <p>
+          Sammenlign altid nettogevinsten efter abonnementet. Vilkår og din husstands forhold afgør, om en refusionsaftale reelt kan betale sig.
+        </p>
+      </section>
+      <section>
+        <h2>Ladeboks og elaftale hænger sammen</h2>
+        <p>
+          En billig ladeboks sikrer ikke nødvendigvis billig opladning. Elprisen består af spotpris, nettariffer, elafgift samt elselskabets tillæg og gebyrer, så den
+          løbende strømpris kan få stor betydning over tid.
+        </p>
+        <p>
+          Du kan ofte påvirke udgiften ved at lade, når spotprisen er lav. Læs mere om <A href="/hvornar-er-strommen-billigst">hvornår strømmen er billigst</A>, og se, hvad
+          du bør sammenligne, når du leder efter <A href="/billigste-elselskab">det billigste elselskab</A>.
+        </p>
+        <p>
+          Altid Energi er gebyrfrit og har ingen faste gebyrer eller abonnement. Når du sammenligner elaftaler, bør du stadig tage udgangspunkt i dit eget forbrug, dit
+          lademønster og aftalens samlede pris.
+        </p>
+      </section>
+      <section>
+        <h2>Hvad Altid Hjem kan i dag</h2>
+        <p>
+          Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så du får ét overblik, ét login. Opladning af elbil er ikke i appen endnu, men er blandt de
+          næste tjenester, vi lancerer.
+        </p>
+        <p>
+          I appen ser du elprisen time for time og kan få besked, når strømmen er billig. Det kan du bruge, når du vil vælge, hvornår bilen skal lades.
+        </p>
+        <p>
+          Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder. Du kan hente appen
+          gratis i App Store og Google Play.
+        </p>
+      </section>
+    </Guide>
   )
 }

@@ -300,7 +300,7 @@ export default function ElprisChart({ data, nowHour, netselskaber }: Props) {
 
   const noegletal: { label: string; value: number | null; farve?: string; tid?: string | null }[] = [
     { label: 'Lige nu', value: ligeNu?.price ?? null, tid: tidsstempel(ligeNu) },
-    { label: 'Laveste pris', value: lavest?.price ?? null, farve: '#5cb434', tid: tidsstempel(lavest) },
+    { label: 'Laveste pris', value: lavest?.price ?? null, farve: '#3e8c1f', tid: tidsstempel(lavest) },
     { label: 'Højeste pris', value: hoejest?.price ?? null, farve: '#d64541', tid: tidsstempel(hoejest) },
     { label: 'Gennemsnit', value: gennemsnit },
   ]
@@ -311,14 +311,14 @@ export default function ElprisChart({ data, nowHour, netselskaber }: Props) {
       <div className="flex flex-wrap gap-x-8 gap-y-3 mb-5">
         {noegletal.map((n) => (
           <div key={n.label}>
-            <p className="text-xs mb-0.5" style={{ color: 'rgba(26,61,34,0.55)' }}>
+            <p className="text-xs mb-0.5" style={{ color: 'rgba(26,61,34,0.8)' }}>
               {n.label}
             </p>
             <p className="text-3xl font-bold leading-none tabular-nums" style={{ color: n.farve ?? 'var(--forest)' }}>
               {n.value === null ? '-' : formatKr(n.value)}
             </p>
             {n.tid && (
-              <p className="text-[11px] mt-1" style={{ color: 'rgba(26,61,34,0.45)' }}>
+              <p className="text-[11px] mt-1" style={{ color: 'rgba(26,61,34,0.8)' }}>
                 {n.tid}
               </p>
             )}
@@ -349,25 +349,25 @@ export default function ElprisChart({ data, nowHour, netselskaber }: Props) {
         </div>
       </div>
       {!tomorrowAvailable && (
-        <p className="text-[11px] mb-3 text-right" style={{ color: 'rgba(26,61,34,0.45)' }}>
+        <p className="text-[11px] mb-3 text-right" style={{ color: 'rgba(26,61,34,0.75)' }}>
           I morgens priser offentliggøres ca. kl. 13
         </p>
       )}
 
       {/* Det store tal — opdateres ved hover/tap på en kolonne */}
       <div className="mb-4" aria-live="polite">
-        <p className="text-xs mb-1" style={{ color: 'rgba(26,61,34,0.55)' }}>{headline}</p>
+        <p className="text-xs mb-1" style={{ color: 'rgba(26,61,34,0.75)' }}>{headline}</p>
         <p className="text-3xl font-bold leading-none" style={{ color: 'var(--forest)' }}>
           {formatKr(shown.price)}<span className="text-base font-semibold">/kWh</span>
         </p>
-        <p className="text-xs mt-1" style={{ color: 'rgba(26,61,34,0.55)' }}>
+        <p className="text-xs mt-1" style={{ color: 'rgba(26,61,34,0.75)' }}>
           inkl. {includedList} (anslået), heraf spotpris {formatKr(shown.spot)}/kWh
         </p>
       </div>
 
       {/* Akse-enhed over skalaen — i højre side */}
       <div className="flex justify-end mb-1">
-        <p className="text-[10px] font-medium pl-2" style={{ color: 'rgba(26,61,34,0.5)', width: '3rem' }}>
+        <p className="text-[10px] font-medium pl-2" style={{ color: 'rgba(26,61,34,0.75)', width: '3rem' }}>
           kr./kWh
         </p>
       </div>
@@ -465,7 +465,7 @@ export default function ElprisChart({ data, nowHour, netselskaber }: Props) {
             <span
               key={v}
               className="absolute left-2 text-[10px] tabular-nums leading-none"
-              style={{ bottom: `calc(${(v / scaleMax) * 100}% - 4px)`, color: 'rgba(26,61,34,0.5)' }}
+              style={{ bottom: `calc(${(v / scaleMax) * 100}% - 4px)`, color: 'rgba(26,61,34,0.75)' }}
             >
               {v.toLocaleString('da-DK', { minimumFractionDigits: 2 })}
             </span>
@@ -485,7 +485,7 @@ export default function ElprisChart({ data, nowHour, netselskaber }: Props) {
               <span
                 key={v.hour}
                 className={`flex-1 min-w-0 text-center whitespace-nowrap text-[8px] sm:text-[9px] tabular-nums ${synlighed}`}
-                style={{ color: v.hour === hovered ? 'var(--forest)' : 'rgba(26,61,34,0.45)' }}
+                style={{ color: v.hour === hovered ? 'var(--forest)' : 'rgba(26,61,34,0.75)' }}
               >
                 {String(v.hour).padStart(2, '0')}
               </span>
@@ -528,7 +528,7 @@ export default function ElprisChart({ data, nowHour, netselskaber }: Props) {
               ))}
             </select>
             {henterNet && (
-              <span className="text-[11px]" style={{ color: 'rgba(26,61,34,0.45)' }}>
+              <span className="text-[11px]" style={{ color: 'rgba(26,61,34,0.75)' }}>
                 Henter…
               </span>
             )}
@@ -594,7 +594,7 @@ export default function ElprisChart({ data, nowHour, netselskaber }: Props) {
           aria-expanded={infoOpen}
           className="inline-flex items-center gap-1.5 text-xs font-medium transition-opacity hover:opacity-70"
           style={{
-            color: 'rgba(26,61,34,0.55)',
+            color: 'rgba(26,61,34,0.75)',
             cursor: 'pointer',
             WebkitTapHighlightColor: 'transparent',
           }}
@@ -614,7 +614,7 @@ export default function ElprisChart({ data, nowHour, netselskaber }: Props) {
           </span>
         </button>
         {infoOpen && (
-          <p className="mt-2 text-xs" style={{ color: 'rgba(26,61,34,0.5)' }}>
+          <p className="mt-2 text-xs" style={{ color: 'rgba(26,61,34,0.75)' }}>
             Hold musen over (eller tryk på) en kolonne for at se timens pris. Søjlerne viser
             spotprisen plus dit netselskabs transport ({valgtNavn}, dyrere kl. 17-21) samt de
             komponenter, du slår til: elafgift (EU-minimum fra 2026, ca. 1 øre/kWh inkl. moms),

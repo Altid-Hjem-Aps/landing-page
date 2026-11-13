@@ -2939,6 +2939,354 @@
   }
 
   /* The press page (/presse): the front page's type, tones and rounded panels. */
+  /* The guides (the SEO pages, components/site/Guide.tsx), in the look of /presse: the title
+     and short answer on top at the page's width, then the article in a readable column with a
+     small store card beside it on a computer, and the store buttons on a Dark forest panel. */
+  .gd {
+    --w: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
+    padding-bottom: var(--pad);
+  }
+  .gd-head {
+    width: var(--w);
+    margin-inline: auto;
+    padding: calc(var(--u) * 168) 0 calc(var(--u) * 64);
+
+    h1 {
+      max-width: 15em;
+    }
+  }
+  .gd-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: var(--forest);
+
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+  .gd-lead {
+    max-width: 36em;
+    margin-top: 24px;
+    font-size: clamp(19px, 16px + 0.5vw, 23px);
+    line-height: 1.45;
+    color: var(--forest);
+    text-wrap: pretty;
+
+    p + p {
+      margin-top: 12px;
+    }
+  }
+  .gd-meta {
+    max-width: 48em;
+    margin-top: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--stone);
+
+    a {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+  .gd-grid {
+    display: grid;
+    grid-template-columns: minmax(0, calc(var(--u) * 760)) calc(var(--u) * 300);
+    justify-content: space-between;
+    gap: calc(var(--u) * 80);
+    width: var(--w);
+    margin-inline: auto;
+  }
+  /* The article: plain sections, headings and paragraphs from the page, styled here. */
+  .gd-body {
+    font-size: 18px;
+    line-height: 1.65;
+    color: rgba(0, 60, 22, 0.86);
+    text-wrap: pretty;
+
+    > section + section {
+      margin-top: calc(var(--u) * 64);
+    }
+    h2 {
+      margin-bottom: 16px;
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(26px, 21px + 1.1vw, 38px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--forest);
+      text-wrap: balance;
+    }
+    h3 {
+      margin: 24px 0 8px;
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 21px;
+      line-height: 1.25;
+      color: var(--forest);
+    }
+    p + p,
+    p + ul,
+    p + ol,
+    ul + p,
+    ol + p,
+    p + table,
+    table + p,
+    p + .gd-table,
+    .gd-table + p {
+      margin-top: 14px;
+    }
+    ul,
+    ol {
+      padding-left: 1.3em;
+    }
+    ul {
+      list-style: disc;
+    }
+    ol {
+      list-style: decimal;
+    }
+    li + li {
+      margin-top: 6px;
+    }
+    strong {
+      font-weight: 600;
+      color: var(--forest);
+    }
+    a {
+      color: var(--forest);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+    th,
+    td {
+      padding: 12px 12px 12px 0;
+      border-bottom: 1px solid rgba(0, 60, 22, 0.14);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      font-weight: 600;
+      color: var(--forest);
+    }
+  }
+  /* A table wider than a phone scrolls inside its own box; a price in its last column stays on
+     one line. */
+  .gd-table {
+    overflow-x: auto;
+
+    td:last-child {
+      white-space: nowrap;
+    }
+  }
+  /* An illustration on a tinted card, the way the front page shows its phones. */
+  .gd-figure {
+    margin-top: 32px;
+    padding: 48px 16px 24px;
+    border-radius: 24px;
+    background: var(--tint);
+
+    figcaption {
+      max-width: 34em;
+      margin: 24px auto 0;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.45;
+      color: rgba(0, 60, 22, 0.8);
+    }
+  }
+  .gd-figure-art {
+    display: flex;
+    justify-content: center;
+  }
+  /* The questions, in the front page's FAQ style, as native disclosures. */
+  .gd-faq {
+    border-top: 1px solid rgba(0, 60, 22, 0.16);
+
+    details {
+      border-bottom: 1px solid rgba(0, 60, 22, 0.16);
+    }
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 44px;
+      padding: 20px 0;
+      cursor: pointer;
+      list-style: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+      h3 {
+        margin: 0;
+        font-size: clamp(19px, 17px + 0.4vw, 22px);
+      }
+      svg {
+        flex: none;
+        box-sizing: content-box;
+        padding: 12px;
+        border-radius: 50%;
+        background: var(--signal);
+        color: var(--forest);
+        transition: rotate 0.25s;
+      }
+    }
+    details[open] summary svg {
+      rotate: 45deg;
+    }
+    details > div {
+      padding: 0 0 24px;
+    }
+  }
+  .gd-side {
+    position: relative;
+  }
+  .gd-side-card {
+    position: sticky;
+    top: 120px;
+    padding: 28px;
+    border-radius: 24px;
+    background: var(--sand);
+
+    img {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+    }
+  }
+  .gd-side-title {
+    margin-top: 16px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.15;
+    color: var(--forest);
+  }
+  .gd-side-line {
+    margin-top: 6px;
+    font-size: 16px;
+    line-height: 1.4;
+    color: var(--forest);
+  }
+  .gd-side-pills {
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 20px;
+  }
+  .gd-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: var(--w);
+    margin: var(--pad) auto 0;
+    padding: calc(var(--u) * 88) calc(var(--u) * 80);
+    border-radius: 24px;
+    background: var(--dark-forest);
+    color: #fff;
+    text-align: center;
+
+    h2 {
+      max-width: 14em;
+      color: #fff;
+    }
+  }
+  .gd-cta-icon {
+    width: 72px;
+    height: 72px;
+    margin-bottom: 24px;
+    border-radius: 18px;
+  }
+  .gd-cta-eyebrow {
+    margin-bottom: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--signal);
+  }
+  .gd-cta-line {
+    max-width: 30em;
+    margin-top: 16px;
+    font-size: clamp(18px, 15px + 0.5vw, 22px);
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .gd-cta-pills {
+    justify-content: center;
+    margin-top: 32px;
+  }
+  @media (max-width: 1023px) {
+    .gd-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .gd-side {
+      display: none;
+    }
+  }
+  @media (max-width: 767px) {
+    .gd {
+      --w: calc(var(--u) * 356);
+    }
+    .gd-head {
+      padding: 112px 0 36px;
+    }
+    .gd-body {
+      font-size: 17px;
+    }
+    .gd-figure {
+      padding: 32px 8px 20px;
+    }
+    /* A three-column table (type, note, price) stacks per row on a phone: the type and the
+       price on one line, the note under them. */
+    .gd-table {
+      tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        column-gap: 16px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(0, 60, 22, 0.14);
+      }
+      th,
+      td {
+        padding: 0;
+        border-bottom: 0;
+      }
+      tr > :first-child {
+        grid-column: 1;
+        grid-row: 1;
+      }
+      td:last-child {
+        grid-column: 2;
+        grid-row: 1;
+        text-align: right;
+      }
+      tr > :not(:first-child):not(:last-child) {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        margin-top: 4px;
+        color: rgba(0, 60, 22, 0.75);
+      }
+    }
+    .gd-cta {
+      padding: 48px 24px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gd-faq summary svg {
+      transition: none;
+    }
+  }
+
   .pz {
     --w: min(100% - 2 * var(--u) * 32, calc(var(--u) * 1376));
     padding-bottom: var(--pad);

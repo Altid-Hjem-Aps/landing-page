@@ -4,9 +4,11 @@ import SpiirAlternativ, { metadata } from '@/app/spiir-alternativ/page'
 
 // Siden er en server-komponent; Nav/BottomCta/Footer er klient-komponenter
 // med browser-side-effekter — her testes artiklens eget indhold og schema.
-vi.mock('@/components/Nav', () => ({ default: () => null }))
-vi.mock('@/components/sections/BottomCta', () => ({ default: () => null }))
-vi.mock('@/components/Footer', () => ({ default: () => null }))
+// The pages are guides now (components/site/Guide.tsx): the site's nav, footer and scroll
+// reveal are left out, as the old Nav, BottomCta and Footer were, so only the page is tested.
+vi.mock('@/components/site/SiteNav', () => ({ default: () => null }))
+vi.mock('@/components/site/SiteFooter', () => ({ default: () => null }))
+vi.mock('@/components/site/Reveal', () => ({ default: () => null }))
 
 describe('/spiir-alternativ', () => {
   it('targets the Spiir searches in title and description', () => {

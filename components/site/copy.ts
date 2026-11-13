@@ -444,6 +444,14 @@ export const META = {
 // Thor's (11/11); the Forsikring line says what is in the app at the hard launch, when this page
 // goes live (a forsikringstjek, no longer "coming"); contact, photos and credit are from the PR
 // brief (ALT-1349) and altidmad.dk/presse. No user numbers: none is cleared.
+// The guides (the SEO pages) in the new site's look, like /presse. Every string here was already
+// on those pages or on the front page; the pages keep their own text.
+export const GUIDE = {
+  back: 'Tilbage',
+  faq: 'Ofte stillede spørgsmål',
+  side: { title: 'Hent Altid Hjem', line: 'Gratis i App Store og Google Play.' },
+} as const
+
 export const PRESSE = {
   meta: {
     title: 'Presse | Altid Hjem',

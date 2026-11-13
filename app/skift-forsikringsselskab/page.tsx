@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import Nav from '@/components/Nav'
-import BottomCta from '@/components/sections/BottomCta'
-import Footer from '@/components/Footer'
 import SkiftTjeklisteMockup from '@/components/SkiftTjeklisteMockup'
+import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Skift forsikringsselskab sikkert | Altid Hjem',
@@ -19,16 +16,8 @@ export const metadata: Metadata = {
   },
 }
 
-function A({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link href={href} className="underline underline-offset-4 hover:opacity-70" style={{ color: 'var(--forest)' }}>
-      {children}
-    </Link>
-  )
-}
-
 // FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).
-const FAQ: { q: string; a: string[] }[] = [
+const FAQ: GuideFaq[] = [
   {
     q: 'Hvordan skifter jeg forsikringsselskab?',
     a: [
@@ -81,212 +70,108 @@ const FAQ: { q: string; a: string[] }[] = [
 ]
 
 export default function SkiftForsikringsselskab() {
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: FAQ.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a.join(' ') },
-    })),
-  }
-
   return (
-    <>
-      <Nav
-        banner={{
-          longPrefix: 'At skifte forsikringsselskab er enklere, end de fleste tror. ',
-          shortPrefix: 'Overvejer du at skifte forsikring? ',
-          source: 'skift-forsikring-banner',
-          cta: 'Se den sikre rækkefølge →',
-        }}
-      />
-      <script
-        type="application/ld+json"
-        // '<' escapes som \u003c: JSON.stringify escaper ikke '<', så en
-        // fremtidig FAQ-tekst med '</script>' kunne ellers bryde ud af tagget.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
-      />
-      <main className="min-h-screen" style={{ fontFamily: 'var(--font-onest)' }}>
-        {/* pt-32 (128px) = kampagnebanner (~36px) + nav (84px) + luft. */}
-        <div className="pt-32 pb-20" style={{ background: 'var(--cream)' }}>
-          <div className="max-w-2xl mx-auto px-6">
-
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-sm mb-10 transition-opacity hover:opacity-70"
-              style={{ color: 'rgba(26,61,34,0.55)' }}
-            >
-              <span aria-hidden="true">←</span> Tilbage
-            </Link>
-
-            <h1 className="text-3xl sm:text-4xl font-bold mb-1 text-balance" style={{ color: 'var(--forest)' }}>
-              Sådan skifter du forsikringsselskab
-            </h1>
-            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026 · Sammenlign selv på <a href="https://www.forsikringsguiden.dk" className="underline" target="_blank" rel="noopener noreferrer">Forsikringsguiden.dk</a></p>
-
-            <div className="space-y-10 text-sm leading-relaxed text-pretty" style={{ color: 'rgba(26,61,34,0.75)' }}>
-
-              {/* Kort svar — målrettet Googles "fremhævede uddrag". */}
-              <section>
-                <p className="mb-3">
-                  At skifte forsikringsselskab er enklere, end mange tror. Det nye selskab kan ofte stå for opsigelsen, men få altid den nye police bekræftet, før den gamle ophører.
-                </p>
-                <p>
-                  Den rigtige rækkefølge beskytter dig mod huller i dækningen og unødige dobbeltperioder. Sammenlign både dækning, selvrisiko, tilvalg og pris, før du beslutter dig.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvornår kan du skifte forsikringsselskab?
-                </h2>
-                <p className="mb-3">
-                  Efter det første år kan de fleste private forsikringer typisk opsiges med løbende måned plus en måned. Fristen afhænger dog af din police og selskabets vilkår, så kontrollér altid den konkrete opsigelsesfrist.
-                </p>
-                <p className="mb-3">
-                  Du kan godt undersøge alternativer, før opsigelsesfristen nærmer sig. Bed det nye selskab oplyse en præcis startdato, så den passer med ophøret hos dit nuværende selskab.
-                </p>
-                <p>
-                  Nogle aftaler kan have særlige regler, gebyrer eller længere varsler. Det er derfor policen, og ikke en generel tommelfingerregel, der afgør, hvornår dit skift kan gennemføres.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Brug en rækkefølge, der beskytter dig
-                </h2>
-                <p className="mb-3">
-                  Begynd med at indhente et tilbud, hvor dækninger, selvrisici og startdato står skriftligt. Acceptér først tilbuddet, når du har kontrolleret, at det dækker det, du faktisk har brug for.
-                </p>
-                <p className="mb-3">
-                  Få derefter den nye police og startdato bekræftet. Først når den nye dækning er på plads, bør den gamle forsikring opsiges.
-                </p>
-                <p>
-                  Mange nye selskaber tilbyder at klare opsigelsen for dig. Bed om en skriftlig bekræftelse, og kontrollér både ophørsdatoen på den gamle police og startdatoen på den nye.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Sammenlign mere end prisen
-                </h2>
-                <p className="mb-3">
-                  To forsikringer med samme navn kan dække meget forskelligt. Sammenlign blandt andet dækningssummer, selvrisiko, undtagelser, tilvalg og regler for erstatning.
-                </p>
-                <p className="mb-3">
-                  Ved indboforsikring bør du eksempelvis kontrollere dækning ved tyveri, vandskade, elektronikskader og ansvar. Du kan læse mere om prisniveauer og forskelle i guiden til <A href="/hvad-koster-indboforsikring">hvad en indboforsikring koster</A>.
-                </p>
-                <p>
-                  Se også på husstandens samlede behov, ikke kun én police ad gangen. Vores guide til <A href="/hvad-koster-forsikring">hvad forsikring koster</A> hjælper dig med at vurdere pris i forhold til profil og dækning.
-                </p>
-
-                {/* Animeret side-komponent i gradient-rammen (forsikring-side-mønstret). */}
-                <div
-                  className="rounded-3xl flex justify-center py-10 px-4 mt-6"
-                  style={{ background: 'linear-gradient(160deg, rgba(168,224,99,0.12) 0%, rgba(26,61,34,0.05) 100%)' }}
-                >
-                  <SkiftTjeklisteMockup />
-                </div>
-                <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Rækkefølgen beskytter dig: ny police på plads, før den gamle opsiges. Illustration, ikke et skærmbillede fra appen.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Undgå de typiske fælder
-                </h2>
-                <p className="mb-3">
-                  En kort dobbeltperiode kan være praktisk, hvis datoerne ellers ikke kan mødes. En lang dobbeltperiode betyder derimod, at du risikerer at betale for to policer uden at få tilsvarende ekstra værdi.
-                </p>
-                <p className="mb-3">
-                  Kontrollér også tilvalg, som let bliver glemt i et pristilbud. En lavere pris kan skyldes, at eksempelvis elektronik, udvidet rejse eller særlige genstande ikke længere er dækket på samme måde.
-                </p>
-                <p>
-                  Samlerabat kan gøre en samlet løsning billigere, men den kan også gøre det sværere at gennemskue prisen på hver forsikring. Undersøg derfor, hvad der sker med rabatten, hvis du senere flytter én police.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Tjekliste til et sikkert skift
-                </h2>
-                <p className="mb-3">
-                  1. Find dine nuværende policer, seneste opkrævninger og opsigelsesfrister.
-                </p>
-                <p className="mb-3">
-                  2. Beskriv den dækning, du ønsker, og indhent sammenlignelige tilbud.
-                </p>
-                <p className="mb-3">
-                  3. Kontrollér selvrisiko, undtagelser, tilvalg, rabatter og den samlede pris.
-                </p>
-                <p className="mb-3">
-                  4. Vælg det nye selskab, og få police samt startdato bekræftet skriftligt.
-                </p>
-                <p className="mb-3">
-                  5. Opsig den gamle forsikring selv, eller bekræft, at det nye selskab gør det.
-                </p>
-                <p>
-                  6. Kontrollér de endelige datoer og gem dokumentationen for begge aftaler.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvad Altid Hjem kan i dag
-                </h2>
-                <p className="mb-3">
-                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så du får ét overblik, ét login.
-                </p>
-                <p className="mb-3">
-                  Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted. I kan hente den gratis i App Store og Google Play.
-                </p>
-                <p>
-                  Bag Altid Hjem står teamet bag Altid Energi, Danmarks første gebyrfrie energiselskab, der har mere end 15.000 danskere som kunder.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="font-semibold text-base mb-4" style={{ color: 'var(--forest)' }}>
-                  Ofte stillede spørgsmål
-                </h2>
-                <div className="space-y-3">
-                  {FAQ.map((f) => (
-                    <details
-                      key={f.q}
-                      className="group rounded-xl overflow-hidden transition-colors"
-                      style={{ background: '#ffffff', border: '1px solid rgba(26,61,34,0.1)', boxShadow: '0 1px 3px rgba(26,61,34,0.06)' }}
-                    >
-                      <summary
-                        className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden"
-                        style={{ WebkitTapHighlightColor: 'transparent' }}
-                      >
-                        <h3 className="font-medium text-sm" style={{ color: 'var(--forest)' }}>{f.q}</h3>
-                        <span
-                          aria-hidden="true"
-                          className="shrink-0 text-lg leading-none transition-transform duration-200 group-open:rotate-45"
-                          style={{ color: 'var(--forest)' }}
-                        >
-                          +
-                        </span>
-                      </summary>
-                      <div className="px-5 pb-5 pt-0 space-y-3">
-                        {f.a.map((paragraph) => (
-                          <p key={paragraph}>{paragraph}</p>
-                        ))}
-                      </div>
-                    </details>
-                  ))}
-                </div>
-              </section>
-
-            </div>
-          </div>
-        </div>
-
-        <BottomCta
-          eyebrow='Alle jeres forsikringer ét sted'
-          heading='Hent Altid Hjem, og saml jeres forsikringer, før I skifter'
-          subtitle='Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted.'
-        />
-      </main>
-      <Footer />
-    </>
+    <Guide
+      title="Sådan skifter du forsikringsselskab"
+      lead={
+        <>
+          <p>
+            At skifte forsikringsselskab er enklere, end mange tror. Det nye selskab kan ofte stå for opsigelsen, men få altid den nye police bekræftet, før den gamle ophører.
+          </p>
+          <p>
+            Den rigtige rækkefølge beskytter dig mod huller i dækningen og unødige dobbeltperioder. Sammenlign både dækning, selvrisiko, tilvalg og pris, før du beslutter dig.
+          </p>
+        </>
+      }
+      meta={
+        <>
+          Opdateret: juli 2026 · Sammenlign selv på{' '}
+          <a href="https://www.forsikringsguiden.dk" target="_blank" rel="noopener noreferrer">
+            Forsikringsguiden.dk
+          </a>
+        </>
+      }
+      faq={FAQ}
+      cta={{
+        eyebrow: 'Alle jeres forsikringer ét sted',
+        heading: 'Hent Altid Hjem, og saml jeres forsikringer, før I skifter',
+        subtitle: 'Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted.',
+      }}
+    >
+      <section>
+        <h2>Hvornår kan du skifte forsikringsselskab?</h2>
+        <p>
+          Efter det første år kan de fleste private forsikringer typisk opsiges med løbende måned plus en måned. Fristen afhænger dog af din police og selskabets vilkår, så
+          kontrollér altid den konkrete opsigelsesfrist.
+        </p>
+        <p>
+          Du kan godt undersøge alternativer, før opsigelsesfristen nærmer sig. Bed det nye selskab oplyse en præcis startdato, så den passer med ophøret hos dit nuværende
+          selskab.
+        </p>
+        <p>
+          Nogle aftaler kan have særlige regler, gebyrer eller længere varsler. Det er derfor policen, og ikke en generel tommelfingerregel, der afgør, hvornår dit skift kan
+          gennemføres.
+        </p>
+      </section>
+      <section>
+        <h2>Brug en rækkefølge, der beskytter dig</h2>
+        <p>
+          Begynd med at indhente et tilbud, hvor dækninger, selvrisici og startdato står skriftligt. Acceptér først tilbuddet, når du har kontrolleret, at det dækker det, du
+          faktisk har brug for.
+        </p>
+        <p>Få derefter den nye police og startdato bekræftet. Først når den nye dækning er på plads, bør den gamle forsikring opsiges.</p>
+        <p>
+          Mange nye selskaber tilbyder at klare opsigelsen for dig. Bed om en skriftlig bekræftelse, og kontrollér både ophørsdatoen på den gamle police og startdatoen på den
+          nye.
+        </p>
+      </section>
+      <section>
+        <h2>Sammenlign mere end prisen</h2>
+        <p>
+          To forsikringer med samme navn kan dække meget forskelligt. Sammenlign blandt andet dækningssummer, selvrisiko, undtagelser, tilvalg og regler for erstatning.
+        </p>
+        <p>
+          Ved indboforsikring bør du eksempelvis kontrollere dækning ved tyveri, vandskade, elektronikskader og ansvar. Du kan læse mere om prisniveauer og forskelle i guiden
+          til <A href="/hvad-koster-indboforsikring">hvad en indboforsikring koster</A>.
+        </p>
+        <p>
+          Se også på husstandens samlede behov, ikke kun én police ad gangen. Vores guide til <A href="/hvad-koster-forsikring">hvad forsikring koster</A> hjælper dig med at
+          vurdere pris i forhold til profil og dækning.
+        </p>
+        <GuideFigure tone="mint" caption="Rækkefølgen beskytter dig: ny police på plads, før den gamle opsiges. Illustration, ikke et skærmbillede fra appen.">
+          <SkiftTjeklisteMockup />
+        </GuideFigure>
+      </section>
+      <section>
+        <h2>Undgå de typiske fælder</h2>
+        <p>
+          En kort dobbeltperiode kan være praktisk, hvis datoerne ellers ikke kan mødes. En lang dobbeltperiode betyder derimod, at du risikerer at betale for to policer uden
+          at få tilsvarende ekstra værdi.
+        </p>
+        <p>
+          Kontrollér også tilvalg, som let bliver glemt i et pristilbud. En lavere pris kan skyldes, at eksempelvis elektronik, udvidet rejse eller særlige genstande ikke
+          længere er dækket på samme måde.
+        </p>
+        <p>
+          Samlerabat kan gøre en samlet løsning billigere, men den kan også gøre det sværere at gennemskue prisen på hver forsikring. Undersøg derfor, hvad der sker med
+          rabatten, hvis du senere flytter én police.
+        </p>
+      </section>
+      <section>
+        <h2>Tjekliste til et sikkert skift</h2>
+        <p>1. Find dine nuværende policer, seneste opkrævninger og opsigelsesfrister.</p>
+        <p>2. Beskriv den dækning, du ønsker, og indhent sammenlignelige tilbud.</p>
+        <p>3. Kontrollér selvrisiko, undtagelser, tilvalg, rabatter og den samlede pris.</p>
+        <p>4. Vælg det nye selskab, og få police samt startdato bekræftet skriftligt.</p>
+        <p>5. Opsig den gamle forsikring selv, eller bekræft, at det nye selskab gør det.</p>
+        <p>6. Kontrollér de endelige datoer og gem dokumentationen for begge aftaler.</p>
+      </section>
+      <section>
+        <h2>Hvad Altid Hjem kan i dag</h2>
+        <p>Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så du får ét overblik, ét login.</p>
+        <p>Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted. I kan hente den gratis i App Store og Google Play.</p>
+        <p>Bag Altid Hjem står teamet bag Altid Energi, Danmarks første gebyrfrie energiselskab, der har mere end 15.000 danskere som kunder.</p>
+      </section>
+    </Guide>
   )
 }

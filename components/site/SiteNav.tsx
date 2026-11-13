@@ -14,7 +14,9 @@ import StoreLink from './StoreLink'
 // `base` is '' on the front page and '/' elsewhere, so the in-page links lead back to it.
 // `getApp` (the front page): on a phone a compact "Hent appen" to the visitor's own store
 // fades in once the hero's store button has scrolled up out of view, and stays from there on.
-export default function SiteNav({ base = '', getApp = false }: { base?: '' | '/'; getApp?: boolean }) {
+// `storesHere` (the guides): this page has its own store buttons (#hent-appen), so "Hent appen"
+// goes to them instead of back to the front page.
+export default function SiteNav({ base = '', getApp = false, storesHere = false }: { base?: '' | '/'; getApp?: boolean; storesHere?: boolean }) {
   const at = (href: string) => (href.startsWith('#') ? base + href : href)
   const sheet = useRef<HTMLDialogElement>(null)
   const header = useRef<HTMLElement>(null)
@@ -90,7 +92,7 @@ export default function SiteNav({ base = '', getApp = false }: { base?: '' | '/'
                 </a>
               ))}
             </div>
-            <a href={at(`#${STORE_ANCHOR}`)} className="nav-cta">
+            <a href={storesHere ? `#${STORE_ANCHOR}` : at(`#${STORE_ANCHOR}`)} className="nav-cta">
               {NAV.cta}
             </a>
           </nav>

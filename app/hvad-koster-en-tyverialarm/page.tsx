@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import Nav from '@/components/Nav'
-import BottomCta from '@/components/sections/BottomCta'
-import Footer from '@/components/Footer'
 import AlarmStatusMockup from '@/components/AlarmStatusMockup'
+import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Hvad koster en tyverialarm? | Altid Hjem',
@@ -19,16 +16,8 @@ export const metadata: Metadata = {
   },
 }
 
-function A({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link href={href} className="underline underline-offset-4 hover:opacity-70" style={{ color: 'var(--forest)' }}>
-      {children}
-    </Link>
-  )
-}
-
 // FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).
-const FAQ: { q: string; a: string[] }[] = [
+const FAQ: GuideFaq[] = [
   {
     q: 'Hvad koster en tyverialarm?',
     a: [
@@ -68,7 +57,7 @@ const FAQ: { q: string; a: string[] }[] = [
     q: 'Hvad er Altid Hjem?',
     a: [
       'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så du får ét overblik, ét login.',
-      'Du kan hente den gratis i App Store og Google Play. Alarm er ikke en del af appen.',
+      'Du kan hente den gratis i App Store og Google Play. Boligalarm er ikke i appen endnu, men er blandt de næste tjenester, vi lancerer.',
     ],
   },
   {
@@ -81,200 +70,121 @@ const FAQ: { q: string; a: string[] }[] = [
 ]
 
 export default function HvadKosterEnTyverialarm() {
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: FAQ.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a.join(' ') },
-    })),
-  }
-
   return (
-    <>
-      <Nav
-        banner={{
-          longPrefix: 'Ferietid er indbrudstid. Se hvad en tyverialarm faktisk koster. ',
-          shortPrefix: 'Hvad koster en tyverialarm? ',
-          source: 'tyverialarm-banner',
-          cta: 'Se priserne →',
-        }}
-      />
-      <script
-        type="application/ld+json"
-        // '<' escapes som \u003c: JSON.stringify escaper ikke '<', så en
-        // fremtidig FAQ-tekst med '</script>' kunne ellers bryde ud af tagget.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
-      />
-      <main className="min-h-screen" style={{ fontFamily: 'var(--font-onest)' }}>
-        {/* pt-32 (128px) = kampagnebanner (~36px) + nav (84px) + luft. */}
-        <div className="pt-32 pb-20" style={{ background: 'var(--cream)' }}>
-          <div className="max-w-2xl mx-auto px-6">
-
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-sm mb-10 transition-opacity hover:opacity-70"
-              style={{ color: 'rgba(26,61,34,0.55)' }}
-            >
-              <span aria-hidden="true">←</span> Tilbage
-            </Link>
-
-            <h1 className="text-3xl sm:text-4xl font-bold mb-1 text-balance" style={{ color: 'var(--forest)' }}>
-              Hvad koster en tyverialarm?
-            </h1>
-            <p className="text-xs mb-12" style={{ color: 'rgba(26,61,34,0.5)' }}>Opdateret: juli 2026 · Priserne er vejledende markedsintervaller · Se også <a href="https://dkr.dk/indbrud" className="underline" target="_blank" rel="noopener noreferrer">Det Kriminalpræventive Råd om indbrudssikring</a></p>
-
-            <div className="space-y-10 text-sm leading-relaxed text-pretty" style={{ color: 'rgba(26,61,34,0.75)' }}>
-
-              {/* Kort svar — målrettet Googles "fremhævede uddrag". */}
-              <section>
-                <p className="mb-3">
-                  En tyverialarm koster vejledende fra under 1.000 kr. for en enkel gør-det-selv-løsning til typisk 10.000-15.000 kr. for et professionelt installeret alarmsystem til en villa.
-                </p>
-                <p>
-                  Vælger du abonnement, starter prisen typisk fra ca. 299 kr./md. plus installation og ofte en bindingsperiode. Den endelige pris afhænger blandt andet af boligens størrelse, antal sensorer og behovet for kontrolcentral eller vagtudrykning.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Tre måder at købe tyverialarm på
-                </h2>
-                <p className="mb-3">
-                  Den billigste mulighed er normalt en gør-det-selv-alarm. En basisløsning koster typisk 999-2.999 kr. som engangskøb, men prisen varierer med antallet af sensorer, kameraer og øvrigt udstyr.
-                </p>
-                <p className="mb-3">
-                  Et standardsystem til en villa med professionel installation koster typisk 10.000-15.000 kr. Her afhænger prisen især af boligens indretning, systemets omfang og installationsarbejdet.
-                </p>
-                <p>
-                  Den tredje mulighed er en abonnementsløsning hos en større udbyder. Den koster typisk fra ca. 299 kr./md. plus installation, og der følger ofte en bindingsperiode med.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvad afhænger prisen på en alarm af?
-                </h2>
-                <p className="mb-3">
-                  Boligens størrelse har stor betydning. En lejlighed med få adgangspunkter kræver normalt mindre udstyr end en villa med flere døre, vinduer og et større udendørsareal.
-                </p>
-                <p className="mb-3">
-                  Antallet og typen af sensorer påvirker også prisen. Dørkontakter, bevægelsessensorer, røgalarmer og kameraer har forskellige priser, og funktioner som app-styring kan gøre løsningen dyrere.
-                </p>
-                <p>
-                  Kontrolcentral og vagtudrykning er typisk en del af en abonnementsløsning. Sammenlign derfor ikke kun startprisen, men også service, binding og eventuelle omkostninger ved installation eller udrykning.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Regn på abonnementet over fem år
-                </h2>
-                <p className="mb-3">
-                  Et alarmabonnement på flere hundrede kroner om måneden bliver til flere tusinde kroner om året. Over fem år kan den løbende betaling derfor fylde mere end den lave startpris antyder.
-                </p>
-                <p className="mb-3">
-                  Bed udbyderen om en samlet beregning med installation, månedlig betaling, bindingsperiode og mulige tillæg. Sammenlign derefter totalprisen med et system, du selv ejer, og vurder samtidig værdien af kontrolcentral og vagtservice.
-                </p>
-                <p>
-                  Den billigste løsning ved købet er ikke nødvendigvis den billigste over tid. Omvendt kan et abonnement være pengene værd, hvis professionel overvågning og hjælp ved alarm er vigtigt for jer.
-                </p>
-
-                {/* Animeret side-komponent i gradient-rammen (forsikring-side-mønstret). */}
-                <div
-                  className="rounded-3xl flex justify-center py-10 px-4 mt-6"
-                  style={{ background: 'linear-gradient(160deg, rgba(168,224,99,0.12) 0%, rgba(26,61,34,0.05) 100%)' }}
-                >
-                  <AlarmStatusMockup />
-                </div>
-                <p className="text-xs mt-3 text-center" style={{ color: 'rgba(26,61,34,0.5)' }}>
-                  Alarmen er en af hjemmets faste udgifter. Illustration, ikke et skærmbillede fra appen.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  I ferieperioder er indbrudssikring særlig relevant
-                </h2>
-                <p className="mb-3">
-                  Interessen for tyverialarmer topper ofte i august, hvor mange tænker på indbrud i forbindelse med ferie og tomme boliger. En alarm kan være en del af sikringen, men den bør ikke stå alene.
-                </p>
-                <p>
-                  Få hjemmet til at se beboet ud, undgå synlige tegn på længere fravær, og aftal gerne med en nabo, at post og skraldespand bliver håndteret. Tjek også låse, døre og vinduer, før I rejser.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Alarmen er en fast udgift i hjemmet
-                </h2>
-                <p className="mb-3">
-                  Alarm, el, mobil og forsikring bliver ofte betalt forskellige steder. Det gør det svært at huske, hvad man reelt betaler hver måned, og hvornår priser eller vilkår ændrer sig.
-                </p>
-                <p className="mb-3">
-                  Forsikring og alarmsikring kan hænge sammen, fordi nogle forsikringsselskaber giver rabat for bestemte alarmtyper. Det gælder dog ikke alle, så tjek policen og læs mere om <A href="/hvad-koster-forsikring">hvad forsikring koster</A>.
-                </p>
-                <p>
-                  Vil du samle overblikket over faste udgifter uden at bruge flere separate værktøjer, kan du også læse om et <A href="/spiir-alternativ">alternativ til Spiir</A>.
-                </p>
-              </section>
-              <section>
-                <h2 className="font-semibold text-base mb-3 text-balance" style={{ color: 'var(--forest)' }}>
-                  Hvad Altid Hjem kan i dag
-                </h2>
-                <p className="mb-3">
-                  Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så du får ét overblik, ét login. Alarm er ikke en del af appen, men forbinder du banken, ser du dine faste udgifter og abonnementer i en kalender.
-                </p>
-                <p className="mb-3">
-                  Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder. Du kan hente den gratis i App Store og Google Play.
-                </p>
-                <p>
-                  Du kan bruge prisguiden her på siden til at sammenligne markedets løsninger.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="font-semibold text-base mb-4" style={{ color: 'var(--forest)' }}>
-                  Ofte stillede spørgsmål
-                </h2>
-                <div className="space-y-3">
-                  {FAQ.map((f) => (
-                    <details
-                      key={f.q}
-                      className="group rounded-xl overflow-hidden transition-colors"
-                      style={{ background: '#ffffff', border: '1px solid rgba(26,61,34,0.1)', boxShadow: '0 1px 3px rgba(26,61,34,0.06)' }}
-                    >
-                      <summary
-                        className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden"
-                        style={{ WebkitTapHighlightColor: 'transparent' }}
-                      >
-                        <h3 className="font-medium text-sm" style={{ color: 'var(--forest)' }}>{f.q}</h3>
-                        <span
-                          aria-hidden="true"
-                          className="shrink-0 text-lg leading-none transition-transform duration-200 group-open:rotate-45"
-                          style={{ color: 'var(--forest)' }}
-                        >
-                          +
-                        </span>
-                      </summary>
-                      <div className="px-5 pb-5 pt-0 space-y-3">
-                        {f.a.map((paragraph) => (
-                          <p key={paragraph}>{paragraph}</p>
-                        ))}
-                      </div>
-                    </details>
-                  ))}
-                </div>
-              </section>
-
-            </div>
-          </div>
-        </div>
-
-        <BottomCta
-          eyebrow='Ét overblik over hjemmets udgifter'
-          heading='Hent Altid Hjem, og få overblik over husstanden'
-          subtitle='Appen er gratis og viser jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket.'
-        />
-      </main>
-      <Footer />
-    </>
+    <Guide
+      title="Hvad koster en tyverialarm?"
+      lead={
+        <>
+          <p>
+            En tyverialarm koster vejledende fra under 1.000 kr. for en enkel gør-det-selv-løsning til typisk 10.000-15.000 kr. for et professionelt installeret alarmsystem
+            til en villa.
+          </p>
+          <p>
+            Vælger du abonnement, starter prisen typisk fra ca. 299 kr./md. plus installation og ofte en bindingsperiode. Den endelige pris afhænger blandt andet af boligens
+            størrelse, antal sensorer og behovet for kontrolcentral eller vagtudrykning.
+          </p>
+        </>
+      }
+      meta={
+        <>
+          Opdateret: juli 2026 · Priserne er vejledende markedsintervaller · Se også{' '}
+          <a href="https://dkr.dk/indbrud" target="_blank" rel="noopener noreferrer">
+            Det Kriminalpræventive Råd om indbrudssikring
+          </a>
+        </>
+      }
+      faq={FAQ}
+      cta={{
+        eyebrow: 'Ét overblik over hjemmets udgifter',
+        heading: 'Hent Altid Hjem, og få overblik over husstanden',
+        subtitle: 'Appen er gratis og viser jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket.',
+      }}
+    >
+      <section>
+        <h2>Tre måder at købe tyverialarm på</h2>
+        <p>
+          Den billigste mulighed er normalt en gør-det-selv-alarm. En basisløsning koster typisk 999-2.999 kr. som engangskøb, men prisen varierer med antallet af sensorer,
+          kameraer og øvrigt udstyr.
+        </p>
+        <p>
+          Et standardsystem til en villa med professionel installation koster typisk 10.000-15.000 kr. Her afhænger prisen især af boligens indretning, systemets omfang og
+          installationsarbejdet.
+        </p>
+        <p>
+          Den tredje mulighed er en abonnementsløsning hos en større udbyder. Den koster typisk fra ca. 299 kr./md. plus installation, og der følger ofte en bindingsperiode
+          med.
+        </p>
+      </section>
+      <section>
+        <h2>Hvad afhænger prisen på en alarm af?</h2>
+        <p>
+          Boligens størrelse har stor betydning. En lejlighed med få adgangspunkter kræver normalt mindre udstyr end en villa med flere døre, vinduer og et større
+          udendørsareal.
+        </p>
+        <p>
+          Antallet og typen af sensorer påvirker også prisen. Dørkontakter, bevægelsessensorer, røgalarmer og kameraer har forskellige priser, og funktioner som app-styring
+          kan gøre løsningen dyrere.
+        </p>
+        <p>
+          Kontrolcentral og vagtudrykning er typisk en del af en abonnementsløsning. Sammenlign derfor ikke kun startprisen, men også service, binding og eventuelle
+          omkostninger ved installation eller udrykning.
+        </p>
+      </section>
+      <section>
+        <h2>Regn på abonnementet over fem år</h2>
+        <p>
+          Et alarmabonnement på flere hundrede kroner om måneden bliver til flere tusinde kroner om året. Over fem år kan den løbende betaling derfor fylde mere end den lave
+          startpris antyder.
+        </p>
+        <p>
+          Bed udbyderen om en samlet beregning med installation, månedlig betaling, bindingsperiode og mulige tillæg. Sammenlign derefter totalprisen med et system, du selv
+          ejer, og vurder samtidig værdien af kontrolcentral og vagtservice.
+        </p>
+        <p>
+          Den billigste løsning ved købet er ikke nødvendigvis den billigste over tid. Omvendt kan et abonnement være pengene værd, hvis professionel overvågning og hjælp ved
+          alarm er vigtigt for jer.
+        </p>
+        <GuideFigure tone="rose" caption="Alarmen er en af hjemmets faste udgifter. Illustration, ikke et skærmbillede fra appen.">
+          <AlarmStatusMockup />
+        </GuideFigure>
+      </section>
+      <section>
+        <h2>I ferieperioder er indbrudssikring særlig relevant</h2>
+        <p>
+          Interessen for tyverialarmer topper ofte i august, hvor mange tænker på indbrud i forbindelse med ferie og tomme boliger. En alarm kan være en del af sikringen, men
+          den bør ikke stå alene.
+        </p>
+        <p>
+          Få hjemmet til at se beboet ud, undgå synlige tegn på længere fravær, og aftal gerne med en nabo, at post og skraldespand bliver håndteret. Tjek også låse, døre og
+          vinduer, før I rejser.
+        </p>
+      </section>
+      <section>
+        <h2>Alarmen er en fast udgift i hjemmet</h2>
+        <p>
+          Alarm, el, mobil og forsikring bliver ofte betalt forskellige steder. Det gør det svært at huske, hvad man reelt betaler hver måned, og hvornår priser eller vilkår
+          ændrer sig.
+        </p>
+        <p>
+          Forsikring og alarmsikring kan hænge sammen, fordi nogle forsikringsselskaber giver rabat for bestemte alarmtyper. Det gælder dog ikke alle, så tjek policen og læs
+          mere om <A href="/hvad-koster-forsikring">hvad forsikring koster</A>.
+        </p>
+        <p>
+          Vil du samle overblikket over faste udgifter uden at bruge flere separate værktøjer, kan du også læse om et <A href="/spiir-alternativ">alternativ til Spiir</A>.
+        </p>
+      </section>
+      <section>
+        <h2>Hvad Altid Hjem kan i dag</h2>
+        <p>
+          Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så du får ét overblik, ét login. Boligalarm er ikke i appen endnu, men er blandt de næste
+          tjenester, vi lancerer. Tilslut din bank, og se allerede nu dine faste udgifter og abonnementer i en kalender.
+        </p>
+        <p>
+          Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder. Du kan hente den gratis i
+          App Store og Google Play.
+        </p>
+        <p>Du kan bruge prisguiden her på siden til at sammenligne markedets løsninger.</p>
+      </section>
+    </Guide>
   )
 }
