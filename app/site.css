@@ -19,7 +19,7 @@
   --lavender: #bdb0f9;
   --rose: #ffbab8;
 
-  /* How a fixed piece (the QR card) leaves: a fade and a short slide. */
+  /* How a fixed piece (the QR card) comes and goes: a fade and a short slide. */
   --stick-fade: opacity 0.3s, visibility 0.3s, translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
   --stick-shift: 24px;
 
@@ -1139,9 +1139,9 @@
   }
 
   /* The one QR code on computers (GetAppSticky): the hero's old dark card, bottom right, the
-     code on a white tile with room around it on the left, the text on the right. Hidden when
-     the page opens; it eases in (a fade and a short rise) once the hero's animation has
-     scrolled up past it, and leaves with the shared fade before the testimonials' slider. */
+     code on a white tile with room around it on the left, the text on the right. There from
+     the moment the page opens; it fades out before the testimonials' slider and back in above
+     it, with the fade the site's fixed pieces share. */
   .gs {
     display: none;
   }
@@ -1160,18 +1160,12 @@
       background: var(--forest);
       box-shadow: 0 12px 30px rgba(0, 30, 10, 0.2);
       color: #fff;
-      /* Coming in: half a second, easing out softly. */
-      transition:
-        opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-        visibility 0.5s,
-        translate 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: var(--stick-fade);
 
-      /* Going: the fade the site's fixed pieces share. */
       &[data-shown='false'] {
         opacity: 0;
         visibility: hidden;
         translate: 0 var(--stick-shift);
-        transition: var(--stick-fade);
       }
     }
   }
@@ -1355,10 +1349,18 @@
     white-space: nowrap;
     rotate: 4deg;
   }
-  /* Phones: the card shows more of its phone, so the whole element is in it. */
+  /* The element grows from its middle as the card passes (EnergiOffer). */
+  .ek-offer {
+    transform-origin: 50% 50%;
+  }
+  /* Phones: the card shows more of its phone, so the whole element is in it at its largest, and
+     the phone's group is cut only at the top and the bottom, so the element can reach past the
+     phone's sides to the card's own rounded edge. */
   @media (max-width: 767px) {
     #energi .d-fixed {
-      height: calc(var(--u) * 372);
+      height: calc(var(--u) * 400);
+      overflow: visible;
+      clip-path: inset(0 -50vw);
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -3215,10 +3217,9 @@
     }
   }
 
-  /* 11. Final CTA: the text in the middle of a collage of photos, app screens and pieces of the
-     app (FinalGallery). --cu is the collage's unit: one design px at 1440, growing on to 1800
-     so it keeps filling a wide window. Inside the collage --u is that unit (computers) or the
-     phone stage's, so the hero's own pieces (the bill) size with it. */
+  /* 11. Final CTA: the text in the middle of a collage of photos, app screens and dishes on
+     toned tiles (FinalGallery). --cu is a computer stage's unit: one design px at 1440, growing
+     on to 1800 so it keeps filling a wide window. */
   .e {
     --cu: calc(min(100vw, 1800px) / 1440);
     padding-bottom: calc(var(--u) * 120);
@@ -3264,17 +3265,121 @@
     }
   }
 
-  /* A tile, as in the old "Lavet med omhu" block: rounded, on its tone; a dish fitted in,
-     a photo, screen or painting filling it. --h is its height in design px. */
-  .e-tile {
+  /* Where the text and the tiles go (FinalGallery): a computer's stage around the text, or the
+     text with a phone's stage under it. Set by the window's width, or by arrange mode's switch
+     (data-view), through these properties. --u inside a stage is its unit: one design px. */
+  .e-gallery {
+    --wall: none;
+    --few: block;
+    --text-pos: relative;
+    --text-at: auto;
+    --text-shift: none;
+  }
+  @media (min-width: 1024px) {
+    .e-gallery {
+      --wall: grid;
+      --few: none;
+      --text-pos: absolute;
+      --text-at: 50%;
+      --text-shift: -50% -50%;
+    }
+    .e {
+      padding-top: calc(var(--pad) * 0.5);
+    }
+  }
+  .e-gallery[data-view='wall'] {
+    --wall: grid;
+    --few: none;
+    --text-pos: absolute;
+    --text-at: 50%;
+    --text-shift: -50% -50%;
+  }
+  .e-gallery[data-view='phone'] {
+    --wall: none;
+    --few: block;
+    --text-pos: relative;
+    --text-at: auto;
+    --text-shift: none;
+  }
+
+  /* A computer's stage: 1440 x 960 design px, growing with the window to 1800 wide, the text in
+     its middle with its heading and line sized with it (never larger than on the design). */
+  .e-wall {
     position: relative;
+  }
+  .e-wall .e-tile {
+    --u: var(--cu);
+    display: var(--wall);
+  }
+  .e-gallery[data-view='wall'] .e-wall,
+  .e-gallery:not([data-view]) .e-wall {
+    width: calc(var(--sw) * var(--cu));
+    max-width: 100%;
+    margin-inline: auto;
+  }
+  @media (min-width: 1024px) {
+    .e-gallery:not([data-view]) .e-wall {
+      height: calc(var(--sh) * var(--cu));
+    }
+  }
+  .e-gallery[data-view='wall'] .e-wall {
+    height: calc(var(--sh) * var(--cu));
+  }
+  .e-text {
+    position: var(--text-pos);
+    left: var(--text-at);
+    top: var(--text-at);
+    translate: var(--text-shift);
+  }
+  .e-gallery:not([data-view='phone']) .e-text {
+    @media (min-width: 1024px) {
+      width: calc(var(--cu) * 640);
+
+      .t-h2 {
+        font-size: calc(64 * min(var(--cu), 1px));
+      }
+      .e-line {
+        width: 100%;
+        font-size: calc(24 * min(var(--cu), 1px));
+      }
+    }
+  }
+  .e-gallery[data-view='wall'] .e-text {
+    width: calc(var(--cu) * 640);
+
+    .e-line {
+      width: 100%;
+    }
+  }
+  /* A phone's stage: 390 x 410 design px under the text, up to 560 px wide. */
+  .e-few {
+    --u: calc(min(100vw, 560px) / 390);
+    position: relative;
+    display: var(--few);
+    width: calc(var(--sw) * var(--u));
+    height: calc(var(--sh) * var(--u));
+    margin: 44px auto 0;
+  }
+
+  /* A tile, as in the old "Lavet med omhu" block: rounded, on its tone; a dish fitted in, a
+     photo or painting filling it, a screen on its card. Placed from the layout: --x and --y in
+     percent of the stage, --w and --h in design px. */
+  .e-tile {
+    position: absolute;
+    z-index: 1;
+    left: calc(var(--x) * 1%);
+    top: calc(var(--y) * 1%);
     display: grid;
     place-items: center;
+    width: calc(var(--w) * var(--u));
     height: calc(var(--h) * var(--u));
     border-radius: calc(var(--u) * 30);
     overflow: hidden;
     background: var(--tint, var(--sand));
     color: var(--forest);
+  }
+  .e-few .e-tile {
+    border-radius: calc(var(--u) * 24);
   }
   .e-cover {
     outline: 1px solid rgba(0, 60, 22, 0.1);
@@ -3299,7 +3404,7 @@
   .e-art img {
     padding: 22%;
   }
-  /* The notification on its tile, sized in the collage's unit so it keeps its shape. */
+  /* The notification on its tile, sized in the stage's unit so it keeps its shape. */
   .e-note-card {
     width: 86%;
     gap: calc(var(--u) * 10);
@@ -3344,93 +3449,45 @@
     z-index: 2;
     margin-top: 24px;
   }
-  .e-few {
-    display: none;
-  }
 
-  /* Computers: the text with a calm space around it, and the columns in three bands on a
-     stage as wide as the design (1440, growing to 1800): above the text, beside it (from its
-     middle) and below it. */
-  @media (min-width: 1024px) {
-    .e {
-      --e-top: 320;
-      --e-bottom: 380;
-      padding-top: calc(var(--pad) * 0.5);
-    }
-    .e-wall {
-      position: relative;
-      padding-block: calc(var(--e-top) * var(--cu)) calc(var(--e-bottom) * var(--cu));
-    }
-    .e-text {
-      width: calc(var(--cu) * 640);
-      margin-inline: auto;
-    }
-    .e-line {
-      width: 100%;
-    }
-    .e-band {
-      --u: var(--cu);
-      position: absolute;
-      z-index: 1;
-      left: 50%;
-      width: calc(1440 * var(--cu));
-      translate: -50% 0;
-      pointer-events: none;
-    }
-    .e-band[data-band='above'] {
-      top: 0;
-      height: calc(var(--e-top) * var(--cu));
-    }
-    .e-band[data-band='beside'] {
-      top: calc(var(--e-top) * var(--cu));
-      bottom: calc(var(--e-bottom) * var(--cu));
-    }
-    .e-band[data-band='below'] {
-      bottom: 0;
-      height: calc(var(--e-bottom) * var(--cu));
-    }
-    .e-col {
-      position: absolute;
-      left: calc(var(--x) * var(--u));
-      display: flex;
-      flex-direction: column;
-      gap: calc(var(--u) * 16);
-      width: calc(var(--w) * var(--u));
-    }
-    /* 72 of calm space plus the most a column can drift (16) towards the text. */
-    .e-band[data-band='above'] .e-col {
-      bottom: calc((88 + var(--y)) * var(--u));
-    }
-    .e-band[data-band='beside'] .e-col {
-      top: calc(50% + var(--y) * var(--u));
-    }
-    .e-band[data-band='below'] .e-col {
-      top: calc((88 + var(--y)) * var(--u));
+  /* Arrange mode (?arrange): every tile can be picked up; a small panel bottom left. */
+  .e-gallery[data-arrange] .e-tile {
+    outline: 2px dashed var(--forest);
+    outline-offset: 3px;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+
+    &:active {
+      z-index: 3;
+      cursor: grabbing;
+      box-shadow: 0 18px 40px rgba(0, 30, 10, 0.25);
     }
   }
-  /* Phones and tablets: three columns of two under the text, still. */
-  @media (max-width: 1023px) {
-    .e-band {
-      display: none;
-    }
-    .e-few {
-      --u: calc(min(100vw, 560px) / 390);
-      display: flex;
-      gap: calc(var(--u) * 10);
-      align-items: flex-start;
-      width: calc(var(--u) * 358);
-      margin: 44px auto 0;
-    }
-    .e-few-col {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      gap: calc(var(--u) * 10);
-      min-width: 0;
-      margin-top: calc(var(--y) * var(--u));
-    }
-    .e-tile {
-      border-radius: calc(var(--u) * 24);
+  .e-arrange {
+    position: fixed;
+    z-index: 50;
+    left: 16px;
+    bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px 8px 14px;
+    border-radius: 999px;
+    background: var(--forest);
+    box-shadow: 0 12px 30px rgba(0, 30, 10, 0.25);
+    color: var(--cream);
+    font-size: 14px;
+
+    button {
+      padding: 8px 14px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--cream);
+      color: var(--forest);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
     }
   }
   @media (max-width: 767px) {

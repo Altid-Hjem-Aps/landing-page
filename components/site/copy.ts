@@ -298,30 +298,71 @@ export const FAQ: { title: string; items: readonly FaqItem[] } = {
 export const FINAL = {
   title: 'Hent Altid Hjem i dag',
   body: 'Vi glæder os til at se jer. Appen er gratis at hente, og det er gratis at oprette en konto.',
-  // A compact collage around the text in the style of the old "Lavet med omhu til danske hjem"
-  // block (Thor 13/11): rounded tiles in the site's tones, Thor's candid photos, app screens each
-  // on a toned card, the coast painting, the coin stack, two dishes and the assistant's
-  // notification on a tile of its own. FinalGallery places them in this order (14 places on a
-  // computer, see COLUMNS there); a phone shows the six marked `phone`. Everything but the
+  // A collage around the text in the style of the old "Lavet med omhu til danske hjem" block
+  // (Thor 13/11): rounded tiles in the site's tones, Thor's candid photos, app screens each on a
+  // toned card, the coast painting, the coin stack, two dishes and the assistant's notification
+  // on a tile of its own. Where each tile sits is FINAL_LAYOUT below, by `id`. Everything but the
   // notification is named for screen readers. `plate` is an index into MAD.plates; a photo's
   // or a cover's `focus` is its object-position.
   gallery: [
-    { kind: 'photo', src: '/faq-familie.jpg', alt: 'Far med datter på skuldrene i stuen', focus: '8% 50%', phone: true },
-    { kind: 'screen', src: HERO.mainScreens[0].src, alt: HERO.mainScreens[0].alt, tone: 'mint', phone: true },
-    { kind: 'plate', plate: 0, tone: 'honey', phone: true },
-    { kind: 'photo', src: '/site/gallery/galleri-bamse.webp', alt: 'Uldsokker og en bamse på gulvtæppet', focus: '55% 50%', phone: true },
-    { kind: 'photo', src: '/site/gallery/galleri-pige-sofa.webp', alt: 'Pige med høretelefoner og tablet i sofaen', focus: '50% 60%', phone: false },
-    { kind: 'art', src: '/site/app/painting.webp', alt: 'Maleriet af en kystby fra drømmen om en familieferie.', tone: 'sand', cover: true, focus: '55% 85%', phone: false },
-    { kind: 'screen', src: HERO.mainScreens[1].src, alt: HERO.mainScreens[1].alt, tone: 'lavender', phone: false },
-    { kind: 'note', title: 'Altid Hjem', time: 'nu', body: HERO.lanes[2].done, done: 'Klaret', tone: 'mint', phone: false },
-    { kind: 'art', src: '/site/brand/coin-stack.svg', alt: 'En stak mønter fra forsiden i appen.', tone: 'honey', cover: false, focus: '50% 50%', phone: false },
-    { kind: 'screen', src: HERO.secondScreens[2].src, alt: HERO.secondScreens[2].alt, tone: 'sky', phone: true },
-    { kind: 'photo', src: '/site/gallery/galleri-far-og-datter.webp', alt: 'Far og datter krammer i sofaen', focus: '50% 15%', phone: true },
-    { kind: 'screen', src: HERO.secondScreens[1].src, alt: HERO.secondScreens[1].alt, tone: 'rose', phone: false },
-    { kind: 'plate', plate: 1, tone: 'lavender', phone: false },
-    { kind: 'photo', src: '/site/gallery/galleri-elbil.webp', alt: 'En elbil lades op ved huset', focus: '40% 50%', phone: false },
+    { id: 'familie', kind: 'photo', src: '/faq-familie.jpg', alt: 'Far med datter på skuldrene i stuen', focus: '8% 50%' },
+    { id: 'hjem', kind: 'screen', src: HERO.mainScreens[0].src, alt: HERO.mainScreens[0].alt, tone: 'mint' },
+    { id: 'tacos', kind: 'plate', plate: 0, tone: 'honey' },
+    { id: 'maleri', kind: 'art', src: '/site/app/painting.webp', alt: 'Maleriet af en kystby fra drømmen om en familieferie.', tone: 'sand', cover: true, focus: '55% 85%' },
+    { id: 'bamse', kind: 'photo', src: '/site/gallery/galleri-bamse.webp', alt: 'Uldsokker og en bamse på gulvtæppet', focus: '55% 50%' },
+    { id: 'pige', kind: 'photo', src: '/site/gallery/galleri-pige-sofa.webp', alt: 'Pige med høretelefoner og tablet i sofaen', focus: '50% 60%' },
+    { id: 'moenter', kind: 'art', src: '/site/brand/coin-stack.svg', alt: 'En stak mønter fra forsiden i appen.', tone: 'honey', cover: false, focus: '50% 50%' },
+    { id: 'besked', kind: 'note', title: 'Altid Hjem', time: 'nu', body: HERO.lanes[2].done, done: 'Klaret', tone: 'mint' },
+    { id: 'okonomi', kind: 'screen', src: HERO.mainScreens[1].src, alt: HERO.mainScreens[1].alt, tone: 'lavender' },
+    { id: 'energi', kind: 'screen', src: HERO.secondScreens[2].src, alt: HERO.secondScreens[2].alt, tone: 'sky' },
+    { id: 'risotto', kind: 'plate', plate: 1, tone: 'lavender' },
+    { id: 'far', kind: 'photo', src: '/site/gallery/galleri-far-og-datter.webp', alt: 'Far og datter krammer i sofaen', focus: '50% 15%' },
+    { id: 'droem', kind: 'screen', src: HERO.secondScreens[1].src, alt: HERO.secondScreens[1].alt, tone: 'rose' },
+    { id: 'elbil', kind: 'photo', src: '/site/gallery/galleri-elbil.webp', alt: 'En elbil lades op ved huset', focus: '40% 50%' },
   ],
+  // The arrange panel (open the page with ?arrange): drag the tiles, then copy the layout.
+  arrange: {
+    title: 'Galleri',
+    copy: 'Kopiér layout',
+    copied: 'Kopieret',
+    reset: 'Nulstil',
+    wall: 'Computer',
+    phone: 'Telefon',
+  },
 } as const
+
+// Where the final block's tiles sit (FinalGallery), by the tile's `id` in FINAL.gallery: x and y
+// are the tile's left and top edges in percent of the collage's stage, w and h its size in the
+// stage's own units (design px). `wall` is a computer's stage, 1440 x 960 around the text in its
+// middle; `phone` is a phone's stage, 390 x 410 under the text, and only the tiles listed there
+// show on a phone. The arrange mode (the page with ?arrange) copies a new layout in exactly this
+// shape: paste it over the object below.
+export const FINAL_LAYOUT = {
+  "wall": {
+    "familie": { "x": 2.1, "y": 4.2, "w": 150, "h": 250 },
+    "hjem": { "x": 2.1, "y": 31.7, "w": 150, "h": 300 },
+    "tacos": { "x": 2.1, "y": 64.4, "w": 150, "h": 170 },
+    "maleri": { "x": 12.9, "y": 11.5, "w": 150, "h": 210 },
+    "bamse": { "x": 12.9, "y": 34.8, "w": 150, "h": 200 },
+    "pige": { "x": 12.9, "y": 57.1, "w": 150, "h": 250 },
+    "moenter": { "x": 27.8, "y": 11.5, "w": 150, "h": 170 },
+    "besked": { "x": 39.3, "y": 13.5, "w": 308, "h": 150 },
+    "okonomi": { "x": 61.8, "y": 4.2, "w": 150, "h": 240 },
+    "energi": { "x": 27.8, "y": 70.8, "w": 150, "h": 260 },
+    "risotto": { "x": 61.8, "y": 70.8, "w": 150, "h": 170 },
+    "far": { "x": 76.7, "y": 12.5, "w": 150, "h": 260 },
+    "droem": { "x": 76.7, "y": 41, "w": 150, "h": 300 },
+    "elbil": { "x": 87.5, "y": 27.1, "w": 150, "h": 280 }
+  },
+  "phone": {
+    "familie": { "x": 4.1, "y": 0, "w": 113, "h": 155 },
+    "hjem": { "x": 4.1, "y": 40.7, "w": 113, "h": 220 },
+    "tacos": { "x": 35.1, "y": 9.8, "w": 113, "h": 130 },
+    "bamse": { "x": 35.1, "y": 44.4, "w": 113, "h": 155 },
+    "energi": { "x": 66.2, "y": 3.9, "w": 113, "h": 220 },
+    "far": { "x": 66.2, "y": 60.5, "w": 113, "h": 155 }
+  }
+}
 
 // One QR code for the app everywhere on the page: /qr sends an iPhone to the App Store and an
 // Android phone to Google Play (app/qr/route.ts). On a computer it sits bottom right until

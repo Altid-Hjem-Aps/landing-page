@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import FinalCta from '@/components/site/FinalCta'
 import EnergiOffer from '@/components/site/EnergiOffer'
 import GetAppSticky from '@/components/site/GetAppSticky'
+import { FINAL_LAYOUT } from '@/components/site/copy'
 import { MotionPrefs } from '@/components/site/MotionPrefs'
 
 // The front page's QR codes and links (Thor 13/11, fifth round): the QR code bottom right from
@@ -68,33 +69,24 @@ function setInView(selector: string, isIntersecting: boolean) {
   })
 }
 
-// The hero's animation box and the testimonials' slider the QR card watches, with their tops and
-// bottoms as the test moves them.
-const at = { lanesBottom: 1000, sliderTop: 3000 }
+// The testimonials' slider the QR card watches.
 function renderSticky() {
-  const lanes = document.createElement('div')
-  lanes.className = 'h-lanes'
-  lanes.getBoundingClientRect = () => ({ bottom: at.lanesBottom }) as DOMRect
   const proof = document.createElement('section')
   proof.dataset.b = 'proof'
-  const slider = document.createElement('div')
-  slider.className = 'v'
-  slider.getBoundingClientRect = () => ({ top: at.sliderTop }) as DOMRect
-  proof.append(slider)
-  document.body.append(lanes, proof)
-  const result = render(<GetAppSticky />)
-  // The card rests 16 px above the bottom of a 900 px window, 110 px high: its top is at 774.
-  const card = result.container.querySelector('.gs') as HTMLElement
-  window.innerHeight = 900
-  card.style.bottom = '16px'
-  Object.defineProperty(card, 'offsetHeight', { value: 110 })
-  fireEvent(window, new Event('resize'))
-  return card
+  proof.innerHTML = '<div class="v"></div>'
+  document.body.append(proof)
+  return render(<GetAppSticky />).container.querySelector('.gs') as HTMLElement
 }
-function scrollTo(lanesBottom: number, sliderTop: number) {
-  at.lanesBottom = lanesBottom
-  at.sliderTop = sliderTop
-  fireEvent.scroll(window)
+
+// The offer sits in the Energi card's phone; it grows as the card passes.
+function renderOffer() {
+  return render(
+    <MotionPrefs>
+      <article className="d-card" id="energi">
+        <EnergiOffer />
+      </article>
+    </MotionPrefs>,
+  )
 }
 
 const renderFinal = () =>
@@ -105,14 +97,6 @@ const renderFinal = () =>
   )
 
 describe('the sticky QR code', () => {
-  beforeEach(() => {
-    // Frames run at once; 0 as the handle, as if each had already been drawn.
-    vi.stubGlobal('requestAnimationFrame', (run: FrameRequestCallback) => {
-      run(0)
-      return 0
-    })
-  })
-
   it('is the one QR code with its title and line, and no button', () => {
     const card = renderSticky()
     expect(within(card).getByAltText(QR_ALT).getAttribute('src')).toContain('/site/qr/app.svg')
@@ -121,24 +105,12 @@ describe('the sticky QR code', () => {
     expect(within(card).queryByRole('link')).toBeNull()
   })
 
-  it('is not there when the page opens, and comes once the hero’s animation is above it', () => {
+  it('is there from the moment the page opens, goes as the slider arrives, and comes back above it', () => {
     const card = renderSticky()
-    scrollTo(1000, 3000)
-    expect(card.dataset.shown).toBe('false')
-    // The box's bottom must be 16 px above the card's top (774).
-    scrollTo(760, 2800)
-    expect(card.dataset.shown).toBe('false')
-    scrollTo(757, 2800)
     expect(card.dataset.shown).toBe('true')
-  })
-
-  it('goes before the slider arrives, and comes back above it', () => {
-    const card = renderSticky()
-    scrollTo(-200, 1000)
-    expect(card.dataset.shown).toBe('true')
-    scrollTo(-300, 939)
+    setInView('.v', true)
     expect(card.dataset.shown).toBe('false')
-    scrollTo(-200, 1000)
+    setInView('.v', false)
     expect(card.dataset.shown).toBe('true')
   })
 })
@@ -147,11 +119,7 @@ describe('the Altid Energi offer over the Energi card’s phone', () => {
   for (const device of ['a phone', 'a computer']) {
     it(`is one link to the signup, in a new tab, with its fine print, on ${device}`, () => {
       computer = device === 'a computer'
-      const { container } = render(
-        <MotionPrefs>
-          <EnergiOffer />
-        </MotionPrefs>,
-      )
+      const { container } = renderOffer()
       expect(screen.getAllByRole('link')).toHaveLength(1)
       const link = screen.getByRole('link')
       expect(link.getAttribute('href')).toBe(SIGNUP)
@@ -163,12 +131,37 @@ describe('the Altid Energi offer over the Energi card’s phone', () => {
     })
   }
 
+  it('grows from its own size to 1.3 as the card comes up to the upper third, then holds', () => {
+    vi.stubGlobal('requestAnimationFrame', (run: FrameRequestCallback) => {
+      run(0)
+      return 0
+    })
+    window.innerHeight = 900
+    const { container } = renderOffer()
+    const card = container.querySelector('#energi') as HTMLElement
+    const offer = container.querySelector('.ek-offer') as HTMLElement
+    let top = 900
+    card.getBoundingClientRect = () => ({ top, height: 600 }) as DOMRect
+    const at = (y: number) => {
+      top = y
+      fireEvent.scroll(window)
+      return Number(offer.style.scale)
+    }
+    // Comes in at the bottom: 1; its middle at a third (top at 0): 1.3; halfway between: 1.15.
+    expect(at(900)).toBe(1)
+    expect(at(450)).toBe(1.15)
+    expect(at(0)).toBe(1.3)
+    expect(at(-400)).toBe(1.3)
+  })
+
+  it('stays at its own size with reduced motion', () => {
+    window.matchMedia = ((query: string) => ({ matches: query.includes('reduce'), media: query, addEventListener: () => {}, removeEventListener: () => {} })) as unknown as typeof window.matchMedia
+    const { container } = renderOffer()
+    expect((container.querySelector('.ek-offer') as HTMLElement).style.scale).toBe('')
+  })
+
   it('floats only while on screen', () => {
-    const { container } = render(
-      <MotionPrefs>
-        <EnergiOffer />
-      </MotionPrefs>,
-    )
+    const { container } = renderOffer()
     const float = container.querySelector('.float') as HTMLElement
     expect(float.dataset.running).toBe('true')
     setInView('.float', false)
@@ -258,7 +251,7 @@ describe('the final block’s store pills', () => {
 describe('the final block’s collage', () => {
   it('has fourteen tiles on a computer and six on a phone: five photos, four screens on toned cards, the painting, the coins, two dishes', () => {
     const { container } = renderFinal()
-    const wall = Array.from(container.querySelectorAll('.e-band .e-tile'))
+    const wall = Array.from(container.querySelectorAll('.e-wall .e-tile'))
     expect(wall).toHaveLength(14)
     expect(container.querySelectorAll('.e-few .e-tile')).toHaveLength(6)
     const sources = wall.map((tile) => decodeURIComponent(tile.querySelector('img')?.getAttribute('src') ?? ''))
@@ -266,7 +259,7 @@ describe('the final block’s collage', () => {
     expect(sources.filter((src) => src.includes('/site/gallery/') || src.includes('faq-familie'))).toHaveLength(5)
     expect(sources.some((src) => src.includes('painting'))).toBe(true)
     expect(sources.some((src) => src.includes('coin-stack'))).toBe(true)
-    const screens = Array.from(container.querySelectorAll('.e-band .e-screen'))
+    const screens = Array.from(container.querySelectorAll('.e-wall .e-screen'))
     expect(screens).toHaveLength(4)
     for (const tile of screens) expect(tile.getAttribute('data-tone')).toBeTruthy()
     // Every tile but the notification is named; the notification is decoration.
@@ -280,3 +273,58 @@ describe('the final block’s collage', () => {
     expect(container.textContent).toContain('Billederne af retterne er AI-genererede, ligesom i appen.')
   })
 })
+
+describe('arranging the final block’s collage', () => {
+  const tile = (container: HTMLElement, id: string) => container.querySelector(`.e-wall [data-tile="${id}"]`) as HTMLElement
+
+  beforeEach(() => {
+    window.localStorage.clear()
+    window.history.replaceState(null, '', '/?arrange')
+    HTMLElement.prototype.setPointerCapture = () => {}
+    HTMLElement.prototype.releasePointerCapture = () => {}
+  })
+
+  it('is not there without ?arrange: no panel, and the tiles rise in as usual', () => {
+    window.history.replaceState(null, '', '/')
+    const { container } = renderFinal()
+    expect(screen.queryByRole('button', { name: 'Kopiér layout' })).toBeNull()
+    expect(tile(container, 'familie').hasAttribute('data-reveal')).toBe(true)
+  })
+
+  it('moves a tile with the pointer, keeps the layout in this browser, copies it and resets it', async () => {
+    const writes: string[] = []
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (text: string) => void writes.push(text) } })
+    const { container } = renderFinal()
+    const familie = tile(container, 'familie')
+    expect(familie.hasAttribute('data-reveal')).toBe(false)
+    expect(familie.style.getPropertyValue('--x')).toBe('2.1')
+    // The stage is 1440 x 960 px here, so 144 px across and 96 down is 10 % each way.
+    ;(container.querySelector('.e-wall') as HTMLElement).getBoundingClientRect = () => ({ width: 1440, height: 960, left: 0, top: 0 }) as DOMRect
+    fireEvent.pointerDown(familie, { clientX: 100, clientY: 100, pointerId: 1 })
+    fireEvent.pointerMove(familie, { clientX: 244, clientY: 196, pointerId: 1 })
+    fireEvent.pointerUp(familie, { clientX: 244, clientY: 196, pointerId: 1 })
+    expect(familie.style.getPropertyValue('--x')).toBe('12.1')
+    expect(familie.style.getPropertyValue('--y')).toBe('14.2')
+    const saved = JSON.parse(window.localStorage.getItem('altid-final-layout') as string)
+    expect(saved.wall.familie).toEqual({ x: 12.1, y: 14.2, w: 150, h: 250 })
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Kopiér layout' }))
+    })
+    expect(JSON.parse(writes[0]).wall.familie.x).toBe(12.1)
+    expect(screen.getByRole('button', { name: 'Kopieret' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Nulstil' }))
+    expect(familie.style.getPropertyValue('--x')).toBe('2.1')
+    expect(window.localStorage.getItem('altid-final-layout')).toBeNull()
+  })
+
+  it('opens with the layout kept in this browser, and switches to the phone’s stage', () => {
+    window.localStorage.setItem('altid-final-layout', JSON.stringify({ wall: { ...FINAL_LAYOUT.wall, familie: { x: 40, y: 40, w: 150, h: 250 } }, phone: FINAL_LAYOUT.phone }))
+    const { container } = renderFinal()
+    expect(tile(container, 'familie').style.getPropertyValue('--x')).toBe('40')
+    const gallery = container.querySelector('.e-gallery') as HTMLElement
+    expect(gallery.dataset.view).toBe('phone')
+    fireEvent.click(screen.getByRole('button', { name: 'Computer' }))
+    expect(gallery.dataset.view).toBe('wall')
+  })
+})
+
