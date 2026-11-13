@@ -248,43 +248,49 @@ describe('the final block’s store pills', () => {
   })
 })
 
-describe('the final block’s collage', () => {
-  it('is four universes of twelve tiles: Økonomi, Mad, Forsikring, Energi og Opladning', () => {
+describe('the final block’s gallery', () => {
+  it('is bevel’s eight columns of fourteen tiles, in four areas, each pairing life with the app', () => {
     const { container } = renderFinal()
-    const wall = Array.from(container.querySelectorAll<HTMLElement>('.e-wall .e-tile'))
-    expect(wall).toHaveLength(12)
-    const group = (name: string) => wall.filter((tile) => tile.dataset.group === name).map((tile) => tile.dataset.tile)
-    expect(group('okonomi')).toEqual(['hjem', 'okonomi', 'droem', 'maleri'])
-    expect(group('mad')).toEqual(['risotto', 'tacos', 'familie'])
-    expect(group('forsikring')).toEqual(['pige', 'bamse', 'besked'])
-    expect(group('energi')).toEqual(['elbil', 'energi'])
-    // A phone shows every universe.
-    const phone = Array.from(container.querySelectorAll<HTMLElement>('.e-few .e-tile'))
-    expect(new Set(phone.map((tile) => tile.dataset.group))).toEqual(new Set(['okonomi', 'mad', 'forsikring', 'energi']))
-    const sources = wall.map((tile) => decodeURIComponent(tile.querySelector('img')?.getAttribute('src') ?? ''))
-    expect(sources.filter((src) => src.includes('/site/plates/'))).toHaveLength(2)
-    expect(sources.some((src) => src.includes('coin-stack') || src.includes('far-og-datter'))).toBe(false)
-    const screens = Array.from(container.querySelectorAll('.e-wall .e-screen'))
-    expect(screens).toHaveLength(4)
-    for (const tile of screens) expect(tile.getAttribute('data-tone')).toBeTruthy()
-    // Photos and dishes stay straight.
-    for (const tile of wall.filter((t) => t.classList.contains('e-plate') || (t.classList.contains('e-cover') && t.dataset.tile !== 'maleri'))) {
-      expect(tile.style.getPropertyValue('--r')).toBe('0')
+    const tiles = Array.from(container.querySelectorAll<HTMLElement>('.e-tile[data-view="wall"]'))
+    expect(tiles).toHaveLength(14)
+    const at = (id: string) => {
+      const t = container.querySelector(`[data-view="wall"][data-tile="${id}"]`) as HTMLElement
+      return [Number(t.style.getPropertyValue('--col')), Number(t.style.getPropertyValue('--top')), Number(t.style.getPropertyValue('--h'))]
     }
-    // Every tile but the notification is named; the notification is decoration.
-    const named = wall.filter((tile) => !tile.classList.contains('e-note-tile'))
-    const alts = named.map((tile) => tile.querySelector('img')?.getAttribute('alt'))
+    // Bevel's columns: two tiles of 230, three of 166, then four of 356, mirrored.
+    const columns = Array.from({ length: 8 }, (_, c) => tiles.filter((t) => Number(t.style.getPropertyValue('--col')) === c + 1).map((t) => Number(t.style.getPropertyValue('--h'))))
+    expect(columns).toEqual([[230, 230], [166, 166, 166], [356], [356], [356], [356], [166, 166, 166], [230, 230]])
+    // Økonomi top left, Mad top right, Forsikring bottom left, Energi og Opladning bottom right.
+    for (const id of ['maleri', 'okonomi', 'hjem', 'droem']) expect(at(id)[0]).toBeLessThanOrEqual(4)
+    for (const id of ['madplan', 'familie', 'tacos', 'risotto']) expect(at(id)[0]).toBeGreaterThanOrEqual(5)
+    for (const id of ['pige', 'forsikring', 'besked']) expect(at(id)[0]).toBeLessThanOrEqual(2)
+    for (const id of ['energi', 'elpris', 'elbil']) expect(at(id)[0]).toBeGreaterThanOrEqual(7)
+    const sources = tiles.map((tile) => decodeURIComponent(tile.querySelector('img')?.getAttribute('src') ?? ''))
+    expect(sources.filter((src) => src.includes('/site/plates/'))).toHaveLength(2)
+    expect(sources.some((src) => src.includes('forsikring-top'))).toBe(true)
+    expect(sources.some((src) => src.includes('mad-meal_plan'))).toBe(true)
+    const screens = Array.from(container.querySelectorAll('[data-view="wall"].e-screen'))
+    expect(screens).toHaveLength(6)
+    for (const tile of screens) expect(tile.getAttribute('data-tone')).toBeTruthy()
+    // The drawn pieces are decoration; everything else is named.
+    const drawn = tiles.filter((t) => t.getAttribute('aria-hidden') === 'true').map((t) => t.dataset.tile)
+    expect(drawn).toEqual(['besked', 'elpris'])
+    const alts = tiles.filter((t) => !drawn.includes(t.dataset.tile)).map((tile) => tile.querySelector('img')?.getAttribute('alt'))
     expect(alts.every(Boolean)).toBe(true)
-    expect(new Set(alts).size).toBe(11)
-    expect(container.querySelector('.e-note-tile')?.getAttribute('aria-hidden')).toBe('true')
-    expect(container.textContent).not.toContain('Skærmbilleder fra appen med eksempeldata.')
+    expect(new Set(alts).size).toBe(12)
+    expect(container.querySelector('[data-tile="elpris"]')?.textContent).toBe('0,62 kr. pr. kWhBilligren elpris, kl. 17-18')
     expect(container.textContent).not.toContain('AI-genererede')
+    // A phone: the middle four columns, Økonomi and Mad over the text, Forsikring and Energi under it.
+    const phone = Array.from(container.querySelectorAll<HTMLElement>('.e-tile[data-view="phone"]'))
+    const row = (below: boolean) => phone.filter((t) => (t.dataset.below === 'true') === below).map((t) => [t.dataset.tile, Number(t.style.getPropertyValue('--col'))])
+    expect(row(false)).toEqual([['maleri', 3], ['hjem', 4], ['madplan', 5], ['familie', 6]])
+    expect(row(true)).toEqual([['pige', 3], ['forsikring', 4], ['energi', 5], ['elbil', 6]])
   })
 })
 
-describe('arranging the final block’s collage', () => {
-  const KEY = 'altid-final-layout-universes'
-  const tile = (container: HTMLElement, id: string) => container.querySelector(`.e-wall [data-tile="${id}"]`) as HTMLElement
+describe('arranging the final block’s gallery', () => {
+  const KEY = 'altid-final-layout-bevel'
+  const tile = (container: HTMLElement, id: string) => container.querySelector(`[data-view="wall"][data-tile="${id}"]`) as HTMLElement
 
   beforeEach(() => {
     window.localStorage.clear()
@@ -300,41 +306,35 @@ describe('arranging the final block’s collage', () => {
     expect(tile(container, 'pige').hasAttribute('data-reveal')).toBe(true)
   })
 
-  it('moves a tile with the pointer, keeps the layout in this browser, copies it and resets it', async () => {
+  it('moves a tile to another column and up or down, keeps it in this browser, copies and resets', async () => {
     const writes: string[] = []
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (text: string) => void writes.push(text) } })
     const { container } = renderFinal()
     const pige = tile(container, 'pige')
     expect(pige.hasAttribute('data-reveal')).toBe(false)
-    expect(pige.style.getPropertyValue('--x')).toBe('1.7')
-    // The stage is 1440 x 960 px here, so 144 px across and 96 down is 10 % each way.
-    ;(container.querySelector('.e-wall') as HTMLElement).getBoundingClientRect = () => ({ width: 1440, height: 960, left: 0, top: 0 }) as DOMRect
+    // Tiles 143 px wide here, so one column is 159 px across.
+    pige.getBoundingClientRect = () => ({ width: 143, height: 230, left: 0, top: 0 }) as DOMRect
     fireEvent.pointerDown(pige, { clientX: 100, clientY: 100, pointerId: 1 })
-    fireEvent.pointerMove(pige, { clientX: 244, clientY: 196, pointerId: 1 })
-    fireEvent.pointerUp(pige, { clientX: 244, clientY: 196, pointerId: 1 })
-    expect(pige.style.getPropertyValue('--x')).toBe('11.7')
-    expect(pige.style.getPropertyValue('--y')).toBe('70.4')
-    const saved = JSON.parse(window.localStorage.getItem(KEY) as string)
-    expect(saved.wall.pige).toEqual({ x: 11.7, y: 70.4, w: 180, h: 260, r: 0 })
+    fireEvent.pointerMove(pige, { clientX: 100 + 2 * 159 + 20, clientY: 140, pointerId: 1 })
+    fireEvent.pointerUp(pige, { clientX: 100 + 2 * 159 + 20, clientY: 140, pointerId: 1 })
+    expect(pige.style.getPropertyValue('--col')).toBe('3')
+    expect(pige.style.getPropertyValue('--top')).toBe('-159')
+    expect(JSON.parse(window.localStorage.getItem(KEY) as string).wall.pige).toEqual({ col: 3, top: -159, h: 230 })
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Kopiér layout' }))
     })
-    expect(JSON.parse(writes[0]).wall.pige.x).toBe(11.7)
+    expect(JSON.parse(writes[0]).wall.pige.col).toBe(3)
     expect(screen.getByRole('button', { name: 'Kopieret' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Nulstil' }))
-    expect(pige.style.getPropertyValue('--x')).toBe('1.7')
+    expect(pige.style.getPropertyValue('--col')).toBe('1')
     expect(window.localStorage.getItem(KEY)).toBeNull()
   })
 
-  it('opens with the layout kept in this browser, ignores the old gallery’s, and switches to the phone’s stage', () => {
-    window.localStorage.setItem('altid-final-layout', JSON.stringify({ wall: { familie: { x: 40, y: 40, w: 150, h: 250 } }, phone: {} }))
-    window.localStorage.setItem(KEY, JSON.stringify({ wall: { ...FINAL_LAYOUT.wall, pige: { x: 40, y: 40, w: 180, h: 260, r: 0 } }, phone: FINAL_LAYOUT.phone }))
+  it('opens with the layout kept in this browser and ignores the earlier galleries’', () => {
+    window.localStorage.setItem('altid-final-layout-universes', JSON.stringify({ wall: {}, phone: {} }))
+    window.localStorage.setItem(KEY, JSON.stringify({ ...FINAL_LAYOUT, wall: { ...FINAL_LAYOUT.wall, pige: { col: 4, top: 0, h: 230 } } }))
     const { container } = renderFinal()
-    expect(tile(container, 'pige').style.getPropertyValue('--x')).toBe('40')
-    expect(tile(container, 'familie').style.getPropertyValue('--x')).toBe('81.2')
-    const gallery = container.querySelector('.e-gallery') as HTMLElement
-    expect(gallery.dataset.view).toBe('phone')
-    fireEvent.click(screen.getByRole('button', { name: 'Computer' }))
-    expect(gallery.dataset.view).toBe('wall')
+    expect(tile(container, 'pige').style.getPropertyValue('--col')).toBe('4')
+    expect(tile(container, 'maleri').style.getPropertyValue('--col')).toBe('1')
   })
 })

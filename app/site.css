@@ -3217,21 +3217,32 @@
     }
   }
 
-  /* 11. Final CTA: the text in the middle of a collage of photos, app screens and dishes on
-     toned tiles (FinalGallery). --cu is a computer stage's unit: one design px at 1440, growing
-     on to 1800 so it keeps filling a wide window. */
+  /* 11. Final CTA: the heading, line and store pills under a gallery rebuilt 1:1 on
+     bevel.health's "Crafted with Care" (FinalGallery): eight columns 16 px apart over a width of
+     88.94vw - 22.8px, never under 856 px (a phone sees its middle) nor over 1320 px; tiles keep
+     their heights in px; the middle columns stand over the heading, the outer ones run down beside
+     it. Under the pills there is room for the QR card they open into. */
   .e {
-    --cu: calc(min(100vw, 1800px) / 1440);
-    padding-bottom: calc(var(--u) * 120);
+    padding-top: calc(var(--pad) * 0.5);
+    padding-bottom: 300px;
     text-align: center;
     overflow: clip;
+  }
+  .e-wall {
+    --gw: clamp(856px, 88.94vw - 22.8px, 1320px);
+    --gap: 16px;
+    --cw: calc((var(--gw) - 7 * var(--gap)) / 8);
+    /* The gallery's top is 472 px above the heading's top. */
+    position: relative;
+    padding-top: 472px;
   }
   .e-text {
     position: relative;
     z-index: 2;
+    width: min(100% - 34px, var(--gw) * 0.534);
+    margin-inline: auto;
   }
   .e-line {
-    width: min(100% - 34px, 32.9em);
     margin: 16px auto 0;
   }
   .e-pills {
@@ -3265,188 +3276,167 @@
     }
   }
 
-  /* Where the text and the tiles go (FinalGallery): a computer's stage around the text, or the
-     text with a phone's stage under it. Set by the window's width, or by arrange mode's switch
-     (data-view), through these properties. --u inside a stage is its unit: one design px. */
-  .e-gallery {
-    --wall: none;
-    --few: block;
-    --text-pos: relative;
-    --text-at: auto;
-    --text-shift: none;
-  }
-  @media (min-width: 1024px) {
-    .e-gallery {
-      --wall: grid;
-      --few: none;
-      --text-pos: absolute;
-      --text-at: 50%;
-      --text-shift: -50% -50%;
-    }
-    .e {
-      padding-top: calc(var(--pad) * 0.5);
-    }
-  }
-  .e-gallery[data-view='wall'] {
-    --wall: grid;
-    --few: none;
-    --text-pos: absolute;
-    --text-at: 50%;
-    --text-shift: -50% -50%;
-  }
-  .e-gallery[data-view='phone'] {
-    --wall: none;
-    --few: block;
-    --text-pos: relative;
-    --text-at: auto;
-    --text-shift: none;
-  }
-
-  /* A computer's stage: 1440 x 960 design px, growing with the window to 1800 wide, the text in
-     its middle with its heading and line sized with it (never larger than on the design). */
-  .e-wall {
-    position: relative;
-  }
-  .e-wall .e-tile {
-    --u: var(--cu);
-    display: var(--wall);
-  }
-  .e-gallery[data-view='wall'] .e-wall,
-  .e-gallery:not([data-view]) .e-wall {
-    width: calc(var(--sw) * var(--cu));
-    max-width: 100%;
-    margin-inline: auto;
-  }
-  @media (min-width: 1024px) {
-    .e-gallery:not([data-view]) .e-wall {
-      height: calc(var(--sh) * var(--cu));
-    }
-  }
-  .e-gallery[data-view='wall'] .e-wall {
-    height: calc(var(--sh) * var(--cu));
-  }
-  .e-text {
-    position: var(--text-pos);
-    left: var(--text-at);
-    top: var(--text-at);
-    translate: var(--text-shift);
-  }
-  .e-gallery:not([data-view='phone']) .e-text {
-    @media (min-width: 1024px) {
-      width: calc(var(--cu) * 640);
-
-      .t-h2 {
-        font-size: calc(64 * min(var(--cu), 1px));
-      }
-      .e-line {
-        width: 100%;
-        font-size: calc(24 * min(var(--cu), 1px));
-      }
-    }
-  }
-  .e-gallery[data-view='wall'] .e-text {
-    width: calc(var(--cu) * 640);
-
-    .e-line {
-      width: 100%;
-    }
-  }
-  /* A phone's stage: 390 x 410 design px under the text, up to 560 px wide. */
-  .e-few {
-    --u: calc(min(100vw, 560px) / 390);
-    position: relative;
-    display: var(--few);
-    width: calc(var(--sw) * var(--u));
-    height: calc(var(--sh) * var(--u));
-    margin: 44px auto 0;
-  }
-
-  /* A tile, as in the old "Lavet med omhu" block: rounded, on its tone; a dish fitted in, a
-     photo or the painting filling it, a screen on its card. Placed from the layout: --x and --y
-     in percent of the stage, --w and --h in design px, --r its turn. Each casts a soft shadow,
-     so where tiles overlap the one in front reads as lying on the other. */
+  /* A tile in bevel's grid: --col 1 to 8, --top in px from the heading's top, --h in px. Rounded
+     as theirs (32 px at 1440, about 21 on a phone). A photo or the painting fills it, a dish sits
+     in it, a screen lies on its toned card. */
   .e-tile {
     position: absolute;
     z-index: 1;
-    left: calc(var(--x) * 1%);
-    top: calc(var(--y) * 1%);
+    left: calc(50% - var(--gw) / 2 + (var(--col) - 1) * (var(--cw) + var(--gap)));
+    top: calc(472px + var(--top) * 1px);
     display: grid;
     place-items: center;
-    width: calc(var(--w) * var(--u));
-    height: calc(var(--h) * var(--u));
-    border-radius: calc(var(--u) * 30);
+    width: var(--cw);
+    height: calc(var(--h) * 1px);
+    border-radius: clamp(20px, 16.6px + 1.065vw, 32px);
     overflow: hidden;
     background: var(--tint, var(--sand));
-    box-shadow: 0 calc(var(--u) * 10) calc(var(--u) * 26) rgba(0, 30, 10, 0.16);
     color: var(--forest);
-    rotate: calc(var(--r) * 1deg);
   }
-  .e-few .e-tile {
-    border-radius: calc(var(--u) * 24);
+  /* The computer's layout from 1024 px, the phone's below; the phone's second row hangs from the
+     bottom of the text and buttons (the section's padding under it holds it). */
+  .e-tile[data-view='phone'] {
+    display: none;
+  }
+  .e-tile[data-below] {
+    top: calc(100% + var(--top) * 1px);
+  }
+  @media (max-width: 1023px) {
+    .e-tile[data-view='wall'] {
+      display: none;
+    }
+    .e-tile[data-view='phone'] {
+      display: grid;
+    }
   }
   .e-cover {
     outline: 1px solid rgba(0, 60, 22, 0.1);
     outline-offset: -1px;
   }
-  /* An app screen on its own toned card, with room all round. */
+  /* A screen across its card's width with room all round, from the top; the card's tone shows
+     wherever the screen ends first. */
   .e-screen {
-    padding: calc(var(--u) * 10);
+    align-items: start;
+    padding: 9px;
   }
   .e-screen-in {
-    position: relative;
+    display: block;
     width: 100%;
-    height: 100%;
+    max-height: 100%;
     overflow: hidden;
-    border-radius: calc(var(--u) * 21);
+    border-radius: clamp(13px, 10px + 0.8vw, 23px);
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
   }
   .e-plate img {
     width: 104%;
     max-width: none;
     height: auto;
   }
-  /* The notification on its tile, sized in the stage's unit so it keeps its shape. */
+  /* The reminder, upright to fit a column: the app mark and name, the line, and Klaret. */
+  .e-note-tile {
+    padding: 9px;
+  }
   .e-note-card {
-    width: 86%;
-    gap: calc(var(--u) * 10);
-    padding: calc(var(--u) * 10) calc(var(--u) * 12) calc(var(--u) * 12) calc(var(--u) * 10);
-    border-radius: calc(var(--u) * 18);
-    font-size: calc(var(--u) * 14);
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    padding: 10px 10px 12px;
+    border-radius: 18px;
     text-align: left;
-    rotate: -2deg;
 
-    img {
-      width: calc(var(--u) * 30);
-      height: calc(var(--u) * 30);
-      border-radius: calc(var(--u) * 8);
-    }
-    .hl-text {
+    .hl-note-top {
       display: flex;
-      flex: 1;
-      flex-direction: column;
-      min-width: 0;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+
+      img {
+        width: 20px;
+        height: 20px;
+        border-radius: 5px;
+      }
+      small {
+        margin-left: auto;
+        font-size: 11px;
+      }
     }
     .hl-note-body {
-      font-size: calc(var(--u) * 13);
-    }
-    .hl-note-top small {
-      font-size: calc(var(--u) * 12);
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.3;
     }
     .hl-done {
-      gap: calc(var(--u) * 5);
-      margin-top: calc(var(--u) * 8);
-      padding: calc(var(--u) * 5) calc(var(--u) * 10);
-      font-size: calc(var(--u) * 12);
+      gap: 4px;
+      margin-top: 2px;
+      padding: 4px 9px;
+      font-size: 11px;
       animation: none;
 
       svg {
-        width: calc(var(--u) * 12);
-        height: calc(var(--u) * 12);
+        width: 11px;
+        height: 11px;
       }
     }
   }
+  /* The electricity price, as the app's Energi screen shows it. */
+  .e-price-tile {
+    padding: 9px;
+  }
+  .e-price {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 12px;
+    border-radius: 18px;
+    background: var(--dark-forest);
+    color: #fff;
+    text-align: left;
+  }
+  .e-price-value {
+    font-size: 12px;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.8);
+
+    /* The figure on its own line, the unit under it, as narrow columns need. */
+    b {
+      display: block;
+      margin-bottom: 4px;
+      font-family: var(--display);
+      font-size: clamp(22px, 16px + 0.6vw, 28px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+  }
+  .e-price-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+
+    small {
+      font-size: 11px;
+      line-height: 1.2;
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+  .e-price-tag {
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--signal);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--forest);
+  }
 
   /* Arrange mode (?arrange): every tile can be picked up; a small panel bottom left. */
-  .e-gallery[data-arrange] .e-tile {
+  .e-wall[data-arrange] .e-tile {
     outline: 2px dashed var(--forest);
     outline-offset: 3px;
     cursor: grab;
@@ -3485,9 +3475,10 @@
       cursor: pointer;
     }
   }
-  @media (max-width: 767px) {
+  /* Phones: no QR card under the pills; the room under them holds the second row of tiles. */
+  @media (max-width: 1023px) {
     .e {
-      padding-bottom: 40px;
+      padding-bottom: 440px;
     }
   }
 

@@ -174,7 +174,7 @@ export const MAD = {
 export const PRIVACY = {
   title: 'Jeres tal er jeres egne',
   // Thor's wording, 10/11.
-  body: 'I forbinder sikkert jeres bank med MitID. Vi får kun adgang til at læse jeres oplysninger og kan hverken flytte penge eller foretage betalinger. Jeres bankoplysninger bliver aldrig solgt eller delt med tredjeparter til markedsføring eller lignende.',
+  body: 'I forbinder jeres bank sikkert med MitID. Appen kan kun læse jeres konti, saldi og posteringer og kan aldrig flytte penge eller foretage betalinger. Vi sælger aldrig jeres bankoplysninger og deler dem ikke med andre til markedsføring.',
   link: 'Læs privatlivspolitikken',
 } as const
 
@@ -208,7 +208,7 @@ export const STEPS = {
 // you never meet (Thor 12/11).
 export const VALUES = {
   title: 'På jeres side. Altid',
-  body: 'Navnet Altid er et løfte. Vi står på forbrugernes side, og det skal kunne mærkes i alt, vi laver. Her er, hvad I altid får hos os, og hvad I aldrig møder.',
+  body: 'Navnet Altid er et løfte. Vi står på forbrugernes side, og det skal kunne mærkes i alt, vi gør. Her er, hvad I altid kan forvente af os, og hvad I aldrig skal bekymre jer om.',
   always: 'Altid',
   never: 'Aldrig',
   rows: [
@@ -220,7 +220,7 @@ export const VALUES = {
 } as const
 
 export const BANKS = {
-  title: 'Virker med alle danske banker',
+  title: 'Altid Hjem virker med alle danske banker',
   // The app connects through Subaio, whose own text in the app says all Danish banks. Logos
   // from each bank's own website on 10 Nov 2026, see public/site/banks/sources.json.
   logos: [
@@ -298,26 +298,30 @@ export const FAQ: { title: string; items: readonly FaqItem[] } = {
 export const FINAL = {
   title: 'Hent Altid Hjem i dag',
   body: 'Vi glæder os til at se jer. Appen er gratis at hente, og det er gratis at oprette en konto.',
-  // The collage around the text as four small universes, one per corner (Thor 13/11): Økonomi top
-  // left (three app screens and the painting the dream saves for), Mad top right (two dishes and
-  // the family), Forsikring bottom left (the home and what is in it, and a reminder of a payment)
-  // and Energi og Opladning bottom right (the electricity price and the car charging). Screens sit
-  // on toned cards. Where each tile sits is FINAL_LAYOUT below, by `id`; `group` is its universe.
-  // Everything but the notification is named for screen readers. `plate` is an index into
-  // MAD.plates; a photo's or the painting's `focus` is its object-position.
+  // The gallery over the text, rebuilt 1:1 on bevel.health's "Crafted with Care" (Thor 13/11):
+  // eight columns of rounded tiles, the middle four standing over the heading, the outer ones
+  // running down beside it. It reads in four areas, each pairing a picture from life with the
+  // app for the same service: Økonomi top left, Mad top right, Forsikring bottom left, Energi og
+  // Opladning bottom right. Where each tile sits is FINAL_LAYOUT below, by `id`. Screens sit on
+  // toned cards; the drawn pieces (the reminder, the electricity price) are decoration, the rest
+  // is named for screen readers. `plate` is an index into MAD.plates; a photo's or the
+  // painting's `focus` is its object-position.
   gallery: [
-    { id: 'hjem', group: 'okonomi', kind: 'screen', src: HERO.mainScreens[0].src, alt: HERO.mainScreens[0].alt, tone: 'mint' },
-    { id: 'okonomi', group: 'okonomi', kind: 'screen', src: HERO.mainScreens[1].src, alt: HERO.mainScreens[1].alt, tone: 'lavender' },
-    { id: 'droem', group: 'okonomi', kind: 'screen', src: HERO.secondScreens[1].src, alt: HERO.secondScreens[1].alt, tone: 'rose' },
-    { id: 'maleri', group: 'okonomi', kind: 'art', src: '/site/app/painting.webp', alt: 'Maleriet af en kystby fra drømmen om en familieferie.', tone: 'sand', focus: '55% 85%' },
-    { id: 'risotto', group: 'mad', kind: 'plate', plate: 1, tone: 'lavender' },
-    { id: 'tacos', group: 'mad', kind: 'plate', plate: 0, tone: 'honey' },
-    { id: 'familie', group: 'mad', kind: 'photo', src: '/faq-familie.jpg', alt: 'Far med datter på skuldrene i stuen', focus: '8% 50%' },
-    { id: 'pige', group: 'forsikring', kind: 'photo', src: '/site/gallery/galleri-pige-sofa.webp', alt: 'Pige med høretelefoner og tablet i sofaen', focus: '50% 60%' },
-    { id: 'bamse', group: 'forsikring', kind: 'photo', src: '/site/gallery/galleri-bamse.webp', alt: 'Uldsokker og en bamse på gulvtæppet', focus: '55% 50%' },
-    { id: 'besked', group: 'forsikring', kind: 'note', title: 'Altid Hjem', time: 'nu', body: HERO.lanes[2].done, done: 'Klaret', tone: 'mint' },
-    { id: 'elbil', group: 'energi', kind: 'photo', src: '/site/gallery/galleri-elbil.webp', alt: 'En elbil lades op ved huset', focus: '40% 50%' },
-    { id: 'energi', group: 'energi', kind: 'screen', src: HERO.secondScreens[2].src, alt: HERO.secondScreens[2].alt, tone: 'sky' },
+    { id: 'maleri', kind: 'art', src: '/site/app/painting.webp', alt: 'Maleriet af en kystby fra drømmen om en familieferie.', tone: 'sand', focus: '55% 70%' },
+    { id: 'okonomi', kind: 'screen', src: HERO.mainScreens[1].src, alt: HERO.mainScreens[1].alt, tone: 'lavender' },
+    { id: 'hjem', kind: 'screen', src: HERO.mainScreens[0].src, alt: HERO.mainScreens[0].alt, tone: 'mint' },
+    { id: 'droem', kind: 'screen', src: HERO.secondScreens[1].src, alt: HERO.secondScreens[1].alt, tone: 'rose' },
+    { id: 'madplan', kind: 'screen', src: HERO.secondScreens[0].src, alt: HERO.secondScreens[0].alt, tone: 'honey' },
+    { id: 'familie', kind: 'photo', src: '/faq-familie.jpg', alt: 'Far med datter på skuldrene i stuen', focus: '30% 50%' },
+    { id: 'tacos', kind: 'plate', plate: 0, tone: 'honey' },
+    { id: 'risotto', kind: 'plate', plate: 1, tone: 'lavender' },
+    { id: 'pige', kind: 'photo', src: '/site/gallery/galleri-pige-sofa.webp', alt: 'Pige med høretelefoner og tablet i sofaen', focus: '50% 55%' },
+    { id: 'forsikring', kind: 'screen', src: '/site/app/forsikring-top.webp', alt: 'Forsikringer i appen: 545 kr. om måneden for jeres forsikringer, fordelt på bil, hus, indbo og ulykke.', tone: 'rose' },
+    { id: 'besked', kind: 'note', title: 'Altid Hjem', time: 'nu', body: HERO.lanes[2].done, done: 'Klaret', tone: 'sky' },
+    { id: 'energi', kind: 'screen', src: HERO.secondScreens[2].src, alt: HERO.secondScreens[2].alt, tone: 'sky' },
+    // The electricity price as the app's Energi screen shows it, drawn as a small card.
+    { id: 'elpris', kind: 'price', value: '0,62 kr.', unit: 'pr. kWh', tag: 'Billig', line: 'ren elpris, kl. 17-18', tone: 'mint' },
+    { id: 'elbil', kind: 'photo', src: '/site/gallery/galleri-elbil.webp', alt: 'En elbil lades op ved huset', focus: '40% 50%' },
   ],
   // The arrange panel (open the page with ?arrange): drag the tiles, then copy the layout.
   arrange: {
@@ -325,43 +329,44 @@ export const FINAL = {
     copy: 'Kopiér layout',
     copied: 'Kopieret',
     reset: 'Nulstil',
-    wall: 'Computer',
-    phone: 'Telefon',
   },
 } as const
 
-// Where the final block's tiles sit (FinalGallery), by the tile's `id` in FINAL.gallery: x and y
-// are the tile's left and top edges in percent of the collage's stage, w and h its size in the
-// stage's own units (design px), r its turn in degrees (screens, the painting and the
-// notification only). `wall` is a computer's stage, 1440 x 960 around the text in its middle;
-// `phone` is a phone's stage, 390 x 610 under the text, and only the tiles listed there show on a
-// phone. A tile listed later lies on top. The arrange mode (the page with ?arrange) copies a new
-// layout in exactly this shape: paste it over the object below.
+// Where the final block's tiles sit (FinalGallery), by the tile's `id` in FINAL.gallery, in
+// bevel.health's grid: `col` is the column, 1 to 8 from the left, columns as wide as the window
+// allows (143 px at 1440, 151 at 1920, 93 on a phone) with 16 px between them; `top` is the tile's
+// top edge in px from the top of the heading (negative is above it), or with `below` from the
+// bottom of the text and buttons; `h` its height in px, the same at every width. `wall` is a
+// computer's; `phone` is a phone's, where only the middle four columns are on the screen, as on
+// bevel's phone, so a second row under the button carries the two lower areas. The arrange mode
+// (the page with ?arrange) copies a new layout in exactly this shape: paste it over the object
+// below.
 export const FINAL_LAYOUT = {
   "wall": {
-    "hjem": { "x": 2.8, "y": 4.2, "w": 160, "h": 290, "r": -3 },
-    "okonomi": { "x": 12.5, "y": 10.4, "w": 150, "h": 250, "r": 2 },
-    "droem": { "x": 22.1, "y": 2.1, "w": 150, "h": 270, "r": -2 },
-    "maleri": { "x": 31.2, "y": 6.2, "w": 170, "h": 200, "r": 3 },
-    "risotto": { "x": 59.7, "y": 13.5, "w": 160, "h": 160, "r": 0 },
-    "tacos": { "x": 70.1, "y": 7.3, "w": 170, "h": 170, "r": 0 },
-    "familie": { "x": 81.2, "y": 4.2, "w": 210, "h": 280, "r": 0 },
-    "pige": { "x": 1.7, "y": 60.4, "w": 180, "h": 260, "r": 0 },
-    "bamse": { "x": 12.9, "y": 70.8, "w": 170, "h": 220, "r": 0 },
-    "besked": { "x": 23.6, "y": 79.2, "w": 240, "h": 140, "r": -2 },
-    "elbil": { "x": 82.6, "y": 62.5, "w": 220, "h": 290, "r": 0 },
-    "energi": { "x": 73.3, "y": 70.8, "w": 150, "h": 260, "r": 3 }
+    "maleri": { "col": 1, "top": -445, "h": 230 },
+    "pige": { "col": 1, "top": -199, "h": 230 },
+    "okonomi": { "col": 2, "top": -472, "h": 166 },
+    "forsikring": { "col": 2, "top": -290, "h": 166 },
+    "besked": { "col": 2, "top": -108, "h": 166 },
+    "hjem": { "col": 3, "top": -385, "h": 356 },
+    "droem": { "col": 4, "top": -472, "h": 356 },
+    "madplan": { "col": 5, "top": -472, "h": 356 },
+    "familie": { "col": 6, "top": -385, "h": 356 },
+    "tacos": { "col": 7, "top": -472, "h": 166 },
+    "energi": { "col": 7, "top": -290, "h": 166 },
+    "elpris": { "col": 7, "top": -108, "h": 166 },
+    "risotto": { "col": 8, "top": -445, "h": 230 },
+    "elbil": { "col": 8, "top": -199, "h": 230 }
   },
   "phone": {
-    "hjem": { "x": 3.6, "y": 1.6, "w": 92, "h": 180, "r": -3 },
-    "okonomi": { "x": 23.6, "y": 7.5, "w": 88, "h": 168, "r": 2 },
-    "maleri": { "x": 15.4, "y": 32.1, "w": 90, "h": 96, "r": 3 },
-    "familie": { "x": 69.2, "y": 2.3, "w": 105, "h": 150, "r": 0 },
-    "tacos": { "x": 52.6, "y": 19.7, "w": 80, "h": 80, "r": 0 },
-    "bamse": { "x": 3.6, "y": 52.5, "w": 110, "h": 140, "r": 0 },
-    "besked": { "x": 6.4, "y": 71.3, "w": 222, "h": 124, "r": -2 },
-    "energi": { "x": 71.8, "y": 49.2, "w": 90, "h": 175, "r": 3 },
-    "elbil": { "x": 64.1, "y": 74.6, "w": 120, "h": 150, "r": 0 }
+    "maleri": { "col": 3, "top": -385, "h": 356 },
+    "hjem": { "col": 4, "top": -302, "h": 186 },
+    "madplan": { "col": 5, "top": -302, "h": 186 },
+    "familie": { "col": 6, "top": -385, "h": 356 },
+    "pige": { "col": 3, "top": 40, "h": 356, "below": true },
+    "forsikring": { "col": 4, "top": 40, "h": 186, "below": true },
+    "energi": { "col": 5, "top": 40, "h": 186, "below": true },
+    "elbil": { "col": 6, "top": 40, "h": 356, "below": true }
   }
 }
 
