@@ -53,23 +53,37 @@ function StepPhoto({ step, slot, alt, sizes, quality, shown }: { step: Step; slo
 }
 
 // Psst (Thor 13/11): the app icon, then its speech bubble, as a message reads on a phone, saying
-// more services are on the way. On a computer it sits centred in the free space under the steps
-// while step 03 is open; on a phone over step 03's own photo while that is in view. It comes a
-// second after 03 is reached, the icon hopping in like a little character from off the left
-// edge (of the window, or of the photo on a phone): two hops and a third that trips, then the
-// bubble pops out of it. When 02 or 04 opens it hops back out, and it hops in again each time
-// 03 is reached. --hop is how far it travels, measured as it comes in. Hidden, it is also out
-// of the accessibility tree.
+// more services are on the way. On a computer it sits centred in the free space under the steps;
+// on a phone over step 03's own photo. A second after 03 opens the icon hops in like a little
+// character from off the left edge (of the window, or of the photo on a phone): two hops and a
+// third that trips, then the bubble pops out of it. --hop is how far it travels, measured as it
+// comes in. Hidden, it is also out of the accessibility tree.
+//
+// Step 04, "Inviter din partner" (computers): the bubble folds away and a second icon, the
+// partner, hops in from the left and leaps over the first to land beside it. The first gives a
+// little start, then the two lean into each other, bounce together, a heart pops over them, and
+// they stay leaning in, breathing gently. Back to 03, the partner leaps back out and the bubble
+// returns; to 02, or on past 04 out of the steps, both hop out to the left.
 type PsstState = 'in' | 'out' | undefined
+
+/** 0: away, 1: the icon and its bubble (03), 2: the icon and its partner (04). */
+export type PsstLevel = 0 | 1 | 2
 
 /** How long 03 has to be open before the icon comes. */
 const PSST_DELAY = 1000
+/** The partner waits for the first icon to have landed and this long into 04. */
+const PAIR_AFTER_ICON = 2000
+const PAIR_DELAY = 300
 
-function Psst({ here }: { here: boolean }) {
+function Psst({ level }: { level: PsstLevel }) {
   const box = useRef<HTMLDivElement>(null)
+  const inAt = useRef(0)
   const [ready, setReady] = useState(false)
+  const [pairReady, setPairReady] = useState(false)
   const [state, setState] = useState<PsstState>(undefined)
+  const [pair, setPair] = useState<PsstState>(undefined)
 
+  const here = level > 0
   useEffect(() => {
     if (!here) return
     const timer = window.setTimeout(() => setReady(true), PSST_DELAY)
@@ -79,12 +93,27 @@ function Psst({ here }: { here: boolean }) {
     }
   }, [here])
 
-  // 'out' only after it has been in, so it never hops out of a page that has just opened.
+  // 'out' only after it has been in, so nothing hops out of a page that has just opened.
   const next: PsstState = ready ? 'in' : state === 'in' ? 'out' : state
   if (next !== state) setState(next)
 
+  const pairWanted = level === 2 && state === 'in'
+  useEffect(() => {
+    if (!pairWanted) return
+    const wait = Math.max(PAIR_DELAY, PAIR_AFTER_ICON - (Date.now() - inAt.current))
+    const timer = window.setTimeout(() => setPairReady(true), wait)
+    return () => {
+      window.clearTimeout(timer)
+      setPairReady(false)
+    }
+  }, [pairWanted])
+
+  const nextPair: PsstState = pairReady ? 'in' : pair === 'in' ? 'out' : pair
+  if (nextPair !== pair) setPair(nextPair)
+
   useLayoutEffect(() => {
     if (state !== 'in') return
+    inAt.current = Date.now()
     const element = box.current as HTMLDivElement
     const clip = element.closest('.st-inline')
     const edge = clip ? clip.getBoundingClientRect().left : 0
@@ -93,9 +122,21 @@ function Psst({ here }: { here: boolean }) {
   }, [state])
 
   return (
-    <div ref={box} className="st-psst" data-state={state}>
+    <div ref={box} className="st-psst" data-state={state} data-pair={pair}>
       <span className="st-psst-hop">
-        <Image className="st-psst-icon" src="/app-badge.png" alt="" width={112} height={112} />
+        <span className="st-psst-lean">
+          <Image className="st-psst-icon" src="/app-badge.png" alt="" width={112} height={112} />
+        </span>
+      </span>
+      <span className="st-pair" aria-hidden="true">
+        <span className="st-pair-hop">
+          <span className="st-pair-lean">
+            <Image className="st-pair-icon" src="/app-badge.png" alt="" width={112} height={112} />
+          </span>
+        </span>
+        <svg className="st-pair-heart" viewBox="0 0 24 24" width="22" height="22">
+          <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.1 5.3 3 1.7-1.9 3.2-3 5.3-3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21Z" fill="currentColor" />
+        </svg>
       </span>
       <p className="st-psst-bubble">
         <strong>{STEPS.psst.lead}</strong>
@@ -107,6 +148,8 @@ function Psst({ here }: { here: boolean }) {
 
 /** Step 03 is index 2. */
 const PSST_STEP = 2
+/** Share of the steps' scroll after which the icons hop out on the way to the next section. */
+const PAST_STEPS = 0.985
 
 // Four steps. On a computer the whole block stays put (sticky) while the page scrolls through
 // the section: the title, all four steps and a photo are in view, and the scroll moves the open
@@ -115,6 +158,7 @@ const PSST_STEP = 2
 // On a phone the steps stack, each open with its own photo.
 export default function Steps() {
   const [active, setActive] = useState(0)
+  const [pastSteps, setPastSteps] = useState(false)
   const [psstNarrow, setPsstNarrow] = useState(false)
   const section = useRef<HTMLElement>(null)
   const psstPhoto = useRef<HTMLDivElement>(null)
@@ -138,6 +182,8 @@ export default function Steps() {
       if (travel <= 0) return
       const progress = Math.min(0.999, Math.max(0, -box.top / travel))
       setActive(Math.floor(progress * STEPS.steps.length))
+      // The block starts to scroll away (the next section is coming): the icons leave.
+      setPastSteps(-box.top / travel >= PAST_STEPS)
     }
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(read)
@@ -190,14 +236,14 @@ export default function Steps() {
                     ) : null}
                     <div className="st-inline" ref={i === PSST_STEP ? psstPhoto : undefined}>
                       <StepPhoto step={step} slot="inline" alt={step.alt} sizes="(max-width: 767px) 120vw, 1px" quality={75} />
-                      {i === PSST_STEP ? <Psst here={psstNarrow} /> : null}
+                      {i === PSST_STEP ? <Psst level={psstNarrow ? 1 : 0} /> : null}
                     </div>
                   </div>
                 </div>
               </li>
             ))}
           </ol>
-          <Psst here={active === PSST_STEP} />
+          <Psst level={active === PSST_STEP ? 1 : active === PSST_STEP + 1 && !pastSteps ? 2 : 0} />
         </div>
         <div className="st-visual" aria-hidden="true">
           {STEPS.steps.map((step, i) => (
