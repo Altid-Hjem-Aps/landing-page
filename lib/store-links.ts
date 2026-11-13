@@ -21,7 +21,7 @@ export type Store = (typeof STORES)[number]
 export const STORE_POSITIONS = ['hero', 'founder', 'how-it-works', 'bottom', 'nav', 'bar', 'footer'] as const
 export type StorePosition = (typeof STORE_POSITIONS)[number]
 
-/** The element every "Hent appen" control scrolls to: the final CTA's pills on
+/** The element every "Hent appen" control scrolls to: the final CTA's text and pills on
  * the front page, BottomCta on the SEO pages. */
 export const STORE_ANCHOR = 'hent-appen'
 

@@ -71,40 +71,55 @@ const STORES: { store: Store; name: string; className?: string }[] = [
   { store: 'play', name: 'Google Play', className: 'store-badge-play' },
 ]
 
+/** In place of the links: buttons that open something else, such as the final block's QR card
+ * on a computer (FinalPills). Not counted as store clicks, since nobody leaves for a store. */
+export type StoreBadgesOpen = { onOpen: (event: React.MouseEvent<HTMLElement>) => void; expanded: boolean; controls: string }
+
 export default function StoreBadges({
   position,
   className = '',
   variant = 'light',
   size = 'md',
+  opens,
 }: {
   position: StorePosition
   className?: string
   variant?: keyof typeof VARIANTS
   size?: keyof typeof SIZES
+  opens?: StoreBadgesOpen
 }) {
   const look: { focus: string; pill: React.CSSProperties; play?: React.CSSProperties; name: string } = VARIANTS[variant]
   return (
     <div className={`flex flex-row flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-3 ${className}`}>
-      {STORES.map(s => (
-        <a
-          key={s.store}
-          href={storeLink(s.store)}
-          onClick={() => countClick(s.store, position)}
-          className={`${PILL} ${SIZES[size]} ${look.focus} ${s.className ?? ''}`}
-          data-variant={variant}
-          style={s.store === 'play' && look.play ? look.play : look.pill}
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 shrink-0" fill="currentColor">
-            <path d={STORE_MARK[s.store]} />
-          </svg>
-          <span>
-            Hent i{' '}
-            <span className={size === 'lg' ? 'font-semibold' : 'font-medium'} style={{ color: look.name }}>
-              {s.name}
+      {STORES.map(s => {
+        const pill = {
+          className: `${PILL} ${SIZES[size]} ${look.focus} ${s.className ?? ''}`,
+          'data-variant': variant,
+          style: s.store === 'play' && look.play ? look.play : look.pill,
+        }
+        const face = (
+          <>
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 shrink-0" fill="currentColor">
+              <path d={STORE_MARK[s.store]} />
+            </svg>
+            <span>
+              Hent i{' '}
+              <span className={size === 'lg' ? 'font-semibold' : 'font-medium'} style={{ color: look.name }}>
+                {s.name}
+              </span>
             </span>
-          </span>
-        </a>
-      ))}
+          </>
+        )
+        return opens ? (
+          <button key={s.store} type="button" {...pill} className={`${pill.className} cursor-pointer`} aria-expanded={opens.expanded} aria-controls={opens.controls} onClick={opens.onOpen}>
+            {face}
+          </button>
+        ) : (
+          <a key={s.store} href={storeLink(s.store)} onClick={() => countClick(s.store, position)} {...pill}>
+            {face}
+          </a>
+        )
+      })}
     </div>
   )
 }

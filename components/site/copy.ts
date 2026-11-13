@@ -300,41 +300,51 @@ export const FAQ: { title: string; items: readonly FaqItem[] } = {
 export const FINAL = {
   title: 'Hent Altid Hjem i dag',
   body: 'Vi glæder os til at se jer. Appen er gratis at hente, og det er gratis at oprette en konto.',
-  // The app's own screens loop slowly under the text, edge to edge, with no captions and no
-  // fading edges (Thor 13/11, in place of the flat-lay): the old proof loop's screens that are
-  // still in public/site/app, in its order, with the hero's alt texts.
-  screens: [HERO.secondScreens[0], HERO.secondScreens[2], HERO.secondScreens[1], HERO.mainScreens[1], HERO.mainScreens[2], HERO.mainScreens[0]],
-  screensLabel: 'Skærmbilleder fra Altid Hjem',
+  // A colourful collage around the text (Thor 13/11, in place of the loop): app screens, each
+  // whole on a card in one of the site's tones, mixed with candid photos that fill their tile
+  // (Thor's picks, graded to match the FAQ photo). On a computer the collage has 12 places,
+  // filled in this order: the left column top and bottom, the second column top and bottom,
+  // the third above and below the text, the middle one above, the fifth above and below, the
+  // sixth, the right column top and bottom (FinalGallery). A phone shows the six marked
+  // `phone`, two per column. Neighbours never share a tone. A photo's `focus` is its
+  // object-position in the portrait tile.
+  gallery: [
+    { kind: 'photo', src: '/faq-familie.jpg', alt: 'Far med datter på skuldrene i stuen', focus: '8% 50%', phone: true },
+    { kind: 'screen', src: HERO.mainScreens[0].src, alt: HERO.mainScreens[0].alt, tone: 'honey', phone: true },
+    { kind: 'screen', src: HERO.secondScreens[0].src, alt: HERO.secondScreens[0].alt, tone: 'lavender', phone: true },
+    { kind: 'photo', src: '/site/gallery/galleri-pige-sofa.webp', alt: 'Pige med høretelefoner og tablet i sofaen', focus: '50% 60%', phone: true },
+    { kind: 'screen', src: HERO.mainScreens[1].src, alt: HERO.mainScreens[1].alt, tone: 'mint', phone: false },
+    { kind: 'photo', src: '/site/gallery/galleri-bamse.webp', alt: 'Uldsokker og en bamse på gulvtæppet', focus: '55% 50%', phone: true },
+    { kind: 'screen', src: '/site/app/mere-sheet.webp', alt: 'Menuen i appen: Profil, Energi med første måned gratis, Mad, Forsikring og Økonomi.', tone: 'rose', phone: false },
+    { kind: 'photo', src: '/site/gallery/galleri-far-og-datter.webp', alt: 'Far og datter krammer i sofaen', focus: '50% 15%', phone: false },
+    { kind: 'screen', src: HERO.secondScreens[2].src, alt: HERO.secondScreens[2].alt, tone: 'sky', phone: true },
+    { kind: 'screen', src: HERO.mainScreens[2].src, alt: HERO.mainScreens[2].alt, tone: 'honey', phone: false },
+    { kind: 'screen', src: '/site/app/partner-inviteret.webp', alt: 'En invitation i appen: Sofie har inviteret dig, og dine egne konti ser kun du.', tone: 'lavender', phone: false },
+    { kind: 'photo', src: '/site/gallery/galleri-elbil.webp', alt: 'En elbil lades op ved huset', focus: '40% 50%', phone: false },
+  ],
 } as const
 
 // One QR code for the app everywhere on the page: /qr sends an iPhone to the App Store and an
-// Android phone to Google Play (app/qr/route.ts). On a computer the sticky "Hent appen" bottom
-// right turns into the code when pressed (GetAppSticky), until Ekstra Bladet's card has
-// scrolled past; the final block and the leave popup show it too.
+// Android phone to Google Play (app/qr/route.ts). On a computer it sits bottom right until
+// Ekstra Bladet's card has scrolled past (GetAppSticky), the final block's store pills open
+// into it (FinalPills), and the leave popup shows it too.
 export const QR = {
   title: 'Hent appen',
-  sticky: 'Scan med din telefon',
   line: 'Scan koden med din telefon',
   alt: 'QR-kode til Altid Hjem i App Store og Google Play',
   close: 'Luk QR-koden',
 } as const
 
 // Altid Energi's first month free, inside the Energi card (EnergiOffer), drawn after the app's
-// own "Bliv kunde" element. A link on a phone; on a computer it turns into a QR code.
+// own floating "Bliv kunde" element: one link to the signup on every device.
 export const ENERGI_OFFER = {
   title: 'Bliv kunde hos Altid Energi',
   line: 'Gebyrfri strøm til indkøbspris',
   badge: 'Første måned gratis',
   fine: '100 % rabat på elabonnementet den første måned, når du bliver kunde via Altid Hjem.',
-  qr: 'Scan koden med din telefon',
-  qrAlt: 'QR-kode til tilmelding hos Altid Energi',
-  here: 'Eller bliv kunde her',
-  close: 'Luk QR-koden',
   href: 'https://tilmeld.altidenergi.dk/signup/altid-hjem',
 } as const
 
-// The popup a computer shows once per visit when the mouse heads for the tab bar (LeavePopup).
-// The QR code under the text takes its caption from QR.
 export const LEAVE = {
   title: 'Gå ikke glip af overblikket over hjemmets økonomi',
   proof: 'Gør som over {thousands} andre danskere',
