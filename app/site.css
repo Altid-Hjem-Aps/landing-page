@@ -3362,8 +3362,9 @@
   }
 
   /* A tile, as in the old "Lavet med omhu" block: rounded, on its tone; a dish fitted in, a
-     photo or painting filling it, a screen on its card. Placed from the layout: --x and --y in
-     percent of the stage, --w and --h in design px. */
+     photo or the painting filling it, a screen on its card. Placed from the layout: --x and --y
+     in percent of the stage, --w and --h in design px, --r its turn. Each casts a soft shadow,
+     so where tiles overlap the one in front reads as lying on the other. */
   .e-tile {
     position: absolute;
     z-index: 1;
@@ -3376,7 +3377,9 @@
     border-radius: calc(var(--u) * 30);
     overflow: hidden;
     background: var(--tint, var(--sand));
+    box-shadow: 0 calc(var(--u) * 10) calc(var(--u) * 26) rgba(0, 30, 10, 0.16);
     color: var(--forest);
+    rotate: calc(var(--r) * 1deg);
   }
   .e-few .e-tile {
     border-radius: calc(var(--u) * 24);
@@ -3400,9 +3403,6 @@
     width: 104%;
     max-width: none;
     height: auto;
-  }
-  .e-art img {
-    padding: 22%;
   }
   /* The notification on its tile, sized in the stage's unit so it keeps its shape. */
   .e-note-card {
@@ -3443,11 +3443,6 @@
         height: calc(var(--u) * 12);
       }
     }
-  }
-  .e-note {
-    position: relative;
-    z-index: 2;
-    margin-top: 24px;
   }
 
   /* Arrange mode (?arrange): every tile can be picked up; a small panel bottom left. */

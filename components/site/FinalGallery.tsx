@@ -5,15 +5,17 @@ import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as R
 import { FINAL, FINAL_LAYOUT, MAD } from './copy'
 import { useMotionPrefs } from './MotionPrefs'
 
-// The final block's collage, in the style of the old "Lavet med omhu til danske hjem" block
-// (Thor 13/11): rounded tiles in the site's tones around the block's text. What the tiles are is
-// FINAL.gallery; where they sit is FINAL_LAYOUT, both in copy.ts, so a layout is just numbers.
+// The final block's collage as four small universes around the block's text, one per corner
+// (Thor 13/11): loose clusters of tiles of different sizes that overlap a little, the screens,
+// the painting and the notification turned a few degrees. What the tiles are is FINAL.gallery;
+// where they sit is FINAL_LAYOUT, both in copy.ts, so a layout is just numbers.
 //
 // Computers (from 1024 px, CSS): a stage 1440 x 960 design px (growing to 1800 wide with the
 // window) with the text in its middle, the heading and line scaled with it. As the block passes,
-// the tiles drift up to 16 px at their own speeds (transform only), and each rises in the first
-// time it is seen (data-reveal); neither with reduced motion. Phones and tablets: the text, then
-// a stage 390 x 410 with the tiles the phone layout lists, still.
+// each universe drifts as one, up to 16 px at its own speed (transform only), and the universes
+// rise in one after the other the first time they are seen (data-reveal); neither with reduced
+// motion. Phones and tablets: the text, then a stage 390 x 610 with the universes in two rows of
+// two, the tiles the phone layout lists, still.
 //
 // Arrange mode, for Thor: open the page with ?arrange. Every tile can be dragged (mouse or
 // trackpad) and the layout is kept in this browser (localStorage), so a reload keeps it; a small
@@ -22,15 +24,17 @@ import { useMotionPrefs } from './MotionPrefs'
 // Without ?arrange nothing of this is there.
 
 type Entry = (typeof FINAL.gallery)[number]
-type Spot = { x: number; y: number; w: number; h: number }
+type Spot = { x: number; y: number; w: number; h: number; r: number }
+type Group = Entry['group']
 type View = 'wall' | 'phone'
 type Layout = Record<View, Record<string, Spot>>
 
 /** The stages' size in design px. */
-const STAGE: Record<View, { w: number; h: number }> = { wall: { w: 1440, h: 960 }, phone: { w: 390, h: 410 } }
+const STAGE: Record<View, { w: number; h: number }> = { wall: { w: 1440, h: 960 }, phone: { w: 390, h: 610 } }
 /** The most a tile drifts, in px, at speed 1. */
 const DRIFT = 16
-const SAVED = 'altid-final-layout'
+/** Where arrange mode keeps a layout in the browser; a new name for every new set of tiles. */
+const SAVED = 'altid-final-layout-universes'
 
 const CODE_LAYOUT: Layout = FINAL_LAYOUT
 for (const entry of FINAL.gallery) {
@@ -40,8 +44,15 @@ for (const id of [...Object.keys(CODE_LAYOUT.wall), ...Object.keys(CODE_LAYOUT.p
   if (!FINAL.gallery.some((entry) => entry.id === id)) throw new Error(`FINAL_LAYOUT names ${id}, which FINAL.gallery does not have`)
 }
 
-/** Each tile's own drift speed, between -0.8 and 0.8, the same on every visit. */
-const speedOf = (i: number) => ((i * 7) % 5) / 2.5 - 0.8
+const BY_ID = new Map<string, Entry>(FINAL.gallery.map((entry) => [entry.id, entry]))
+
+/** Each universe drifts as one, at its own speed, and rises in after the one before it. */
+const GROUPS: Record<Group, { speed: number; delay: number }> = {
+  okonomi: { speed: -0.6, delay: 0 },
+  mad: { speed: 0.5, delay: 140 },
+  forsikring: { speed: 0.7, delay: 280 },
+  energi: { speed: -0.5, delay: 420 },
+}
 const round = (n: number) => Math.round(n * 10) / 10
 
 function TileBody({ entry, sizes, arrange }: { entry: Entry; sizes: string; arrange: boolean }) {
@@ -57,7 +68,7 @@ function TileBody({ entry, sizes, arrange }: { entry: Entry; sizes: string; arra
         </span>
       )
     case 'art':
-      return <Image src={entry.src} alt={entry.alt} fill sizes={sizes} style={{ objectFit: entry.cover ? 'cover' : 'contain', objectPosition: entry.focus }} {...drag} />
+      return <Image src={entry.src} alt={entry.alt} fill sizes={sizes} style={{ objectFit: 'cover', objectPosition: entry.focus }} {...drag} />
     case 'plate':
       return <Image src={MAD.plates[entry.plate].src} alt={MAD.plates[entry.plate].name} width={143} height={143} sizes={sizes} {...drag} />
     case 'note':
@@ -86,7 +97,7 @@ function TileBody({ entry, sizes, arrange }: { entry: Entry; sizes: string; arra
   }
 }
 
-const KIND_CLASS: Record<Entry['kind'], string> = { photo: 'e-cover', screen: 'e-screen', art: '', plate: 'e-plate', note: 'e-note-tile' }
+const KIND_CLASS: Record<Entry['kind'], string> = { photo: 'e-cover', screen: 'e-screen', art: 'e-cover', plate: 'e-plate', note: 'e-note-tile' }
 
 function Stage({ view, layout, arrange, onMove, children }: { view: View; layout: Layout; arrange: boolean; onMove: (view: View, id: string, spot: Spot) => void; children?: ReactNode }) {
   const stage = useRef<HTMLDivElement>(null)
@@ -114,17 +125,19 @@ function Stage({ view, layout, arrange, onMove, children }: { view: View; layout
   return (
     <div ref={stage} className={view === 'wall' ? 'e-wall' : 'e-few'} style={{ '--sw': STAGE[view].w, '--sh': STAGE[view].h } as CSSProperties}>
       {children}
-      {FINAL.gallery.map((entry, i) => {
-        const spot = layout[view][entry.id]
-        if (!spot) return null
-        const style = { '--x': spot.x, '--y': spot.y, '--w': spot.w, '--h': spot.h, '--rd': `${(i % 5) * 80}ms` } as CSSProperties
+      {/* In the layout's order, so a tile listed later lies on top. */}
+      {Object.entries(layout[view]).map(([id, spot], i) => {
+        const entry = BY_ID.get(id) as Entry
+        const group = GROUPS[entry.group]
+        const style = { '--x': spot.x, '--y': spot.y, '--w': spot.w, '--h': spot.h, '--r': spot.r, '--rd': `${group.delay + (i % 3) * 60}ms` } as CSSProperties
         return (
           <div
             key={entry.id}
-            className={`e-tile ${entry.kind === 'art' ? (entry.cover ? 'e-cover' : 'e-art') : KIND_CLASS[entry.kind]}`}
+            className={`e-tile ${KIND_CLASS[entry.kind]}`}
             data-tile={entry.id}
+            data-group={entry.group}
             data-tone={'tone' in entry ? entry.tone : undefined}
-            data-speed={view === 'wall' ? speedOf(i) : undefined}
+            data-speed={view === 'wall' ? group.speed : undefined}
             data-reveal={arrange ? undefined : ''}
             aria-hidden={entry.kind === 'note' ? 'true' : undefined}
             style={style}
