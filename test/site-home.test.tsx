@@ -5,10 +5,12 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { consentSentences } from 'altid-consent'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Home, { metadata } from '@/app/page'
+import { TESTIMONIALS } from '@/components/sections/Testimonials'
 import { jsonLdScript, serializeForScript } from '@/components/site/jsonLd'
 
 // The new front page, rendered whole. Faked at the boundary only: browser APIs jsdom
-// lacks (IntersectionObserver, matchMedia, the dialog's modal methods) and the App Router.
+// lacks (IntersectionObserver, ResizeObserver, matchMedia, the dialog's modal methods), the
+// App Router and the network.
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
   usePathname: () => '/',
@@ -29,10 +31,15 @@ vi.mock('@/lib/user-count', async (original) => ({
 const APP_STORE = 'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_altidhjem_dk&mt=8'
 const PLAY =
   'https://play.google.com/store/apps/details?id=dk.altidhjem.app&referrer=utm_source%3Daltidhjem_dk%26utm_campaign%3Dah_1_altidhjem_dk'
-const STAGED = 'Skærmbilleder fra appen med eksempeldata.'
-// The service row, the plates, the list.
-const ALL_RUNNING = ['true', 'true', 'true']
-const ALL_STOPPED = ['false', 'false', 'false']
+const EKSTRA_BLADET = 'https://ekstrabladet.dk/forbrug/Teknologi/spar-stort-paa-dine-dagligvarer-ny-app-sammenligner-priser/11232767'
+// The Psst bubble's line in the steps (copy.ts STEPS.psst): upcoming services, written and
+// approved by Thor 13/11, so its "Snart" is not launch wording.
+const PSST = ' vi lancerer løbende flere tjenester. Snart kommer mobil, opladning og alarm.'
+// What runs by itself: the hero's press card float, bill lanes, orbit and two phones; the
+// Energi offer's float; the bank logos; the story's two rows of dots.
+const PIECES = 9
+const ALL_RUNNING = Array<string>(PIECES).fill('true')
+const ALL_STOPPED = Array<string>(PIECES).fill('false')
 
 type Observed = { element: Element; callback: IntersectionObserverCallback }
 
@@ -70,6 +77,22 @@ beforeEach(() => {
       disconnect() {}
     },
   )
+  // jsdom has no layout, so nothing ever resizes: the FAQ's scrollbar measures once on mount.
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    },
+  )
+  // Nothing on the page may reach the network in a test; a test that expects a request stubs its own.
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async (url: unknown) => {
+      throw new Error(`unexpected fetch: ${String(url)}`)
+    }),
+  )
   window.matchMedia = ((query: string) => ({
     get matches() {
       return query.includes('reduced-motion') ? reduced : false
@@ -86,9 +109,8 @@ beforeEach(() => {
   })) as unknown as typeof window.matchMedia
   HTMLMediaElement.prototype.play = vi.fn(async () => {})
   HTMLMediaElement.prototype.pause = vi.fn()
-  // jsdom has no layout. The nav asks what lies under it: the hero's dark block by default.
+  // jsdom has no layout. The nav asks what lies under it: the hero's light ground by default.
   document.elementsFromPoint = vi.fn(() => [document.querySelector('.h-title')].filter((el) => el !== null))
-  // The hero is light now: the dark blocks come further down.
   HTMLDialogElement.prototype.showModal = function showModal() {
     this.setAttribute('open', '')
   }
@@ -100,17 +122,6 @@ beforeEach(() => {
 afterEach(() => {
   vi.unstubAllGlobals()
 })
-
-// One string per text node and attribute: textContent glues neighbouring elements together.
-function readableStrings(root: HTMLElement): string[] {
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
-  const texts: string[] = []
-  while (walker.nextNode()) texts.push((walker.currentNode.textContent ?? '').trim())
-  const attrs = Array.from(root.querySelectorAll('[alt],[aria-label],[title]')).flatMap((el) =>
-    ['alt', 'aria-label', 'title'].map((a) => el.getAttribute(a) ?? ''),
-  )
-  return [...texts, ...attrs].filter(Boolean)
-}
 
 function readableText(root: HTMLElement): string {
   const attrs = Array.from(root.querySelectorAll('[alt],[aria-label],[title]')).flatMap((el) =>
@@ -128,16 +139,14 @@ describe('the page', () => {
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Hele hjemmets økonomi i én app')
     expect(Array.from(container.querySelectorAll('h2')).map((h) => h.textContent)).toEqual([
-      'Samlet i én app',
       'Hør, hvorfor over 4.000 danskere har appen',
-      'Se, hvor I står, før måneden er gået',
-      'Ikke mere “hvad skal vi spise?”',
-      'Og der er mere',
-      'På jeres side. Altid.',
+      'Hvad finder du i appen?',
+      'Fire trin til ét overblik',
+      'På jeres side. Altid',
       'Jeres tal er jeres egne',
-      'Lavet med omhu til danske hjem',
+      'Fair, gennemsigtigt og billigt',
+      'Ofte stillede spørgsmål',
       'Læs mere om Altid Hjem',
-      'Spørgsmål og svar',
       'Hent Altid Hjem i dag',
       'Appen',
       'Læs mere',
@@ -148,22 +157,16 @@ describe('the page', () => {
 
   it('has no banned word, no dash, no service outside the app and no invented proof', async () => {
     const { container } = render(await Home())
-    const text = readableText(container).replace(consentSentences('hjem').all, '')
+    const text = readableText(container).replace(consentSentences('hjem').all, '').replaceAll(PSST, '')
     expect(text).not.toMatch(/venteliste|waitlist|skriv dig op|kommer snart|snart|én regning|Altid Mobil|Altid Alarm|Altid Opladning|–|—/i)
     expect(text).not.toMatch(/Nordens Forsikringshus|Subaio|Spari\b/)
     // The App Store's own rating is the one exception, read live: no reviews, user counts or other stars.
     const rating = container.querySelector('.h-rating') as HTMLElement
-    expect(text.replace(rating.textContent as string, '')).not.toMatch(
+    const stars = rating.querySelector('.h-stars') as HTMLElement
+    expect(text.replace(rating.textContent as string, '').replace(stars.getAttribute('aria-label') as string, '')).not.toMatch(
       /stjerner|anmeldelse|brugere|medlemmer|bedømmelse/i,
     )
     expect(Array.from(container.querySelectorAll('[aria-label*="stars" i], [class*="star" i]'))).toEqual([rating.querySelector('.h-stars')])
-  })
-
-  it('never says Mad alone, in visible text or alt text', async () => {
-    const { container } = render(await Home())
-    // The app's own tab says Mad only inside the screenshots. "Mad efter jeres smag" is the common word.
-    const brandless = readableStrings(container).filter((text) => /(^|[^d] )Mad\b/.test(text))
-    expect(brandless).toEqual(['Mad efter jeres smag'])
   })
 
   it('has every store pill on the exact campaign links, and one #hent-appen with pills in it', async () => {
@@ -217,6 +220,7 @@ describe('the page', () => {
     const { container } = render(await Home())
     const nav = within(screen.getByRole('navigation', { name: 'Forside' }))
     expect(nav.getAllByRole('link').map((a) => [a.textContent, a.getAttribute('href')])).toEqual([
+      ['Tjenesterne', '#tjenesterne'],
       ['Spørgsmål', '#spoergsmaal'],
       ['Kontakt', '/kontakt'],
       ['Hent appen', '#hent-appen'],
@@ -254,22 +258,18 @@ describe('the page', () => {
     expect(stars.style.getPropertyValue('--fill')).toBe('90%')
   })
 
-  it('links the four services by full name to their sections', async () => {
+  it('links the four services by their plain names to their cards from the menu', async () => {
     const { container } = render(await Home())
-    const row = within(container.querySelector('.w-mq') as HTMLElement)
-    expect(row.getAllByRole('link').map((a) => [a.textContent, a.getAttribute('href')])).toEqual([
+    const sheet = within(container.querySelector('dialog') as HTMLElement)
+    expect(sheet.getAllByRole('link', { hidden: true }).filter((a) => a.closest('ul')).map((a) => [a.textContent, a.getAttribute('href')])).toEqual([
+      ['Tjenesterne', '#tjenesterne'],
       ['Økonomi', '#okonomi'],
-      ['Altid Mad', '#altid-mad'],
-      ['Altid Energi', '#altid-energi'],
-      ['Altid Forsikring', '#altid-forsikring'],
+      ['Mad', '#mad'],
+      ['Energi', '#energi'],
+      ['Forsikring', '#forsikring'],
+      ['Spørgsmål', '#spoergsmaal'],
+      ['Kontakt', '/kontakt'],
     ])
-  })
-
-  it('shows the staged sentence in every section with staged numbers', async () => {
-    const { container } = render(await Home())
-    const staged = Array.from(container.querySelectorAll('section')).filter((s) => s.querySelector('[data-staged="true"]'))
-    expect(staged.length).toBeGreaterThanOrEqual(6)
-    for (const section of staged) expect(section.textContent, section.getAttribute('data-b') ?? '').toContain(STAGED)
   })
 
   it('lands every anchor link on a section that exists', async () => {
@@ -280,18 +280,13 @@ describe('the page', () => {
   })
 
   it('sends the HTML finished: text, phones and cards are there before any script runs', async () => {
-    const html = renderToStaticMarkup(<Home />)
+    const html = renderToStaticMarkup(await Home())
     expect(html).toContain('Hele hjemmets økonomi i én app')
-    expect(html).toContain('Tjek jeres forsikringer')
-    expect(html).toContain('Spar i gennemsnit 11.207 kr. om året på dagligvarer*')
+    expect(html).toContain('Alle jeres forsikringer')
+    expect(html).toContain('forsikring.webp')
+    expect(html).toContain('Spar 11.207 kr. om')
+    expect(html).toContain('året på dagligvarer*')
     expect(html).not.toMatch(/autoplay/i)
-  })
-
-  it('tells that the plates are AI images in each section that shows plates', async () => {
-    const { container } = render(await Home())
-    for (const name of ['dark', 'love']) {
-      expect(container.querySelector(`[data-b="${name}"]`)?.textContent, name).toContain('Billederne af retterne er AI-genererede, ligesom i appen.')
-    }
   })
 
   it('ships no banned capture in public/site', async () => {
@@ -323,7 +318,11 @@ describe('the marquees', () => {
     const slider = within(container.querySelector('[data-b="proof"]') as HTMLElement).getByRole('region', { name: 'Udtalelser' })
     const cards = Array.from(slider.querySelectorAll('figure:not([aria-hidden])'))
     expect(cards.map((c) => c.querySelector('.v-name')?.textContent)).toEqual(['Lone', 'Magnus Svendsen', 'Michael'])
-    for (const card of cards) expect(card.querySelector('blockquote')?.textContent).toMatch(/^“.+”$/)
+    for (const card of cards) {
+      const own = TESTIMONIALS.find((t) => t.name === card.querySelector('.v-name')?.textContent)
+      expect(card.querySelector('blockquote')?.textContent).toBe(own?.quote)
+      expect(card.querySelector('.v-mark')).toHaveTextContent('“')
+    }
     expect(slider.textContent).not.toMatch(/skrevet mig op|stjerne/i)
     expect(slider.querySelector('[aria-label*="stjerner"]')).toBeNull()
   })
@@ -332,7 +331,7 @@ describe('the marquees', () => {
     const { container } = render(await Home())
     const laurels = container.querySelectorAll('.p-laurel')
     expect(laurels).toHaveLength(1)
-    expect(laurels[0]).toHaveTextContent('App of the DayApp Store')
+    expect(laurels[0]).toHaveTextContent('App of the DayFinance')
     expect(laurels[0].querySelectorAll('svg[aria-hidden="true"]')).toHaveLength(3)
   })
 
@@ -344,272 +343,73 @@ describe('the marquees', () => {
     for (const post of posts) expect(pages).toContain(post.getAttribute('href'))
   })
 
-  it('shows the Ekstra Bladet mention with its date and a link to the article', async () => {
+  it('shows the Ekstra Bladet mention in the hero, without a date, as a link to the article', async () => {
     const { container } = render(await Home())
-    const press = container.querySelector('[data-b="press"]') as HTMLElement
-    expect(press).toHaveTextContent('Omtalt i')
+    const press = container.querySelector('#top .h-press') as HTMLElement
+    expect(press).toHaveAttribute('href', EKSTRA_BLADET)
+    expect(press).toHaveAttribute('target', '_blank')
+    expect(press).toHaveAttribute('rel', 'noopener noreferrer')
     expect(within(press).getByRole('img', { name: 'Ekstra Bladet' })).toBeInTheDocument()
-    expect(press).toHaveTextContent('25. juli 2026')
-    expect(press.querySelector('blockquote')).toHaveTextContent('“Spar stort på dine dagligvarer: Ny app sammenligner priser”')
-    const link = within(press).getByRole('link', { name: 'Læs artiklen' })
-    expect(link).toHaveAttribute('href', 'https://ekstrabladet.dk/forbrug/Teknologi/spar-stort-paa-dine-dagligvarer-ny-app-sammenligner-priser/11232767')
-    expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(press).toHaveTextContent('Omtalt i Ekstra Bladet')
+    expect(press.querySelector('.h-press-title')).toHaveTextContent('Spar stort på dine dagligvarer:Ny app sammenligner priser')
+    expect(press).toHaveTextContent('(åbner i en ny fane)')
+    expect(press).not.toHaveTextContent(/2026/)
   })
 })
 
-describe('the week of plates', () => {
-  const week = () => within(document.querySelector('.plates') as HTMLElement)
-  const selectedDay = () => week().getByRole('tab', { selected: true })
-  const strip = (container: HTMLElement) => container.querySelector('.plates') as HTMLElement
-
-  beforeEach(() => {
-    vi.useFakeTimers()
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
-  })
-
-  const wait = (ms: number) => act(() => vi.advanceTimersByTime(ms))
-
-  it('has seven tabs with full day names, one selected, and its dish in the panel', async () => {
-    render(await Home())
-    const tabs = week().getAllByRole('tab')
-    expect(tabs.map((t) => t.getAttribute('aria-label'))).toEqual(['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'])
-    expect(tabs.map((t) => t.textContent)).toEqual(['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'])
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
-    expect(week().getByRole('tabpanel')).toHaveTextContent('Svamperisotto med brune champignon')
-    expect(week().getByRole('tabpanel')).toHaveAttribute('aria-labelledby', selectedDay().id)
-  })
-
-  it('follows a swipe, stops advancing, and ignores a short drag or a page scroll', async () => {
+describe('what is in the app', () => {
+  it('has the launch mail\'s seven blocks in its order, each with its own real screen', async () => {
     const { container } = render(await Home())
-    const swipe = (from: number, to: number, down = 0) => {
-      fireEvent.touchStart(strip(container), { touches: [{ clientX: from, clientY: 400 }] })
-      fireEvent.touchEnd(strip(container), { changedTouches: [{ clientX: to, clientY: 400 + down }] })
-    }
-    swipe(300, 280)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
-    swipe(300, 240, 200)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
-    // A pinch: the second finger cancels the swipe.
-    fireEvent.touchStart(strip(container), { touches: [{ clientX: 300, clientY: 400 }] })
-    fireEvent.touchStart(strip(container), { touches: [{ clientX: 300, clientY: 400 }, { clientX: 100, clientY: 400 }] })
-    fireEvent.touchEnd(strip(container), { changedTouches: [{ clientX: 100, clientY: 400 }] })
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
-    swipe(300, 200)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Onsdag')
-    swipe(200, 300)
-    swipe(200, 300)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Mandag')
-    swipe(200, 300)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Søndag')
-    wait(10000)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Søndag')
-  })
-
-  it('advances by itself and wraps around', async () => {
-    render(await Home())
-    wait(5000)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Onsdag')
-    expect(week().getByRole('tabpanel')).toHaveTextContent('Kyllingewok')
-    wait(25000)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Mandag')
-  })
-
-  it('stops advancing off screen, in a hidden tab or with reduced motion', async () => {
-    render(await Home())
-    setOnScreen('.plates', false)
-    wait(20000)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
-    setOnScreen('.plates', true)
-    setReduced(true)
-    wait(20000)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
-    setReduced(false)
-    const visibility = vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden')
-    act(() => {
-      document.dispatchEvent(new Event('visibilitychange'))
-    })
-    wait(20000)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
-    visibility.mockRestore()
-  })
-
-  it('hover pauses without selecting, and leaving lets it go on', async () => {
-    const { container } = render(await Home())
-    fireEvent.pointerEnter(strip(container), { pointerType: 'mouse' })
-    wait(20000)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Tirsdag')
-    fireEvent.pointerLeave(strip(container))
-    wait(5000)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Onsdag')
-  })
-
-  it('a manual pick selects the day and stops the advance for good', async () => {
-    render(await Home())
-    fireEvent.click(week().getByRole('tab', { name: 'Torsdag' }))
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Torsdag')
-    expect(week().getByRole('tabpanel')).toHaveTextContent('Hjemmelavet pizza')
-    wait(60000)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Torsdag')
-  })
-
-  it('follows the tabs pattern on the keyboard, and a key counts as a manual pick', async () => {
-    render(await Home())
-    const tabbable = () => week().getAllByRole('tab').filter((t) => t.tabIndex === 0)
-    expect(tabbable()).toHaveLength(1)
-    expect(tabbable()[0]).toBe(selectedDay())
-    selectedDay().focus()
-    fireEvent.keyDown(selectedDay(), { key: 'ArrowRight' })
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Onsdag')
-    expect(document.activeElement).toBe(selectedDay())
-    fireEvent.keyDown(selectedDay(), { key: 'ArrowLeft' })
-    fireEvent.keyDown(selectedDay(), { key: 'Home' })
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Mandag')
-    fireEvent.keyDown(selectedDay(), { key: 'ArrowLeft' })
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Søndag')
-    fireEvent.keyDown(selectedDay(), { key: 'ArrowRight' })
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Mandag')
-    fireEvent.keyDown(selectedDay(), { key: 'End' })
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Søndag')
-    expect(tabbable()).toEqual([selectedDay()])
-    wait(60000)
-    expect(selectedDay()).toHaveAttribute('aria-label', 'Søndag')
-  })
-})
-
-describe('Økonomi, Altid Energi and Altid Forsikring', () => {
-  it('has the three one-word cards, each with its real screen', async () => {
-    const { container } = render(await Home())
-    const cards = Array.from(container.querySelectorAll('.f-card'))
-    expect(cards.map((c) => c.querySelector('h3')?.textContent)).toEqual(['Tilbage', 'Brugt', 'Regninger'])
-    expect(cards.map((c) => c.querySelector('.ph-screen img')?.getAttribute('src'))).toEqual([
-      expect.stringContaining('hjem-top'),
-      expect.stringContaining('okonomi-top'),
-      expect.stringContaining('regninger-top'),
+    const cards = Array.from(container.querySelectorAll('#tjenesterne .d-card'))
+    expect(cards.map((c) => Array.from(c.querySelectorAll('h3 .d-line')).map((l) => l.textContent).join('\n'))).toEqual([
+      'Se regningerne,\nfør de bliver trukket',
+      '“Bruger vi for meget\npå takeaway?”',
+      'Ikke mere\n“hvad skal vi spise?”',
+      'Spar 11.207 kr. om\nåret på dagligvarer*',
+      '“Hvornår skal opvasken sættes over?”',
+      'Alle jeres forsikringer\nsamlet ét sted',
+      '“Skat, hvornår skal vi\npå ferie igen?”',
     ])
+    expect(cards.map((c) => c.id || null)).toEqual([null, 'okonomi', 'mad', null, 'energi', 'forsikring', null])
+    const shots = cards.map((c) => c.querySelector('img.d-shot') as HTMLImageElement)
+    expect(shots.map((img) => img.getAttribute('src'))).toEqual(
+      ['regninger', 'takeaway', 'mad', 'indkob-liste', 'energi', 'forsikring', 'droem'].map((name) => expect.stringContaining(`site%2Fmail%2F${name}.webp`)),
+    )
+    for (const img of shots) expect(img.getAttribute('alt')).toBeTruthy()
   })
 
-  it('shows Altid Energi with the question and its screens', async () => {
+  it('shows Energi with the question, its screen and the first month free as one link to the signup', async () => {
     const { container } = render(await Home())
-    const card = within(container.querySelector('#altid-energi') as HTMLElement)
+    const card = within(container.querySelector('#energi') as HTMLElement)
     expect(card.getByRole('heading', { level: 3 })).toHaveTextContent('“Hvornår skal opvasken sættes over?”')
-    expect(card.getAllByRole('img')).toHaveLength(2)
+    expect(card.getByRole('img', { name: /^Elprisen i appen/ })).toBeInTheDocument()
+    const offer = card.getByRole('link', { name: /Bliv kunde hos Altid Energi/ })
+    expect(offer).toHaveAttribute('href', 'https://tilmeld.altidenergi.dk/signup/altid-hjem')
+    expect(offer).toHaveAttribute('target', '_blank')
+    expect(offer).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(offer).toHaveTextContent('Første måned gratis')
   })
 
-  it('makes no promise and names no insurer in the Altid Forsikring block', async () => {
+  it('makes no promise and names no insurer in the Forsikring block', async () => {
     const { container } = render(await Home())
-    const text = readableText(container.querySelector('#altid-forsikring') as HTMLElement)
-    expect(text).toContain('Gratis og helt uforpligtende.')
-    expect(text).not.toMatch(/snart|inden for|uger|kr\./i)
+    const block = container.querySelector('#forsikring') as HTMLElement
+    const text = readableText(block)
+    expect(text).toContain('Helt gratis og uforpligtende.')
+    expect(text).not.toMatch(/snart|inden for|uger/i)
+    // No price in its words; the screenshot's alt text reads out the screen's sample amounts.
+    expect(block.textContent).not.toMatch(/kr\./)
     expect(text).not.toMatch(/Tryg|Alm\.? Brand|Codan|Alka|Topdanmark|Gjensidige/)
   })
-})
 
-describe('the Altid Mad section', () => {
-  it('reads the savings line as the app does, as a plain figure, with its footnote and report link', async () => {
+  it('names the Mad saving as a plain figure, with its source linked to the report', async () => {
     const { container } = render(await Home())
-    const para = container.querySelector('.d-para') as HTMLElement
-    expect(para.textContent).toContain('Spar i gennemsnit 11.207 kr. om året på dagligvarer*')
-    expect(para.textContent).toContain('*En gennemsnitlig husstand på fire personer kan spare 11.207 kr. om året på dagligvarer med Altid Mad. Kilde: Altid Mad Q3-rapporten')
-    const link = within(para).getByRole('link', { name: 'Altid Mad Q3-rapporten' })
-    expect(link).toHaveAttribute('href', 'https://altidmad.dk/altid-mad-kvartalsrapport-q3.pdf')
-    expect(link).toHaveAttribute('target', '_blank')
-  })
-
-  it('has four cards, each with its own phone showing a real capture, in the order asked for', async () => {
-    const { container } = render(await Home())
-    const cards = Array.from(container.querySelectorAll('.d-card'))
-    expect(cards.map((c) => c.querySelector('h3')?.textContent)).toEqual([
-      'En hel uge på få minutter',
-      'Opskriften er lige ved hånden',
-      '“Hvor handler vi billigst ind?”',
-      'Indkøbslisten skriver sig selv',
-    ])
-    for (const card of cards) {
-      expect(card.querySelector('.ph-screen img')?.getAttribute('src')).toContain('site%2Fapp%2Fmad-')
-      expect(card.querySelector('.d-piece img')?.getAttribute('alt')).toBeTruthy()
-    }
-  })
-})
-
-describe('the list of small things', () => {
-  const panel = () => within(document.querySelector('.m-grid') as HTMLElement).getByRole('tabpanel')
-  const list = (container: HTMLElement) => container.querySelector('.m-grid') as HTMLElement
-  const active = (container: HTMLElement) => within(list(container)).getAllByRole('tab').find((t) => t.getAttribute('aria-selected') === 'true') as HTMLElement
-
-  beforeEach(() => {
-    vi.useFakeTimers()
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
-  })
-
-  const wait = (ms: number) => act(() => vi.advanceTimersByTime(ms))
-
-  it('has the nine rows, and the staged sentence by the phone', async () => {
-    const { container } = render(await Home())
-    expect(within(list(container)).getAllByRole('tab').map((t) => t.querySelector('.m-row-title')?.textContent)).toEqual([
-      'Drømme',
-      'Ting til dig i dag',
-      'Her brugte du mest',
-      'Alle faste udgifter',
-      'Din saldo hos Altid Energi',
-      'Mad efter jeres smag',
-      'Følg forsikringstjekket',
-      'Mine og Fælles',
-      'Indkøb undervejs',
-    ])
-    expect(panel().textContent).toContain(STAGED)
-  })
-
-  it('advances by itself, shows the screen, and stops off screen', async () => {
-    const { container } = render(await Home())
-    wait(6100)
-    expect(active(container).textContent).toContain('Ting til dig i dag')
-    expect(within(list(container)).getByAltText(/kortet 2 ting til dig i dag/)).toBeInTheDocument()
-    setOnScreen('.m-grid', false)
-    wait(30000)
-    expect(active(container).textContent).toContain('Ting til dig i dag')
-    setOnScreen('.m-grid', true)
-    wait(6100)
-    expect(active(container).textContent).toContain('Her brugte du mest')
-  })
-
-  it('does not advance with reduced motion', async () => {
-    const { container } = render(await Home())
-    setReduced(true)
-    wait(30000)
-    expect(active(container).textContent).toContain('Drømme')
-  })
-
-  it('a manual pick stops the advance for good, on the keyboard too', async () => {
-    const { container } = render(await Home())
-    fireEvent.keyDown(active(container), { key: 'ArrowDown' })
-    expect(active(container).textContent).toContain('Ting til dig i dag')
-    expect(document.activeElement).toBe(active(container))
-    wait(60000)
-    expect(active(container).textContent).toContain('Ting til dig i dag')
-    fireEvent.click(within(list(container)).getByRole('tab', { name: /Følg forsikringstjekket/ }))
-    expect(panel()).toHaveAttribute('aria-labelledby', active(container).id)
-    expect(within(list(container)).getByAltText(/Forløbet i Altid Forsikring/)).toBeInTheDocument()
-  })
-
-  it('a click stops the advance for good, even with focus elsewhere', async () => {
-    const { container } = render(await Home())
-    fireEvent.click(within(list(container)).getByRole('tab', { name: /Alle faste udgifter/ }))
-    wait(60000)
-    expect(active(container).textContent).toContain('Alle faste udgifter')
-  })
-
-  it('fetches a screen only when it is the current or the next one', async () => {
-    const { container } = render(await Home())
-    const screens = () => list(container).querySelectorAll('.m-screen').length
-    expect(screens()).toBe(2)
-    wait(6100)
-    expect(screens()).toBe(3)
+    const source = container.querySelector('.d-card-source') as HTMLElement
+    const card = source.closest('.d-card') as HTMLElement
+    expect(card.querySelector('h3')).toHaveTextContent('Spar 11.207 kr. omåret på dagligvarer*')
+    const link = within(source).getByRole('link', { name: 'Baseret på Altid Mad Q3-rapporten' })
+    expect(link).toHaveAttribute('href', '/madrapport')
+    // The only savings figure on the page: the one the report backs.
+    expect(container.querySelectorAll('.d-card-source')).toHaveLength(1)
   })
 })
 
@@ -617,8 +417,8 @@ describe('privacy', () => {
   it('states the facts plainly and links to the policy', async () => {
     const { container } = render(await Home())
     const section = container.querySelector('[data-b="privacy"]') as HTMLElement
-    expect(section.textContent).toContain('Forbindelsen til jeres bank giver kun adgang til at læse oplysninger, og vi kan ikke flytte penge.')
-    expect(section.textContent).toContain('Vi sælger ikke jeres bankoplysninger.')
+    expect(section.textContent).toContain('Appen kan kun læse jeres transaktioner, aldrig flytte penge eller foretage betalinger.')
+    expect(section.textContent).toContain('Vi sælger eller deler aldrig jeres bankoplysninger med tredjeparter.')
     expect(section.textContent).not.toMatch(/markedsføring/)
     expect(within(section).getByRole('link', { name: 'Læs privatlivspolitikken' })).toHaveAttribute('href', '/privatlivspolitik')
   })
@@ -626,21 +426,59 @@ describe('privacy', () => {
 
 describe('FAQ and JSON-LD', () => {
   const graph = (container: HTMLElement) => JSON.parse(container.querySelector('script[type="application/ld+json"]')?.innerHTML ?? '')['@graph']
+  const questions = (container: HTMLElement) => Array.from(container.querySelectorAll('#spoergsmaal .q-item button'))
+  const expanded = (container: HTMLElement) => questions(container).map((q) => q.getAttribute('aria-expanded'))
 
-  it('has native disclosures with only the first open', async () => {
-    const { container } = render(await Home())
-    const items = Array.from(container.querySelectorAll('#spoergsmaal details'))
-    expect(items.length).toBeGreaterThan(5)
-    expect(items.map((d) => d.hasAttribute('open'))).toEqual(items.map((_, i) => i === 0))
+  describe('the answers', () => {
+    beforeEach(() => {
+      vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    const wait = (ms: number) => act(() => vi.advanceTimersByTime(ms))
+
+    it('opens the first answer by itself once the questions are in view, and one answer at a time', async () => {
+      const { container } = render(await Home())
+      expect(questions(container).length).toBeGreaterThan(5)
+      expect(expanded(container).every((e) => e === 'false')).toBe(true)
+      setOnScreen('#spoergsmaal', true)
+      wait(649)
+      expect(expanded(container)[0]).toBe('false')
+      wait(1)
+      expect(expanded(container)).toEqual(questions(container).map((_, i) => String(i === 0)))
+      fireEvent.click(questions(container)[2])
+      expect(expanded(container)).toEqual(questions(container).map((_, i) => String(i === 2)))
+      fireEvent.click(questions(container)[2])
+      expect(expanded(container).every((e) => e === 'false')).toBe(true)
+    })
+
+    it('leaves the first answer alone if the visitor got there first', async () => {
+      const { container } = render(await Home())
+      fireEvent.click(questions(container)[3])
+      fireEvent.click(questions(container)[3])
+      setOnScreen('#spoergsmaal', true)
+      wait(5000)
+      expect(expanded(container).every((e) => e === 'false')).toBe(true)
+    })
+
+    it('opens the first answer at once with reduced motion', async () => {
+      reduced = true
+      const { container } = render(await Home())
+      expect(expanded(container)[0]).toBe('true')
+    })
   })
 
   it('tells the JSON-LD exactly what it shows', async () => {
     const { container } = render(await Home())
     const faq = graph(container).find((n: { '@type': string }) => n['@type'] === 'FAQPage')
-    const visible = Array.from(container.querySelectorAll('#spoergsmaal details')).map((d) => ({
-      q: d.querySelector('summary')?.textContent,
-      a: d.querySelector('p')?.textContent,
+    const visible = Array.from(container.querySelectorAll('#spoergsmaal .q-item')).map((item) => ({
+      q: item.querySelector('button span')?.textContent,
+      a: item.querySelector('.q-answer p')?.textContent,
     }))
+    expect(visible.length).toBeGreaterThan(5)
     expect(faq.mainEntity.map((q: { name: string; acceptedAnswer: { text: string } }) => ({ q: q.name, a: q.acceptedAnswer.text }))).toEqual(visible)
   })
 
@@ -658,22 +496,17 @@ describe('FAQ and JSON-LD', () => {
     expect(JSON.parse(jsonLdScript())['@graph']).toHaveLength(3)
   })
 
-  it('links the report and the delete page in their answers, and does not say the bank thing twice', async () => {
+  it('links the report in its answer', async () => {
     const { container } = render(await Home())
     const faq = within(container.querySelector('#spoergsmaal') as HTMLElement)
-    expect(faq.getByRole('link', { name: 'læse hele rapporten her', hidden: true })).toHaveAttribute('href', 'https://altidmad.dk/altid-mad-kvartalsrapport-q3.pdf')
-    expect(faq.getByRole('link', { name: 'her på siden', hidden: true })).toHaveAttribute('href', '/slet-konto')
-    const questions = Array.from(container.querySelectorAll('#spoergsmaal summary')).map((s) => s.textContent)
-    expect(questions).toContain('Hvad kan min partner se?')
-    expect(questions).not.toContain('Kan jeg bruge appen uden at forbinde min bank?')
-    expect(questions).toContain('Skal jeg forbinde min bank?')
+    expect(faq.getByRole('link', { name: 'Altid Mad-rapporten', hidden: true })).toHaveAttribute('href', '/madrapport')
   })
 
-  it('never makes the promises the old answers did', async () => {
+  it('claims no saving but the sourced Mad figure', async () => {
     const { container } = render(await Home())
     const text = container.querySelector('#spoergsmaal')?.textContent ?? ''
-    expect(text).not.toMatch(/langt over 1\.000|det klarer vi|opsige/i)
-    expect(text).toMatch(/Din partner ser aldrig dine konti, saldi eller posteringer/)
+    expect(text).not.toMatch(/langt over 1\.000/i)
+    expect(text.match(/[\d.]+ kr\./g)).toEqual(['11.207 kr.'])
   })
 
   it('has full metadata with no launch wording', async () => {
@@ -692,48 +525,16 @@ describe('reduced motion on the scroll-driven pieces', () => {
   it('leaves everything at rest', async () => {
     reduced = true
     const { container } = render(await Home())
-    expect((container.querySelector('.rings') as HTMLElement).style.getPropertyValue('--ring-p')).toBe('0.5')
-    expect((container.querySelector('.f-float') as HTMLElement).style.transform).toBe('')
+    const zoomer = container.querySelector('.zoomer') as HTMLElement
+    expect(zoomer.style.transform).toBe('none')
+    expect(zoomer.style.borderRadius).toBe('0px')
+    expect((container.querySelector('.ek-offer') as HTMLElement).style.scale).toBe('')
     expect(container.querySelector('[data-pan]')).toBeNull()
   })
-})
 
-describe('the auto-advancing tabs while someone is using them', () => {
-  const selected = (container: HTMLElement, root: string) => container.querySelector(`${root} [role="tab"][aria-selected="true"]`) as HTMLElement
-  beforeEach(() => vi.useFakeTimers())
-  afterEach(() => vi.useRealTimers())
-
-  it.each(['.plates', '.m-list'])('%s holds while focus is inside and goes on after blur', async (root) => {
+  it('grows the Energi offer by scroll otherwise', async () => {
     const { container } = render(await Home())
-    const first = selected(container, root)
-    fireEvent.focus(first)
-    act(() => vi.advanceTimersByTime(30000))
-    expect(selected(container, root)).toBe(first)
-    fireEvent.blur(first)
-    act(() => vi.advanceTimersByTime(30000))
-    expect(selected(container, root)).not.toBe(first)
-  })
-
-  it.each(['.plates', '.m-grid'])('%s: a touch does not count as hovering', async (root) => {
-    const { container } = render(await Home())
-    const first = selected(container, root)
-    const area = (first.closest(root) as HTMLElement)
-    fireEvent.pointerEnter(area, { pointerType: 'touch' })
-    act(() => vi.advanceTimersByTime(30000))
-    expect(selected(container, root)).not.toBe(first)
-  })
-})
-
-describe('the list on a phone', () => {
-  beforeEach(() => vi.useFakeTimers())
-  afterEach(() => vi.useRealTimers())
-
-  it('stops advancing once a finger has touched it, so a swipe is not pulled back', async () => {
-    const { container } = render(await Home())
-    const first = container.querySelector('.m-list [role="tab"][aria-selected="true"]') as HTMLElement
-    fireEvent.pointerDown(first, { pointerType: 'touch' })
-    act(() => vi.advanceTimersByTime(30000))
-    expect(container.querySelector('.m-list [role="tab"][aria-selected="true"]')).toBe(first)
+    expect((container.querySelector('.ek-offer') as HTMLElement).style.scale).toMatch(/^\d(\.\d+)?$/)
   })
 })
 
@@ -782,11 +583,12 @@ describe('motion', () => {
 
   it('stops a piece off screen without touching the others, and resumes it', async () => {
     const { container } = render(await Home())
-    setOnScreen('.plates', false)
-    expect(container.querySelector('.plates')).toHaveAttribute('data-running', 'false')
+    setOnScreen('.w-mq', false)
+    expect(container.querySelector('.w-mq')).toHaveAttribute('data-running', 'false')
+    expect(container.querySelector('.h-orbit')).toHaveAttribute('data-running', 'true')
+    expect(runningPieces(container).filter((r) => r === 'true')).toHaveLength(PIECES - 1)
+    setOnScreen('.w-mq', true)
     expect(container.querySelector('.w-mq')).toHaveAttribute('data-running', 'true')
-    setOnScreen('.plates', true)
-    expect(container.querySelector('.plates')).toHaveAttribute('data-running', 'true')
   })
 
   it('stops everything in a hidden tab', async () => {
@@ -813,11 +615,11 @@ describe('motion', () => {
 })
 
 describe('the glass nav', () => {
-  it('is light glass over the hero, turns dark over a dark block and light again over a card in it', async () => {
+  it('is light glass over the hero, turns dark over a dark panel and light again over a feature card', async () => {
     const { container } = render(await Home())
     const nav = container.querySelector('header.nav') as HTMLElement
     expect(nav).toHaveAttribute('data-on', 'light')
-    vi.mocked(document.elementsFromPoint).mockReturnValue([container.querySelector('.d-head') ?? (container.querySelector('#altid-mad') as Element)])
+    vi.mocked(document.elementsFromPoint).mockReturnValue([container.querySelector('[data-b="privacy"] .x-title') as Element])
     fireEvent.scroll(window)
     await waitFor(() => expect(nav).toHaveAttribute('data-on', 'dark'))
     vi.mocked(document.elementsFromPoint).mockReturnValue([container.querySelector('.d-card') as Element])
@@ -833,7 +635,7 @@ describe('the nav sheet', () => {
     expect(dialog).not.toHaveAttribute('open')
     fireEvent.click(screen.getByRole('button', { name: 'Åbn menu' }))
     expect(dialog).toHaveAttribute('open')
-    expect(within(dialog).getByRole('link', { name: 'Altid Forsikring' })).toHaveAttribute('href', '#altid-forsikring')
+    expect(within(dialog).getByRole('link', { name: 'Forsikring' })).toHaveAttribute('href', '#forsikring')
     expect(within(dialog).getByRole('link', { name: 'Hent i App Store' })).toHaveAttribute('href', APP_STORE)
     fireEvent.click(within(dialog).getByRole('button', { name: 'Luk menu' }))
     expect(dialog).not.toHaveAttribute('open')
@@ -849,7 +651,7 @@ describe('the nav sheet', () => {
     const { container } = render(await Home())
     const dialog = container.querySelector('dialog') as HTMLDialogElement
     fireEvent.click(screen.getByRole('button', { name: 'Åbn menu' }))
-    fireEvent.click(within(dialog).getByRole('link', { name: 'Altid Mad' }))
+    fireEvent.click(within(dialog).getByRole('link', { name: 'Mad' }))
     expect(dialog).not.toHaveAttribute('open')
   })
 })

@@ -18,6 +18,8 @@ const OFFER = '.ek'
 const CARD = '#energi'
 /** The steps' store buttons whose arrival sends it away. */
 const BUTTONS = '[data-b="steps"] .st-pills'
+/** Where the card is shown at all (the CSS for .es): only then is the scroll watched. */
+const SHOWN_ON = '(min-width: 1680px) and (hover: hover) and (pointer: fine)'
 
 export default function EnergiSticky() {
   const [shown, setShown] = useState(false)
@@ -29,6 +31,7 @@ export default function EnergiSticky() {
     if (!offer) throw new Error(`EnergiSticky needs ${OFFER} on the page`)
     if (!card) throw new Error(`EnergiSticky needs ${CARD} on the page`)
     if (!buttons) throw new Error(`EnergiSticky needs ${BUTTONS} on the page`)
+    const wide = window.matchMedia(SHOWN_ON)
     let frame = 0
     const read = () => {
       frame = 0
@@ -39,11 +42,25 @@ export default function EnergiSticky() {
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(read)
     }
-    read()
-    window.addEventListener('scroll', schedule, { passive: true })
-    window.addEventListener('resize', schedule)
+    let listening = false
+    const watch = () => {
+      if (wide.matches && !listening) {
+        listening = true
+        read()
+        window.addEventListener('scroll', schedule, { passive: true })
+        window.addEventListener('resize', schedule)
+      } else if (!wide.matches && listening) {
+        listening = false
+        window.removeEventListener('scroll', schedule)
+        window.removeEventListener('resize', schedule)
+        setShown(false)
+      }
+    }
+    watch()
+    wide.addEventListener('change', watch)
     return () => {
       cancelAnimationFrame(frame)
+      wide.removeEventListener('change', watch)
       window.removeEventListener('scroll', schedule)
       window.removeEventListener('resize', schedule)
     }

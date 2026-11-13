@@ -80,7 +80,7 @@ const SECTION_COPY: Record<string, string[]> = {
 function keysHere(keys: string[], section: string) {
   const objects = SECTION_COPY[section]
   if (!objects) return keys
-  return keys.filter((key) => [...objects, 'NOTES'].includes(key.split('.')[0]))
+  return keys.filter((key) => objects.includes(key.split('.')[0]))
 }
 
 function sectionOf(el: HTMLElement) {

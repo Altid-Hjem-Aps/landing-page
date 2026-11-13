@@ -28,7 +28,7 @@ export default function GetAppSticky() {
   }, [])
 
   return (
-    <div className="gs" data-shown={!sliderHere}>
+    <aside className="gs" data-shown={!sliderHere} aria-label={QR.title}>
       <span className="gs-tile">
         <Image src="/site/qr/app.svg" alt={QR.alt} width={74} height={74} />
       </span>
@@ -36,6 +36,6 @@ export default function GetAppSticky() {
         <span className="gs-title">{QR.title}</span>
         <span className="gs-line">{QR.line}</span>
       </span>
-    </div>
+    </aside>
   )
 }

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { readCookieChoice } from '@/lib/cookie-consent'
 
 // Computers only: when the mouse leaves the window through the top, headed for the tab bar,
-// the QR code once more, once per browser session. The trigger is the old site's waitlist
+// the QR code once more, once per browser session. The trigger is the old site's signup
 // popup (ExitIntentModal): armed after a few seconds, the top zone or a fast upward flick,
 // never on top of another dialog. The popup itself (LeaveDialog) loads only when it is needed.
 const LeaveDialog = dynamic(() => import('./LeaveDialog'), { ssr: false })

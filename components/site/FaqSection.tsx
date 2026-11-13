@@ -113,7 +113,7 @@ export default function FaqSection() {
                             </svg>
                           </button>
                         </h3>
-                        <div id={`q-answer-${i}`} className="q-answer" data-open={isOpen ? 'true' : undefined} aria-hidden={!isOpen}>
+                        <div id={`q-answer-${i}`} className="q-answer" data-open={isOpen ? 'true' : undefined} inert={!isOpen}>
                           <div>
                             <Answer item={item} />
                           </div>

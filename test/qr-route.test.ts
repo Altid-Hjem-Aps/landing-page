@@ -14,6 +14,9 @@ const PLAY =
 const IPHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'
 const ANDROID = 'Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36'
 const DESKTOP = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
+const IPAD = 'Mozilla/5.0 (iPad; CPU OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'
+// iPadOS Safari asks for the desktop site by default and then sends a Mac user agent.
+const IPAD_DESKTOP_MODE = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15'
 
 const get = (userAgent?: string) =>
   GET(new NextRequest('https://www.altidhjem.dk/qr', { headers: userAgent ? { 'user-agent': userAgent } : {} }))
@@ -37,6 +40,26 @@ describe('/qr', () => {
       expect(res.status).toBe(302)
       expect(res.headers.get('location')).toBe('https://www.altidhjem.dk/#hent-appen')
     }
+  })
+
+  it('sends an iPad that says it is an iPad to the App Store', () => {
+    const res = get(IPAD)
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toBe(APP_STORE)
+  })
+
+  it('sends an iPad in desktop mode to the store buttons, as a computer: the server sees no touch screen', () => {
+    const res = get(IPAD_DESKTOP_MODE)
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toBe('https://www.altidhjem.dk/#hent-appen')
+  })
+
+  it('keeps the redirect out of search engines', () => {
+    for (const userAgent of [IPHONE, ANDROID, DESKTOP, undefined]) {
+      expect(get(userAgent).headers.get('x-robots-tag')).toBe('noindex, nofollow')
+    }
+    const head = HEAD(new NextRequest('https://www.altidhjem.dk/qr', { method: 'HEAD', headers: { 'user-agent': IPHONE } }))
+    expect(head.headers.get('x-robots-tag')).toBe('noindex, nofollow')
   })
 
   it('is never cached, and says the answer depends on the user agent', () => {

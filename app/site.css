@@ -583,12 +583,20 @@
 
   /* The other store, small and quiet under the button. */
   .get-other {
+    position: relative;
     font-size: 15px;
     line-height: 20px;
     color: var(--stone);
     text-decoration: underline;
     text-underline-offset: 3px;
     padding: 4px 0;
+
+    /* A 44 px tall tap area around the 28 px line, without moving anything. */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -8px 0;
+    }
   }
 
   /* 1. Hero */
@@ -919,16 +927,6 @@
     .h-second {
       animation-delay: 0.15s;
     }
-  }
-  .h-note {
-    position: absolute;
-    z-index: 2;
-    inset: auto 0 calc(var(--u) * 6);
-    width: fit-content;
-    margin-inline: auto;
-    padding: 2px 10px;
-    border-radius: 10px;
-    background: var(--cream);
   }
   /* Ekstra Bladet's article as a small card: under the rating on smaller screens. */
   .h-press-frame {
@@ -1664,7 +1662,7 @@
     margin-top: 12px;
     font-size: 16px;
     line-height: 20px;
-    color: rgba(0, 60, 22, 0.8);
+    color: rgba(0, 60, 22, 0.9);
   }
   .v-avatar {
     display: grid;
@@ -1703,29 +1701,6 @@
   .d-title {
     width: min(100% - 34px, 11.5em);
     margin-inline: auto;
-  }
-  .d-title-dim {
-    display: block;
-    opacity: 0.55;
-  }
-  .d-para {
-    font-size: var(--body);
-    width: min(100% - 34px, 28em);
-    margin: 16px auto 0;
-
-    p {
-      color: var(--stone);
-    }
-    a {
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-  }
-  .d-foot.t-body {
-    font-size: 16px;
-    line-height: 22px;
-    margin-top: 4px;
-    color: var(--stone);
   }
   .d-cards {
     display: grid;
@@ -1845,14 +1820,6 @@
     height: auto;
   }
   @media (max-width: 767px) {
-    .d-para {
-      margin-top: calc(var(--u) * 8);
-    }
-    .d-foot.t-body {
-      font-size: 13px;
-      line-height: 18px;
-      margin-top: 4px;
-    }
     .d-cards {
       gap: calc(var(--u) * 17);
       width: calc(var(--u) * 356);
@@ -1888,203 +1855,6 @@
       gap: 8px;
     }
 
-  }
-
-  /* 7. And more */
-  .m-grid {
-    position: relative;
-    width: calc(var(--u) * 1440);
-    max-width: 100%;
-    margin-inline: auto;
-    min-height: calc(var(--u) * 699);
-  }
-  .m-left {
-    margin-left: calc(var(--u) * 149);
-    width: calc(var(--u) * 555);
-  }
-  .m-line {
-    margin-top: 16px;
-  }
-  .m-list {
-    /* The rows' offset parent, which the scroll position is measured from. */
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--u) * 8);
-    margin-top: calc(var(--u) * 64);
-    width: calc(var(--u) * 555);
-    height: calc(var(--u) * 524);
-    overflow: hidden auto;
-    scrollbar-width: none;
-    mask-image: linear-gradient(#000 88%, transparent);
-    -webkit-mask-image: linear-gradient(#000 88%, transparent);
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-  .m-row {
-    position: relative;
-    flex: none;
-    display: block;
-    width: 100%;
-    padding: calc(var(--u) * 24) calc(var(--u) * 64) calc(var(--u) * 24) calc(var(--u) * 24);
-    border-radius: 24px;
-    transform: scale(0.925);
-    background: color-mix(in srgb, var(--sand) 50%, transparent);
-    text-align: left;
-    color: rgba(0, 60, 22, 0.72);
-    cursor: pointer;
-    outline-offset: -2px;
-    transition: background-color 0.3s, color 0.3s, transform 0.3s;
-
-    &:hover {
-      background: color-mix(in srgb, var(--sand) 80%, transparent);
-    }
-    &[data-selected='true'] {
-      background: var(--sand);
-      color: var(--forest);
-      transform: none;
-    }
-  }
-  .m-row-title {
-    display: block;
-    font-family: var(--display);
-    font-weight: 700;
-    font-size: clamp(20px, 18.51px + 0.381vw, 24px);
-    line-height: 0.92;
-    letter-spacing: -0.008em;
-  }
-  .m-row-body {
-    display: block;
-    margin-top: 8px;
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 25px;
-    letter-spacing: 0.01em;
-    color: var(--stone);
-  }
-  .m-ring {
-    position: absolute;
-    right: calc(var(--u) * 24);
-    top: 50%;
-    width: 22px;
-    height: 22px;
-    margin-top: -11px;
-
-    svg {
-      display: block;
-      transform: rotate(-90deg);
-    }
-    path {
-      transform: rotate(90deg);
-      transform-origin: 11px 11px;
-    }
-  }
-  .m-ring-track,
-  .m-ring-progress {
-    fill: none;
-    stroke-width: 1.5;
-  }
-  .m-ring-track {
-    stroke: rgba(0, 60, 22, 0.2);
-  }
-  .m-ring-progress {
-    stroke: var(--forest);
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-  }
-  .m-row[data-selected='true'] .m-ring-progress {
-    stroke-dashoffset: calc(1 - var(--progress, 0));
-  }
-  .m-panel {
-    position: absolute;
-    left: calc(var(--u) * 911);
-    top: calc(var(--u) * 20);
-  }
-  .m-phone {
-    position: relative;
-  }
-  .m-shadow {
-    position: absolute;
-    left: calc(var(--u) * -20);
-    top: calc(var(--u) * 634);
-    width: calc(var(--u) * 363);
-    height: calc(var(--u) * 25);
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.8);
-    filter: blur(14px);
-  }
-  .m-screen {
-    opacity: 0;
-    transition: opacity 0.4s;
-
-    &[data-selected='true'] {
-      opacity: 1;
-    }
-  }
-  .m-note {
-    position: absolute;
-    left: 0;
-    top: calc(var(--u) * 670);
-    width: calc(var(--u) * 323);
-    text-align: center;
-  }
-  @media (max-width: 767px) {
-    .m-left {
-      width: auto;
-      margin-left: 0;
-      padding-inline: calc(var(--u) * 17);
-    }
-    .m-line {
-      margin-top: calc(var(--u) * 16);
-    }
-    .m-list {
-      flex-direction: row;
-      gap: calc(var(--u) * 30);
-      width: 100vw;
-      height: calc(var(--u) * 200);
-      margin: calc(var(--u) * 21) calc(var(--u) * -17) 0;
-      padding: calc(var(--u) * 23) calc(var(--u) * 28);
-      overflow: auto hidden;
-      mask-image: none;
-      -webkit-mask-image: none;
-    }
-    .m-row {
-      width: calc(var(--u) * 278);
-      height: calc(var(--u) * 155);
-      padding: calc(var(--u) * 24);
-    }
-    .m-row-body {
-      margin-top: 6px;
-      font-size: 16px;
-      line-height: 22px;
-    }
-    .m-ring {
-      right: 14px;
-      top: 24px;
-      margin-top: 0;
-    }
-    .m-panel {
-      position: relative;
-      left: 0;
-      top: 0;
-      width: calc(var(--u) * 249);
-      margin: calc(var(--u) * 38) auto 0;
-    }
-    .m-phone .ph {
-      --w: calc(var(--u) * 249);
-    }
-    .m-shadow {
-      left: calc(var(--u) * -14);
-      top: calc(var(--u) * 488);
-      width: calc(var(--u) * 277);
-      height: calc(var(--u) * 20);
-    }
-    .m-note {
-      top: calc(var(--u) * 512);
-      width: calc(var(--u) * 249);
-    }
   }
 
   /* Four steps: the whole block stays put while the page scrolls through it; the title, all
@@ -2363,7 +2133,8 @@
     padding: 18px 26px;
     border-radius: 22px;
     background: color-mix(in srgb, var(--sand) 70%, transparent);
-    color: rgba(0, 60, 22, 0.55);
+    /* Dimmed, but still 4.5:1 on the sand for the 15 px step numbers (Lighthouse). */
+    color: rgba(0, 60, 22, 0.7);
     transition: background-color 0.4s, color 0.4s, padding 0.4s;
 
     &[data-active='true'] {
@@ -2408,6 +2179,12 @@
   .st-step[data-active='true'] .st-more {
     grid-template-rows: 1fr;
   }
+  @media (prefers-reduced-motion: reduce) {
+    .st-step,
+    .st-more {
+      transition: none;
+    }
+  }
   .st-card-body {
     margin-top: 8px;
     font-size: clamp(17px, 15px + 0.3vw, 19px);
@@ -2417,13 +2194,10 @@
     margin-top: 18px;
     justify-content: flex-start;
   }
-  .st-screen {
-    opacity: 0;
-    transition: opacity 0.45s;
-
-    &[data-shown='true'] {
-      opacity: 1;
-    }
+  /* The other store's link on the step's tint (mint since 13/11) takes the step's Deep forest:
+     the grey stone it has elsewhere is under 4.5:1 on mint. */
+  .st-step .get-other {
+    color: inherit;
   }
   .st-inline {
     display: none;
@@ -3294,9 +3068,10 @@
     gap: 16px;
     padding: calc(var(--u) * 36) calc(var(--u) * 40);
     border-radius: 24px;
-    background: var(--tint);
+    /* Paler than the live cards, but the text stays full Deep forest (no card opacity, which
+       took the text under 3:1). */
+    background: color-mix(in srgb, var(--tint) 45%, var(--cream));
     color: #163223;
-    opacity: 0.55;
 
     h3 {
       font-family: var(--display);
@@ -4227,25 +4002,7 @@ body:has(.site) {
   }
 }
 
-@keyframes site-rise {
-  from {
-    opacity: 0;
-    translate: 0 28px;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
 
-@keyframes site-pan {
-  from {
-    transform: translateY(-5%) scale(1.14);
-  }
-  to {
-    transform: none;
-  }
-}
 
 /* In, easing to a slow drift while it can be read, then on into the phones. */
 @keyframes site-hl-bill {

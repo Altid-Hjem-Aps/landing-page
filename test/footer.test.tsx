@@ -31,6 +31,7 @@ describe('front page footer', () => {
   it('links to contact and the legal pages Google Play requires to be reachable', () => {
     render(<SiteFooter />)
     expect(screen.getByRole('link', { name: 'Kontakt' })).toHaveAttribute('href', '/kontakt')
+    expect(screen.getByRole('link', { name: 'Presse' })).toHaveAttribute('href', '/presse')
     expect(screen.getByRole('link', { name: 'Slet konto' })).toHaveAttribute('href', '/slet-konto')
     expect(screen.getByRole('link', { name: 'Privatlivspolitik' })).toHaveAttribute('href', '/privatlivspolitik')
     expect(screen.getByRole('button', { name: 'Cookieindstillinger' })).toBeInTheDocument()
@@ -40,27 +41,30 @@ describe('front page footer', () => {
     render(<SiteFooter />)
     const more = within(screen.getByRole('navigation', { name: 'Læs mere' }))
     const linked = more.getAllByRole('link').map((a) => a.getAttribute('href'))
+    // The press page is in the sitemap but sits under Hjælp, next to Kontakt (FOOTER.help).
     const seoPages = sitemap()
       .map((entry) => new URL(entry.url).pathname)
-      .filter((path) => !['/', '/kontakt', '/privatlivspolitik', '/slet-konto'].includes(path))
+      .filter((path) => !['/', '/presse', '/kontakt', '/privatlivspolitik', '/slet-konto'].includes(path))
     expect(linked.sort()).toEqual(seoPages.sort())
   })
 
   it('has the four services as anchors and the two store links on the exact campaign URLs', () => {
     render(<SiteFooter />)
     const app = within(screen.getByRole('navigation', { name: 'Appen' }))
-    expect(app.getByRole('link', { name: 'Økonomi' })).toHaveAttribute('href', '#okonomi')
-    expect(app.getByRole('link', { name: 'Altid Mad' })).toHaveAttribute('href', '#altid-mad')
-    expect(app.getByRole('link', { name: 'Altid Energi' })).toHaveAttribute('href', '#altid-energi')
-    expect(app.getByRole('link', { name: 'Altid Forsikring' })).toHaveAttribute('href', '#altid-forsikring')
-    expect(app.getByRole('link', { name: 'App Store' })).toHaveAttribute('href', APP_STORE)
-    expect(app.getByRole('link', { name: 'Google Play' })).toHaveAttribute('href', PLAY)
+    expect(app.getAllByRole('link').map((a) => [a.textContent, a.getAttribute('href')])).toEqual([
+      ['Økonomi', '#okonomi'],
+      ['Mad', '#mad'],
+      ['Energi', '#energi'],
+      ['Forsikring', '#forsikring'],
+      ['App Store', APP_STORE],
+      ['Google Play', PLAY],
+    ])
   })
 
-  it('names the company, the socials and Altid Energi', () => {
+  it('names the company and the socials', () => {
     render(<SiteFooter />)
     expect(screen.getByText('Altid Hjem ApS, CVR 45637476')).toBeInTheDocument()
-    for (const name of ['LinkedIn', 'Instagram', 'Facebook', 'Altid Energi']) {
+    for (const name of ['LinkedIn', 'Instagram', 'Facebook']) {
       expect(screen.getAllByRole('link', { name }).length).toBeGreaterThan(0)
     }
   })

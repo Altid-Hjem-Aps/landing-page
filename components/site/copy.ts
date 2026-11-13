@@ -438,15 +438,11 @@ export const META = {
   imageAlt: 'Altid Hjem: hele hjemmets økonomi i én app. Tre telefoner med appen og de fire tjenester.',
 } as const
 
-export const NOTES = {
-  staged: 'Skærmbilleder fra appen med eksempeldata.',
-} as const
-
 // The press page (/presse), for all of Altid Hjem: the four parts of the app are categories
 // under it, named as in the app and the store texts (Thor 11/11). Sources: the "about" lines
 // are the live store text; the Økonomi and Energi lines are the launch mail's; the Mad line is
 // Thor's (11/11); the Forsikring line says what is in the app at the hard launch, when this page
-// goes live (a forsikringstjek, no longer "snart"); contact, photos and credit are from the PR
+// goes live (a forsikringstjek, no longer "coming"); contact, photos and credit are from the PR
 // brief (ALT-1349) and altidmad.dk/presse. No user numbers: none is cleared.
 export const PRESSE = {
   meta: {

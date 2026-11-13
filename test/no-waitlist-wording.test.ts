@@ -28,6 +28,29 @@ const ALLOWED = new Set([
   'app/norlys/deck.html',
 ])
 
+// Exact sentences that may keep a word inside an otherwise guarded file, each with why. Only
+// the sentence is let through: anything else in the file still fails, and so does a change to
+// the sentence itself.
+const ALLOWED_PHRASES: Record<string, { phrase: string; why: string }[]> = {
+  'components/site/copy.ts': [
+    {
+      phrase: ' vi lancerer løbende flere tjenester. Snart kommer mobil, opladning og alarm.',
+      why: 'the Psst bubble in the steps (STEPS.psst): upcoming services, not a waitlist; Thor wrote and approved it 13/11 (67fd586)',
+    },
+    {
+      phrase: "label: 'Kommer snart'",
+      why: 'the press page marks Mobil, Alarm and Opladning as not in the app yet (PRESSE.parts.soon), Thor 11/11 (7be921b)',
+    },
+    {
+      phrase: 'Indboforsikringen fornyes snart.',
+      why: 'a sample notification in the hero (HERO.lanes): the insurance renews soon, not a launch (4df26b2)',
+    },
+  ],
+}
+
+const withoutAllowedPhrases = (path: string, source: string) =>
+  (ALLOWED_PHRASES[path] ?? []).reduce((text, { phrase }) => text.replaceAll(phrase, ''), source)
+
 function sourceFiles(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
     const path = join(dir, name)
@@ -77,12 +100,19 @@ describe('waitlist wording guard', () => {
       .flatMap(sourceFiles)
       .filter((path) => !ALLOWED.has(path))
       // The newsletter form posts to this URL. The address is not wording.
-      .filter((path) => WORDING.test(readFileSync(path, 'utf8').replaceAll('/api/waitlist', '')))
+      .filter((path) => WORDING.test(withoutAllowedPhrases(path, readFileSync(path, 'utf8')).replaceAll('/api/waitlist', '')))
     expect(hits).toEqual([])
   })
 
   it('every allowlist entry still earns its place', () => {
     const stale = [...ALLOWED].filter((path) => !WORDING.test(readFileSync(path, 'utf8')))
+    expect(stale).toEqual([])
+  })
+
+  it('every allowed phrase is still in its file and still has a word in it', () => {
+    const stale = Object.entries(ALLOWED_PHRASES).flatMap(([path, phrases]) =>
+      phrases.filter(({ phrase }) => !readFileSync(path, 'utf8').includes(phrase) || !WORDING.test(phrase)).map(({ phrase }) => `${path}: ${phrase}`),
+    )
     expect(stale).toEqual([])
   })
 })

@@ -1,7 +1,7 @@
 'use client'
 
 import Image, { getImageProps } from 'next/image'
-import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import StoreBadges from '@/components/StoreBadges'
 import { STEPS } from './copy'
 import GetAppButton from './GetAppButton'
@@ -76,7 +76,7 @@ const PSST_DELAY = 1000
 const PAIR_AFTER_ICON = 2000
 const PAIR_DELAY = 300
 
-function Psst({ level }: { level: PsstLevel }) {
+export function Psst({ level }: { level: PsstLevel }) {
   const box = useRef<HTMLDivElement>(null)
   const inAt = useRef(0)
   const [ready, setReady] = useState(false)
@@ -144,6 +144,16 @@ function Psst({ level }: { level: PsstLevel }) {
   )
 }
 
+/** From tablet up the steps fold (app/site.css): only the open one shows its text and buttons. */
+const FOLDED = '(min-width: 768px)'
+const subscribeFolded = (change: () => void) => {
+  const query = window.matchMedia(FOLDED)
+  query.addEventListener('change', change)
+  return () => query.removeEventListener('change', change)
+}
+const readFolded = () => window.matchMedia(FOLDED).matches
+const foldedOnServer = () => false
+
 /** Step 03 is index 2. */
 const PSST_STEP = 2
 /** Share of the steps' scroll after which the icons hop out on the way to the next section. */
@@ -196,9 +206,17 @@ export default function Steps() {
     }
   }, [])
 
+  const folded = useSyncExternalStore(subscribeFolded, readFolded, foldedOnServer)
+
+  // Folded (tablet up): scroll to the share of the section that opens step i. Stacked (phone):
+  // every step is open in the flow, so go to the step itself.
   const open = (i: number) => {
     const el = section.current
     if (!el) return
+    if (!folded) {
+      el.querySelectorAll('.st-step')[i]?.scrollIntoView({ block: 'start' })
+      return
+    }
     const travel = el.offsetHeight - window.innerHeight
     if (travel <= 0) return
     const top = el.getBoundingClientRect().top + window.scrollY
@@ -223,7 +241,8 @@ export default function Steps() {
                     {step.title}
                   </button>
                 </h3>
-                <div className="st-more">
+                {/* A folded step's text and buttons are out of the tab order too (inert). */}
+                <div className="st-more" inert={folded && i !== active}>
                   <div>
                     <p className="st-card-body">{step.body}</p>
                     {i === 0 ? (

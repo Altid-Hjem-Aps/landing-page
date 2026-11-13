@@ -50,12 +50,16 @@ export function startAnalytics() {
 // browser (its AMP_* cookies and localStorage keys), so nothing links a
 // later visit to this one.
 export function stopAnalytics() {
-  // After init(): before that the SDK only queues the opt-out. Opting out writes the SDK's
-  // identifiers back to the browser, so they are removed again afterwards.
-  void ready?.then(({ setOptOut }) => {
+  // Once init() has been called, opt out at once (the SDK is loaded by then), so an init() still
+  // under way stops collecting, and again when it has finished, in case it overwrote the setting.
+  // Before init() nothing is needed: startAnalytics() sees the withdrawal and never calls it.
+  // Opting out writes the SDK's identifiers back to the browser, so they are removed after each.
+  const optOut = ({ setOptOut }: typeof import('@amplitude/analytics-browser')) => {
     setOptOut(true)
     removeAmplitudeStorage()
-  })
+  }
+  if (ready) void sdk?.then(optOut)
+  void ready?.then(optOut)
   started = false
   ready = undefined
   removeAmplitudeStorage()
