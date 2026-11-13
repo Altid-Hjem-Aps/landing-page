@@ -125,7 +125,7 @@ describe('the page', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Hele hjemmets økonomi i én app')
     expect(Array.from(container.querySelectorAll('h2')).map((h) => h.textContent)).toEqual([
       'Samlet i én app',
-      'Hør, hvorfor over 800 danskere har appen',
+      'Hør, hvorfor over 2.000 danskere har appen',
       'Se, hvor I står, før måneden er gået',
       'Ikke mere “hvad skal vi spise?”',
       'Og der er mere',
