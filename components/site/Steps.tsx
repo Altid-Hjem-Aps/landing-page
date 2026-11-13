@@ -61,8 +61,8 @@ function StepPhoto({ step, slot, alt, sizes, quality, shown }: { step: Step; slo
 //
 // Step 04, "Inviter din partner" (computers): the bubble folds away and a second icon, the
 // partner, hops in from the left and leaps over the first to land beside it. The first gives a
-// little start, then the two lean into each other, bounce together, a heart pops over them, and
-// they stay leaning in, breathing gently. Back to 03, the partner leaps back out and the bubble
+// little start, then the two lean into each other, hold, and do two happy jumps together; they
+// stay leaning in, and every few seconds hop together again. Back to 03, the partner leaps back out and the bubble
 // returns; to 02, or on past 04 out of the steps, both hop out to the left.
 type PsstState = 'in' | 'out' | undefined
 
@@ -134,9 +134,6 @@ function Psst({ level }: { level: PsstLevel }) {
             <Image className="st-pair-icon" src="/app-badge.png" alt="" width={112} height={112} />
           </span>
         </span>
-        <svg className="st-pair-heart" viewBox="0 0 24 24" width="22" height="22">
-          <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.1 5.3 3 1.7-1.9 3.2-3 5.3-3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21Z" fill="currentColor" />
-        </svg>
       </span>
       <p className="st-psst-bubble">
         <strong>{STEPS.psst.lead}</strong>
