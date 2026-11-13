@@ -240,7 +240,7 @@ export const BANKS = {
 } as const
 
 export const PRESS = {
-  label: 'Omtalt i Ekstra Bladet, 25. juli 2026',
+  label: 'Omtalt i Ekstra Bladet',
   title: 'Spar stort på dine dagligvarer: Ny app sammenligner priser',
   outlet: 'Ekstra Bladet',
   newTab: ' (åbner i en ny fane)',

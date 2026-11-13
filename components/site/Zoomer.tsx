@@ -33,7 +33,12 @@ export default function Zoomer({ children }: { children: ReactNode }) {
       for (let node: HTMLElement | null = el; node; node = node.offsetParent as HTMLElement | null) docTop += node.offsetTop
       const top = docTop - window.scrollY
       const bottom = top + el.offsetHeight
-      const into = Math.min(1, Math.max(0, (vh - top) / (vh * 0.6)))
+      // Coming in, it grows from the moment its top enters the window until the middle of the
+      // first block (the story, the blue and green panels) reaches the middle of the window, so
+      // it is fully open as their text is about centred (Thor 13/11: it opened too early).
+      const first = el.firstElementChild as HTMLElement
+      const openAt = vh / 2 - (first.offsetTop + first.offsetHeight / 2)
+      const into = Math.min(1, Math.max(0, (vh - top) / Math.max(vh - openAt, vh * 0.3)))
       const outOf = Math.min(1, Math.max(0, bottom / (vh * 0.6)))
       const open = Math.min(into, outOf)
       const eased = open * open * (3 - 2 * open)
