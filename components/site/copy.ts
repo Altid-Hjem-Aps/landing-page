@@ -6,17 +6,16 @@ export const NAV = {
   ariaMenu: 'Menu',
   links: [
     { href: '#tjenesterne', label: 'Tjenesterne' },
-    { href: '#spoergsmaal', label: 'Spørgsmål' },
     { href: '/kontakt', label: 'Kontakt' },
   ],
-  // Presse is not in the menus (Thor 11/11): the page is reached from the footer.
+  // Presse is not in the menus (Thor 11/11): the page is reached from the footer. Spørgsmål is
+  // not in them either (Thor 14/11).
   sheet: [
     { href: '#tjenesterne', label: 'Tjenesterne' },
     { href: '#okonomi', label: 'Økonomi' },
     { href: '#mad', label: 'Mad' },
     { href: '#energi', label: 'Energi' },
     { href: '#forsikring', label: 'Forsikring' },
-    { href: '#spoergsmaal', label: 'Spørgsmål' },
     { href: '/kontakt', label: 'Kontakt' },
   ],
   cta: 'Hent appen',

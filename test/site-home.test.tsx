@@ -221,7 +221,6 @@ describe('the page', () => {
     const nav = within(screen.getByRole('navigation', { name: 'Forside' }))
     expect(nav.getAllByRole('link').map((a) => [a.textContent, a.getAttribute('href')])).toEqual([
       ['Tjenesterne', '#tjenesterne'],
-      ['Spørgsmål', '#spoergsmaal'],
       ['Kontakt', '/kontakt'],
       ['Hent appen', '#hent-appen'],
     ])
@@ -267,7 +266,6 @@ describe('the page', () => {
       ['Mad', '#mad'],
       ['Energi', '#energi'],
       ['Forsikring', '#forsikring'],
-      ['Spørgsmål', '#spoergsmaal'],
       ['Kontakt', '/kontakt'],
     ])
   })
@@ -317,7 +315,7 @@ describe('the marquees', () => {
     const { container } = render(await Home())
     const slider = within(container.querySelector('[data-b="proof"]') as HTMLElement).getByRole('region', { name: 'Udtalelser' })
     const cards = Array.from(slider.querySelectorAll('figure:not([aria-hidden])'))
-    expect(cards.map((c) => c.querySelector('.v-name')?.textContent)).toEqual(['Lone', 'Magnus Svendsen', 'Michael'])
+    expect(cards.map((c) => c.querySelector('.v-name')?.textContent)).toEqual(['Lone', 'Kenneth Knudsen', 'Magnus Svendsen', 'Michael', 'Mie'])
     for (const card of cards) {
       const own = TESTIMONIALS.find((t) => t.name === card.querySelector('.v-name')?.textContent)
       expect(card.querySelector('blockquote')?.textContent).toBe(own?.quote)

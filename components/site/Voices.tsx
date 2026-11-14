@@ -6,8 +6,9 @@ import { PROOF } from './copy'
 
 // The testimonial slider from the old front page (components/sections/Testimonials.tsx), in
 // the new look: one store colour per card, a large quote mark and the person's initials. No
-// stars: these are people's own words, not App Store ratings. The quote about signing up before launch stays out: the app is out.
-const VOICES = TESTIMONIALS.filter((t) => !/skrevet mig op/i.test(t.quote))
+// stars: these are people's own words, not App Store ratings. All of them are from people who
+// use the app (components/sections/Testimonials.tsx).
+const VOICES = TESTIMONIALS
 const N = VOICES.length
 const TONES = ['honey', 'sky', 'lavender', 'mint', 'rose']
 const LOOP = [...VOICES, ...VOICES, ...VOICES]

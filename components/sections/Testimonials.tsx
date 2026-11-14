@@ -3,8 +3,10 @@
 import { useAutoCarousel, useCarouselReveal, CarouselPagination } from '@/components/useAutoCarousel'
 import { EYEBROW } from '@/lib/typography'
 
-// Real quotes from people who signed up before launch (3 Jul 2026). `initials` is unused since
-// the photo panel was cut from the card design — kept in case it returns.
+// Quotes from people who use the app. The first four signed up before launch (3 Jul 2026) and
+// updated their words now that they have the app; Mie is new. ChatGPT drafted the wording from
+// what each person cared about, and each person approved their quote (Thor, 14 Nov 2026).
+// `initials` is unused since the photo panel was cut from the card design, kept in case it returns.
 export interface Testimonial {
   quote: string
   name: string
@@ -14,27 +16,33 @@ export interface Testimonial {
 
 export const TESTIMONIALS: Testimonial[] = [
   {
-    quote: 'Jeg fik Altid Hjem anbefalet, og glæder mig til at det kan give mig et bedre overblik over vores økonomi hjemme hos os.',
+    quote: 'Jeg fik Altid Hjem anbefalet, og nu bruger jeg appen til at få et bedre overblik over vores økonomi hjemme hos os.',
     name: 'Lone',
     job: 'Optometrist',
     initials: 'L',
   },
   {
-    quote: 'Jeg har skrevet mig op, fordi jeg er træt af skjulte gebyrer og aftaler, der er svære at gennemskue.',
+    quote: 'Jeg er træt af skjulte gebyrer og aftaler, der er svære at gennemskue. Med Altid Hjem har jeg fået mere overblik over mine faste udgifter.',
     name: 'Kenneth Knudsen',
     job: 'Ingeniør',
     initials: 'KK',
   },
   {
-    quote: 'Det bliver rart at få ét samlet overblik over hjemmets faste udgifter. Jeg synes, at abonnementer og aftaler hurtigt bliver svære at holde styr på.',
+    quote: 'Det er rart at have ét samlet overblik over hjemmets faste udgifter i Altid Hjem. Jeg synes hurtigt, at abonnementer og aftaler bliver svære at holde styr på.',
     name: 'Magnus Svendsen',
     job: 'Folkeskolelærer',
     initials: 'MS',
   },
   {
-    quote: 'Jeg er irriteret over det voksende antal gebyrer i Danmark.',
+    quote: 'Jeg er stadig irriteret over det voksende antal gebyrer i Danmark. Jeg bruger Altid Hjem til at holde bedre styr på, hvad jeg betaler til hver måned.',
     name: 'Michael',
     job: 'Iværksætter',
+    initials: 'M',
+  },
+  {
+    quote: 'Det er især budgettet i Altid Hjem, jeg bruger. Det hjælper mig med at få overblik over min egen økonomi.',
+    name: 'Mie',
+    job: 'Studerende',
     initials: 'M',
   },
 ]
