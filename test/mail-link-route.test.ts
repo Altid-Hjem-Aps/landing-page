@@ -244,6 +244,39 @@ describe('/m/<mail>/<link>', () => {
     ])
   })
 
+  it('sends the hard launch buttons and QR codes (h1a, h1b: open, end, qr, header) to the store of the phone, counted as hard-launch', async () => {
+    for (const mail of ['h1a', 'h1b']) {
+      for (const link of ['open', 'end', 'qr', 'header']) {
+        tracked.length = 0
+        const iphone = await get(mail, link, IPHONE)
+        expect(iphone.status).toBe(302)
+        expect(iphone.headers.get('x-altid-mail-link'), `${mail}/${link}`).toBe('valid')
+        expect(iphone.headers.get('location')).toBe(`${APP_STORE}?pt=129212732&ct=ah_1_mail_${mail}&mt=8`)
+        const android = await get(mail, link, ANDROID)
+        expect(android.headers.get('location')).toBe(
+          `${PLAY}&referrer=${encodeURIComponent(`utm_source=mail_${mail}&utm_medium=email&utm_campaign=ah_1_mail_${mail}&utm_content=${link}`)}`,
+        )
+        expect(tracked).toEqual([
+          {
+            event: 'Launch Mail Link Clicked',
+            props: { campaign: 'hard-launch', mail, link, mail_link: `${mail}/${link}`, store: 'appstore', valid: true, env: 'production' },
+          },
+          {
+            event: 'Launch Mail Link Clicked',
+            props: { campaign: 'hard-launch', mail, link, mail_link: `${mail}/${link}`, store: 'play', valid: true, env: 'production' },
+          },
+        ])
+      }
+    }
+  })
+
+  it('keeps the hard launch buttons to the mails that have them: m0 has no qr or end of its own', async () => {
+    for (const link of ['end', 'qr']) {
+      const res = await get('m0', link, ANDROID)
+      expect(res.headers.get('x-altid-mail-link'), `m0/${link}`).toBe('invalid')
+    }
+  })
+
   it('sends the welcome mail share button (m0/del) to /del with via=hjem-welcome on every phone, and counts it', async () => {
     for (const ua of [IPHONE, ANDROID, IPAD]) {
       const res = await get('m0', 'del', ua)
