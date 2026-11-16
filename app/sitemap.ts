@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/gennemsnitligt-elforbrug`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/bedste-budget-app`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/skift-forsikringsselskab`, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${base}/presse`, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${base}/kontakt`, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/privatlivspolitik`, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/slet-konto`, changeFrequency: 'monthly', priority: 0.5 },

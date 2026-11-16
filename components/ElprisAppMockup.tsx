@@ -1,6 +1,6 @@
 'use client'
 
-import * as amplitude from '@amplitude/analytics-browser'
+import StoreBadges from '@/components/StoreBadges'
 import { hourSpan, priceWith, type ElpriserData } from '@/lib/elpriser'
 
 /**
@@ -9,7 +9,7 @@ import { hourSpan, priceWith, type ElpriserData } from '@/lib/elpriser'
  * RIGTIGE priser (Øst/Radius, fuld pris inkl. transport, afgifter og moms),
  * så rådet altid passer: billigste time, og hvor meget billigere den er end
  * dagens dyreste. Ikon = Energi-ikonet fra forsidens Services-sektion.
- * CTA'en ruller ned til BottomCta-formularen (id "venteliste2").
+ * CTA'en er butiksknapperne.
  */
 
 interface Props {
@@ -46,11 +46,6 @@ function EnergiIkon() {
 }
 
 export default function ElprisAppMockup({ data }: Props) {
-  function handleCTA() {
-    amplitude.track('Waitlist CTA Clicked', { source: 'elpris-mockup' })
-    document.getElementById('venteliste2')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }
-
   // Dagens rigtige tal. Mangler data — eller giver negative priser meningsløse
   // procenter (det sker på meget blæsende dage) — viser kortene generisk tekst
   // i stedet for at OPDIGTE konkrete timer og besparelser.
@@ -67,30 +62,15 @@ export default function ElprisAppMockup({ data }: Props) {
       {/* Tekst + CTA */}
       <div className="flex-1">
         <p className="mb-3">
-          Det kræver tid at holde øje med elprisen hver dag. Det er netop én af de ting, vi
-          bygger Altid Hjem-appen til. Appen følger elprisen for dig og giver konkrete råd.
+          Det kræver tid at holde øje med elprisen hver dag. I Altid Hjem-appen ser du elprisen
+          time for time og får besked, når strømmen er billig.
         </p>
         <p className="mb-3">
-          Samtidig samler Altid Hjem hjemmets faste udgifter ét sted, så du får bedre overblik
-          over strøm, mobil, forsikring, mad og mere.
+          Samtidig samler appen madplan, strøm, forsikring og økonomi ét sted, så du får ét overblik,
+          ét login.
         </p>
-        <p className="mb-5">
-          Skriv dig gratis på ventelisten, så får du besked, når appen er klar.
-        </p>
-        <button
-          type="button"
-          onClick={handleCTA}
-          className="text-sm font-semibold px-5 py-2.5 rounded-full transition-opacity hover:opacity-90"
-          style={{
-            background: 'var(--sage)',
-            color: 'var(--forest)',
-            touchAction: 'manipulation',
-            WebkitTapHighlightColor: 'transparent',
-            cursor: 'pointer',
-          }}
-        >
-          Skriv dig gratis på ventelisten →
-        </button>
+        <p className="mb-5">Appen er gratis at hente i App Store og Google Play.</p>
+        <StoreBadges position="bottom" />
       </div>
 
       {/* To fritsvævende kort — drevet af dagens rigtige priser */}
@@ -112,7 +92,7 @@ export default function ElprisAppMockup({ data }: Props) {
                 Strømmen er billigst kl. {hourSpan(billigst.hour)}
               </p>
               <p className="text-xs leading-snug" style={{ color: 'rgba(26,61,34,0.65)' }}>
-                Kør opvaskeren kl. {billigst.hour} og spar penge — elprisen er {pctBilligere} %
+                Kør opvaskeren kl. {billigst.hour} og spar penge. Elprisen er {pctBilligere} %
                 lavere end kl. {dyrest.hour}.
               </p>
             </div>
@@ -122,8 +102,8 @@ export default function ElprisAppMockup({ data }: Props) {
                 Flyt forbruget til de billige timer
               </p>
               <p className="text-xs leading-snug" style={{ color: 'rgba(26,61,34,0.65)' }}>
-                Strømmen er typisk billigst om natten og midt på dagen — appen siger til, når
-                det er nu.
+                Strømmen er typisk billigst om natten og midt på dagen, og appen siger til, når
+                strømmen er billig.
               </p>
             </div>
           )}
@@ -179,7 +159,7 @@ export default function ElprisAppMockup({ data }: Props) {
             </>
           ) : (
             <p className="text-[10px]" style={{ color: 'rgba(26,61,34,0.5)' }}>
-              Billigst om natten og midt på dagen — dyrest kl. 17-21.
+              Billigst om natten og midt på dagen, dyrest kl. 17-21.
             </p>
           )}
         </div>

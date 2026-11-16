@@ -104,6 +104,9 @@ export async function getSignupCounts(): Promise<{
     const { data, error } = await supabase
       .from('signup')
       .select('created_at')
+      // Newsletter subscribers are not waitlist signups. NULL-safe: a plain neq
+      // would also drop every old row that has no signup_source.
+      .or('signup_source.is.null,signup_source.neq.newsletter')
       .order('created_at', { ascending: false })
       .range(from, from + PAGE - 1)
     if (error) throw new Error(error.message)
@@ -487,6 +490,86 @@ export async function getSignupByEmail(email: string): Promise<{
   }
 }
 
+export type SignupLookup = NonNullable<Awaited<ReturnType<typeof getSignupByEmail>>>
+
+/**
+ * getSignupByEmail for a caller that writes consent on "not found". There a failed
+ * lookup must never read as "new person", so this throws on an error or a timeout
+ * and returns null only when the database really answered that there is no row.
+ */
+export async function getSignupByEmailStrict(email: string): Promise<SignupLookup | null> {
+  const result = await boundedRead(
+    getClient()
+      .from('signup')
+      .select('public_id, first_name, unsub_token, unsubscribed, marketing_consent_mad, marketing_consent_group')
+      .eq('email', String(email).toLowerCase().trim())
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .maybeSingle(),
+  )
+  if (!result) throw new Error(`signup lookup did not answer within ${DB_READ_TIMEOUT_MS} ms`)
+  const { data, error } = result
+  if (error) throw new Error(`signup lookup failed: ${error.message}`)
+  if (!data) return null
+  const row = data as {
+    public_id: string
+    first_name: string | null
+    unsub_token: string | null
+    unsubscribed: boolean | null
+    marketing_consent_mad: boolean | null
+    marketing_consent_group: boolean | null
+  }
+  return {
+    publicId: row.public_id,
+    firstName: row.first_name,
+    unsubToken: row.unsub_token,
+    unsubscribed: row.unsubscribed === true,
+    consentMad: row.marketing_consent_mad === true,
+    consentGroup: row.marketing_consent_group === true,
+  }
+}
+
+/**
+ * Store a newsletter subscriber: one row, flags and evidence. The public_id is
+ * derived from the address, so two racing submits land on one row: the table has
+ * no unique index on email.
+ *
+ * Evidence goes first, because the reverse failure cannot be repaired: a row that
+ * landed without evidence is a consent with nothing behind it, and a retry finds
+ * the row and writes nothing. Evidence without a row only means the person ticked
+ * and the retry adds the row. Throws on either failure.
+ */
+export async function insertNewsletterSignup(row: {
+  publicId: string
+  email: string
+  version: string
+}): Promise<void> {
+  await recordConsentEvent({
+    publicId: row.publicId,
+    method: 'newsletter-form',
+    version: row.version,
+    mad: true,
+    group: true,
+  })
+  const now = new Date().toISOString()
+  const { error } = await getClient()
+    .from('signup')
+    .upsert(
+      {
+        public_id: row.publicId,
+        email: row.email,
+        created_at: now,
+        signup_source: 'newsletter',
+        marketing_consent_mad: true,
+        marketing_consent_group: true,
+        consent_version: row.version,
+        consent_at: now,
+      },
+      { onConflict: 'public_id', ignoreDuplicates: true },
+    )
+  if (error) throw new Error(`newsletter insert failed: ${error.message}`)
+}
+
 /**
  * Append-only record of every consent change: what was granted or withdrawn,
  * under which wording, when, and HOW ownership of the address was proven.
@@ -502,7 +585,7 @@ export async function getSignupByEmail(email: string): Promise<{
  */
 export async function recordConsentEvent(e: {
   publicId: string
-  method: 'double-opt-in-email' | 'preference-centre' | 'unsubscribe-all'
+  method: 'double-opt-in-email' | 'preference-centre' | 'unsubscribe-all' | 'newsletter-form'
   version: string
   // The RESULTING state of both flags, never the delta. A regulator reads the
   // latest row to answer "did you hold this consent when you sent that mail?" —
@@ -604,4 +687,11 @@ export async function checkRateLimitStrict(key: string, max: number, windowSecon
   })
   if (error) throw new Error(`rate limit unavailable: ${error.message}`)
   return data === true
+}
+
+/** Give back an attempt that did not happen, so it does not count against the
+ * next one. */
+export async function releaseRateLimit(key: string): Promise<void> {
+  const { error } = await getClient().from('rate_limit').delete().eq('key', key)
+  if (error) throw new Error(`rate limit release failed: ${error.message}`)
 }

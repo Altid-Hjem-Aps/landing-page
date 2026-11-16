@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import LegalPageLayout, { LegalAddress, LEGAL_H2, LEGAL_LABEL, LEGAL_LINK, LEGAL_LIST } from '@/components/LegalPageLayout'
+import '../site.css'
 
 export const metadata: Metadata = {
   title: 'Slet din konto | Altid Hjem',
@@ -15,19 +16,19 @@ export default function SletKonto() {
         <p>På denne side kan du læse, hvordan du sletter din Altid Hjem-konto, og hvad der sker med dine data, når kontoen slettes.</p>
       </section>
 
-      <section className="space-y-4">
+      <section>
         <h2 className={LEGAL_H2}>Sådan sletter du din konto</h2>
         <p>Du kan slette din Altid Hjem-konto direkte i appen under <span className={LEGAL_LABEL}>Profil → Slet konto</span>.</p>
         <p>Du kan også skrive til <a href="mailto:hej@altidhjem.dk?subject=Slet%20min%20konto" className={LEGAL_LINK}>hej@altidhjem.dk</a> med emnet <span className={LEGAL_LABEL}>&ldquo;Slet min konto&rdquo;</span> fra den e-mailadresse, du brugte til din konto, så hjælper vi dig videre.</p>
       </section>
 
-      <section className="space-y-4">
+      <section>
         <h2 className={LEGAL_H2}>Hvad bliver slettet?</h2>
         <p>Når du sletter din konto, fjerner vi din konto og dine appdata. Har du forbundet din bank, bliver dine bankdata også slettet hos Subaio.</p>
         <p>Oplysninger, som vi er retligt forpligtede til at opbevare, fx bogføringsmateriale efter bogføringsloven samt aftale- og betalingshistorik, opbevares i op til 5 år efter kundeforholdets ophør og slettes derefter. Du kan læse mere i vores <Link href="/privatlivspolitik" className={LEGAL_LINK}>privatlivspolitik</Link>.</p>
       </section>
 
-      <section className="space-y-4">
+      <section>
         <h2 className={LEGAL_H2}>Efter sletningen</h2>
         <ul className={LEGAL_LIST}>
           <li>Din elaftale hos Altid Energi fortsætter som før. Vil du også opsige den, skal du kontakte Altid Energi på <a href="mailto:hej@altidenergi.dk" className={LEGAL_LINK}>hej@altidenergi.dk</a>.</li>

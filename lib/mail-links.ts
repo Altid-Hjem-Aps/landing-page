@@ -1,4 +1,5 @@
 import { createHmac } from 'node:crypto'
+import { APP_STORE_PROVIDER_TOKEN, APP_STORE_URL, PLAY_STORE_URL } from '@/lib/store-links'
 
 // Tracked links in the Altid Hjem launch mails (ALT-605).
 //
@@ -105,9 +106,9 @@ function overrideFor(mail: string, link: string): LinkOverride | undefined {
 
 export const UNKNOWN = 'unknown'
 
-export const APP_STORE_PROVIDER_TOKEN = '129212732'
-const APP_STORE_BASE = 'https://apps.apple.com/dk/app/altid-hjem/id6794330094'
-const PLAY_BASE = 'https://play.google.com/store/apps/details?id=dk.altidhjem.app'
+// The store URLs live in lib/store-links.ts; the values in sent mails do not
+// change (test/mail-link-route.test.ts pins them).
+export { APP_STORE_PROVIDER_TOKEN }
 
 export interface MailLink {
   /** A known mail code, or `unknown`. */
@@ -137,7 +138,7 @@ export function storeUrl(store: Store, mail: string, link: string): string {
   // Werner's LinkedIn post is a site of its own in the ah_1_<site> scheme.
   const campaign = mail === 'li-werner' ? 'ah_1_linkedin_werner' : `ah_1_mail_${mail}`
   if (store === 'appstore') {
-    return `${APP_STORE_BASE}?pt=${APP_STORE_PROVIDER_TOKEN}&ct=${campaign}&mt=8`
+    return `${APP_STORE_URL}?pt=${APP_STORE_PROVIDER_TOKEN}&ct=${campaign}&mt=8`
   }
   // A shared invite is not an email: Play reports it as its own share source.
   // Nor is the LinkedIn post: Play reports it as LinkedIn, a social source.
@@ -147,7 +148,7 @@ export function storeUrl(store: Store, mail: string, link: string): string {
       : mail === 'li-werner'
         ? `utm_source=linkedin&utm_medium=social&utm_campaign=${campaign}&utm_content=${link}`
         : `utm_source=mail_${mail}&utm_medium=email&utm_campaign=${campaign}&utm_content=${link}`
-  return `${PLAY_BASE}&referrer=${encodeURIComponent(referrer)}`
+  return `${PLAY_STORE_URL}&referrer=${encodeURIComponent(referrer)}`
 }
 
 /** The Amplitude `campaign` of a tap. ALT-605's mails and the invite link
@@ -197,6 +198,13 @@ export function resolveMailLink(rawMail: string, rawLink: string, userAgent: str
 export function ipRateKey(prefix: string, ip: string | null, secret: string | undefined): string {
   if (!secret) throw new Error('REFERRAL_IP_SALT is not set: will not rate-limit on an unkeyed IP')
   return `${prefix}:${createHmac('sha256', secret).update(ip ?? 'unknown').digest('hex').slice(0, 32)}`
+}
+
+/** A rate-limit key for an email address: keyed-hashed like an IP, so the rate-limit table
+ * never holds an address in plain text (review 16/11). The key is the same for the same
+ * address, so the per-address limits still hold. */
+export function addressRateKey(prefix: string, email: string, secret: string | undefined): string {
+  return ipRateKey(prefix, email.toLowerCase().trim(), secret)
 }
 
 /** The mail-link taps' key (app/m/[mail]/[link]/route.ts). */

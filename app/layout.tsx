@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { Onest, Afacad } from 'next/font/google'
 import './globals.css'
 import ResetScrollOnLoad from '@/components/ResetScrollOnLoad'
-import ExitIntentModal from '@/components/ExitIntentModal'
 import CookieBanner from '@/components/CookieBanner'
+import { PLATFORM_SCRIPT } from '@/lib/platform'
 
 const onest = Onest({
   subsets: ['latin'],
@@ -12,21 +12,26 @@ const onest = Onest({
 })
 
 // Afacad is the brand font for the subbrand wordmarks ("energi", "mobil", …)
-// in the service-card logo lockups.
+// in the service-card logo lockups. Not preloaded: the front page does not use it, and
+// a preload there competes with the first picture on a phone.
 const afacad = Afacad({
   subsets: ['latin'],
   weight: ['400', '500'],
+  preload: false,
   variable: '--font-afacad',
 })
+
+const TITLE = 'Altid Hjem: hele hjemmets økonomi i én app'
+const DESCRIPTION = 'Altid Hjem samler hjemmets faste udgifter i én app: ét overblik og ét login. Hent appen gratis i App Store og Google Play.'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.altidhjem.dk'),
   alternates: { canonical: './' },
-  title: 'Altid Hjem – Skriv dig på ventelisten',
-  description: 'Altid Hjem samler hjemmets faste udgifter i én app – ét overblik og ét login.',
+  title: TITLE,
+  description: DESCRIPTION,
   openGraph: {
-    title: 'Altid Hjem – Skriv dig på ventelisten',
-    description: 'Altid Hjem samler hjemmets faste udgifter i én app – ét overblik og ét login.',
+    title: TITLE,
+    description: DESCRIPTION,
     url: 'https://www.altidhjem.dk',
     siteName: 'Altid Hjem',
     locale: 'da_DK',
@@ -46,11 +51,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // data-scroll-behavior: opt-in so Next keeps smooth scrolling for anchor
     // jumps but disables it during route transitions (silences the Next 15+
     // console warning).
-    <html lang="da" data-scroll-behavior="smooth" className={`${onest.variable} ${afacad.variable}`}>
+    // suppressHydrationWarning: the head script below sets data-platform on
+    // <html> before React hydrates.
+    <html
+      lang="da"
+      data-scroll-behavior="smooth"
+      className={`${onest.variable} ${afacad.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        {/* A raw script, not next/script: it must run before first paint so
+            the store pills are in platform order from the start. */}
+        <script dangerouslySetInnerHTML={{ __html: PLATFORM_SCRIPT }} />
+      </head>
       <body>
         <ResetScrollOnLoad />
         {children}
-        <ExitIntentModal />
         <CookieBanner />
       </body>
     </html>
