@@ -47,9 +47,34 @@ export const GUIDE_PATHS = [
   '/spiir-alternativ',
 ] as const
 
+/** A guide's own name: its path without the slash ("bedste-budget-app"). */
+export type GuideSlug = (typeof GUIDE_PATHS)[number] extends `/${infer S}` ? S : never
+export const GUIDE_SLUGS = GUIDE_PATHS.map((p) => p.slice(1)) as GuideSlug[]
+
+/** Which page a count came from (ALT-1713): a guide by its own name, every other page by its
+ * group. So each guide can be read on its own, and the list stays fixed. */
+export const SITE_PAGES = [...PAGE_GROUPS, ...GUIDE_SLUGS] as const
+export type SitePage = PageGroup | GuideSlug
+
+function cleanPath(path: string): string {
+  return path.length > 1 ? path.replace(/\/+$/, '') : path
+}
+
+/** The guide a path is, or null for any other page. */
+export function guideSlug(path: string | null | undefined): GuideSlug | null {
+  if (!path) return null
+  const p = cleanPath(path)
+  return (GUIDE_PATHS as readonly string[]).includes(p) ? (p.slice(1) as GuideSlug) : null
+}
+
+/** The page name a count carries: the guide's own name, else the page's group. */
+export function sitePage(path: string): SitePage {
+  return guideSlug(path) ?? pageGroup(path)
+}
+
 /** The group a path belongs to. */
 export function pageGroup(path: string): PageGroup {
-  const p = path.length > 1 ? path.replace(/\/+$/, '') : path
+  const p = cleanPath(path)
   if (p === '/') return 'front'
   if ((GUIDE_PATHS as readonly string[]).includes(p)) return 'guide'
   if (p === '/kontakt') return 'kontakt'
@@ -61,11 +86,19 @@ export function pageGroup(path: string): PageGroup {
 export const SITE_COUNTS = {
   'Popup Shown': { popup: POPUPS, mode: POPUP_MODES },
   'Popup Dismissed': { popup: POPUPS, mode: POPUP_MODES },
-  'QR Card Opened': { code: QR_CARD_CODES, position: STORE_POSITIONS },
+  'QR Card Opened': { code: QR_CARD_CODES, position: STORE_POSITIONS, slug: SITE_PAGES },
   // Every page view on the new site, for every visitor, no cookie (D6 of the old vs new
   // conversion plan): the full visitor count the cookie-accepting count cannot give.
-  'Page Visited': { page: PAGE_GROUPS },
+  // `slug` (ALT-1713): the guide's own name, so visits and store taps can be divided per guide.
+  'Page Visited': { page: PAGE_GROUPS, slug: SITE_PAGES },
 } as const satisfies Record<string, Record<string, readonly string[]>>
+
+/** Properties a count may leave out: `slug` came on 16 Nov 2026 (ALT-1713), and a tab opened
+ * before that deploy still runs the old script. Its count is kept, without the page name. */
+const OPTIONAL: Readonly<Partial<Record<keyof typeof SITE_COUNTS, readonly string[]>>> = {
+  'QR Card Opened': ['slug'],
+  'Page Visited': ['slug'],
+}
 
 export type SiteCount = keyof typeof SITE_COUNTS
 export type SiteCountProps<E extends SiteCount> = { [K in keyof (typeof SITE_COUNTS)[E]]: (typeof SITE_COUNTS)[E][K] extends readonly (infer V)[] ? V : never }
@@ -78,10 +111,11 @@ export function parseSiteCount(body: unknown): { event: SiteCount; props: Record
   if (typeof props !== 'object' || props === null || Array.isArray(props)) return null
   const allowed: Record<string, readonly string[]> = SITE_COUNTS[event as SiteCount]
   const given = props as Record<string, unknown>
-  const keys = Object.keys(allowed)
-  if (Object.keys(given).length !== keys.length) return null
+  const optional = OPTIONAL[event as SiteCount] ?? []
+  if (Object.keys(given).some((key) => !Object.hasOwn(allowed, key))) return null
   const out: Record<string, string> = {}
-  for (const key of keys) {
+  for (const key of Object.keys(allowed)) {
+    if (!Object.hasOwn(given, key) && optional.includes(key)) continue
     const value = given[key]
     if (typeof value !== 'string' || !allowed[key].includes(value)) return null
     out[key] = value

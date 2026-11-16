@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { APP_INTENT, countClick, STORE_MARK } from '@/components/StoreBadges'
 import { trackEvent } from '@/lib/analytics'
 import { countEvent } from '@/lib/count'
+import { sitePage } from '@/lib/site-counts'
 import type { Store, StorePosition } from '@/lib/store-links'
 import { PILL_QR, QR } from './copy'
 
@@ -22,8 +23,9 @@ import { PILL_QR, QR } from './copy'
 // once, without shrinking back), as well as on a click outside it, Escape, the close control, or
 // another code opening.
 //
-// The store pills' codes are public/site/qr/appstore.svg and play.svg, made from storeLink();
-// make them again when a store link changes. Opening is not a store click; copying a store's
+// The store pills' codes are public/site/qr/appstore.svg and play.svg, made from storeLink(), and
+// on a guide public/site/qr/guide/<guide>-<store>.svg with the guide's campaign (ALT-1713,
+// scripts/site-assets.py guide-qr); make them again when a store link changes. Opening is not a store click; copying a store's
 // link is. The Altid Energi offer uses it too, with the one code for both stores.
 
 const OTHER_OPENED = 'pill-qr-open'
@@ -113,7 +115,7 @@ export default function PillQr({
     setPlace(measure())
     setOpen(true)
     const where = { code: code.store?.store ?? 'app', position: code.store?.position ?? 'energi' } as const
-    countEvent('QR Card Opened', where)
+    countEvent('QR Card Opened', { ...where, slug: sitePage(window.location.pathname) })
     // The site's main step on a computer, for visitors who accepted statistics (the conversion panel).
     trackEvent(APP_INTENT, { kind: 'qr_open', store: where.code, position: where.position })
   }

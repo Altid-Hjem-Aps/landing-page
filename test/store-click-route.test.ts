@@ -53,6 +53,19 @@ afterEach(() => {
 })
 
 describe('POST /api/forside/store-click', () => {
+  // ALT-1713: the page the tap came from, a guide by its own name.
+  it('counts the page a tap came from when it is on the fixed list', async () => {
+    expect((await post({ store: 'appstore', position: 'bottom', slug: 'hvad-koster-forsikring' })).status).toBe(204)
+    expect(trackMock).toHaveBeenCalledWith('Store Badge Clicked', { store: 'appstore', position: 'bottom', slug: 'hvad-koster-forsikring' })
+  })
+
+  it('refuses a page name that is not on the list, so nothing typed reaches Amplitude', async () => {
+    for (const slug of ['/hvad-koster-forsikring', 'en-side-vi-ikke-har', 42]) {
+      expect((await post({ store: 'appstore', position: 'bottom', slug })).status).toBe(400)
+    }
+    expect(trackMock).not.toHaveBeenCalled()
+  })
+
   it('counts a badge click once with its store and position', async () => {
     const res = await post({ store: 'play', position: 'hero', email: 'someone@example.com' })
     expect(res.status).toBe(204)

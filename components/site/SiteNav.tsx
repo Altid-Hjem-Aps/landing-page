@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { STORE_MARK } from '@/components/StoreBadges'
 import { countEvent } from '@/lib/count'
-import { pageGroup } from '@/lib/site-counts'
+import { pageGroup, sitePage } from '@/lib/site-counts'
 import { STORE_ANCHOR } from '@/lib/store-links'
 import { NAV } from './copy'
 import GetAppButton from './GetAppButton'
@@ -32,7 +32,8 @@ export default function SiteNav({ base = '', getApp = false, storesHere = false 
   // One cookie-free count per page view (lib/site-counts.ts, Page Visited): the nav is on every
   // page of the new site, so this is the site's full visitor count.
   useEffect(() => {
-    countEvent('Page Visited', { page: pageGroup(window.location.pathname) })
+    const path = window.location.pathname
+    countEvent('Page Visited', { page: pageGroup(path), slug: sitePage(path) })
   }, [])
 
   useEffect(() => {

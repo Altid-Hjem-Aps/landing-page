@@ -5,7 +5,7 @@
   },
   {
     "name": "Store Badge Clicked",
-    "description": "Fires server-side when an App Store or Google Play badge is clicked (store, position)."
+    "description": "Fires server-side when an App Store or Google Play badge is clicked (store, position, slug: the page it came from, a guide by its own name)."
   },
   {
     "name": "Newsletter Signup",

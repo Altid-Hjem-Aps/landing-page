@@ -141,6 +141,28 @@ const scan = (path: string, userAgent: string | null, extra: Record<string, stri
   )
 
 describe('/qr counts each scan by place', () => {
+  // ALT-1713: a guide's footer and offer pop-up codes add ?g=<guide>.
+  it('sends a phone to its store with the guide’s campaign, and counts the scan with the guide', async () => {
+    const res = scan('/qr?src=footer&g=billigste-elselskab', IPHONE)
+    expect(res.headers.get('location')).toBe('https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_guide_billigste_elselskab&mt=8')
+    await settled()
+    expect(trackMock).toHaveBeenCalledWith('QR Code Scanned', { src: 'footer', platform: 'ios', slug: 'billigste-elselskab' })
+    expect(scan('/qr?src=offer&g=madbudget', ANDROID).headers.get('location')).toBe(
+      'https://play.google.com/store/apps/details?id=dk.altidhjem.app&referrer=utm_source%3Daltidhjem_dk%26utm_campaign%3Dah_1_guide_madbudget',
+    )
+  })
+
+  it('sends a computer to the guide’s own store buttons', () => {
+    expect(scan('/qr?src=footer&g=madbudget', DESKTOP).headers.get('location')).toBe('https://www.altidhjem.dk/madbudget#hent-appen')
+  })
+
+  it('ignores a g that is not a guide: the site campaign, and no slug in the count', async () => {
+    const res = scan('/qr?src=footer&g=en-side-vi-ikke-har', IPHONE)
+    expect(res.headers.get('location')).toBe(APP_STORE)
+    await settled()
+    expect(trackMock).toHaveBeenCalledWith('QR Code Scanned', { src: 'footer', platform: 'ios' })
+  })
+
   it('counts a scan once with its place and the phone type, and nothing else', async () => {
     const res = scan('/qr?src=leave', IPHONE)
     expect(res.headers.get('location')).toBe(APP_STORE)

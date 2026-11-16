@@ -16,6 +16,14 @@ export const APP_STORE_PROVIDER_TOKEN = '129212732'
 const SITE = 'altidhjem_dk'
 const CAMPAIGN = `ah_1_${SITE}`
 
+/** A guide's own campaign (ALT-1713), so App Store Connect and Play Console show each guide's
+ * downloads apart from the front page: ah_1_guide_<slug> with underscores. Apple allows 40
+ * characters in `ct`; the longest guide gives 39 (test/store-links.test.ts checks every guide).
+ * On Google Play the source stays altidhjem_dk, so the app server still files it as the site. */
+export function guideCampaign(slug: string): string {
+  return `ah_1_guide_${slug.replace(/-/g, '_')}`
+}
+
 export const STORES = ['appstore', 'play'] as const
 export type Store = (typeof STORES)[number]
 export const STORE_POSITIONS = ['hero', 'founder', 'how-it-works', 'bottom', 'nav', 'footer', 'side', 'popup', 'energi'] as const
@@ -48,10 +56,25 @@ export function qrImage(source: QrSource): string {
   return `/site/qr/app-${source}.svg`
 }
 
-export function storeLink(store: Store): string {
+/** The places that have a code of their own on every guide (ALT-1713): the footer and the offer
+ * pop-up. Their code goes to /qr?src=<place>&g=<guide>, so the scan reaches the store with the
+ * guide's campaign. */
+export const GUIDE_QR_SOURCES = ['footer', 'offer'] as const satisfies readonly QrSource[]
+export type GuideQrSource = (typeof GUIDE_QR_SOURCES)[number]
+
+/** A guide's own code: a store pill's (straight to that store, storeLink(store, guide)) or a
+ * place's (through /qr). public/site/qr/guide/<guide>-<name>.svg, made by scripts/site-assets.py
+ * guide-qr; test/guide-qr.test.ts checks that every guide has all four. */
+export function guideQrImage(guide: string, name: Store | GuideQrSource): string {
+  return `/site/qr/guide/${guide}-${name}.svg`
+}
+
+/** The store link with the site's campaign, or the guide's own when `guide` is given. */
+export function storeLink(store: Store, guide?: string | null): string {
+  const campaign = guide ? guideCampaign(guide) : CAMPAIGN
   if (store === 'appstore') {
-    return `${APP_STORE_URL}?pt=${APP_STORE_PROVIDER_TOKEN}&ct=${CAMPAIGN}&mt=8`
+    return `${APP_STORE_URL}?pt=${APP_STORE_PROVIDER_TOKEN}&ct=${campaign}&mt=8`
   }
-  const referrer = `utm_source=${SITE}&utm_campaign=${CAMPAIGN}`
+  const referrer = `utm_source=${SITE}&utm_campaign=${campaign}`
   return `${PLAY_STORE_URL}&referrer=${encodeURIComponent(referrer)}`
 }

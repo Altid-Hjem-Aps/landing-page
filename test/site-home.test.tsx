@@ -200,7 +200,7 @@ describe('the page', () => {
     fireEvent.click(within(container.querySelector('#hent-appen') as HTMLElement).getByRole('link', { name: 'Hent i App Store' }))
     // The page's own visit count goes out on load; the store tap is the one to the store-click route.
     const tap = sendBeacon.mock.calls.find(([url]) => url === '/api/forside/store-click')!
-    expect(JSON.parse(await tap[1].text())).toEqual({ store: 'appstore', position: 'bottom' })
+    expect(JSON.parse(await tap[1].text())).toEqual({ store: 'appstore', position: 'bottom', slug: 'front' })
   })
 
   it('has one form, the newsletter, in the footer', async () => {
@@ -256,7 +256,7 @@ describe('the page', () => {
     expect(prevented).toBe(false)
     const taps = sendBeacon.mock.calls.filter(([url]) => url === '/api/forside/store-click')
     expect(taps).toHaveLength(1)
-    expect(JSON.parse(await taps[0][1].text())).toEqual({ store: 'appstore', position: 'hero' })
+    expect(JSON.parse(await taps[0][1].text())).toEqual({ store: 'appstore', position: 'hero', slug: 'front' })
   })
 
   it('shows the stars and the user count under the pills, the rating only in the stars\' name', async () => {
@@ -563,7 +563,7 @@ describe('the phone header button', () => {
     fireEvent.click(ios)
     const taps = (beacon.mock.calls as unknown as [string, Blob][]).filter(([url]) => url === '/api/forside/store-click')
     expect(taps).toHaveLength(1)
-    expect(JSON.parse(await taps[0][1].text())).toEqual({ store: 'appstore', position: 'nav' })
+    expect(JSON.parse(await taps[0][1].text())).toEqual({ store: 'appstore', position: 'nav', slug: 'front' })
   })
 
   it('shows once the hero store button has scrolled up out of view', async () => {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { storeLink } from '@/lib/store-links'
+import { GUIDE_SLUGS } from '@/lib/site-counts'
+import { guideCampaign, storeLink } from '@/lib/store-links'
 import { detectPlatform, PLATFORM_SCRIPT, type Platform } from '@/lib/platform'
 
 // Store attribution is lost silently if a campaign parameter goes missing:
@@ -16,6 +17,32 @@ describe('storeLink', () => {
     expect(storeLink('play')).toBe(
       'https://play.google.com/store/apps/details?id=dk.altidhjem.app&referrer=utm_source%3Daltidhjem_dk%26utm_campaign%3Dah_1_altidhjem_dk',
     )
+  })
+})
+
+// ALT-1713: a guide's store links carry the guide's own campaign.
+describe('storeLink on a guide', () => {
+  it('App Store: the guide campaign in ct', () => {
+    expect(storeLink('appstore', 'billigste-elselskab')).toBe(
+      'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_guide_billigste_elselskab&mt=8',
+    )
+  })
+
+  it('Google Play: the site as the source, so the app server still files it as the site, and the guide as the campaign', () => {
+    expect(storeLink('play', 'madbudget')).toBe(
+      'https://play.google.com/store/apps/details?id=dk.altidhjem.app&referrer=utm_source%3Daltidhjem_dk%26utm_campaign%3Dah_1_guide_madbudget',
+    )
+  })
+
+  it('no guide: the site campaign', () => {
+    expect(storeLink('appstore', null)).toBe(storeLink('appstore'))
+  })
+
+  it('every guide campaign fits Apple’s 40 characters and uses only letters, digits and underscores', () => {
+    for (const slug of GUIDE_SLUGS) {
+      expect(guideCampaign(slug).length, slug).toBeLessThanOrEqual(40)
+      expect(guideCampaign(slug)).toMatch(/^[a-z0-9_]+$/)
+    }
   })
 })
 

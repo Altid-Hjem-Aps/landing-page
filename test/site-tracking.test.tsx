@@ -166,7 +166,7 @@ describe('the Altid Energi offer pop-up', () => {
       { event: 'Popup Shown', props: { popup: 'offer', mode: 'phone' } },
       { event: 'Popup Dismissed', props: { popup: 'offer', mode: 'phone' } },
     ])
-    expect(await beaconBodies('/api/forside/store-click')).toEqual([{ store: 'play', position: 'popup' }])
+    expect(await beaconBodies('/api/forside/store-click')).toEqual([{ store: 'play', position: 'popup', slug: 'front' }])
     // The store tap is also the site's main step (App Intent, 16 Nov), sent before the conversion.
     expect(track.mock.calls).toEqual([
       ['Energi Offer Shown', { path: '/', mode: 'phone' }],
@@ -324,8 +324,8 @@ describe('the site’s main step (App Intent)', () => {
     expect(setTransport).toHaveBeenCalledWith('beacon')
     // The cookie-free store click is still counted for everyone.
     expect(await beaconBodies('/api/forside/store-click')).toEqual([
-      { store: 'play', position: 'hero' },
-      { store: 'play', position: 'hero' },
+      { store: 'play', position: 'hero', slug: 'front' },
+      { store: 'play', position: 'hero', slug: 'front' },
     ])
   })
 
@@ -347,13 +347,13 @@ describe('the site’s main step (App Intent)', () => {
 
 // D6: one cookie-free count per page view, from the nav that is on every page of the new site.
 describe('the cookie-free visit count', () => {
-  it('sends one Page Visited with the page’s group when the nav mounts, without consent', async () => {
+  it('sends one Page Visited with the page’s group and the guide’s own name when the nav mounts, without consent', async () => {
     const { default: SiteNav } = await import('@/components/site/SiteNav')
     // jsdom has no hit testing; the nav uses it only to pick its light or dark look.
     document.elementsFromPoint = () => []
     window.history.replaceState(null, '', '/hvad-koster-indboforsikring')
     render(<SiteNav base="/" />)
-    expect(await beaconBodies('/api/forside/count')).toEqual([{ event: 'Page Visited', props: { page: 'guide' } }])
+    expect(await beaconBodies('/api/forside/count')).toEqual([{ event: 'Page Visited', props: { page: 'guide', slug: 'hvad-koster-indboforsikring' } }])
     window.history.replaceState(null, '', '/')
   })
 })

@@ -24,7 +24,7 @@ const COUNTS_PER_HOUR_GLOBAL = 1000
 const VISITS_PER_IP_PER_HOUR = 120
 const VISITS_PER_HOUR_GLOBAL = 5000
 
-/** {"event":"QR Card Opened","props":{"code":"appstore","position":"how-it-works"}} is about 80 bytes. */
+/** {"event":"QR Card Opened","props":{"code":"appstore","position":"how-it-works","slug":"hvornar-er-strommen-billigst"}} is about 125 bytes. */
 const MAX_BODY_BYTES = 512
 
 function answer(status: number, extra: Record<string, string> = {}): NextResponse {
