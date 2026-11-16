@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: 'Hvad koster en ladeboks? Priser og valg | Altid Hjem',
   description:
     'Se vejledende priser på ladeboks, installation, leje og refusion, og få styr på prisen for hjemmeladning. Prøv beregneren her på siden.',
-  alternates: { canonical: 'https://altidhjem.dk/hvad-koster-en-ladeboks' },
+  alternates: { canonical: 'https://www.altidhjem.dk/hvad-koster-en-ladeboks' },
   openGraph: {
     title: 'Hvad koster en ladeboks?',
     description:
       'Se vejledende priser på ladeboks, installation, leje og refusion, og få styr på prisen for hjemmeladning. Prøv beregneren her på siden.',
-    url: 'https://altidhjem.dk/hvad-koster-en-ladeboks',
+    url: 'https://www.altidhjem.dk/hvad-koster-en-ladeboks',
     type: 'article',
   },
 }

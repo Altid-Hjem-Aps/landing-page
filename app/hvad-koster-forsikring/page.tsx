@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: 'Hvad koster forsikring i 2026? Se priser | Altid Hjem',
   description:
     'Hvad koster forsikring i Danmark? Se vejledende priser på indbo, hus, bil, ulykke og rejse. Find ud af, om du betaler for meget. Hent Altid Hjem gratis, og saml dine forsikringer ét sted.',
-  alternates: { canonical: 'https://altidhjem.dk/hvad-koster-forsikring' },
+  alternates: { canonical: 'https://www.altidhjem.dk/hvad-koster-forsikring' },
   openGraph: {
     title: 'Hvad koster forsikring i Danmark?',
     description:
       'Se vejledende priser på de mest almindelige forsikringer, og find ud af, om du betaler for meget.',
-    url: 'https://altidhjem.dk/hvad-koster-forsikring',
+    url: 'https://www.altidhjem.dk/hvad-koster-forsikring',
     type: 'article',
   },
 }

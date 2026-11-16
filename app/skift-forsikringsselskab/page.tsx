@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: 'Skift forsikringsselskab sikkert | Altid Hjem',
   description:
     'Skift forsikringsselskab i den rigtige rækkefølge. Få styr på opsigelse, dækning og selvrisiko, og hent Altid Hjem gratis.',
-  alternates: { canonical: 'https://altidhjem.dk/skift-forsikringsselskab' },
+  alternates: { canonical: 'https://www.altidhjem.dk/skift-forsikringsselskab' },
   openGraph: {
     title: 'Sådan skifter du forsikringsselskab',
     description:
       'Skift forsikringsselskab i den rigtige rækkefølge. Få styr på opsigelse, dækning og selvrisiko, og hent Altid Hjem gratis.',
-    url: 'https://altidhjem.dk/skift-forsikringsselskab',
+    url: 'https://www.altidhjem.dk/skift-forsikringsselskab',
     type: 'article',
   },
 }

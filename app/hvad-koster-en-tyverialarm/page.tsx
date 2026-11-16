@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: 'Hvad koster en tyverialarm? | Altid Hjem',
   description:
     'Se vejledende priser på tyverialarmer, fra gør-det-selv til abonnement, og lær, hvad der påvirker totalprisen. Få et ærligt overblik her.',
-  alternates: { canonical: 'https://altidhjem.dk/hvad-koster-en-tyverialarm' },
+  alternates: { canonical: 'https://www.altidhjem.dk/hvad-koster-en-tyverialarm' },
   openGraph: {
     title: 'Hvad koster en tyverialarm?',
     description:
       'Se vejledende priser på tyverialarmer, fra gør-det-selv til abonnement, og lær, hvad der påvirker totalprisen. Få et ærligt overblik her.',
-    url: 'https://altidhjem.dk/hvad-koster-en-tyverialarm',
+    url: 'https://www.altidhjem.dk/hvad-koster-en-tyverialarm',
     type: 'article',
   },
 }

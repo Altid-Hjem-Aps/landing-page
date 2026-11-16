@@ -38,7 +38,7 @@ const PAGES: [string, React.ComponentType, Metadata][] = [
 
 describe.each(PAGES)('%s', (route, Page, metadata) => {
   it('has a canonical matching its route', () => {
-    expect(metadata.alternates?.canonical).toBe(`https://altidhjem.dk${route}`)
+    expect(metadata.alternates?.canonical).toBe(`https://www.altidhjem.dk${route}`)
   })
 
   it('emits valid FAQPage JSON-LD matching the visible questions, with the breakout guard', () => {

@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/preview/', '/r/', '/betaling-retur'],
     },
-    sitemap: 'https://altidhjem.dk/sitemap.xml',
+    sitemap: 'https://www.altidhjem.dk/sitemap.xml',
   }
 }

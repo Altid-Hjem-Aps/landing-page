@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: PARTNER_INVITATION.title,
     description: PARTNER_INVITATION.description,
-    url: 'https://altidhjem.dk/invitation',
+    url: 'https://www.altidhjem.dk/invitation',
     siteName: 'Altid Hjem',
     locale: 'da_DK',
     type: 'website',
