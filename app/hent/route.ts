@@ -22,7 +22,7 @@ const LINKEDIN_TARGET = '/m/li-werner/header'
 // human never sees this page; if one does, it leads to the front page.
 const PREVIEW_TITLE = 'Hent Altid Hjem'
 const PREVIEW_DESCRIPTION = 'Mad, strøm, forsikring og økonomi i ét overblik. Det er gratis at komme i gang.'
-const PREVIEW_IMAGE = 'https://www.altidhjem.dk/opengraph-image.png'
+const PREVIEW_IMAGE = 'https://www.altidhjem.dk/opengraph-image.png?v=2'
 const PREVIEW_HTML = `<!doctype html>
 <html lang="da">
 <head>

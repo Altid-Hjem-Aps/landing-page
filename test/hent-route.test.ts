@@ -26,7 +26,7 @@ describe('/hent', () => {
       expect(html).toContain(
         '<meta property="og:description" content="Mad, strøm, forsikring og økonomi i ét overblik. Det er gratis at komme i gang.">',
       )
-      expect(html).toContain('<meta property="og:image" content="https://www.altidhjem.dk/opengraph-image.png">')
+      expect(html).toContain('<meta property="og:image" content="https://www.altidhjem.dk/opengraph-image.png?v=2">')
       expect(html).not.toContain('apps.apple.com')
       expect(res.headers.get('vary')).toBe('User-Agent')
       expect(res.headers.get('cache-control')).toBe('no-store')

@@ -27,7 +27,7 @@ import Blog from '@/components/sections/Blog'
 import { APP_STORE_ID } from '@/lib/store-links'
 import './site.css'
 
-const IMAGE = { url: '/opengraph-image.png', width: 1200, height: 630, alt: META.imageAlt }
+const IMAGE = { url: '/opengraph-image.png?v=2', width: 1200, height: 630, alt: META.imageAlt }
 
 // Full Open Graph and Twitter here: nested objects replace the layout's, they do not merge.
 // itunes: Safari on an iPhone shows Apple's own app banner on this page only.

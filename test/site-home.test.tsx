@@ -526,7 +526,7 @@ describe('FAQ and JSON-LD', () => {
     const og = metadata.openGraph as { title: string; images: { url: string; alt: string }[] }
     const twitter = metadata.twitter as { card: string; images: unknown[] }
     expect(og.title).toBe(metadata.title)
-    expect(og.images[0].url).toBe('/opengraph-image.png')
+    expect(og.images[0].url).toBe('/opengraph-image.png?v=2')
     expect(twitter.card).toBe('summary_large_image')
     expect(twitter.images).toHaveLength(1)
     expect(JSON.stringify(metadata)).not.toMatch(/snart|venteliste|én regning|lancer/i)

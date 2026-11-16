@@ -479,7 +479,7 @@ export const FOOTER = {
 export const META = {
   title: 'Altid Hjem: hele hjemmets økonomi i én app',
   description: 'Altid Hjem samler jeres mad, strøm, forsikring og økonomi i én app. Ét overblik, ét login. Hent appen gratis i App Store og Google Play.',
-  imageAlt: 'Altid Hjem: hele hjemmets økonomi i én app. Tre telefoner med appen og de fire tjenester.',
+  imageAlt: 'Download Altid Hjem. Tre telefoner med appen: madplanen, månedens forbrug og forsikringerne.',
 } as const
 
 // The press page (/presse), for all of Altid Hjem: the four parts of the app are categories
