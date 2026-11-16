@@ -104,6 +104,7 @@ export default function HvadKosterForsikring() {
       meta="Opdateret: juni 2026"
       answer={{ label: 'De fleste private forsikringer', value: '30-900', unit: 'kr. om måneden', note: 'Indboforsikring i den lave ende, bilforsikring i den høje.' }}
       faq={FAQ}
+      related={['/hvad-koster-en-husforsikring', '/hvad-koster-indboforsikring', '/skift-forsikringsselskab']}
       cta={{
         eyebrow: 'Alle jeres forsikringer ét sted',
         heading: 'Hent Altid Hjem, og saml jeres forsikringer',

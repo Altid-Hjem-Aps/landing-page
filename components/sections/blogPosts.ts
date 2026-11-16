@@ -98,6 +98,14 @@ export const POSTS: Post[] = [
     meta: '5 min læsning · 27. jul 2026',
   },
   {
+    href: '/hvad-koster-en-husforsikring',
+    icon: '/services/icon-forsikring.svg',
+    category: 'Forsikring',
+    title: 'Hvad koster en husforsikring?',
+    excerpt: 'Der kan være op til 9.200 kr. om året mellem det billigste og det dyreste selskab. Se, hvad der afgør prisen, og hvordan I sammenligner rigtigt.',
+    meta: '5 min læsning · 16. nov 2026',
+  },
+  {
     href: '/bedste-budget-app',
     icon: '/app-badge.png',
     category: 'Overblik',

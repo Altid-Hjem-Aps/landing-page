@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/hvornar-er-strommen-billigst`, changeFrequency: 'daily', priority: 0.8 },
     { url: `${base}/hvad-koster-forsikring`, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${base}/billigste-mobilabonnement`, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${base}/hvad-koster-en-husforsikring`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/hvad-koster-en-ladeboks`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/hvad-koster-en-tyverialarm`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/hvad-koster-indboforsikring`, changeFrequency: 'monthly', priority: 0.7 },

@@ -27,6 +27,7 @@ describe('sitemap.xml', () => {
       'https://www.altidhjem.dk/hvornar-er-strommen-billigst',
       'https://www.altidhjem.dk/hvad-koster-forsikring',
       'https://www.altidhjem.dk/billigste-mobilabonnement',
+      'https://www.altidhjem.dk/hvad-koster-en-husforsikring',
       'https://www.altidhjem.dk/hvad-koster-en-ladeboks',
       'https://www.altidhjem.dk/hvad-koster-en-tyverialarm',
       'https://www.altidhjem.dk/hvad-koster-indboforsikring',

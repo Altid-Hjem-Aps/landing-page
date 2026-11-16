@@ -15,6 +15,7 @@ vi.mock('@/components/site/Reveal', () => ({ default: () => null }))
 vi.mock('@/components/site/GuideOfferPopup', () => ({ default: () => null }))
 
 import BilligsteMobilabonnement, { metadata as mobilMeta } from '@/app/billigste-mobilabonnement/page'
+import HvadKosterEnHusforsikring, { metadata as husforsikringMeta } from '@/app/hvad-koster-en-husforsikring/page'
 import HvadKosterEnLadeboks, { metadata as ladeboksMeta } from '@/app/hvad-koster-en-ladeboks/page'
 import HvadKosterEnTyverialarm, { metadata as alarmMeta } from '@/app/hvad-koster-en-tyverialarm/page'
 import HvadKosterIndboforsikring, { metadata as indboMeta } from '@/app/hvad-koster-indboforsikring/page'
@@ -26,6 +27,7 @@ import SkiftForsikringsselskab, { metadata as skiftMeta } from '@/app/skift-fors
 
 const PAGES: [string, React.ComponentType, Metadata][] = [
   ['/billigste-mobilabonnement', BilligsteMobilabonnement, mobilMeta],
+  ['/hvad-koster-en-husforsikring', HvadKosterEnHusforsikring, husforsikringMeta],
   ['/hvad-koster-en-ladeboks', HvadKosterEnLadeboks, ladeboksMeta],
   ['/hvad-koster-en-tyverialarm', HvadKosterEnTyverialarm, alarmMeta],
   ['/hvad-koster-indboforsikring', HvadKosterIndboforsikring, indboMeta],

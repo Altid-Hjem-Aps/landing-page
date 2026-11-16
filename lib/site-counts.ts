@@ -30,6 +30,7 @@ export const GUIDE_PATHS = [
   '/billigste-supermarked',
   '/gennemsnitligt-elforbrug',
   '/graensehandel-beregner',
+  '/hvad-koster-en-husforsikring',
   '/hvad-koster-en-ladeboks',
   '/hvad-koster-en-tyverialarm',
   '/hvad-koster-forsikring',
