@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import SkiftTjeklisteMockup from '@/components/SkiftTjeklisteMockup'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideStores } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Skift forsikringsselskab sikkert | Altid Hjem',
@@ -174,6 +174,7 @@ export default function SkiftForsikringsselskab() {
         <p>Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så du får ét overblik, ét login.</p>
         <p>Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted. I kan hente den gratis i App Store og Google Play.</p>
         <p>Bag Altid Hjem står teamet bag Altid Energi, Danmarks første gebyrfrie energiselskab, der har mere end 15.000 danskere som kunder.</p>
+        <GuideStores />
       </section>
     </Guide>
   )

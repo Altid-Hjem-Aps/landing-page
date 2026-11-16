@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import ElforbrugBenchmark from '@/components/ElforbrugBenchmark'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideStores } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Gennemsnitligt elforbrug i hjemmet | Altid Hjem',
@@ -97,6 +97,7 @@ export default function GennemsnitligtElforbrug() {
       answer={{ label: 'Familie på 4 i hus', value: '4.500-5.000', unit: 'kWh om året', note: 'Vejledende tal uden elbil og elvarme.' }}
       factors={{ label: 'Det betyder mest', items: ['Bolig', 'Vaner', 'Apparater'] }}
       faq={FAQ}
+      related={['/fastpris-eller-variabel-el', '/billigste-elselskab', '/hvornar-er-strommen-billigst']}
       cta={{
         eyebrow: 'Kend jeres forbrug',
         heading: 'Hent Altid Hjem til hjemmets strøm og økonomi',
@@ -185,6 +186,7 @@ export default function GennemsnitligtElforbrug() {
           Altid Energi er live i dag og er Danmarks første gebyrfrie energiselskab, uden faste gebyrer eller abonnement. Mere end 15.000 danskere er allerede kunder hos
           Altid Energi.
         </p>
+        <GuideStores />
       </section>
     </Guide>
   )

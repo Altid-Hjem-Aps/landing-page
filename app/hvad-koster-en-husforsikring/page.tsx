@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
-import Guide, { GuideFigure, GuideLink as A, GuideSteps, type GuideFaq } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideSteps, GuideStores } from '@/components/site/Guide'
 
 // The first guide built by the recipe (docs/guide-recipe.md, ALT-1714), topic approved by Thor on
 // 16 Nov 2026. No neutral source publishes an average price for a husforsikring, so the page leads
@@ -130,7 +130,7 @@ export default function HvadKosterEnHusforsikring() {
           { publisher: 'Bolius', title: 'Brandforsikring af boligen', href: BOLIUS_BRAND, note: 'Ajourført 22. juni 2023' },
         ],
       }}
-      related={['/hvad-koster-indboforsikring', '/hvad-koster-forsikring', '/skift-forsikringsselskab']}
+      related={['/hvad-koster-en-bilforsikring', '/hvad-koster-indboforsikring', '/hvad-koster-forsikring']}
     >
       <section>
         <h2>Hvad koster en husforsikring i 2026?</h2>
@@ -267,6 +267,7 @@ export default function HvadKosterEnHusforsikring() {
           Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted og kan nå at sammenligne før næste fornyelse. I kan hente appen gratis i
           App Store og Google Play.
         </p>
+        <GuideStores />
         <GuideFigure tone="mint" caption="Eksempel: husstandens forsikringer samlet i ét overblik. Illustration, ikke et skærmbillede fra appen.">
           <ForsikringHusstandMockup />
         </GuideFigure>

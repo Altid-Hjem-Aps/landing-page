@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import LadeboksCalculator from '@/components/LadeboksCalculator'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideStores } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Hvad koster en ladeboks? Priser og valg | Altid Hjem',
@@ -189,6 +189,7 @@ export default function HvadKosterEnLadeboks() {
           Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder. Du kan hente appen
           gratis i App Store og Google Play.
         </p>
+        <GuideStores />
       </section>
     </Guide>
   )

@@ -11,11 +11,16 @@ import type { Metadata } from 'next'
 vi.mock('@/components/site/SiteNav', () => ({ default: () => null }))
 vi.mock('@/components/site/SiteFooter', () => ({ default: () => null }))
 vi.mock('@/components/site/Reveal', () => ({ default: () => null }))
-// The offer pop-up reads the live user count on the server (an async component).
+// The offer pop-up and the app card's rating read the live user count and App Store rating on
+// the server (async components).
 vi.mock('@/components/site/GuideOfferPopup', () => ({ default: () => null }))
+vi.mock('@/components/site/AppRating', () => ({ default: () => null }))
 
 import BilligsteMobilabonnement, { metadata as mobilMeta } from '@/app/billigste-mobilabonnement/page'
 import HvadKosterEnHusforsikring, { metadata as husforsikringMeta } from '@/app/hvad-koster-en-husforsikring/page'
+import HvadKosterEnBilforsikring, { metadata as bilforsikringMeta } from '@/app/hvad-koster-en-bilforsikring/page'
+import FastprisEllerVariabelEl, { metadata as fastprisMeta } from '@/app/fastpris-eller-variabel-el/page'
+import HvadKosterBredbaand, { metadata as bredbaandMeta } from '@/app/hvad-koster-bredbaand/page'
 import HvadKosterEnLadeboks, { metadata as ladeboksMeta } from '@/app/hvad-koster-en-ladeboks/page'
 import HvadKosterEnTyverialarm, { metadata as alarmMeta } from '@/app/hvad-koster-en-tyverialarm/page'
 import HvadKosterIndboforsikring, { metadata as indboMeta } from '@/app/hvad-koster-indboforsikring/page'
@@ -28,6 +33,9 @@ import SkiftForsikringsselskab, { metadata as skiftMeta } from '@/app/skift-fors
 const PAGES: [string, React.ComponentType, Metadata][] = [
   ['/billigste-mobilabonnement', BilligsteMobilabonnement, mobilMeta],
   ['/hvad-koster-en-husforsikring', HvadKosterEnHusforsikring, husforsikringMeta],
+  ['/hvad-koster-en-bilforsikring', HvadKosterEnBilforsikring, bilforsikringMeta],
+  ['/fastpris-eller-variabel-el', FastprisEllerVariabelEl, fastprisMeta],
+  ['/hvad-koster-bredbaand', HvadKosterBredbaand, bredbaandMeta],
   ['/hvad-koster-en-ladeboks', HvadKosterEnLadeboks, ladeboksMeta],
   ['/hvad-koster-en-tyverialarm', HvadKosterEnTyverialarm, alarmMeta],
   ['/hvad-koster-indboforsikring', HvadKosterIndboforsikring, indboMeta],

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import AlarmStatusMockup from '@/components/AlarmStatusMockup'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideStores } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Hvad koster en tyverialarm? | Altid Hjem',
@@ -186,6 +186,7 @@ export default function HvadKosterEnTyverialarm() {
           App Store og Google Play.
         </p>
         <p>Du kan bruge prisguiden her på siden til at sammenligne markedets løsninger.</p>
+        <GuideStores />
       </section>
     </Guide>
   )

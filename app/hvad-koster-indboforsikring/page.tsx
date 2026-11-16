@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import IndboTjekMockup from '@/components/IndboTjekMockup'
-import Guide, { GuideFigure, GuideLink as A, GuideSteps, type GuideFaq } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideSteps, GuideStores } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Pris på indboforsikring i 2026 | Altid Hjem',
@@ -181,6 +181,7 @@ export default function HvadKosterIndboforsikring() {
           Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder. I kan hente den
           gratis i App Store og Google Play.
         </p>
+        <GuideStores />
       </section>
     </Guide>
   )

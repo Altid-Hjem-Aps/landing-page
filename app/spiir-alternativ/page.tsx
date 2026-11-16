@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Guide, { type GuideFaq } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideStores } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Spiir-alternativ: Hvad skal du bruge i stedet for Spiir? | Altid Hjem',
@@ -95,6 +95,7 @@ export default function SpiirAlternativ() {
         <h2>Hvem står bag Altid Hjem?</h2>
         <p>Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 15.000 danskere allerede får gennemsigtig strøm til en fair pris.</p>
         <p>Samme princip tager vi nu videre til resten af hjemmet: Fair priser, gennemsigtighed og færre ting at holde styr på.</p>
+        <GuideStores />
       </section>
     </Guide>
   )

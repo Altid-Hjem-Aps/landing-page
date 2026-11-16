@@ -140,6 +140,14 @@ export const POSTS: Post[] = [
     meta: '5 min læsning · 26. jul 2026',
   },
   {
+    href: '/hvad-koster-en-bilforsikring',
+    icon: '/services/icon-forsikring.svg',
+    category: 'Forsikring',
+    title: 'Hvad koster en bilforsikring?',
+    excerpt: 'En kaskoforsikring kostede i gennemsnit 6.239 kr. i 2024 ifølge FDM. Se, hvad der afgør prisen, og hvordan I sammenligner rigtigt.',
+    meta: '5 min læsning · 16. nov 2026',
+  },
+  {
     href: '/hvornar-er-strommen-billigst',
     icon: '/services/icon-strom.svg',
     category: 'Energi',
@@ -162,6 +170,14 @@ export const POSTS: Post[] = [
     title: 'Spiir lukker: hvad bruger du nu?',
     excerpt: 'Spiir lukkede 8. juni 2026. Altid Hjem giver dig overblik over hjemmets faste udgifter: strøm, forsikring og madplan samlet ét sted, i én app.',
     meta: '4 min læsning · 10. jun 2026',
+  },
+  {
+    href: '/fastpris-eller-variabel-el',
+    icon: '/services/icon-strom.svg',
+    category: 'Energi',
+    title: 'Fastpris eller variabel elaftale?',
+    excerpt: 'For de fleste er variabel billigst over tid, vurderer Forbrugerrådet Tænk. Se forskellen, og hvad det koster at komme ud af en fastpris.',
+    meta: '5 min læsning · 16. nov 2026',
   },
   {
     href: '/mad-for-3000-om-maaneden',
@@ -220,5 +236,13 @@ export const POSTS: Post[] = [
     title: 'Jul på budget uden panik-uge',
     excerpt: 'Spred juleindkøbene over ugerne op til jul i stedet for én dyr uge i december. Sådan planlægger I julemaden efter tilbuddene.',
     meta: '5 min læsning · 26. jul 2026',
+  },
+  {
+    href: '/hvad-koster-bredbaand',
+    icon: '/app-badge.png',
+    category: 'Overblik',
+    title: 'Hvad koster bredbånd om måneden?',
+    excerpt: 'Fiber med 300 Mbit kostede i gennemsnit 305 kr. om måneden og coax 284 kr. Se, hvad der afgør prisen, og hvor længe I må være bundet.',
+    meta: '5 min læsning · 16. nov 2026',
   },
 ]
