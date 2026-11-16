@@ -151,8 +151,26 @@ address, `openGraph.type: 'article'`.
 ## 6. The checks
 
 Each check passes or fails. A failed check stops the page. "Test" means the repo's tests already
-enforce it; "Agent" means the agent checks it and writes the result in the pull request (ALT-1715
-turns these into tests).
+enforce it; "Agent" means the agent checks it and writes the result in the pull request.
+
+`test/guide-checks.test.tsx` renders every guide in `GUIDE_PATHS` (the live price chart with a
+fixed day of prices) and runs the sources, visuals and markedsføringsloven checks below in CI, for
+old and new guides alike (ALT-1519, 16 Nov 2026). What it reads:
+
+- Sources: the article's paragraphs and lists sentence by sentence; the short answer, answer card,
+  factors, questions, table cells and headings; the page title and description. Not the drawn
+  examples, the tools, the store buttons or the end panel.
+- Markedsføringsloven: every text a visitor sees, the drawn examples, captions and end panel
+  included, plus the title and description.
+- Its word lists are lists: a claim worded in a way they don't know can still pass, so the agent's
+  own read in section 5 stays.
+
+A sentence that breaks a rule but is kept on purpose goes in the test's `ALLOWED` list with who
+decided and when. Only that sentence is excused, and an entry that no longer matches its page fails.
+Today it holds the Mad copy Thor kept as it is on 16 Nov 2026 ("Danmarks første gebyrfrie
+energiselskab", "til de bedste priser", the forum figure and the question it answers) and the
+grænsehandel calculator's break-even line. A page's own figures (the 3.000 kr. page's question and
+its sums) go in `OWN_FIGURES`.
 
 | Check | How |
 |---|---|
@@ -165,9 +183,9 @@ turns these into tests).
 | No "én regning" | Test once listed in test/tjenester-pages.test.tsx; Agent for the rest |
 | Store links carry `ah_1_guide_` plus the slug; counts carry the slug | Test, from `GUIDE_PATHS` |
 | Internal links point to pages that exist | Test (Mad guides), Agent (others) |
-| Every number in the text has a source link and is in Kilder | Agent |
-| Every visual is labelled "I appen" or "Eksempel" | Agent |
-| No savings claim except the Mad figure; no superlative without a named source | Agent |
+| Every outside link in the text is in Kilder. Every price, percentage, kWh or GB figure has its source linked (an outside link or the Altid Mad report, not another guide) or named (a publisher in Kilder) in its own paragraph or the one before; in the answer card, questions, tables, headings and metadata it may instead repeat a figure the article sources. Worked examples are our own sums with their assumptions listed | Test (test/guide-checks.test.tsx) |
+| Every visual is labelled: a real app screen (an image from `public/site/app`) starts "I appen:"; a chart of real figures (`GuideFigure kind="data"`) starts "Tal fra" and a source in Kilder; anything drawn starts "Eksempel:" and says "Illustration, ikke et skærmbillede fra appen." | Test (test/guide-checks.test.tsx) |
+| A savings figure (kroner or percent) only from the Altid Mad report, cited in Kilder; no superlative about Altid Hjem, Altid Mad, Altid Energi or the app; no promised app feature | Test (test/guide-checks.test.tsx) for the words it knows; Agent for other wordings and for superlatives about other companies (only as a named source's claim) |
 | Codex language pass run; numbers and names unchanged after it | Agent |
 | Title is a search question of 60 characters or less; short answer starts with the number | Agent |
 | Body is 900 to 1,300 words, at least 4 of 5 headings are questions | Agent |
@@ -209,11 +227,16 @@ the code, so the 21 guides from before still render, but **every new guide passe
   `components/sections/blogPosts.ts`) after the questions, before the download panel. Each needs a
   card; the page itself and repeats throw.
 
+Built 16 Nov 2026: every guide's visuals are labelled (the live price chart, the food and
+electricity benchmarks as "Tal fra", the rest as "I appen" or "Eksempel"), and
+`test/guide-checks.test.tsx` checks sources, labels and markedsføringsloven on every guide in CI
+(section 6).
+
 Still to build before ALT-1715 (Homebase writing pages) can start:
 
-- The visual labels from ALT-1712.
-- Tests that turn the "Agent" checks in section 6 into code where they can be (word count,
-  question headings, sources present, labels present).
+- The restyle of the animated examples from ALT-1712 (the labels are done).
+- Tests for the remaining "Agent" checks where they can be code: word count and question
+  headings for new guides.
 
 ## 9. Topics
 

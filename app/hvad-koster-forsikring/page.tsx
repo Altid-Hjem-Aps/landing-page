@@ -150,6 +150,7 @@ export default function HvadKosterForsikring() {
           { publisher: 'Forbrugerrådet Tænk', title: 'Det er dyrt at være en loyal kunde i forsikringsselskaber', href: TAENK_LOYAL, note: '2. april 2025' },
           { publisher: 'Forbrugerrådet Tænk', title: 'Forsikringsselskaber hæver priser i det skjulte: nu skal branchen efterforskes', href: TAENK_PRISER, note: '2. september 2025' },
           { publisher: 'Bolius', title: 'Brandforsikring af boligen', href: BOLIUS_BRAND, note: 'Ajourført 22. juni 2023' },
+          { publisher: 'Forsikringsguiden', title: 'Uvildig og nem sammenligning af forsikringer', href: FORSIKRINGSGUIDEN, note: 'Sammenligner pris og dækning hos 86 procent af selskaberne i Danmark, læst 16. november 2026' },
         ],
       }}
       related={['/hvad-koster-en-husforsikring', '/hvad-koster-en-bilforsikring', '/hvad-koster-indboforsikring']}

@@ -90,7 +90,7 @@ export default function GraensehandelBeregner() {
         label: 'Brændstof til 100 km',
         value: 'ca. 116',
         unit: 'kr. for turen',
-        note: 'I en bil, der kører 15 km pr. liter, med en literpris på 17,39 kr.',
+        note: 'I en bil, der kører 15 km pr. liter, med Drivkraft Danmarks listepris på 17,39 kr. pr. liter.',
       }}
       factors={{ label: 'Det afhænger af', items: ['Afstanden til grænsen', 'Bilens forbrug', 'Brændstofprisen', 'Den besparelse, I forventer'] }}
       faq={FAQ}
@@ -107,7 +107,7 @@ export default function GraensehandelBeregner() {
       related={['/billigste-supermarked', '/spar-penge-paa-dagligvarer', '/madbudget']}
     >
       {/* The calculator sat right under the intro on altidmad.dk, before the first heading. */}
-      <GuideFigure tone="lavender" caption="Regn brændstof og break-even ud, før I kører mod grænsen. Intet gemmes.">
+      <GuideFigure tone="lavender" caption="Eksempel: regn brændstof og break-even ud, før I kører mod grænsen. Intet gemmes. Illustration, ikke et skærmbillede fra appen.">
         <GraensehandelCalculator />
       </GuideFigure>
       <section>

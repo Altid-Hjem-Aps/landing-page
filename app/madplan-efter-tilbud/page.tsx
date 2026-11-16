@@ -173,7 +173,7 @@ export default function MadplanEfterTilbud() {
           energiselskab.
         </p>
         <p>Altid Mad er en del af Altid Hjem-appen, som du kan hente gratis i App Store og Google Play.</p>
-        <GuideFigure tone="lavender" caption="Altid Mad læser tilbudsaviserne og bygger ugens madplan, før du handler.">
+        <GuideFigure tone="lavender" caption="Eksempel: Altid Mad læser tilbudsaviserne og bygger ugens madplan, før du handler. Illustration, ikke et skærmbillede fra appen.">
           <MadplanMockup />
         </GuideFigure>
         <GuideStores />

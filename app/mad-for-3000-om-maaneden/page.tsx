@@ -130,7 +130,7 @@ export default function MadFor3000OmMaaneden() {
           Testkurven er lavet til 2 voksne og 2 teenagere og kan derfor ikke sammenlignes direkte med alle husholdninger. Den viser dog tydeligt, at valg af butik kan afgøre,
           om budgettet holder.
         </p>
-        <GuideFigure tone="lavender" caption="Regneeksemplet: 3.000 kr. om måneden holdt op mod den billigste testkurv.">
+        <GuideFigure tone="lavender" caption="Eksempel: 3.000 kr. om måneden holdt op mod den billigste testkurv. Illustration, ikke et skærmbillede fra appen.">
           <TreTusindMockup />
         </GuideFigure>
       </section>

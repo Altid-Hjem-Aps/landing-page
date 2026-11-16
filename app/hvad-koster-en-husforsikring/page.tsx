@@ -121,6 +121,7 @@ export default function HvadKosterEnHusforsikring() {
           { publisher: 'Forbrugerrådet Tænk', title: 'Forsikringsselskaber hæver priser i det skjulte: nu skal branchen efterforskes', href: TAENK_PRISER, note: '2. september 2025' },
           { publisher: 'Bolius', title: 'Husforsikring: hvad dækker den, og hvad dækker den ikke?', href: BOLIUS_HUS, note: 'Ajourført 11. juli 2024' },
           { publisher: 'Bolius', title: 'Brandforsikring af boligen', href: BOLIUS_BRAND, note: 'Ajourført 22. juni 2023' },
+          { publisher: 'Forsikringsguiden', title: 'Uvildig og nem sammenligning af forsikringer', href: FORSIKRINGSGUIDEN, note: 'Sammenligner pris og dækning hos 86 procent af selskaberne i Danmark, læst 16. november 2026' },
         ],
       }}
       related={['/hvad-koster-en-bilforsikring', '/hvad-koster-indboforsikring', '/hvad-koster-forsikring']}
