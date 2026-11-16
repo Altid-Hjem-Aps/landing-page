@@ -102,7 +102,7 @@ describe('a guide with the recipe parts', () => {
       headline: 'Hvad koster en husforsikring?',
       url: 'https://www.altidhjem.dk/hvad-koster-en-husforsikring',
       inLanguage: 'da-DK',
-      image: 'https://www.altidhjem.dk/opengraph-image.png',
+      image: 'https://www.altidhjem.dk/opengraph-image.png?v=2',
       datePublished: '2026-11-01',
       dateModified: '2026-11-16',
       author: { '@type': 'Organization', name: 'Altid Hjem ApS' },

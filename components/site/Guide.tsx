@@ -249,7 +249,7 @@ export default function Guide({
     url,
     mainEntityOfPage: url,
     inLanguage: 'da-DK',
-    image: `${SITE}/opengraph-image.png`,
+    image: `${SITE}/opengraph-image.png?v=2`,
     datePublished: page.published,
     dateModified: page.updated,
     author: organisation,
