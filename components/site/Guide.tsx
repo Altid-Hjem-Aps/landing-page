@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
+import { PostCard } from '@/components/sections/Blog'
+import { POSTS } from '@/components/sections/blogPosts'
 import StoreBadges from '@/components/StoreBadges'
 import { STORE_ANCHOR } from '@/lib/store-links'
 import { keepBrands, titleText } from './brand'
@@ -28,6 +30,41 @@ export type GuideAnswer = {
 
 /** The things the answer depends on, as a row of small cards under the head. */
 export type GuideFactors = { label: string; items: string[] }
+
+/** The page itself, for its dates, the breadcrumb and the Article data for Google
+ * (docs/guide-recipe.md, part 6). Dates as YYYY-MM-DD. `description` is the page's meta
+ * description. */
+export type GuidePage = { path: string; description: string; published: string; updated: string }
+
+/** One source in the Kilder list: who published it, what it is, the link, and what we took from
+ * it (the dataset and its date, or "Egne beregninger på baggrund af data fra ..."). */
+export type GuideSource = { publisher: string; title: string; href: string; note?: string }
+
+/** The Kilder list: when every source was last checked (YYYY-MM-DD), then the sources. */
+export type GuideSources = { checked: string; items: GuideSource[] }
+
+
+const SITE = 'https://www.altidhjem.dk'
+
+/** A YYYY-MM-DD date that exists, or a thrown error: a wrong date must not reach Google. */
+function isoDate(value: string, field: string): Date {
+  const date = new Date(`${value}T00:00:00Z`)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== value) {
+    throw new Error(`Guide: ${field} must be a real date as YYYY-MM-DD, got "${value}"`)
+  }
+  return date
+}
+
+const DANISH_DATE = new Intl.DateTimeFormat('da-DK', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+
+function DateText({ value, field }: { value: string; field: string }) {
+  return <time dateTime={value}>{DANISH_DATE.format(isoDate(value, field))}</time>
+}
+
+/** JSON-LD as a script, with '<' escaped so text can never close the tag. */
+function JsonLd({ data }: { data: object }) {
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, '\\u003c') }} />
+}
 
 /** One illustration in the article, on a tinted card like the front page's blocks. */
 export function GuideFigure({ tone = 'sand', caption, children }: { tone?: 'sand' | 'mint' | 'sky' | 'honey' | 'lavender' | 'rose'; caption?: ReactNode; children: ReactNode }) {
@@ -102,6 +139,9 @@ export default function Guide({
   factors,
   faq,
   cta,
+  page,
+  sources,
+  related,
   children,
 }: {
   title: string
@@ -113,9 +153,66 @@ export default function Guide({
   factors?: GuideFactors
   faq: GuideFaq[]
   cta: { eyebrow: string; heading: string; subtitle: string }
+  /** The page's address, description and dates: shows the dates and the breadcrumb, and adds the
+   * Article and BreadcrumbList data. Required for new guides (docs/guide-recipe.md). */
+  page?: GuidePage
+  /** The Kilder list, at the end of the article; also the Article data's citations. */
+  sources?: GuideSources
+  /** "Læs også": the addresses of 3 related guides, shown as their blog cards (POSTS in
+   * components/sections/blogPosts.ts) after the questions, before the download panel. */
+  related?: string[]
   /** The article: one <section> per heading (or a GuideSteps). */
   children: ReactNode
 }) {
+  if (page) {
+    if (!/^\/[a-z0-9-]+$/.test(page.path)) throw new Error(`Guide: page.path must be one path segment like /hvad-koster-x, got "${page.path}"`)
+    if (isoDate(page.updated, 'page.updated') < isoDate(page.published, 'page.published')) {
+      throw new Error('Guide: page.updated is before page.published')
+    }
+  }
+  if (sources) {
+    isoDate(sources.checked, 'sources.checked')
+    if (!sources.items.length) throw new Error('Guide: sources needs at least one source')
+    for (const s of sources.items) {
+      if (!/^https?:\/\//.test(s.href)) throw new Error(`Guide: a source link must be a full address, got "${s.href}"`)
+    }
+  }
+  if (sources && !page) throw new Error('Guide: sources need page, for the Article data')
+  const relatedPosts = related?.map((href) => {
+    const post = POSTS.find((p) => p.href === href)
+    if (!post) throw new Error(`Guide: "Læs også" ${href} has no card in POSTS (components/sections/blogPosts.ts)`)
+    return post
+  })
+  if (related) {
+    if (related.length !== 3) throw new Error(`Guide: "Læs også" needs exactly 3 guides, got ${related.length}`)
+    if (new Set(related).size !== related.length) throw new Error('Guide: a "Læs også" guide is listed twice')
+    if (page && related.includes(page.path)) throw new Error('Guide: "Læs også" lists the page itself')
+  }
+  const url = page ? `${SITE}${page.path}` : null
+  const organisation = { '@type': 'Organization', name: 'Altid Hjem ApS', url: SITE, logo: `${SITE}/app-badge.png` }
+  const articleSchema = page && {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description: page.description,
+    url,
+    mainEntityOfPage: url,
+    inLanguage: 'da-DK',
+    image: `${SITE}/opengraph-image.png`,
+    datePublished: page.published,
+    dateModified: page.updated,
+    author: organisation,
+    publisher: organisation,
+    ...(sources ? { citation: sources.items.map((s) => ({ '@type': 'CreativeWork', name: `${s.publisher}: ${s.title}`, url: s.href })) } : {}),
+  }
+  const crumbsSchema = page && {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: GUIDE.crumbs.home, item: `${SITE}/` },
+      { '@type': 'ListItem', position: 2, name: title, item: url },
+    ],
+  }
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -133,21 +230,36 @@ export default function Guide({
         {NAV.skip}
       </a>
       <SiteNav base="/" storesHere />
-      <script
-        type="application/ld+json"
-        // '<' as <: JSON.stringify leaves '<' alone, so a later answer with '</script>'
-        // could otherwise break out of the tag.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
-      />
+      {/* JsonLd escapes '<': JSON.stringify leaves it alone, so a later answer with '</script>'
+          could otherwise break out of the tag. */}
+      <JsonLd data={faqSchema} />
+      {articleSchema ? <JsonLd data={articleSchema} /> : null}
+      {crumbsSchema ? <JsonLd data={crumbsSchema} /> : null}
       <main id="indhold" className="gd">
         <header className="gd-head">
           <div>
+            {page ? (
+              <nav className="gd-crumbs" aria-label={GUIDE.crumbs.label} data-rise="0">
+                <ol>
+                  <li>
+                    <Link href="/">{GUIDE.crumbs.home}</Link>
+                  </li>
+                  <li aria-current="page">{title}</li>
+                </ol>
+              </nav>
+            ) : null}
             <h1 className="t-h1" data-rise="0">
               {titleText(title)}
             </h1>
             <div className="gd-lead" data-rise="1">
               {lead}
             </div>
+            {page ? (
+              <p className="gd-dates" data-rise="1">
+                {GUIDE.published} <DateText value={page.published} field="page.published" /> · {GUIDE.updated}{' '}
+                <DateText value={page.updated} field="page.updated" />
+              </p>
+            ) : null}
             <p className="gd-meta" data-rise="1">
               {meta}
             </p>
@@ -181,6 +293,24 @@ export default function Guide({
 
         <article className="gd-body">
           {children}
+          {sources ? (
+            <section className="gd-sources" aria-labelledby="gd-sources">
+              <h2 id="gd-sources">{GUIDE.sources}</h2>
+              <p className="gd-checked">
+                {GUIDE.checked} <DateText value={sources.checked} field="sources.checked" />
+              </p>
+              <ol>
+                {sources.items.map((s) => (
+                  <li key={s.href + s.title}>
+                    <a href={s.href} target="_blank" rel="noopener noreferrer">
+                      {s.publisher}: {s.title}
+                    </a>
+                    {s.note ? <span>{s.note}</span> : null}
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ) : null}
           {/* The heading on the left with the card under it, the questions on the right, on the
               blocks' own columns (Thor 15/11: no empty space beside the questions). */}
           <section className="gd-faq-sec" aria-labelledby="gd-faq">
@@ -214,6 +344,23 @@ export default function Guide({
             </aside>
           </section>
         </article>
+
+        {/* After the questions, before the download panel: a reader not ready to download gets three
+            related guides to stay on the site with, as the front page's blog cards. */}
+        {relatedPosts ? (
+          <section className="gd-related" aria-labelledby="gd-related" data-reveal>
+            <h2 id="gd-related" className="t-h2">
+              {GUIDE.related}
+            </h2>
+            <ul>
+              {relatedPosts.map((post) => (
+                <li key={post.href}>
+                  <PostCard post={post} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         <section id={STORE_ANCHOR} className="gd-cta" data-surface="dark" aria-labelledby="gd-cta" data-reveal>
           {/* eslint-disable-next-line @next/next/no-img-element */}
