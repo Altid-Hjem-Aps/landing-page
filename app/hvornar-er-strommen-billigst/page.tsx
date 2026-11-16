@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { getElpriser, getNetselskaber, currentCopenhagenHour } from '@/lib/elpriser'
 import ElprisChart from '@/components/ElprisChart'
 import ElprisAppMockup from '@/components/ElprisAppMockup'
-import Guide, { GuideFigure, type GuideFaq } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideFigure, GuideStores } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Hvornår er strømmen billigst? Se elpriser time for time',
@@ -110,6 +110,7 @@ export default async function HvornarErStrommenBilligst() {
       meta="Elpriser time for time · opdateres løbende"
       answer={{ label: 'Typisk billigst', value: 'Om natten og midt på dagen', note: 'De dyreste timer ligger ofte omkring kl. 17-21.' }}
       faq={FAQ}
+      related={['/fastpris-eller-variabel-el', '/billigste-elselskab', '/gennemsnitligt-elforbrug']}
       cta={{
         eyebrow: 'Elprisen uden selv at holde øje',
         heading: 'Hent Altid Hjem, og få besked, når strømmen er billig',
@@ -172,6 +173,7 @@ export default async function HvornarErStrommenBilligst() {
 
       <section>
         <h2>Lad Altid Hjem holde øje med elprisen for dig</h2>
+        <GuideStores />
         <GuideFigure tone="sky">
           <ElprisAppMockup data={data} />
         </GuideFigure>

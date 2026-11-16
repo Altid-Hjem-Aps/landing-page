@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import AbonnementMockup from '@/components/AbonnementMockup'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideStores } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Opsig abonnementer, I ikke bruger | Altid Hjem',
@@ -96,6 +96,7 @@ export default function OpsigAbonnementer() {
       answer={{ label: 'Før I opsiger', value: 'Tjek binding og opsigelsesvarsel, og gem bekræftelsen.', note: 'De fleste kan opsiges via hjemmeside, app eller kundeservice.' }}
       factors={{ label: 'Gennemgå', items: ['Kontoudtog', 'Appbutikker', 'Delte abonnementer'] }}
       faq={FAQ}
+      related={['/hvad-koster-bredbaand', '/billigste-mobilabonnement', '/bedste-budget-app']}
       cta={{
         eyebrow: 'Glemte abonnementer gemmer sig',
         heading: 'Hent Altid Hjem, og find jeres abonnementer',
@@ -172,6 +173,7 @@ export default function OpsigAbonnementer() {
         <p>
           Læs også om forskellen på Altid Hjem og traditionelle <A href="/spiir-alternativ">budget- og kontooverblik-apps</A>.
         </p>
+        <GuideStores />
       </section>
     </Guide>
   )

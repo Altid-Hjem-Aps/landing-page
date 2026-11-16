@@ -1,11 +1,14 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { PostCard } from '@/components/sections/Blog'
 import { POSTS } from '@/components/sections/blogPosts'
 import StoreBadges from '@/components/StoreBadges'
 import { STORE_ANCHOR } from '@/lib/store-links'
+import AppRating from './AppRating'
 import { keepBrands, titleText } from './brand'
 import { GUIDE, NAV } from './copy'
+import PhoneBody from './PhoneBody'
 import { dmSans } from './fonts'
 import EngagementTracker from './EngagementTracker'
 import GetAppButton from './GetAppButton'
@@ -72,6 +75,54 @@ export function GuideFigure({ tone = 'sand', caption, children }: { tone?: 'sand
     <figure className="gd-figure" data-tone={tone}>
       <div className="gd-figure-art">{children}</div>
       {caption ? <figcaption>{caption}</figcaption> : null}
+    </figure>
+  )
+}
+
+/** The landing page's store buttons, for the section that tells how Altid Hjem helps: the two
+ * pills (a QR code each on a computer) and on a phone the one button to the visitor's own store,
+ * counted under position `help` and carrying the guide's own campaign, like every store link on
+ * a guide (Thor 16/11). */
+export function GuideStores() {
+  return (
+    <div className="gd-stores">
+      <StoreBadges position="help" variant="cream" size="lg" className="store-row" motion qr />
+      <GetAppButton position="help" />
+    </div>
+  )
+}
+
+/** A real app screen in the landing page's phone: the same iPhone front, depth (PhoneBody) and
+ * screen mask as CyclingPhone, standing still, since a guide has no motion controls. Put it in a
+ * GuideFigure whose caption starts with "I appen". */
+export function GuidePhone({ src, alt }: { src: string; alt: string }) {
+  return (
+    <div className="gd-phone">
+      <div className="ph">
+        <PhoneBody />
+        <div className="ph-screen">
+          <Image src={src} alt={alt} fill sizes="(max-width: 767px) 60vw, 300px" quality={75} style={{ objectFit: 'cover', objectPosition: '50% 0%' }} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/** The card in the section on how Altid Hjem helps: the landing page's proof (stars and how many
+ * Danes have the app) over its store buttons, beside a real app screen in the phone, so the
+ * phone never stands alone on an empty card (Thor 16/11). On a phone the proof and the button
+ * come first and the screen follows. */
+export function GuideApp({ tone = 'sand', src, alt, caption }: { tone?: 'sand' | 'mint' | 'sky' | 'honey' | 'lavender' | 'rose'; src: string; alt: string; caption: ReactNode }) {
+  return (
+    <figure className="gd-figure gd-app" data-tone={tone}>
+      <div className="gd-app-cta">
+        <AppRating />
+        <GuideStores />
+      </div>
+      <div className="gd-app-art">
+        <GuidePhone src={src} alt={alt} />
+        <figcaption>{caption}</figcaption>
+      </div>
     </figure>
   )
 }

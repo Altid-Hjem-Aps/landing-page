@@ -3594,6 +3594,113 @@
       color: rgba(0, 60, 22, 0.72);
     }
   }
+  /* A real app screen in the landing page's phone (GuidePhone), in a guide figure labelled
+     "I appen", and the landing page's store buttons under the help section's text (GuideStores). */
+  .gd-phone {
+    display: flex;
+    justify-content: center;
+    padding-block: 8px 24px;
+
+    .ph {
+      --w: min(calc(var(--u) * 280), 60vw);
+    }
+  }
+  .gd-stores {
+    margin-top: 24px;
+
+    .store-row {
+      justify-content: flex-start;
+    }
+  }
+  /* The article's link style (.gd-body a: Forest, underlined) must not reach the store buttons,
+     or the phone's button reads Forest on Forest. */
+  .gd-body .gd-stores a {
+    text-decoration: none;
+  }
+  .gd-body .gd-stores .get-btn {
+    color: var(--cream);
+  }
+  /* GuideApp: the proof and the store buttons beside the phone, on one card. */
+  .gd-figure.gd-app {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-items: center;
+    column-gap: clamp(40px, 7vw, 112px);
+    padding: 40px 40px 32px;
+
+    .gd-phone {
+      padding-block: 0;
+
+      .ph {
+        --w: clamp(220px, calc(var(--u) * 280), 280px);
+      }
+    }
+    figcaption {
+      max-width: 280px;
+      margin-top: 20px;
+    }
+  }
+  /* The landing page's proof, grown into the card's headline: stars above, the count in the
+     display face, so the column beside the phone is not left empty. */
+  .gd-app-cta {
+    .h-rating {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      margin-top: 0;
+    }
+    .h-rating-text {
+      max-width: 11em;
+      white-space: normal;
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(28px, 18px + 1.4vw, 44px);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: var(--forest);
+      text-wrap: balance;
+    }
+    .h-stars {
+      width: 132px;
+      height: 22px;
+    }
+    .gd-stores {
+      margin-top: 28px;
+    }
+  }
+  /* Below a computer the card stacks: the proof and the buttons first, the screen after. */
+  @media (max-width: 1023px) {
+    .gd-figure.gd-app {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+      justify-content: stretch;
+      padding: 32px 16px 24px;
+
+      .gd-phone .ph {
+        --w: min(280px, 60vw);
+      }
+      figcaption {
+        max-width: 34em;
+      }
+    }
+    .gd-app-cta {
+      .h-rating {
+        align-items: center;
+        gap: 10px;
+      }
+      .h-rating-text {
+        margin-inline: auto;
+        text-align: center;
+      }
+      .gd-stores {
+        margin-top: 20px;
+      }
+      .store-row {
+        justify-content: center;
+      }
+    }
+  }
   .gd-checked {
     font-size: 14px;
     color: rgba(0, 60, 22, 0.72);

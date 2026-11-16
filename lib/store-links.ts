@@ -26,7 +26,8 @@ export function guideCampaign(slug: string): string {
 
 export const STORES = ['appstore', 'play'] as const
 export type Store = (typeof STORES)[number]
-export const STORE_POSITIONS = ['hero', 'founder', 'how-it-works', 'bottom', 'nav', 'footer', 'side', 'popup', 'energi'] as const
+/** Where a store button sits. `help` is a guide's "Hvordan kan Altid Hjem hjælpe?" section (GuideStores). */
+export const STORE_POSITIONS = ['hero', 'founder', 'how-it-works', 'bottom', 'nav', 'footer', 'side', 'popup', 'energi', 'help'] as const
 export type StorePosition = (typeof STORE_POSITIONS)[number]
 
 /** The element every "Hent appen" control scrolls to: the final CTA's text and pills on

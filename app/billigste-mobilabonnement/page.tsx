@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import MobilOverblikMockup from '@/components/MobilOverblikMockup'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideStores } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Billigste mobilabonnement i 2026 | Altid Hjem',
@@ -88,6 +88,7 @@ export default function BilligsteMobilabonnement() {
       answer={{ label: 'Priser fra ca.', value: '19', unit: 'kr. om måneden', note: 'Fri tale starter ofte ved ca. 29-49 kr. om måneden.' }}
       factors={{ label: 'Se også på', items: ['Data', 'Dækning', 'Vilkår', 'Husstandens samlede udgift'] }}
       faq={FAQ}
+      related={['/hvad-koster-bredbaand', '/opsig-abonnementer', '/bedste-budget-app']}
       cta={{
         eyebrow: 'Ét overblik over hele husstanden',
         heading: 'Hent Altid Hjem, og få overblik over husstanden',
@@ -173,6 +174,7 @@ export default function BilligsteMobilabonnement() {
         <p>
           Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder.
         </p>
+        <GuideStores />
       </section>
     </Guide>
   )

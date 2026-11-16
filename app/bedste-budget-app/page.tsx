@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import BudgetAppSammenligning from '@/components/BudgetAppSammenligning'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideStores } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Bedste budget-app til jeres økonomi | Altid Hjem',
@@ -177,6 +177,7 @@ export default function BedsteBudgetApp() {
         </p>
         <p>Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder.</p>
         <p>I kan hente appen gratis i App Store og Google Play.</p>
+        <GuideStores />
       </section>
     </Guide>
   )

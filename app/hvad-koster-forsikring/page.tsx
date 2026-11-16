@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
-import Guide, { GuideFigure, type GuideFaq } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideFigure, GuideStores } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Hvad koster forsikring i 2026? Se priser | Altid Hjem',
@@ -104,7 +104,7 @@ export default function HvadKosterForsikring() {
       meta="Opdateret: juni 2026"
       answer={{ label: 'De fleste private forsikringer', value: '30-900', unit: 'kr. om måneden', note: 'Indboforsikring i den lave ende, bilforsikring i den høje.' }}
       faq={FAQ}
-      related={['/hvad-koster-en-husforsikring', '/hvad-koster-indboforsikring', '/skift-forsikringsselskab']}
+      related={['/hvad-koster-en-husforsikring', '/hvad-koster-en-bilforsikring', '/hvad-koster-indboforsikring']}
       cta={{
         eyebrow: 'Alle jeres forsikringer ét sted',
         heading: 'Hent Altid Hjem, og saml jeres forsikringer',
@@ -191,6 +191,7 @@ export default function HvadKosterForsikring() {
           Altid Hjem er bygget af holdet bag Altid Energi, hvor mere end 15.000 danskere allerede får gennemsigtig strøm til en fair pris. Nu tager vi samme princip videre
           til resten af hjemmet: færre skjulte udgifter, færre spredte regninger og mere kontrol.
         </p>
+        <GuideStores />
       </section>
     </Guide>
   )

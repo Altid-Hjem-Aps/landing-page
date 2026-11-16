@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import GebyrMockup from '@/components/GebyrMockup'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideStores } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Billigste elselskab, sådan sammenligner du | Altid Hjem',
@@ -94,6 +94,7 @@ export default function BilligsteElselskab() {
       answer={{ label: 'Kort svar', value: 'Se på tillæg og gebyrer, ikke kun prisen pr. kWh.', note: 'Spotprisen følger markedet. Elselskabet konkurrerer på sit tillæg og sine gebyrer.' }}
       factors={{ label: 'Sammenlign', items: ['Spotpris', 'Tillæg', 'Gebyrer'] }}
       faq={FAQ}
+      related={['/fastpris-eller-variabel-el', '/hvornar-er-strommen-billigst', '/gennemsnitligt-elforbrug']}
       cta={{
         eyebrow: 'Strøm og overblik i samme app',
         heading: 'Hent Altid Hjem, og følg din strøm time for time',
@@ -177,6 +178,7 @@ export default function BilligsteElselskab() {
           Altid Energi har mere end 15.000 danske kunder. I appen ser du elprisen time for time, og du kan blive kunde direkte, hvis du ikke allerede er det.
         </p>
         <p>Du kan hente appen gratis i App Store og Google Play.</p>
+        <GuideStores />
       </section>
     </Guide>
   )
