@@ -22,6 +22,8 @@ export const SAGE_WASH = 'rgba(168,224,99,0.18)'
 export const RED_WASH = 'rgba(192,57,43,0.1)'
 // Secondary text on forest: high enough for small functional text (≥4.5:1).
 export const ON_FOREST_MUTED = 'rgba(255,255,255,0.78)'
+/** Warning tone (the Altid Mad illustrations' over-budget and dearest-chain marks). */
+export const AMBER = { wash: 'rgba(232,139,47,0.15)', ink: '#7d430e' }
 
 /* Motion tokens: EASE_OUT for entrances/reveals (fast start, soft landing),
  * EASE_STANDARD for state/colour changes, EASE_OVERSHOOT only for small

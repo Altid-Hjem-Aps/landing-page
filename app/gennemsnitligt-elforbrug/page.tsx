@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: 'Gennemsnitligt elforbrug i hjemmet | Altid Hjem',
   description:
     'Se typisk elforbrug for lejlighed og hus, sammenlign jeres kWh med vejledende niveauer, og få konkrete råd til at forstå og sænke forbruget.',
-  alternates: { canonical: 'https://altidhjem.dk/gennemsnitligt-elforbrug' },
+  alternates: { canonical: 'https://www.altidhjem.dk/gennemsnitligt-elforbrug' },
   openGraph: {
     title: 'Hvad er et normalt elforbrug?',
     description:
       'Se typisk elforbrug for lejlighed og hus, sammenlign jeres kWh med vejledende niveauer, og få konkrete råd til at forstå og sænke forbruget.',
-    url: 'https://altidhjem.dk/gennemsnitligt-elforbrug',
+    url: 'https://www.altidhjem.dk/gennemsnitligt-elforbrug',
     type: 'article',
   },
 }

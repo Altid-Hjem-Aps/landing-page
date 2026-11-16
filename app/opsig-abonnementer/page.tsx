@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: 'Opsig abonnementer, I ikke bruger | Altid Hjem',
   description:
     'Find alle husstandens abonnementer, tjek binding og opsig korrekt. Få en enkel guide til at rydde op, og hent Altid Hjem gratis.',
-  alternates: { canonical: 'https://altidhjem.dk/opsig-abonnementer' },
+  alternates: { canonical: 'https://www.altidhjem.dk/opsig-abonnementer' },
   openGraph: {
     title: 'Sådan opsiger I husstandens abonnementer',
     description:
       'Find alle husstandens abonnementer, tjek binding og opsig korrekt. Få en enkel guide til at rydde op, og hent Altid Hjem gratis.',
-    url: 'https://altidhjem.dk/opsig-abonnementer',
+    url: 'https://www.altidhjem.dk/opsig-abonnementer',
     type: 'article',
   },
 }

@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: 'Pris på indboforsikring i 2026 | Altid Hjem',
   description:
     'Se, hvad en indboforsikring typisk koster, hvorfor prisen varierer, og hvad du bør tjekke før et skifte. Få et ærligt overblik hos Altid Hjem.',
-  alternates: { canonical: 'https://altidhjem.dk/hvad-koster-indboforsikring' },
+  alternates: { canonical: 'https://www.altidhjem.dk/hvad-koster-indboforsikring' },
   openGraph: {
     title: 'Hvad koster en indboforsikring?',
     description:
       'Se, hvad en indboforsikring typisk koster, hvorfor prisen varierer, og hvad du bør tjekke før et skifte. Få et ærligt overblik hos Altid Hjem.',
-    url: 'https://altidhjem.dk/hvad-koster-indboforsikring',
+    url: 'https://www.altidhjem.dk/hvad-koster-indboforsikring',
     type: 'article',
   },
 }

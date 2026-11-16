@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Kom med på Altid Hjem',
     description: 'Bedre råd til hjemmet. Hent appen med mit link.',
-    url: 'https://altidhjem.dk/inviter',
+    url: 'https://www.altidhjem.dk/inviter',
     siteName: 'Altid Hjem',
     type: 'website',
   },

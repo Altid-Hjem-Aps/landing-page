@@ -30,19 +30,24 @@ const nextConfig: NextConfig = {
         destination: "https://altidmad.dk/altid-mad-kvartalsrapport-q3.pdf",
         permanent: false,
       },
-      // Keep the canonical www host while serving app-association files on
-      // the apex host without a redirect.
+      // www is the one canonical host (every canonical, the sitemap and the
+      // old altidmad.dk and altidforsikring.dk redirects point there), so the
+      // apex answers with a permanent redirect. App-association files under
+      // .well-known stay on the apex without a redirect, and so does /api: mails
+      // already sent link apex /api/unsubscribe (also as the one-click
+      // List-Unsubscribe POST), which must not depend on a mail provider
+      // following a redirect.
       {
-        source: "/:path((?!\\.well-known).+)",
+        source: "/:path((?!\\.well-known|api/).+)",
         has: [{ type: "host", value: "altidhjem.dk" }],
         destination: "https://www.altidhjem.dk/:path",
-        permanent: false,
+        permanent: true,
       },
       {
         source: "/",
         has: [{ type: "host", value: "altidhjem.dk" }],
         destination: "https://www.altidhjem.dk/",
-        permanent: false,
+        permanent: true,
       },
     ];
   },

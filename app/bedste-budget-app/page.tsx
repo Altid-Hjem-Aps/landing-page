@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: 'Bedste budget-app til jeres økonomi | Altid Hjem',
   description:
     'Få en ærlig guide til budget-apps, faste aftaler og økonomisk overblik. Se forskellen på værktøjerne, og find den løsning, der passer til jer.',
-  alternates: { canonical: 'https://altidhjem.dk/bedste-budget-app' },
+  alternates: { canonical: 'https://www.altidhjem.dk/bedste-budget-app' },
   openGraph: {
     title: 'Hvilken budget-app er bedst til jeres behov?',
     description:
       'Få en ærlig guide til budget-apps, faste aftaler og økonomisk overblik. Se forskellen på værktøjerne, og find den løsning, der passer til jer.',
-    url: 'https://altidhjem.dk/bedste-budget-app',
+    url: 'https://www.altidhjem.dk/bedste-budget-app',
     type: 'article',
   },
 }

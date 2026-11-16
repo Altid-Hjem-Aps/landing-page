@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: 'Billigste mobilabonnement i 2026 | Altid Hjem',
   description:
     'Find det billigste mobilabonnement til hele husstanden. Se vejledende priser, typiske faldgruber og få en enkel tjekliste. Hent Altid Hjem, og få overblik over husstanden.',
-  alternates: { canonical: 'https://altidhjem.dk/billigste-mobilabonnement' },
+  alternates: { canonical: 'https://www.altidhjem.dk/billigste-mobilabonnement' },
   openGraph: {
     title: 'Det billigste mobilabonnement til hele husstanden',
     description:
       'Find det billigste mobilabonnement til hele husstanden. Se vejledende priser, typiske faldgruber og få en enkel tjekliste. Hent Altid Hjem, og få overblik over husstanden.',
-    url: 'https://altidhjem.dk/billigste-mobilabonnement',
+    url: 'https://www.altidhjem.dk/billigste-mobilabonnement',
     type: 'article',
   },
 }

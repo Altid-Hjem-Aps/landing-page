@@ -65,7 +65,7 @@ export const privacyPolicy: PrivacyPolicy = {
     {
       title: '2. Venteliste og nyhedsbrev',
       blocks: [
-        { type: 'paragraph', text: 'Indtil Altid Hjem-appen er lanceret, kan du tilmelde dig ventelisterne via altidhjem.dk, altidmad.dk eller altidforsikring.dk. Ventelisterne for Altid Hjem og Altid Mad er en fælles venteliste, mens Altid Forsikring har sin egen separate venteliste. Altid Hjem ApS er dataansvarlig for alle tre ventelister. Følgende særlige regler gælder for behandlingen af oplysninger fra ventelisterne. Afsnit 9 (Dine rettigheder) og afsnit 10 (Klage) gælder også for ventelisteoplysninger.' },
+        { type: 'paragraph', text: 'Indtil november 2026 kunne du tilmelde dig ventelisterne via altidhjem.dk, altidmad.dk eller altidforsikring.dk. Ventelisterne er nu lukket, og altidmad.dk og altidforsikring.dk sender dig videre til altidhjem.dk. Ventelisterne for Altid Hjem og Altid Mad er en fælles venteliste, mens Altid Forsikring har sin egen separate venteliste. Altid Hjem ApS er dataansvarlig for alle tre ventelister. Følgende særlige regler gælder for behandlingen af oplysninger fra ventelisterne. Afsnit 9 (Dine rettigheder) og afsnit 10 (Klage) gælder også for ventelisteoplysninger.' },
         { type: 'label', text: 'Hvilke oplysninger indsamler vi?' },
         {
           type: 'list',
