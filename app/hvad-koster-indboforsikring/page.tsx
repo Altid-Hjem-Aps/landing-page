@@ -93,6 +93,7 @@ export default function HvadKosterIndboforsikring() {
       answer={{ label: 'Typisk pris', value: '100-400', unit: 'kr. om måneden', note: 'Ca. 1.800 kr. om året i gennemsnit.', range: { max: 450, low: 100, high: 400, markLow: 150, markHigh: 160, markLabel: 'Gennemsnit 150-160 kr.', unit: 'kr.' } }}
       factors={{ label: 'Det påvirker prisen', items: ['Postnummer', 'Indbosum', 'Selvrisiko', 'Alder', 'Tilvalg'] }}
       faq={FAQ}
+      related={['/hvad-koster-en-husforsikring', '/hvad-koster-forsikring', '/skift-forsikringsselskab']}
       cta={{
         eyebrow: 'Alle jeres forsikringer ét sted',
         heading: 'Hent Altid Hjem, og saml husstandens forsikringer',

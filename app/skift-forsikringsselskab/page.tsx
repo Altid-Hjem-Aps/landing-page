@@ -94,6 +94,7 @@ export default function SkiftForsikringsselskab() {
       answer={{ label: 'Kort svar', value: 'Få den nye police bekræftet, før den gamle ophører.', note: 'Det nye selskab kan ofte stå for opsigelsen.' }}
       factors={{ label: 'Sammenlign', items: ['Dækning', 'Selvrisiko', 'Tilvalg', 'Pris'] }}
       faq={FAQ}
+      related={['/hvad-koster-en-husforsikring', '/hvad-koster-forsikring', '/hvad-koster-indboforsikring']}
       cta={{
         eyebrow: 'Alle jeres forsikringer ét sted',
         heading: 'Hent Altid Hjem, og saml jeres forsikringer, før I skifter',
