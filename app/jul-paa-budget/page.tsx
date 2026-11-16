@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import JulekurvMockup from '@/components/mad/JulekurvMockup'
 import { MAD_GUIDE_CTA, MAD_IN_APP, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
 import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Moved from altidmad.dk/jul-paa-budget (16 Nov 2026): the article text is word for word, only
 // the sign-up sentences from before the launch (no longer true) were rewritten to be true on altidhjem.dk, and the description lost its
@@ -67,7 +68,7 @@ const FAQ: GuideFaq[] = [
 export default function JulPaaBudget() {
   return (
     <Guide
-      title="Jul på budget uden at spare på hyggen"
+      title={GUIDES['/jul-paa-budget'].title}
       lead={
         <>
           <p>
@@ -92,7 +93,7 @@ export default function JulPaaBudget() {
       }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
-      page={{ path: '/jul-paa-budget', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      page={{ path: '/jul-paa-budget', description: metadata.description as string, published: GUIDES['/jul-paa-budget'].published, updated: GUIDES['/jul-paa-budget'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

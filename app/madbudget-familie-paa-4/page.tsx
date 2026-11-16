@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import MadbudgetBenchmark from '@/components/mad/MadbudgetBenchmark'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
 import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Moved from altidmad.dk/madbudget-familie-paa-4 (16 Nov 2026) with the text word for word.
 export const metadata: Metadata = {
@@ -67,7 +68,7 @@ const FAQ: GuideFaq[] = [
 export default function MadbudgetFamiliePaa4() {
   return (
     <Guide
-      title="Hvad koster mad til en familie på 4?"
+      title={GUIDES['/madbudget-familie-paa-4'].title}
       lead={
         <>
           <p>
@@ -98,7 +99,7 @@ export default function MadbudgetFamiliePaa4() {
       factors={{ label: 'Det påvirker budgettet', items: ['Børnenes alder', 'Familiens appetit', 'Madpakker', 'Valg af supermarked'] }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
-      page={{ path: '/madbudget-familie-paa-4', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      page={{ path: '/madbudget-familie-paa-4', description: metadata.description as string, published: GUIDES['/madbudget-familie-paa-4'].published, updated: GUIDES['/madbudget-familie-paa-4'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getElpriser, getNetselskaber, currentCopenhagenHour } from '@/lib/elpriser'
 import ElprisChart from '@/components/ElprisChart'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A, GuideSteps } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Brought up to the recipe (docs/guide-recipe.md, ALT-1714) on 16 Nov 2026. The hours in the text are
 // our own averages of Energinet's day-ahead prices for October 2026; the live chart keeps its own
@@ -88,7 +89,7 @@ export default async function HvornarErStrommenBilligst() {
 
   return (
     <Guide
-      title="Hvornår er strømmen billigst?"
+      title={GUIDES['/hvornar-er-strommen-billigst'].title}
       lead={
         <>
           <p>
@@ -114,7 +115,7 @@ export default async function HvornarErStrommenBilligst() {
         heading: 'Hent Altid Hjem, og hold øje med elprisen',
         subtitle: 'I appen ser I elprisen time for time.',
       }}
-      page={{ path: '/hvornar-er-strommen-billigst', description: metadata.description as string, published: '2026-06-25', updated: '2026-11-16' }}
+      page={{ path: '/hvornar-er-strommen-billigst', description: metadata.description as string, published: GUIDES['/hvornar-er-strommen-billigst'].published, updated: GUIDES['/hvornar-er-strommen-billigst'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

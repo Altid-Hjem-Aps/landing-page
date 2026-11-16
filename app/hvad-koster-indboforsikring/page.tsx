@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
 import IndboTjekMockup from '@/components/IndboTjekMockup'
 import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideSteps, GuideStores } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Brought up to the guide recipe (docs/guide-recipe.md) on 16 Nov 2026. The old range of 100 to
 // 400 kr. a month and the average of 150 to 160 kr. had no source; the page now leads with
@@ -84,7 +85,7 @@ const FAQ: GuideFaq[] = [
 export default function HvadKosterIndboforsikring() {
   return (
     <Guide
-      title="Hvad koster en indboforsikring?"
+      title={GUIDES['/hvad-koster-indboforsikring'].title}
       lead={
         <>
           <p>
@@ -108,7 +109,7 @@ export default function HvadKosterIndboforsikring() {
         heading: 'Hent Altid Hjem, og saml husstandens forsikringer',
         subtitle: 'Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted.',
       }}
-      page={{ path: '/hvad-koster-indboforsikring', description: metadata.description as string, published: '2026-07-27', updated: '2026-11-16' }}
+      page={{ path: '/hvad-koster-indboforsikring', description: metadata.description as string, published: GUIDES['/hvad-koster-indboforsikring'].published, updated: GUIDES['/hvad-koster-indboforsikring'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

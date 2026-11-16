@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import GraensehandelCalculator from '@/components/mad/GraensehandelCalculator'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
 import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Moved from altidmad.dk/graensehandel-beregner (16 Nov 2026): the article text is word for
 // word, only the sign-up sentence from before the launch (no longer true) was rewritten to be true on altidhjem.dk.
@@ -65,7 +66,7 @@ const FAQ: GuideFaq[] = [
 export default function GraensehandelBeregner() {
   return (
     <Guide
-      title="Kan grænsehandel betale sig?"
+      title={GUIDES['/graensehandel-beregner'].title}
       lead={
         <>
           <p>
@@ -95,7 +96,7 @@ export default function GraensehandelBeregner() {
       factors={{ label: 'Det afhænger af', items: ['Afstanden til grænsen', 'Bilens forbrug', 'Brændstofprisen', 'Den besparelse, I forventer'] }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
-      page={{ path: '/graensehandel-beregner', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      page={{ path: '/graensehandel-beregner', description: metadata.description as string, published: GUIDES['/graensehandel-beregner'].published, updated: GUIDES['/graensehandel-beregner'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

@@ -1,11 +1,13 @@
 /// <reference types="vite/client" />
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
-// The pure entry: no automatic cleanup after each test, since one render per guide serves all five.
+// The pure entry: no automatic cleanup after each test, since one render per guide serves all its tests.
 import { cleanup, render } from '@testing-library/react/pure'
 import type { Metadata } from 'next'
 import type { ReactElement } from 'react'
+import { GET as guidesJson } from '@/app/guides.json/route'
 import { MAD_REPORT_HREF } from '@/components/mad/madGuide'
 import { GUIDE_PATHS } from '@/lib/site-counts'
+import PlantedGuide from './fixtures/planted-guide'
 
 // The guide checks (ALT-1519, docs/guide-recipe.md section 6). Every guide on the site, old or
 // new, is held to three rules in CI instead of by hand:
@@ -22,6 +24,10 @@ import { GUIDE_PATHS } from '@/lib/site-counts'
 //      Altid Energi or the app, no promised app feature.
 // A sentence that breaks a rule but is kept on purpose goes in ALLOWED with who decided and when.
 // Only that sentence is excused, and an entry that no longer matches its page fails.
+// Every guide not in OLD_GUIDES (the 25 guides on the site on 16 Nov 2026, frozen) is also held to
+// the recipe's part 8 whatever its dates say: published on or after 17 Nov 2026, 900 to 1,300 words
+// in the article, at least 4 of 5 of the article's headings questions. A planted guide
+// (test/fixtures/planted-guide.tsx) proves the checks fail.
 
 vi.mock('@/components/site/SiteNav', () => ({ default: () => null }))
 vi.mock('@/components/site/SiteFooter', () => ({ default: () => null }))
@@ -115,6 +121,97 @@ const OUR_ANALYSIS = /Altid Mads? (analyse|pristjek)|Altid Mad-rapporten/g
 const PROMISE = /(\bsnart\b|\bpå vej\b|senere i år|\bvil (?:snart )?kunne\b|kommer til at kunne|\blanceres?\b|\blancerer\b)/i
 const ILLUSTRATION = 'Illustration, ikke et skærmbillede fra appen.'
 const ABBREVIATIONS = /\b(bl\.a|ca|kr|pct|f\.eks|fx|nr|jf|evt|inkl|ekskl|mio|mia|stk)\./gi
+
+/** The 25 guides on the site on 16 Nov 2026, before the length and question-heading checks. They
+ * are exempt from those checks for good, also after a later change rewrites them or their dates.
+ * Frozen: never add a path. Every other guide gets the checks, whatever its dates say. */
+const OLD_GUIDES: readonly string[] = [
+  '/bedste-budget-app',
+  '/billigste-elselskab',
+  '/billigste-mobilabonnement',
+  '/billigste-supermarked',
+  '/fastpris-eller-variabel-el',
+  '/gennemsnitligt-elforbrug',
+  '/graensehandel-beregner',
+  '/hvad-koster-bredbaand',
+  '/hvad-koster-en-bilforsikring',
+  '/hvad-koster-en-husforsikring',
+  '/hvad-koster-en-ladeboks',
+  '/hvad-koster-en-tyverialarm',
+  '/hvad-koster-forsikring',
+  '/hvad-koster-indboforsikring',
+  '/hvornar-er-strommen-billigst',
+  '/jul-paa-budget',
+  '/mad-for-3000-om-maaneden',
+  '/madbudget',
+  '/madbudget-familie-paa-4',
+  '/madpakker-paa-budget',
+  '/madplan-efter-tilbud',
+  '/opsig-abonnementer',
+  '/skift-forsikringsselskab',
+  '/spar-penge-paa-dagligvarer',
+  '/spiir-alternativ',
+]
+
+/** A guide not in OLD_GUIDES is published on this day or later. */
+const NEW_GUIDES_FROM = '2026-11-17'
+
+/** The page's Article data, as Google reads it. */
+function articleData(page: HTMLElement) {
+  const data = [...page.querySelectorAll('script[type="application/ld+json"]')].flatMap((s) => [JSON.parse(s.innerHTML)].flat())
+  const article = data.find((d) => d['@type'] === 'Article')
+  if (!article) throw new Error('The guide has no Article data')
+  return article as { datePublished: string; dateModified: string }
+}
+
+/** The article's own parts: every child of the article except Kilder, the questions, asides and
+ * figures, whatever its tag, so text moved out of a <section> still counts. */
+function articleParts(page: HTMLElement) {
+  return [...page.querySelectorAll('.gd-body')]
+    .flatMap((body) => [...body.children])
+    .filter((el) => !el.matches('.gd-sources, .gd-faq-sec, .gd-related, .gd-cta, aside, figure'))
+    .map((el) => {
+      const copy = el.cloneNode(true) as Element
+      copy.querySelectorAll('figure, aside, .gd-eyebrow').forEach((child) => child.remove())
+      return copy
+    })
+}
+
+/** Words in the article as the recipe counts them (part 8): headings, paragraphs, lists, tables and
+ * checklist steps. Not the questions, Kilder, figures (captions, drawn examples, the app card) or
+ * the step numbers. */
+function articleWords(page: HTMLElement) {
+  return articleParts(page)
+    .flatMap((part) => {
+      // A space after every block, so a heading's last word and the next paragraph's first stay two.
+      part.querySelectorAll('h2, h3, p, li, td, th, caption, div').forEach((el) => el.append(' '))
+      return part.textContent!.split(/\s+/)
+    })
+    .filter((word) => /[\p{L}\p{N}]/u.test(word)).length
+}
+
+/** Every h2 in the article, also a second one in a section and one outside a section. */
+function articleHeadings(page: HTMLElement) {
+  return articleParts(page).flatMap((part) => [...(part.matches('h2') ? [part] : []), ...part.querySelectorAll('h2')].map((h) => h.textContent!.trim()))
+}
+
+/** What breaks the recipe's part 8 on a guide, by check; nothing for a guide in OLD_GUIDES. */
+function newGuideProblems(path: string, page: HTMLElement) {
+  if (OLD_GUIDES.includes(path)) return { date: [], length: [], headings: [] }
+  const published = articleData(page).datePublished
+  const words = articleWords(page)
+  const headings = articleHeadings(page)
+  const statements = headings.filter((h) => !h.endsWith('?'))
+  return {
+    date: published >= NEW_GUIDES_FROM ? [] : [`published ${published}; a guide that is not one of the old 25 is published on or after ${NEW_GUIDES_FROM}`],
+    length: words >= 900 && words <= 1300 ? [] : [`the article has ${words} words; the recipe asks for 900 to 1,300`],
+    // At least 4 of 5: questions x 5 >= headings x 4, which is statements x 5 <= headings.
+    headings:
+      headings.length && statements.length * 5 <= headings.length
+        ? []
+        : [`${headings.length - statements.length} of ${headings.length} headings are questions; the recipe asks for at least 4 of 5. Not questions: ${statements.join(' | ')}`],
+  }
+}
 
 /** An element's text with its parts kept apart ("2024" and "21.227" in the answer card). */
 function textOf(el: Element) {
@@ -273,5 +370,61 @@ describe.each(GUIDE_PATHS)('%s', (path) => {
       }
     }
     expect([...new Set(problems)]).toEqual([])
+  })
+
+  it('has the title and dates /guides.json lists for it', async () => {
+    const { guides } = (await guidesJson().json()) as { guides: { path: string; title: string; published: string; updated: string }[] }
+    const listed = guides.find((g) => g.path === path)
+    // The H1 keeps brand names together with a no-break space and long words breakable with a soft hyphen.
+    const h1 = page.querySelector('h1')!.textContent!.replace(/\u00a0/g, ' ').replace(/\u00ad/g, '')
+    const article = articleData(page)
+    expect({ title: h1, published: article.datePublished, updated: article.dateModified }).toEqual({ title: listed?.title, published: listed?.published, updated: listed?.updated })
+  })
+
+  it('is published on or after 17 Nov 2026, unless it is one of the old 25', () => {
+    expect(newGuideProblems(path, page).date).toEqual([])
+  })
+
+  it('has 900 to 1,300 words in the article, unless it is one of the old 25', () => {
+    expect(newGuideProblems(path, page).length).toEqual([])
+  })
+
+  it('has questions for at least 4 of 5 headings in the article, unless it is one of the old 25', () => {
+    expect(newGuideProblems(path, page).headings).toEqual([])
+  })
+})
+
+describe('the checks for guides that are not one of the old 25', () => {
+  const question = (n: number) => `Hvad er spørgsmål ${n}?`
+  const statement = (n: number) => `Udsagn ${n}`
+  /** An article of `words` words in all, its headings included: one part per heading. */
+  const article = ({ questions, statements = 0, words, tag = 'section' as const }: { questions: number; statements?: number; words: number; tag?: 'section' | 'div' }) => {
+    const headings = [...Array.from({ length: questions }, (_, i) => question(i + 1)), ...Array.from({ length: statements }, (_, i) => statement(i + 1))]
+    const rest = words - headings.join(' ').split(' ').length
+    return headings.map((heading, i) => ({ tag, headings: [heading], words: Math.floor(rest / headings.length) + (i === 0 ? rest % headings.length : 0) }))
+  }
+
+  it.each([
+    { name: '899 words fails on length', path: '/plantet-guide', published: '2026-11-17', parts: article({ questions: 9, words: 899 }), fails: ['length'] },
+    { name: '900 words passes', path: '/plantet-guide', published: '2026-11-17', parts: article({ questions: 9, words: 900 }), fails: [] },
+    { name: '1,300 words passes', path: '/plantet-guide', published: '2026-11-17', parts: article({ questions: 9, words: 1300 }), fails: [] },
+    { name: '1,301 words fails on length', path: '/plantet-guide', published: '2026-11-17', parts: article({ questions: 9, words: 1301 }), fails: ['length'] },
+    { name: '4 of 5 question headings passes', path: '/plantet-guide', published: '2026-11-17', parts: article({ questions: 4, statements: 1, words: 1000 }), fails: [] },
+    { name: '3 of 5 question headings fails', path: '/plantet-guide', published: '2026-11-17', parts: article({ questions: 3, statements: 2, words: 1000 }), fails: ['headings'] },
+    { name: '8 of 9 question headings passes', path: '/plantet-guide', published: '2026-11-17', parts: article({ questions: 8, statements: 1, words: 1000 }), fails: [] },
+    { name: '7 of 9 question headings fails', path: '/plantet-guide', published: '2026-11-17', parts: article({ questions: 7, statements: 2, words: 1000 }), fails: ['headings'] },
+    { name: '8 of 10 question headings passes', path: '/plantet-guide', published: '2026-11-17', parts: article({ questions: 8, statements: 2, words: 1000 }), fails: [] },
+    { name: '7 of 10 question headings fails', path: '/plantet-guide', published: '2026-11-17', parts: article({ questions: 7, statements: 3, words: 1000 }), fails: ['headings'] },
+    // 5 sections, each a question then a statement (6 heading words) and 194 words: 1,000 words.
+    { name: 'a second heading in a section counts', path: '/plantet-guide', published: '2026-11-17', parts: Array.from({ length: 5 }, (_, i) => ({ tag: 'section' as const, headings: [question(i + 1), statement(i + 1)], words: 194 })), fails: ['headings'] },
+    { name: 'text in a div counts like a section', path: '/plantet-guide', published: '2026-11-17', parts: article({ questions: 8, words: 1000, tag: 'div' }), fails: [] },
+    { name: 'headings in a div count like a section', path: '/plantet-guide', published: '2026-11-17', parts: article({ questions: 2, statements: 6, words: 1000, tag: 'div' }), fails: ['headings'] },
+    { name: 'a date before 17 Nov 2026 does not exempt a new guide', path: '/plantet-guide', published: '2026-11-16', parts: article({ questions: 2, statements: 6, words: 400 }), fails: ['date', 'length', 'headings'] },
+    { name: 'one of the old 25 is exempt', path: '/madbudget', published: '2026-11-17', parts: article({ questions: 2, statements: 6, words: 400 }), fails: [] },
+  ])('$name', ({ path, published, parts, fails }) => {
+    const page = render(<PlantedGuide published={published} parts={parts} />).container
+    const problems = newGuideProblems(path, page)
+    expect(Object.entries(problems).filter(([, p]) => p.length).map(([check]) => check), JSON.stringify(problems)).toEqual(fails)
+    cleanup()
   })
 })

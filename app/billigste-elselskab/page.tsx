@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Guide, { type GuideFaq, GuideApp, GuideLink as A, GuideSteps } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Brought up to the recipe (docs/guide-recipe.md, ALT-1714) on 16 Nov 2026. No company is named as
 // the cheapest: the page explains what to compare, with Forbrugerrådet Tænk's test, Forsyningstilsynet
@@ -76,7 +77,7 @@ const FAQ: GuideFaq[] = [
 export default function BilligsteElselskab() {
   return (
     <Guide
-      title="Hvilket elselskab er billigst?"
+      title={GUIDES['/billigste-elselskab'].title}
       lead={
         <>
           <p>
@@ -106,7 +107,7 @@ export default function BilligsteElselskab() {
         heading: 'Hent Altid Hjem, og følg jeres strøm',
         subtitle: 'I appen ser I elprisen time for time, og med Altid Energi følger I også elforbruget pr. dag, uge og måned.',
       }}
-      page={{ path: '/billigste-elselskab', description: metadata.description as string, published: '2026-07-27', updated: '2026-11-16' }}
+      page={{ path: '/billigste-elselskab', description: metadata.description as string, published: GUIDES['/billigste-elselskab'].published, updated: GUIDES['/billigste-elselskab'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

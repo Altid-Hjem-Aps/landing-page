@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Guide, { type GuideFaq, GuideApp, GuideLink as A, GuideSteps } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Built by the recipe (docs/guide-recipe.md, ALT-1714), topic approved by Thor on 16 Nov 2026. There
 // is no single number that answers the question, so the answer card states Forbrugerrådet Tænk's
@@ -79,7 +80,7 @@ const FAQ: GuideFaq[] = [
 export default function FastprisEllerVariabelEl() {
   return (
     <Guide
-      title="Fastpris eller variabel elaftale?"
+      title={GUIDES['/fastpris-eller-variabel-el'].title}
       lead={
         <>
           <p>
@@ -109,7 +110,7 @@ export default function FastprisEllerVariabelEl() {
         heading: 'Hent Altid Hjem, og hold øje med elprisen',
         subtitle: 'I appen ser I elprisen time for time.',
       }}
-      page={{ path: '/fastpris-eller-variabel-el', description: metadata.description as string, published: '2026-11-16', updated: '2026-11-16' }}
+      page={{ path: '/fastpris-eller-variabel-el', description: metadata.description as string, published: GUIDES['/fastpris-eller-variabel-el'].published, updated: GUIDES['/fastpris-eller-variabel-el'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

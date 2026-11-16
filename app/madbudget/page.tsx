@@ -3,6 +3,7 @@ import MadbudgetBenchmark from '@/components/mad/MadbudgetBenchmark'
 import MadbudgetSammenligningMockup from '@/components/mad/MadbudgetSammenligningMockup'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
 import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Moved from altidmad.dk/madbudget (16 Nov 2026) with the text word for word. The old
 // /beregn-dit-madbudget is merged in: its two own sections follow "Sådan sætter I et realistisk
@@ -56,7 +57,7 @@ const FAQ: GuideFaq[] = [
 export default function Madbudget() {
   return (
     <Guide
-      title="Hvad er et normalt madbudget for en familie?"
+      title={GUIDES['/madbudget'].title}
       lead={
         <>
           <p>
@@ -86,7 +87,7 @@ export default function Madbudget() {
       factors={{ label: 'Det påvirker budgettet', items: ['Husstandens størrelse', 'Børnenes alder', 'Madvaner', 'Hvor I handler'] }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
-      page={{ path: '/madbudget', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      page={{ path: '/madbudget', description: metadata.description as string, published: GUIDES['/madbudget'].published, updated: GUIDES['/madbudget'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

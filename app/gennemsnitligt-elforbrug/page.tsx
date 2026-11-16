@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import ElforbrugBenchmark from '@/components/ElforbrugBenchmark'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A, GuideSteps } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Brought up to the recipe (docs/guide-recipe.md, ALT-1714) on 16 Nov 2026. The levels are
 // Energistyrelsen's, as Bolius and FDM give them; the effect of elbil and elvarme is Danmarks
@@ -79,7 +80,7 @@ const FAQ: GuideFaq[] = [
 export default function GennemsnitligtElforbrug() {
   return (
     <Guide
-      title="Hvad er et normalt elforbrug?"
+      title={GUIDES['/gennemsnitligt-elforbrug'].title}
       lead={
         <>
           <p>
@@ -107,7 +108,7 @@ export default function GennemsnitligtElforbrug() {
         heading: 'Hent Altid Hjem til hjemmets strøm og økonomi',
         subtitle: 'Med Altid Energi følger I elforbruget pr. dag, uge og måned i appen, som er gratis at hente.',
       }}
-      page={{ path: '/gennemsnitligt-elforbrug', description: metadata.description as string, published: '2026-07-27', updated: '2026-11-16' }}
+      page={{ path: '/gennemsnitligt-elforbrug', description: metadata.description as string, published: GUIDES['/gennemsnitligt-elforbrug'].published, updated: GUIDES['/gennemsnitligt-elforbrug'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

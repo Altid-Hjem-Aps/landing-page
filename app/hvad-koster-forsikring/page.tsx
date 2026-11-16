@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
 import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideStores } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Brought up to the guide recipe (docs/guide-recipe.md) on 16 Nov 2026. The old price ranges per
 // insurance had no source; the page now leads with Danmarks Statistik's household spending on
@@ -101,7 +102,7 @@ const FAQ: GuideFaq[] = [
 export default function HvadKosterForsikring() {
   return (
     <Guide
-      title="Hvad koster forsikring i Danmark?"
+      title={GUIDES['/hvad-koster-forsikring'].title}
       lead={
         <>
           <p>
@@ -125,7 +126,7 @@ export default function HvadKosterForsikring() {
         heading: 'Hent Altid Hjem, og saml jeres forsikringer',
         subtitle: 'Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted.',
       }}
-      page={{ path: '/hvad-koster-forsikring', description: metadata.description as string, published: '2026-06-17', updated: '2026-11-16' }}
+      page={{ path: '/hvad-koster-forsikring', description: metadata.description as string, published: GUIDES['/hvad-koster-forsikring'].published, updated: GUIDES['/hvad-koster-forsikring'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

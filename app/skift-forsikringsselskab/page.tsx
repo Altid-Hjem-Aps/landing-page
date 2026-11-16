@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import SkiftTjeklisteMockup from '@/components/SkiftTjeklisteMockup'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A, GuideSteps } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Brought up to the guide recipe (docs/guide-recipe.md) on 16 Nov 2026. The old rule of thumb
 // ("løbende måned plus en måned") had no source; the page now uses Forbrugerrådet Tænk's
@@ -84,7 +85,7 @@ const FAQ: GuideFaq[] = [
 export default function SkiftForsikringsselskab() {
   return (
     <Guide
-      title="Sådan skifter I forsikringsselskab"
+      title={GUIDES['/skift-forsikringsselskab'].title}
       lead={
         <>
           <p>
@@ -107,7 +108,7 @@ export default function SkiftForsikringsselskab() {
         heading: 'Hent Altid Hjem, og saml jeres forsikringer, før I skifter',
         subtitle: 'Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted.',
       }}
-      page={{ path: '/skift-forsikringsselskab', description: metadata.description as string, published: '2026-07-27', updated: '2026-11-16' }}
+      page={{ path: '/skift-forsikringsselskab', description: metadata.description as string, published: GUIDES['/skift-forsikringsselskab'].published, updated: GUIDES['/skift-forsikringsselskab'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

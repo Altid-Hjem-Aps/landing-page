@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Guide, { type GuideFaq, GuideApp, GuideLink as A, GuideSteps } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Built by the recipe (docs/guide-recipe.md, ALT-1714), topic approved by Thor on 16 Nov 2026. The
 // newest official prices per technology are Erhvervsstyrelsen's from January 2024; the page says so.
@@ -84,7 +85,7 @@ const PRISER = [
 export default function HvadKosterBredbaand() {
   return (
     <Guide
-      title="Hvad koster bredbånd om måneden?"
+      title={GUIDES['/hvad-koster-bredbaand'].title}
       lead={
         <>
           <p>
@@ -115,7 +116,7 @@ export default function HvadKosterBredbaand() {
         heading: 'Hent Altid Hjem og få overblik over husstanden',
         subtitle: 'Forbinder I banken, ser I jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket.',
       }}
-      page={{ path: '/hvad-koster-bredbaand', description: metadata.description as string, published: '2026-11-16', updated: '2026-11-16' }}
+      page={{ path: '/hvad-koster-bredbaand', description: metadata.description as string, published: GUIDES['/hvad-koster-bredbaand'].published, updated: GUIDES['/hvad-koster-bredbaand'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

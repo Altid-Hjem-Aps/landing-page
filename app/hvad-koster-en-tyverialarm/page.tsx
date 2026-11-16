@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import AlarmStatusMockup from '@/components/AlarmStatusMockup'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Brought up to the guide recipe (docs/guide-recipe.md) on 16 Nov 2026. No neutral body publishes
 // alarm prices; the old ranges (999 to 2.999 kr., 10.000 to 15.000 kr., 299 kr. a month) had no
@@ -84,7 +85,7 @@ const FAQ: GuideFaq[] = [
 export default function HvadKosterEnTyverialarm() {
   return (
     <Guide
-      title="Hvad koster en tyverialarm?"
+      title={GUIDES['/hvad-koster-en-tyverialarm'].title}
       lead={
         <>
           <p>
@@ -115,7 +116,7 @@ export default function HvadKosterEnTyverialarm() {
         heading: 'Hent Altid Hjem og få overblik over husstanden',
         subtitle: 'Forbinder I banken, ser I jeres faste udgifter i en kalender, før pengene bliver trukket.',
       }}
-      page={{ path: '/hvad-koster-en-tyverialarm', description: metadata.description as string, published: '2026-07-27', updated: '2026-11-16' }}
+      page={{ path: '/hvad-koster-en-tyverialarm', description: metadata.description as string, published: GUIDES['/hvad-koster-en-tyverialarm'].published, updated: GUIDES['/hvad-koster-en-tyverialarm'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import AbonnementMockup from '@/components/AbonnementMockup'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Upgraded to the recipe (docs/guide-recipe.md) on 16 Nov 2026. The rules are forbrugeraftaleloven
 // (LBK nr. 1184 af 28/09/2025, §§ 1, 28, 28 a and 29) and, for phone and internet,
@@ -83,7 +84,7 @@ const FAQ: GuideFaq[] = [
 export default function OpsigAbonnementer() {
   return (
     <Guide
-      title="Sådan opsiger I husstandens abonnementer"
+      title={GUIDES['/opsig-abonnementer'].title}
       lead={
         <>
           <p>
@@ -114,7 +115,7 @@ export default function OpsigAbonnementer() {
         heading: 'Hent Altid Hjem, og find jeres abonnementer',
         subtitle: 'Forbind banken, så ser I jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket.',
       }}
-      page={{ path: '/opsig-abonnementer', description: metadata.description as string, published: '2026-07-27', updated: '2026-11-16' }}
+      page={{ path: '/opsig-abonnementer', description: metadata.description as string, published: GUIDES['/opsig-abonnementer'].published, updated: GUIDES['/opsig-abonnementer'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [
