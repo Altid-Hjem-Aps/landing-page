@@ -124,3 +124,12 @@ describe('apex rule, as Next matches it', () => {
     expect(re.test('/api/unsubscribe')).toBe(false)
   })
 })
+
+// Google Search Console verifies https://www.altidhjem.dk/ by this tag (ALT-1713): if it goes,
+// the team loses Search Console.
+describe('Search Console ownership', () => {
+  it('keeps the Google verification tag on every page', async () => {
+    const { metadata } = await import('@/app/layout')
+    expect(metadata.verification?.google).toBe('F2QceHS2iUXU9-KrN8WbnRhFYgBUtxtzeNTwGpEzbrE')
+  })
+})

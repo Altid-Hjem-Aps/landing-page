@@ -44,6 +44,9 @@ export const metadata: Metadata = {
     ],
     apple: { url: '/icon.svg', type: 'image/svg+xml' },
   },
+  // Google Search Console: proves the t@altidhjem.dk account owns https://www.altidhjem.dk/
+  // (ALT-1713). Public by design; removing it un-verifies the property.
+  verification: { google: 'F2QceHS2iUXU9-KrN8WbnRhFYgBUtxtzeNTwGpEzbrE' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
