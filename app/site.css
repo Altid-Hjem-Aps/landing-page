@@ -2993,9 +2993,11 @@
     margin-top: 28px;
     color: #fff;
   }
+  /* A little more room under the headline, and a wider measure so the paragraph sits in fewer,
+     even lines (Thor 16/11). */
   .x-body {
-    width: min(100% - 34px, 30em);
-    margin-top: 16px;
+    width: min(100% - 34px, 36em);
+    margin-top: 24px;
     color: rgba(255, 255, 255, 0.8);
   }
   /* The banks in white (public/site/banks/white, made from the colour SVGs with their
@@ -3042,9 +3044,11 @@
       padding-inline: 24px;
       text-wrap: balance;
     }
+    /* On a phone the paragraph reads left aligned (Thor 16/11, to try). */
     .x-body {
       width: calc(100% - 48px);
-      text-wrap: balance;
+      text-align: left;
+      text-wrap: pretty;
     }
     .x-banks .w-title {
       padding-inline: 24px;
