@@ -29,7 +29,11 @@ export const MAIL_LINK_EVENT = 'Launch Mail Link Clicked'
 // launch of 16 Nov 2026 (www.altidhjem.dk/hent redirects to
 // /m/li-werner/header), so its taps are counted apart from invitations and
 // mails, with campaign ah_1_linkedin_werner.
-export const MAIL_CODES = ['a1a', 'a1c', 'a1b', 'a1d', 'a1f', 'm0', 'm2h', 'm2m', 'm3', 'invite', 'm2f', 'li-werner'] as const
+// h1a and h1b are the hard launch mails of 16 Nov 2026 (ALT-1726): h1a to the
+// waitlist without an account, h1b ("Nyt i version 1.1") to people with one.
+// Each has one button per place that follows the phone (open, end) and a QR
+// code on desktop (qr): see MAIL_LINK_OVERRIDES. Counted as hard-launch.
+export const MAIL_CODES = ['a1a', 'a1c', 'a1b', 'a1d', 'a1f', 'm0', 'm2h', 'm2m', 'm3', 'invite', 'm2f', 'li-werner', 'h1a', 'h1b'] as const
 export type MailCode = (typeof MAIL_CODES)[number]
 
 export type Store = 'appstore' | 'play'
@@ -75,11 +79,23 @@ export type LinkOverride = { kind: 'phone' } | { kind: 'web'; url: string }
  * preview deployment hands m0/del over to production /del. Same rule as the
  * codes above: never remove an entry.
  */
+/** The hard launch mails' buttons (open, end) and desktop QR code (qr). One
+ * object, so h1a and h1b never drift apart. */
+const HARD_LAUNCH_LINKS: Readonly<Record<string, LinkOverride>> = {
+  open: { kind: 'phone' },
+  end: { kind: 'phone' },
+  qr: { kind: 'phone' },
+}
+
 export const MAIL_LINK_OVERRIDES: Readonly<Partial<Record<MailCode, Readonly<Record<string, LinkOverride>>>>> = {
   m0: {
     open: { kind: 'phone' },
     del: { kind: 'web', url: 'https://www.altidhjem.dk/del?via=hjem-welcome' },
   },
+  // The hard launch mails: one button under the intro (open), one at the end
+  // (end) and the desktop QR code (qr), all to the store of the phone.
+  h1a: HARD_LAUNCH_LINKS,
+  h1b: HARD_LAUNCH_LINKS,
 }
 
 function overrideFor(mail: string, link: string): LinkOverride | undefined {
@@ -139,6 +155,8 @@ export function storeUrl(store: Store, mail: string, link: string): string {
  * gets one line here. */
 const CAMPAIGN_OF_MAIL: Readonly<Partial<Record<MailCode, string>>> = {
   'li-werner': 'hard-launch',
+  h1a: 'hard-launch',
+  h1b: 'hard-launch',
 }
 
 export function mailCampaign(mail: string): string {
