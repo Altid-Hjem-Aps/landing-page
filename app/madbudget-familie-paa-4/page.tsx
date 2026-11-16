@@ -122,7 +122,7 @@ export default function MadbudgetFamiliePaa4() {
           Tallene er pejlemærker, ikke facitlister. Danmarks Statistik måler hele årets forbrug, og familier kan have meget forskellige vaner, behov og definitioner af, hvad
           der hører til madbudgettet.
         </p>
-        <GuideFigure tone="lavender" caption="Børnefamilier har et af de højeste forbrug i Forbrugsundersøgelsen. Se, hvor I ligger.">
+        <GuideFigure tone="lavender" kind="data" caption="Tal fra Danmarks Statistik, Forbrugsundersøgelsen 2024: børnefamilier har et af de højeste forbrug. Se, hvor I ligger.">
           <MadbudgetBenchmark highlight="par-boern" />
         </GuideFigure>
       </section>

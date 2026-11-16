@@ -110,7 +110,7 @@ export default function Madbudget() {
         <p>
           En gennemsnitshusstand bestod af 2,0 personer i 2024. Derfor kan gennemsnittet ikke sammenlignes direkte med en familie eller med en enkelt ugentlig indkøbskurv.
         </p>
-        <GuideFigure tone="lavender" caption="Så meget bruger danske husstande på mad om måneden ifølge Forbrugsundersøgelsen 2024.">
+        <GuideFigure tone="lavender" kind="data" caption="Tal fra Danmarks Statistik, Forbrugsundersøgelsen 2024: så meget bruger danske husstande på mad om måneden.">
           <MadbudgetBenchmark />
         </GuideFigure>
       </section>
@@ -175,7 +175,7 @@ export default function Madbudget() {
         </p>
         <GuideFigure
           tone="lavender"
-          caption="Illustrationen viser et eksempel på en sammenligning af månedsforbrug og en mulig besparelse. Det er ikke et skærmbillede fra appen."
+          caption="Eksempel: en sammenligning af månedsforbrug og en mulig besparelse. Illustration, ikke et skærmbillede fra appen."
         >
           <MadbudgetSammenligningMockup />
         </GuideFigure>

@@ -122,6 +122,7 @@ export default function HvadKosterIndboforsikring() {
             href: DST,
             note: 'Oktober 2025 til oktober 2026. Egne beregninger på baggrund af data fra Danmarks Statistik',
           },
+          { publisher: 'Forsikringsguiden', title: 'Uvildig og nem sammenligning af forsikringer', href: FORSIKRINGSGUIDEN, note: 'Sammenligner pris og dækning hos 86 procent af selskaberne i Danmark, læst 16. november 2026' },
         ],
       }}
       related={['/hvad-koster-en-husforsikring', '/hvad-koster-en-bilforsikring', '/skift-forsikringsselskab']}

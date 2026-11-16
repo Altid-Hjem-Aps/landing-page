@@ -118,6 +118,7 @@ export default function SkiftForsikringsselskab() {
           { publisher: 'Forbrugerrådet Tænk', title: 'Har du den samme husforsikring som sidste år? Så tjek prisen', href: TAENK_HUS, note: '6. oktober 2026' },
           { publisher: 'FDM', title: 'Hvilke forsikringer skal du have til bilen?', href: FDM_GUIDE, note: '19. maj 2025' },
           { publisher: 'Bolius', title: 'Brandforsikring af boligen', href: BOLIUS_BRAND, note: 'Ajourført 22. juni 2023' },
+          { publisher: 'Forsikringsguiden', title: 'Uvildig og nem sammenligning af forsikringer', href: FORSIKRINGSGUIDEN, note: 'Sammenligner pris og dækning hos 86 procent af selskaberne i Danmark, læst 16. november 2026' },
         ],
       }}
       related={['/hvad-koster-en-husforsikring', '/hvad-koster-en-bilforsikring', '/hvad-koster-indboforsikring']}

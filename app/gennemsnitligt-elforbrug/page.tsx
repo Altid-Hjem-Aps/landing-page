@@ -148,7 +148,7 @@ export default function GennemsnitligtElforbrug() {
         <p>
           FDM skriver, at tallene varierer, blandt andet med elvarme, varmepumpe og solceller. Brug dem som pejlemærker, ikke som et mål, alle hjem skal ramme.
         </p>
-        <GuideFigure tone="sky" caption="Eksempel: vejledende niveauer for elforbruget. Tallene og deres kilder står i teksten. Illustration, ikke et skærmbillede fra appen.">
+        <GuideFigure tone="sky" kind="data" caption="Tal fra FDM og Bolius, begge på baggrund af Energistyrelsens tal: et normalt elforbrug om året i lejlighed og hus.">
           <ElforbrugBenchmark />
         </GuideFigure>
       </section>

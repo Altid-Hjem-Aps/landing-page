@@ -190,7 +190,7 @@ export default function SparPengePaaDagligvarer() {
         <p>
           Altid Mad er en del af Altid Hjem-appen, som samler hjemmets faste udgifter med ét overblik og ét login. Appen er gratis i App Store og Google Play. Teamet står også bag Altid Energi, Danmarks første gebyrfrie energiselskab.
         </p>
-        <GuideFigure tone="lavender" caption="Fem vaner der flytter madbudgettet, samlet som én ugeplan.">
+        <GuideFigure tone="lavender" caption="Eksempel: fem vaner der flytter madbudgettet, samlet som én ugeplan. Illustration, ikke et skærmbillede fra appen.">
           <SparVanerMockup />
         </GuideFigure>
         <GuideStores />

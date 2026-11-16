@@ -182,7 +182,7 @@ export default function JulPaaBudget() {
         <p>
           Altid Mad er en del af Altid Hjem-appen, som samler hjemmets faste udgifter med ét overblik og ét login. Appen er gratis i App Store og Google Play. Teamet står også bag Altid Energi, Danmarks første gebyrfrie energiselskab.
         </p>
-        <GuideFigure tone="lavender" caption="Juleindkøbene spredt over ugerne op til jul, planlagt efter tilbud.">
+        <GuideFigure tone="lavender" caption="Eksempel: juleindkøbene spredt over ugerne op til jul, planlagt efter tilbud. Illustration, ikke et skærmbillede fra appen.">
           <JulekurvMockup />
         </GuideFigure>
         <GuideStores />

@@ -135,7 +135,7 @@ export default async function HvornarErStrommenBilligst() {
           elafgift, Energinets tariffer og moms til og fra.
         </p>
         {data ? (
-          <GuideFigure tone="sand">
+          <GuideFigure tone="sand" kind="data" caption="Tal fra Strømligning, med spotpriser fra Energinet: elprisen time for time i dag og, når priserne er ude, i morgen.">
             {/* ElprisChart returns two siblings (the key figures and the chart card). The wrapper
                 keeps them stacked in the figure's flex row, fills the card, and may shrink below
                 the chart's nowrap hour labels (min-width 0), or a phone would cut the chart off. */}

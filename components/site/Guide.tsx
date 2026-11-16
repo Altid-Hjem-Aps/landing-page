@@ -69,10 +69,14 @@ function JsonLd({ data }: { data: object }) {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, '\\u003c') }} />
 }
 
-/** One illustration in the article, on a tinted card like the front page's blocks. */
-export function GuideFigure({ tone = 'sand', caption, children }: { tone?: 'sand' | 'mint' | 'sky' | 'honey' | 'lavender' | 'rose'; caption?: ReactNode; children: ReactNode }) {
+/** One illustration in the article, on a tinted card like the front page's blocks. `kind` says what
+ * it shows, and test/guide-checks.test.tsx holds the caption to it: an 'example' (drawn, the
+ * default) starts "Eksempel:" and says "Illustration, ikke et skærmbillede fra appen."; 'data' (a
+ * chart of real figures from a source in Kilder) starts "Tal fra <that source>". A real app screen
+ * goes in GuideApp, captioned "I appen:". */
+export function GuideFigure({ tone = 'sand', kind = 'example', caption, children }: { tone?: 'sand' | 'mint' | 'sky' | 'honey' | 'lavender' | 'rose'; kind?: 'example' | 'data'; caption?: ReactNode; children: ReactNode }) {
   return (
-    <figure className="gd-figure" data-tone={tone}>
+    <figure className="gd-figure" data-tone={tone} data-kind={kind}>
       <div className="gd-figure-art">{children}</div>
       {caption ? <figcaption>{caption}</figcaption> : null}
     </figure>

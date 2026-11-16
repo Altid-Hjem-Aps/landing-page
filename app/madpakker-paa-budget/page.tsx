@@ -187,7 +187,7 @@ export default function MadpakkerPaaBudget() {
         <p>
           Altid Mad er en del af Altid Hjem-appen, som samler hjemmets faste udgifter med ét overblik og ét login. Appen er gratis i App Store og Google Play. Teamet står også bag Altid Energi, Danmarks første gebyrfrie energiselskab.
         </p>
-        <GuideFigure tone="lavender" caption="Altid Mad planlægger ugens madpakker efter tilbudsaviserne og skriver indkøbslisten for jer.">
+        <GuideFigure tone="lavender" caption="Eksempel: Altid Mad planlægger ugens madpakker efter tilbudsaviserne og skriver indkøbslisten for jer. Illustration, ikke et skærmbillede fra appen.">
           <MadpakkeMockup />
         </GuideFigure>
         <GuideStores />
