@@ -3531,6 +3531,73 @@
       text-underline-offset: 3px;
     }
   }
+  /* The recipe's parts (docs/guide-recipe.md): the breadcrumb over the title, the dates under the
+     short answer, and in the article "Læs også" and Kilder as plain blocks. */
+  .gd-crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    margin: 0 0 16px;
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--stone);
+
+    li + li::before {
+      content: '›' / '';
+      margin-right: 8px;
+    }
+    a {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+  .gd-dates {
+    margin-top: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--stone);
+
+    + .gd-meta {
+      margin-top: 4px;
+    }
+  }
+  /* Kilder keeps the article's own numbers (.gd-body ol). "Læs også" is the front page's blog
+     cards, three across on a computer, one under the other on a phone. */
+  .gd-related {
+    width: var(--w);
+    margin: calc(var(--u) * 96) auto 0;
+
+    ul {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin: 32px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    li {
+      display: flex;
+    }
+  }
+  @media (max-width: 1023px) {
+    .gd-related ul {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .gd-sources {
+    font-size: 16px;
+
+    span {
+      display: block;
+      color: rgba(0, 60, 22, 0.72);
+    }
+  }
+  .gd-checked {
+    font-size: 14px;
+    color: rgba(0, 60, 22, 0.72);
+  }
   .gd-answer {
     padding: calc(var(--u) * 48) calc(var(--u) * 44);
     border-radius: 28px;

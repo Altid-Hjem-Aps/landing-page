@@ -501,6 +501,13 @@ export const GUIDE = {
     button: 'Skriv til hej@altidhjem.dk',
     href: 'mailto:hej@altidhjem.dk',
   },
+  // The parts from the guide recipe (docs/guide-recipe.md, ALT-1714).
+  crumbs: { label: 'Du er her', home: 'Forside' },
+  published: 'Udgivet',
+  updated: 'Opdateret',
+  related: 'Læs også',
+  sources: 'Kilder',
+  checked: 'Senest tjekket',
 } as const
 
 export const PRESSE = {

@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { parseDanishNumber } from '@/components/seo/hjemKit'
+import { POSTS } from '@/components/sections/blogPosts'
 import LadeboksCalculator from '@/components/LadeboksCalculator'
 
 describe('parseDanishNumber', () => {
@@ -139,8 +140,7 @@ describe('LadeboksCalculator', () => {
 
 describe('blog strip routes', () => {
   it('every internal blog card href maps to an existing page', () => {
-    const src = fs.readFileSync(path.join(process.cwd(), 'components/sections/Blog.tsx'), 'utf-8')
-    const hrefs = [...src.matchAll(/href: '(\/[^']+)'/g)].map((m) => m[1])
+    const hrefs = POSTS.map((p) => p.href).filter((h) => h.startsWith('/'))
     expect(hrefs.length).toBeGreaterThanOrEqual(5)
     for (const href of hrefs) {
       const seg = href.replace(/^\/+|\/+$/g, '')
