@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import MobilOverblikMockup from '@/components/MobilOverblikMockup'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Upgraded to the recipe (docs/guide-recipe.md) on 16 Nov 2026. No mobile operator is named: the
 // lowest prices are a comparison site's (it says it earns a fee from its partners), the
@@ -80,7 +81,7 @@ const FAQ: GuideFaq[] = [
 export default function BilligsteMobilabonnement() {
   return (
     <Guide
-      title="Det billigste mobilabonnement til hele husstanden"
+      title={GUIDES['/billigste-mobilabonnement'].title}
       lead={
         <>
           <p>
@@ -110,7 +111,7 @@ export default function BilligsteMobilabonnement() {
         heading: 'Hent Altid Hjem og få overblik over husstanden',
         subtitle: 'Forbind banken, så ser I jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket.',
       }}
-      page={{ path: '/billigste-mobilabonnement', description: metadata.description as string, published: '2026-07-27', updated: '2026-11-16' }}
+      page={{ path: '/billigste-mobilabonnement', description: metadata.description as string, published: GUIDES['/billigste-mobilabonnement'].published, updated: GUIDES['/billigste-mobilabonnement'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

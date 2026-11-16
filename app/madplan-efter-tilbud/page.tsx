@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import MadplanMockup from '@/components/mad/MadplanMockup'
 import { MAD_GUIDE_CTA, MAD_IN_APP, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
 import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 export const metadata: Metadata = {
   title: 'Madplan efter tilbud, spar på ugens mad | Altid Hjem',
@@ -61,7 +62,7 @@ const FAQ: GuideFaq[] = [
 export default function MadplanEfterTilbud() {
   return (
     <Guide
-      title="Sådan laver du en madplan efter ugens tilbud"
+      title={GUIDES['/madplan-efter-tilbud'].title}
       lead={
         <>
           <p>
@@ -83,7 +84,7 @@ export default function MadplanEfterTilbud() {
       factors={{ label: 'Besparelsen afhænger af', items: ['Jeres nuværende vaner', 'Butikker', 'Valg af varer'] }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
-      page={{ path: '/madplan-efter-tilbud', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      page={{ path: '/madplan-efter-tilbud', description: metadata.description as string, published: GUIDES['/madplan-efter-tilbud'].published, updated: GUIDES['/madplan-efter-tilbud'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

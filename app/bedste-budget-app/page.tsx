@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import BudgetAppSammenligning from '@/components/BudgetAppSammenligning'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Upgraded to the recipe (docs/guide-recipe.md) on 16 Nov 2026. No budget app is ranked or named:
 // the page compares the two kinds of tool and sends the reader to Finanstilsynet for the rules on
@@ -80,7 +81,7 @@ const FAQ: GuideFaq[] = [
 export default function BedsteBudgetApp() {
   return (
     <Guide
-      title="Hvilken budget-app er bedst til jeres behov?"
+      title={GUIDES['/bedste-budget-app'].title}
       lead={
         <>
           <p>
@@ -108,7 +109,7 @@ export default function BedsteBudgetApp() {
         heading: 'Hent Altid Hjem, og se jeres faste udgifter samlet',
         subtitle: 'Appen er gratis og viser jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket.',
       }}
-      page={{ path: '/bedste-budget-app', description: metadata.description as string, published: '2026-07-27', updated: '2026-11-16' }}
+      page={{ path: '/bedste-budget-app', description: metadata.description as string, published: GUIDES['/bedste-budget-app'].published, updated: GUIDES['/bedste-budget-app'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

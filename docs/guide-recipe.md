@@ -47,8 +47,9 @@ A topic goes on the list only when all of these hold:
   "opsig", "billigste" is a good lead; a single brand name or one dish is a trap (Mad plan).
 - **Not batterioglader.dk's ground.** Werner's shop owns batteries, solar, heat pumps and the
   price of 1 kWh. We take the household bill angle and link to him where it helps the reader.
-- **Not already a page.** The 21 live guides are `GUIDE_PATHS` in `lib/site-counts.ts`. A
-  closer variant of a live page makes that page better (a new H2 or FAQ answer), not a new page.
+- **Not already a page.** The live guides are `GUIDE_PATHS` in `lib/site-counts.ts`, also served
+  as https://www.altidhjem.dk/guides.json (path and title). A closer variant of a live page makes
+  that page better (a new H2 or FAQ answer), not a new page.
 - **Season decides the order** among topics that pass (jul, elpris in winter, forsikring at
   renewal time).
 
@@ -99,7 +100,13 @@ address, `openGraph.type: 'article'`.
    `MadbudgetBenchmark`, `BudgetAppSammenligning`.
 2. `lib/site-counts.ts`: add `'/<slug>'` to `GUIDE_PATHS`, in alphabetical order. This gives the
    page its counts, its campaign (`ah_1_guide_` plus the slug with `_` for `-`, e.g.
-   `ah_1_guide_billigste_elselskab`) and its row in the admin's guide table (admin repo).
+   `ah_1_guide_billigste_elselskab`), its line in `/guides.json` (`app/guides.json/route.ts`) and
+   its row in the admin's guide table (admin repo). Add its title (the H1) and its `published`
+   and `updated` dates to `GUIDES` in `lib/guides.ts`, and pass `title={GUIDES['/<slug>'].title}`
+   and `published: GUIDES['/<slug>'].published, updated: GUIDES['/<slug>'].updated` in `page` to
+   `<Guide>`, so the page and `/guides.json` show the same title and dates
+   (`test/guide-checks.test.tsx` checks it). A page file may not export them itself: Next.js
+   allows only its own exports in a page.
 3. `app/sitemap.ts`: add the address; update the list in `test/seo.test.ts` to match.
 4. `components/sections/blogPosts.ts`: add a card to `POSTS` so the page is linked from the site
    (no page without a link to it). Use one of the existing categories (Mad, Forsikring, Energi,
@@ -113,8 +120,8 @@ address, `openGraph.type: 'article'`.
 7. Add the page to the smoke tests: `PAGES` in `test/tjenester-pages.test.tsx` (Energi,
    Forsikring, Økonomi guides) or in `test/mad-guides.test.tsx` (Mad guides). Only listed pages get
    the FAQ, canonical and "én regning" tests. `test/tjenester-pages.test.tsx` expects exactly 7
-   questions today; change that to the recipe's 5 to 7 when the first new guide lands, and name the
-   change in the pull request.
+   questions today. Only a guide pull request led by a person may change that to the recipe's 5 to
+   7, and names the change in the pull request; an SEO-kørsel (section 11) leaves it at 7.
 8. A Mad guide uses the `MAD_REPORT_*` constants from `components/mad/madGuide.ts` and links its
    report figures to `/madrapport`. Its call to action is `MAD_GUIDE_CTA`, which says "Altid Mad":
    Mad's copy moved from altidmad.dk word for word and Thor and Alex own it, so it is the one
@@ -126,6 +133,23 @@ address, `openGraph.type: 'article'`.
   codex language pass** on all copy, short labels included: invented words, anglicisms, wrong
   trade terms, words split wrong, du or I kept the same through the page. Afterwards diff every
   number and name against the brief. Team words stay English only in team text, never on the page.
+- **When codex is not available** (an SEO-kørsel, section 11: Homebase never uses codex), the
+  language pass is a second read by the writing agent itself, as its own step after the copy is
+  written, of all copy, short labels included, against this checklist. Fix what it finds, then
+  diff every number and name against the brief as above:
+  1. Anglicisms: an English word, or an English phrase put word for word into Danish, where Danish
+     has a plain word ("deal", "feature", "booste").
+  2. Invented words: a product or trade term the Danish market does not use. Use the word the
+     sources use on their own pages ("nettarif", not "transporttarif").
+  3. Compound words: one word in Danish ("husforsikring", "elregning"), never split in two.
+  4. du or I: one form through the page. I (I, jer, jeres) for the household, du only where the
+     title says du.
+  5. Commas: as on the live guides, a comma before and after a subordinate clause ("Vælg en
+     selvrisiko, I kan betale uden at låne") and between two main clauses joined by og, men or
+     for.
+  A person reads the Danish on the pull request before it is merged (section 7, step 6).
+  `test/danish-wording.test.tsx` catches the words on its list and a du and I mix in CI; a list
+  cannot know every word, so the read stays.
 - **Brand names:** Mad, Energi, Forsikring, Økonomi in customer copy. "Altid Hjem" always full.
   "Altid Energi" when it means the company.
 - **No em dash or en dash** anywhere (a test fails on them).
@@ -164,6 +188,22 @@ old and new guides alike (ALT-1519, 16 Nov 2026). What it reads:
   included, plus the title and description.
 - Its word lists are lists: a claim worded in a way they don't know can still pass, so the agent's
   own read in section 5 stays.
+- Date, length and headings, for every guide except the 25 on the site on 16 Nov 2026 (the
+  frozen `OLD_GUIDES` list in the test, exempt for good, also after a later rewrite or a change of
+  their dates): published on or after 17 Nov 2026 (the `datePublished` in the page's Article
+  data); 900 to 1,300 words in the article; at least 4 of 5 of the article's h2 headings end in
+  "?". The article is every part of `.gd-body` except Kilder, the questions, asides and figures,
+  whatever its tag. Its words are its headings, paragraphs, lists, tables and checklist steps, not
+  the questions, Kilder, figures (captions, drawn examples, the app card) or the step numbers.
+- The title and dates on the page (H1, Article `datePublished` and `dateModified`) equal the
+  guide's line in `/guides.json`.
+
+`test/danish-wording.test.tsx` reads every guide's visible text for the words on its list
+(anglicisms, terms found invented or wrong, team words) and the guide's own text for du and I kept
+the same: a guide whose title says du never says I, jer or jeres; a guide added after 16 Nov 2026
+whose title does not say du never says du, dig, din, dit or dine. Sentences kept on purpose are in
+its `KEPT` list with the reason; today that is the Mad copy whose du and I mix the test found on
+16 Nov 2026, for Thor and Alex to rewrite, and the name "Dit Europa".
 
 A sentence that breaks a rule but is kept on purpose goes in the test's `ALLOWED` list with who
 decided and when. Only that sentence is excused, and an entry that no longer matches its page fails.
@@ -186,9 +226,10 @@ its sums) go in `OWN_FIGURES`.
 | Every outside link in the text is in Kilder. Every price, percentage, kWh or GB figure has its source linked (an outside link or the Altid Mad report, not another guide) or named (a publisher in Kilder) in its own paragraph or the one before; in the answer card, questions, tables, headings and metadata it may instead repeat a figure the article sources. Worked examples are our own sums with their assumptions listed | Test (test/guide-checks.test.tsx) |
 | Every visual is labelled: a real app screen (an image from `public/site/app`) starts "I appen:"; a chart of real figures (`GuideFigure kind="data"`) starts "Tal fra" and a source in Kilder; anything drawn starts "Eksempel:" and says "Illustration, ikke et skærmbillede fra appen." | Test (test/guide-checks.test.tsx) |
 | A savings figure (kroner or percent) only from the Altid Mad report, cited in Kilder; no superlative about Altid Hjem, Altid Mad, Altid Energi or the app; no promised app feature | Test (test/guide-checks.test.tsx) for the words it knows; Agent for other wordings and for superlatives about other companies (only as a named source's claim) |
-| Codex language pass run; numbers and names unchanged after it | Agent |
+| Codex language pass run, or without codex the second read against the checklist in section 5; numbers and names unchanged after it | Agent, then a person's read on the pull request |
+| No word from the Danish word list; du or I kept the same through the page | Test (test/danish-wording.test.tsx) for the words it knows; Agent for the rest |
 | Title is a search question of 60 characters or less; short answer starts with the number | Agent |
-| Body is 900 to 1,300 words, at least 4 of 5 headings are questions | Agent |
+| Body is 900 to 1,300 words, at least 4 of 5 headings are questions; published on or after 17 Nov 2026 | Test (test/guide-checks.test.tsx) for every guide not in its frozen `OLD_GUIDES` list |
 | Exactly 3 Læs også guides, each with a card, not the page itself (test/guide-parts.test.tsx); 2 or 3 guides link back | Test, Agent for the links back |
 | `page`, `sources` and `related` are passed; Article, BreadcrumbList and FAQPage data parse | Agent; the data's shape and the date and link rules are Test (test/guide-parts.test.tsx) |
 | `npm test` and `npm run build` pass (CI runs both) | Test |
@@ -197,7 +238,7 @@ its sums) go in `OWN_FIGURES`.
 
 ## 7. Process and measuring
 
-1. Pick a topic from the approved list (section 9).
+1. Pick a topic from the approved list (section 9). An SEO-kørsel picks its own (section 11).
 2. Research: the top 5 Google results for the question, the official sources (Danmarks Statistik,
    Forsyningstilsynet, Energistyrelsen, Skat, Tænk, Forbrugerrådet), and what the app does today.
 3. Write the brief, run codex for the copy, then the codex language pass.
@@ -205,7 +246,9 @@ its sums) go in `OWN_FIGURES`.
 5. `/review` and `/qa`, then a draft pull request with the check results. One commit.
 6. Thor approves the page on a phone and a computer. Nothing is merged without Thor's word.
 7. **Measure every 4 weeks, per page** (admin, Vækst, Hjemmesiden, Guiderne; Search Console for
-   www.altidhjem.dk):
+   www.altidhjem.dk). The SEO-kørsel (section 11) replaces these manual steps: every run reads
+   the figures below from the admin and acts on them by the same rules, so nobody has to measure
+   by hand. They stay here as the rules the run follows:
    - Search Console views and clicks: views without clicks, rewrite the title and short answer.
    - Visits, store taps and QR scans per guide: visits without taps, rewrite the page.
    - Queries on page 2 of Google (positions 11 to 20) are the next H2s and FAQ answers, or new
@@ -232,11 +275,13 @@ electricity benchmarks as "Tal fra", the rest as "I appen" or "Eksempel"), and
 `test/guide-checks.test.tsx` checks sources, labels and markedsføringsloven on every guide in CI
 (section 6).
 
-Still to build before ALT-1715 (Homebase writing pages) can start:
+Built 16 Nov 2026 for ALT-1715 (Homebase writing pages): the date, length and question-heading
+checks for every guide after the first 25 (`test/guide-checks.test.tsx`), the Danish word list
+(`test/danish-wording.test.tsx`), `/guides.json` for the admin and Homebase, and section 11.
+
+Still to build:
 
 - The restyle of the animated examples from ALT-1712 (the labels are done).
-- Tests for the remaining "Agent" checks where they can be code: word count and question
-  headings for new guides.
 
 ## 9. Topics
 
@@ -278,3 +323,139 @@ work folder. No topic has a measured search volume yet; the evidence is Google T
 | Mid-article call to action box | No: one store panel at the end; the site-wide pop-up already asks half way |
 | Two "Læs også" lists (inline and a card grid) | No: one card row |
 | Batteries, solar, heat pumps, kWh price | No: Werner's ground |
+
+## 11. SEO-kørsel (Homebase)
+
+Homebase writes guides on its own. A scheduled job files one Linear issue per run, "SEO-kørsel
+<dato>", and delegates it to Alti. Alti's plan stage researches and picks the topics; its build
+stage writes **the budget the issue names (today 1 new guide and 2 fixes) in one pull request** in
+this repo; CI runs the checks; a person merges (section 7, step 6). This section is what both stages follow. Alti never
+uses codex, so the language pass is the second read in section 5.
+
+### What the run issue contains
+
+- The live guides, from https://www.altidhjem.dk/guides.json (path, title, published and updated
+  date of each).
+- The admin's figures for the period it names (`GET /api/seo/feed` in the admin repo): per guide
+  visits, store taps, QR opens and scans, and Search Console views (impressions), clicks and
+  position; the to-do list (kind `fewClicks`, `noTaps`, `page2` or `notInGoogle`, with the guide
+  and, where it has one, the query, position and views); the top Search Console queries per
+  guide; and the queries on the site's other pages, which no guide answers. A figure is empty
+  (null) when Search Console is not connected, never 0: read empty as "not known".
+- The budget: how many new guides and fixes the run may make (today 1 new guide and 2 fixes).
+- Only criteria that can be checked, and the rule: choose by this recipe, never ask a person.
+
+### Picking the topics (plan stage)
+
+Ideas, research and the choice are all the run's own: no person takes part until the pull
+request (Thor, 16 Nov 2026). Every candidate must pass section 2 (a pain point people search for,
+close to a service, planning intent, not batterioglader.dk's ground, not already a page; a closer
+variant of a live page is a fix, not a new page).
+
+A new guide needs evidence of search demand. In an SEO-kørsel that is one of these, and it is the
+evidence section 2 asks for:
+
+1. **A Search Console query with views** (best). Within it: queries with views on no guide (the
+   other pages' queries), and page-2 queries that are a new question by the rule below. More
+   views ranks higher.
+2. **The question, or a close variant, answered as a heading or a FAQ question by at least 3 of
+   the top 5 results** the run read (the research below), which none of our guides answers.
+3. **A topic in section 9**, approved or waiting: the waiting topics count too (Thor, 16 Nov
+   2026); their wait was for this run's evidence, not for a person.
+
+Rank the candidates in that order: any candidate with evidence of kind 1 before any of kind 2,
+and so on; ties go by season (section 2), then closeness to the service. The new guide is the
+highest ranked candidate that needs its own page. Write its evidence (queries, figures, the
+results read) in the plan report on the Linear issue, and only its kind in the pull request. With
+no candidate that has evidence, there is no new guide this run: do the fixes, and say why in the
+pull request.
+
+A page-2 query (a guide's query on positions 11 to 20) is a **new guide** only when both hold,
+and otherwise a **fix** of the guide it ranks for. To compare, write both as words: lower case,
+no punctuation, no year, and without the words en, et, i, på, for, til, af, om, man, jeg, vi, du,
+der, det, den, de, er, har, kan, skal:
+
+- the query's set of words is not the set of words of that guide's title, any of its H2s or any
+  of its FAQ questions; and
+- the query has at least one word that is not among the words of that guide's title.
+
+For a page-2 query, this rule settles section 2's "closer variant" question. Examples on
+`/hvad-koster-en-husforsikring`: "hvad koster husforsikring" has only the title's words (hvad,
+koster, husforsikring), so it is a fix; "hvad dækker en husforsikring" has the words of an H2,
+so it is a fix of that section; "husforsikring med stråtag" is no title, H2 or question and has
+words the title lacks (med, stråtag), so it is a candidate for a new guide.
+
+The fixes are the to-do list's items, up to the budget, one per guide. Sort each kind by its key:
+`page2` and `fewClicks` by Search Console views (the query's views for `page2`, the guide's for
+`fewClicks`), `noTaps` by Google clicks, highest first. Take the top item of each kind in the order
+`page2`, `fewClicks`, `noTaps`, then the second of each, until the budget is used. Never picked:
+
+- a guide whose `updated` date in `lib/guides.ts` is less than 4 weeks before the run, so the last
+  change has time to show. Every guide's date is 16 Nov 2026 today, so no fix is possible before
+  14 Dec 2026;
+- a Mad guide (section 4, step 8: a page that uses `MAD_GUIDE_CTA`, today `/billigste-supermarked`,
+  `/graensehandel-beregner`, `/jul-paa-budget`, `/mad-for-3000-om-maaneden`, `/madbudget`,
+  `/madbudget-familie-paa-4`, `/madpakker-paa-budget`, `/madplan-efter-tilbud` and
+  `/spar-penge-paa-dagligvarer`): Thor and Alex own that copy.
+
+A fix follows its to-do kind:
+
+| Kind | Fix |
+|---|---|
+| `fewClicks` (views, few clicks) | Rewrite the title (in `lib/guides.ts` and the page's `metadata`) and the short answer (which is also the meta description), aimed at the queries the guide is seen for |
+| `noTaps` (visits, no store taps) | Rewrite the page: the answer first and complete, then "Hvordan kan Altid Hjem hjælpe?" and the end panel tied to the page's pain point |
+| `page2` (a query on positions 11 to 20) | Add a section with the query's question as its H2, or a question to the FAQ, that answers the query |
+| `notInGoogle` | Not a writing fix; not picked |
+
+A fix keeps every rule of sections 3 to 6 and the page's address. It sets the guide's `updated`
+date in `lib/guides.ts` to the run's date. It changes "Senest tjekket" (`sources.checked`) only
+when the run read the sources again. A guide that is one of the 25 from before 17 Nov 2026 stays
+exempt from the date, length and question-heading checks after a run rewrites it (section 6);
+write it by part 8 anyway.
+
+### Researching the top results (plan stage)
+
+For each candidate question (the new guide's and each `page2` fix's query):
+
+1. Search the question in Danish with WebSearch. Take the top 5 results that are articles (not
+   ads, videos, shops' product lists or Google's own pages).
+2. Read each with WebFetch and record: the address, its headings, the questions it answers, every
+   number with the source it gives, its tools (calculator, chart, table), its length in words, and
+   its published and updated dates.
+3. Keep only what at least 3 of the 5 share (a question they all answer, a table, a worked
+   example, a calculator). Those elements go into the brief; what only one or two have stays out.
+   What is batterioglader.dk's ground stays out (section 2).
+
+Never fetch google.com result pages, "people also ask" or related searches: WebSearch gives the
+list, and the research reads only the results' own pages. Never copy their text: learn the
+structure (which questions, in which order, which tools), write our own words, and take every
+number from its original source, read and linked in Kilder, never from the competitor's page.
+
+All research and evidence (candidates, figures, the research table per question, what was chosen
+and rejected and why, the brief) stays in the plan stage's report on the Linear issue. It is never
+committed: this repo is public.
+
+### Writing and building (build stage)
+
+- Write each new guide and each fix by sections 3 to 5, with the second language read (section 5),
+  and build a new guide by section 4. Every check in section 6 passes before the pull request.
+- Never ask a person. Where the rules leave a choice, decide by them and say why in the pull
+  request.
+- An SEO-kørsel changes no file under `test/` and not `components/site/Guide.tsx`, with these
+  exceptions only, and only for a new guide (section 4):
+  - `test/seo.test.ts`: the new address in its sitemap list (step 3);
+  - `test/tjenester-pages.test.tsx` or `test/mad-guides.test.tsx`: the new page's import and its
+    line in `PAGES` (step 7), nothing else in the file;
+  - `test/fixtures/guide-qr-links.json`: as `scripts/site-assets.py guide-qr` writes it (step 6).
+  So never `test/guide-checks.test.tsx` (its `ALLOWED`, `OWN_FIGURES` and `OLD_GUIDES` lists
+  included) or `test/danish-wording.test.tsx` (its `KEPT` list included). A failing check means
+  the page is wrong: fix the page. `test/tjenester-pages.test.tsx` expects exactly 7 questions, and
+  a run leaves that at 7, so a run's guide has 7.
+- The pull request body links the run's Linear issue, which holds the figures, and lists each new
+  guide and each fix in one line with the kind of its evidence only: "Search Console query",
+  "competitors" (at least 3 of the top 5 results) or "section 9 topic", and for a fix its to-do
+  kind. For example: "New: /hvorfor-er-elregningen-hoej (evidence: Search Console query)" and
+  "Fix (page2): /hvad-koster-bredbaand, new section (evidence: Search Console query)". It never
+  names a search query, a competitor's address or a figure (views, clicks, position): this repo is
+  public and they are competitive information. Where the rules left a choice, say why in the same
+  terms. Then the check results.

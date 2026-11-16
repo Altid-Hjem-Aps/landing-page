@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import LadeboksCalculator from '@/components/LadeboksCalculator'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A, GuideSteps } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Brought up to the recipe (docs/guide-recipe.md, ALT-1714) on 16 Nov 2026. The price range is
 // Konkurrence- og Forbrugerstyrelsen's (December 2023); the extra costs are FDM's. The refusion part
@@ -81,7 +82,7 @@ const FAQ: GuideFaq[] = [
 export default function HvadKosterEnLadeboks() {
   return (
     <Guide
-      title="Hvad koster en ladeboks?"
+      title={GUIDES['/hvad-koster-en-ladeboks'].title}
       lead={
         <>
           <p>
@@ -107,7 +108,7 @@ export default function HvadKosterEnLadeboks() {
         heading: 'Hent Altid Hjem, og hold øje med elprisen',
         subtitle: 'I appen ser I elprisen time for time.',
       }}
-      page={{ path: '/hvad-koster-en-ladeboks', description: metadata.description as string, published: '2026-07-27', updated: '2026-11-16' }}
+      page={{ path: '/hvad-koster-en-ladeboks', description: metadata.description as string, published: GUIDES['/hvad-koster-en-ladeboks'].published, updated: GUIDES['/hvad-koster-en-ladeboks'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

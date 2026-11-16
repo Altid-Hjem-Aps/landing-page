@@ -40,6 +40,10 @@ Simple, fair, no hidden fees. Clean Scandinavian minimalism — not SaaS, not en
 - Backend calls go through `lib/api.ts` (proxy to `api.altidhjem.dk`)
 - Environment variables in `.env.local`, never committed
 
+## Guides
+
+A guide issue follows `docs/guide-recipe.md`; an SEO-kørsel issue follows its section 11, SEO-kørsel (Homebase).
+
 ## Testing
 
 The test rules are the Tests section in `AGENTS.md` (imported above); mechanics are in `TESTING.md`.

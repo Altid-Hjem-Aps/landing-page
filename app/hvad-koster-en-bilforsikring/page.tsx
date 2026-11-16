@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Guide, { type GuideFaq, GuideApp, GuideLink as A, GuideSteps } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Built by the recipe (docs/guide-recipe.md, ALT-1714), topic approved by Thor on 16 Nov 2026. The
 // newest published average is FDM's kasko price for 2024, on data from Samlino.dk; the page says
@@ -84,7 +85,7 @@ const FAQ: GuideFaq[] = [
 export default function HvadKosterEnBilforsikring() {
   return (
     <Guide
-      title="Hvad koster en bilforsikring?"
+      title={GUIDES['/hvad-koster-en-bilforsikring'].title}
       lead={
         <>
           <p>
@@ -115,7 +116,7 @@ export default function HvadKosterEnBilforsikring() {
         heading: 'Hent Altid Hjem, og saml husstandens forsikringer',
         subtitle: 'Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted.',
       }}
-      page={{ path: '/hvad-koster-en-bilforsikring', description: metadata.description as string, published: '2026-11-16', updated: '2026-11-16' }}
+      page={{ path: '/hvad-koster-en-bilforsikring', description: metadata.description as string, published: GUIDES['/hvad-koster-en-bilforsikring'].published, updated: GUIDES['/hvad-koster-en-bilforsikring'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

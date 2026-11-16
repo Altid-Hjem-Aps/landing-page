@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
 import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideSteps, GuideStores } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // The first guide built by the recipe (docs/guide-recipe.md, ALT-1714), topic approved by Thor on
 // 16 Nov 2026. No neutral source publishes an average price for a husforsikring, so the page leads
@@ -85,7 +86,7 @@ const FAQ: GuideFaq[] = [
 export default function HvadKosterEnHusforsikring() {
   return (
     <Guide
-      title="Hvad koster en husforsikring?"
+      title={GUIDES['/hvad-koster-en-husforsikring'].title}
       lead={
         <>
           <p>
@@ -109,7 +110,7 @@ export default function HvadKosterEnHusforsikring() {
         heading: 'Hent Altid Hjem, og saml husstandens forsikringer',
         subtitle: 'Skriv jeres forsikringer, priser og fornyelser ind i appen, så har I dem samlet ét sted.',
       }}
-      page={{ path: '/hvad-koster-en-husforsikring', description: metadata.description as string, published: '2026-11-16', updated: '2026-11-16' }}
+      page={{ path: '/hvad-koster-en-husforsikring', description: metadata.description as string, published: GUIDES['/hvad-koster-en-husforsikring'].published, updated: GUIDES['/hvad-koster-en-husforsikring'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

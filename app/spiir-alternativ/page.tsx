@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Guide, { type GuideFaq, GuideApp, GuideLink as A } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Upgraded to the recipe (docs/guide-recipe.md) on 16 Nov 2026. The page speaks to "du", like its
 // title, which Google already knows. Every fact about Spiir is from Spiir's own closing notice on
@@ -76,7 +77,7 @@ const FAQ: GuideFaq[] = [
 export default function SpiirAlternativ() {
   return (
     <Guide
-      title="Spiir lukkede 8. juni 2026: Hvad skal du bruge i stedet?"
+      title={GUIDES['/spiir-alternativ'].title}
       lead={
         <>
           <p>
@@ -105,7 +106,7 @@ export default function SpiirAlternativ() {
         heading: 'Hent Altid Hjem, og få overblikket tilbage',
         subtitle: 'Forbind banken med MitID, så ser du dine faste udgifter og abonnementer i en kalender, før pengene bliver trukket.',
       }}
-      page={{ path: '/spiir-alternativ', description: metadata.description as string, published: '2026-06-10', updated: '2026-11-16' }}
+      page={{ path: '/spiir-alternativ', description: metadata.description as string, published: GUIDES['/spiir-alternativ'].published, updated: GUIDES['/spiir-alternativ'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

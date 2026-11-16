@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import TreTusindMockup from '@/components/mad/TreTusindMockup'
 import { MAD_GUIDE_CTA, MAD_IN_APP, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
 import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 // Moved from altidmad.dk/mad-for-3000-om-maaneden (16 Nov 2026) with the text word for word.
 export const metadata: Metadata = {
@@ -68,7 +69,7 @@ const FAQ: GuideFaq[] = [
 export default function MadFor3000OmMaaneden() {
   return (
     <Guide
-      title="Kan en familie få mad for 3.000 kr. om måneden?"
+      title={GUIDES['/mad-for-3000-om-maaneden'].title}
       lead={
         <>
           <p>
@@ -105,7 +106,7 @@ export default function MadFor3000OmMaaneden() {
       }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
-      page={{ path: '/mad-for-3000-om-maaneden', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      page={{ path: '/mad-for-3000-om-maaneden', description: metadata.description as string, published: GUIDES['/mad-for-3000-om-maaneden'].published, updated: GUIDES['/mad-for-3000-om-maaneden'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

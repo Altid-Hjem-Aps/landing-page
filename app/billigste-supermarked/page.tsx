@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import PristjekMockup from '@/components/mad/PristjekMockup'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
 import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 export const metadata: Metadata = {
   title: 'Billigste supermarked 2026, se pristjek | Altid Hjem',
@@ -66,7 +67,7 @@ const FAQ: GuideFaq[] = [
 export default function BilligsteSupermarked() {
   return (
     <Guide
-      title="Hvilket supermarked er billigst?"
+      title={GUIDES['/billigste-supermarked'].title}
       lead={
         <>
           <p>Lidl var det billigste supermarked for hele varekurven i vores Q3-analyse. Kurven kostede 782,70 kr. hos Lidl og 1.313,94 kr. hos Min Købmand.</p>
@@ -85,7 +86,7 @@ export default function BilligsteSupermarked() {
       factors={{ label: 'Det bedste valg afhænger af', items: ['Jeres faste indkøb', 'Ugens tilbud', 'Hvor mange butikker I vil besøge'] }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
-      page={{ path: '/billigste-supermarked', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      page={{ path: '/billigste-supermarked', description: metadata.description as string, published: GUIDES['/billigste-supermarked'].published, updated: GUIDES['/billigste-supermarked'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import SparVanerMockup from '@/components/mad/SparVanerMockup'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
 import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
+import { GUIDES } from '@/lib/guides'
 
 export const metadata: Metadata = {
   title: 'Spar penge på dagligvarer, praktisk guide | Altid Hjem',
@@ -66,7 +67,7 @@ const FAQ: GuideFaq[] = [
 export default function SparPengePaaDagligvarer() {
   return (
     <Guide
-      title="Sådan sparer du penge på dagligvarer"
+      title={GUIDES['/spar-penge-paa-dagligvarer'].title}
       lead={
         <>
           <p>
@@ -88,7 +89,7 @@ export default function SparPengePaaDagligvarer() {
       factors={{ label: 'Besparelsen afhænger af', items: ['Jeres nuværende butik', 'Madspild', 'Indkøbsvaner'] }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
-      page={{ path: '/spar-penge-paa-dagligvarer', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      page={{ path: '/spar-penge-paa-dagligvarer', description: metadata.description as string, published: GUIDES['/spar-penge-paa-dagligvarer'].published, updated: GUIDES['/spar-penge-paa-dagligvarer'].updated }}
       sources={{
         checked: '2026-11-16',
         items: [
