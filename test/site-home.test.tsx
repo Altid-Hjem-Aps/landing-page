@@ -429,8 +429,8 @@ describe('privacy', () => {
   it('states the facts plainly and links to the policy', async () => {
     const { container } = render(await Home())
     const section = container.querySelector('[data-b="privacy"]') as HTMLElement
-    expect(section.textContent).toContain('Appen kan kun læse jeres transaktioner, aldrig flytte penge eller foretage betalinger.')
-    expect(section.textContent).toContain('Vi sælger eller deler aldrig jeres bankoplysninger med tredjeparter.')
+    expect(section.textContent).toContain('Vi kan kun læse jeres transaktioner og kan aldrig flytte jeres penge.')
+    expect(section.textContent).toContain('og jeres data bliver aldrig solgt videre.')
     expect(section.textContent).not.toMatch(/markedsføring/)
     expect(within(section).getByRole('link', { name: 'Læs privatlivspolitikken' })).toHaveAttribute('href', '/privatlivspolitik')
   })

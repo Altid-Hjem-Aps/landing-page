@@ -176,8 +176,8 @@ export const MAD = {
 
 export const PRIVACY = {
   title: 'Jeres tal er jeres egne',
-  // Thor's wording, 10/11.
-  body: 'I forbinder jeres bank sikkert med MitID og vælger selv, hvilke konti appen må se. Appen kan kun læse jeres transaktioner, aldrig flytte penge eller foretage betalinger. Vi sælger eller deler aldrig jeres bankoplysninger med tredjeparter.',
+  // Thor's wording, 16/11.
+  body: 'I forbinder jeres bank sikkert med MitID, og I bestemmer selv, hvilke bankkonti vi må se. Vi kan kun læse jeres transaktioner og kan aldrig flytte jeres penge. Forbindelsen går gennem en dansk partner, der er godkendt af Finanstilsynet, og jeres data bliver aldrig solgt videre. Det er jeres tal, og sådan bliver det ved med at være. Altid.',
   link: 'Læs privatlivspolitikken',
 } as const
 
