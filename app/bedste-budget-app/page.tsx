@@ -1,70 +1,78 @@
 import type { Metadata } from 'next'
 import BudgetAppSammenligning from '@/components/BudgetAppSammenligning'
-import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideStores } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A } from '@/components/site/Guide'
 
+// Upgraded to the recipe (docs/guide-recipe.md) on 16 Nov 2026. No budget app is ranked or named:
+// the page compares the two kinds of tool and sends the reader to Finanstilsynet for the rules on
+// bank access.
 export const metadata: Metadata = {
   title: 'Bedste budget-app til jeres økonomi | Altid Hjem',
   description:
-    'Få en ærlig guide til budget-apps, faste aftaler og økonomisk overblik. Se forskellen på værktøjerne, og find den løsning, der passer til jer.',
+    'En budget-app viser, hvor pengene er gået. Et overblik over de faste udgifter viser, hvad der skal trækkes. Valget afhænger af, hvad I vil løse.',
   alternates: { canonical: 'https://www.altidhjem.dk/bedste-budget-app' },
   openGraph: {
     title: 'Hvilken budget-app er bedst til jeres behov?',
     description:
-      'Få en ærlig guide til budget-apps, faste aftaler og økonomisk overblik. Se forskellen på værktøjerne, og find den løsning, der passer til jer.',
+      'En budget-app viser, hvor pengene er gået. Et overblik over de faste udgifter viser, hvad der skal trækkes. Valget afhænger af, hvad I vil løse.',
     url: 'https://www.altidhjem.dk/bedste-budget-app',
     type: 'article',
   },
 }
 
-// FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).
+const FT_TPP = 'https://www.finanstilsynet.dk/finansielle-temaer/betalingstjenester-og-e-penge/orientering-om-tredjepartsudbydere'
+const FT_REGISTER = 'https://virksomhedsregister.finanstilsynet.dk/'
+const SPIIR = 'https://www.spiir.dk/'
+const TAENK_BUDGET = 'https://taenk.dk/privatoekonomi/gode-raad/saadan-laegger-du-et-budget'
+const TAENK_POSTER = 'https://taenk.dk/privatoekonomi/gode-raad/budget-oversigt-over-budgetposter'
+
+// FAQ bruges to steder: synligt på siden og som FAQPage-schema.
 const FAQ: GuideFaq[] = [
   {
-    q: 'Hvad er den bedste budget-app?',
+    q: 'Hvilken budget-app er bedst til os?',
     a: [
-      'Den bedste budget-app er den, der løser jeres konkrete behov og håndterer jeres data på en måde, I er trygge ved.',
-      'Vælg ud fra bankunderstøttelse, kategorisering, eksportmuligheder og vilkår, ikke kun ud fra antallet af funktioner.',
+      'Det afhænger af, hvilket problem I vil løse. En budget-app viser, hvor pengene er gået, mens et overblik over de faste udgifter viser, hvad der skal trækkes.',
+      'Vælg ud fra jeres banker, om I kan rette kategorierne, om I kan eksportere data, og hvordan appen behandler jeres oplysninger.',
     ],
   },
   {
     q: 'Er budget-apps sikre?',
     a: [
-      'Budget-apps kan være sikre, men I bør altid undersøge den enkelte udbyder.',
-      'Kontoadgang sker generelt gennem regulerede åbne bankløsninger, men tjek appens vilkår, databehandling og muligheder for at fjerne adgangen.',
+      'Adgangen til banken er reguleret. Kun virksomheder med tilladelse må hente oplysninger fra jeres betalingskonti, og kun med jeres udtrykkelige samtykke, ifølge Finanstilsynet.',
+      'Slå udbyderen op i Finanstilsynets virksomhedsregister, og læs privatlivspolitikken, før I giver adgang.',
     ],
   },
   {
-    q: 'Hvad kostede Spiirs lukning brugerne?',
+    q: 'Kan en budget-app se vores opsparing og lån?',
     a: [
-      'Spiirs lukning betød først og fremmest, at brugerne mistede adgangen til deres vante overblik.',
-      'Konsekvensen var ikke nødvendigvis et direkte økonomisk tab, men mange måtte finde en ny måde at kategorisere forbrug og følge økonomien på.',
+      'Retten til at give en app adgang gælder betalingskonti som lønkontoen og husholdningskontoen. En opsparingskonto eller en konto til et boliglån er ifølge Finanstilsynet ikke en betalingskonto.',
+    ],
+  },
+  {
+    q: 'Hvad skete der med Spiir?',
+    a: [
+      'Spiir lukkede 8. juni 2026. Fra den dato kan brugerne ikke længere logge ind, skriver Spiir på sin hjemmeside.',
+      'Brugerne kunne eksportere deres data indtil lukningen.',
     ],
   },
   {
     q: 'Skal vi vælge en budget-app eller et samlet overblik?',
     a: [
-      'Vælg en budget-app, hvis I vil analysere forbruget bagud, og et samlet overblik, hvis I vil styre faste aftaler fremadrettet.',
+      'Vælg en budget-app, hvis I vil se forbruget bagud, og et samlet overblik, hvis I vil styre de faste aftaler fremad.',
       'De kan supplere hinanden, fordi de løser forskellige opgaver.',
-    ],
-  },
-  {
-    q: 'Kan Altid Hjem erstatte en budget-app?',
-    a: [
-      'Det afhænger af, hvad I bruger budget-appen til.',
-      'I Altid Hjem forbinder I banken med MitID og ser, hvad I har tilbage til næste løn. I ser også jeres faste udgifter og abonnementer i en kalender. Appen samler også madplan, strøm og forsikring.',
     ],
   },
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så du får ét overblik, ét login.',
-      'Du kan hente den gratis i App Store og Google Play.',
+      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så I får ét overblik, ét login.',
+      'I kan hente den gratis i App Store og Google Play.',
     ],
   },
   {
     q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
-      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette en profil.',
+      'I betaler kun for det, I selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis I bliver kunder.',
     ],
   },
 ]
@@ -76,108 +84,169 @@ export default function BedsteBudgetApp() {
       lead={
         <>
           <p>
-            Den bedste budget-app afhænger af, hvilket problem I vil løse. En klassisk budget-app viser, hvor pengene er gået, mens et samlet aftaleoverblik hjælper jer
-            med at styre faste udgifter fremadrettet.
+            En budget-app viser, hvor pengene er gået. Et overblik over de faste udgifter viser, hvad der skal trækkes. Valget afhænger af, hvad I vil løse.
           </p>
           <p>
-            De to værktøjer kan sagtens supplere hinanden. Vælg en budget-app til løbende forbrug, et aftaleoverblik til el, mobil, forsikringer og abonnementer, eller
-            begge dele, hvis I har brug for hele billedet.
+            De to værktøjer kan sagtens supplere hinanden. Uanset hvad I vælger, er adgangen til banken reguleret: kun virksomheder med tilladelse må hente oplysninger fra
+            jeres betalingskonti, og kun med jeres samtykke, ifølge Finanstilsynet.
           </p>
         </>
       }
-      meta="Opdateret: juli 2026"
-      answer={{ label: 'Kort svar', value: 'Det afhænger af, hvilket problem I vil løse.', note: 'En budget-app viser, hvor pengene er gået. Et aftaleoverblik hjælper med at styre de faste udgifter.' }}
+      meta={
+        <>
+          Om adgang til banken: se{' '}
+          <a href={FT_TPP} target="_blank" rel="noopener noreferrer">
+            Finanstilsynet
+          </a>
+        </>
+      }
+      answer={{ label: 'Kort svar', value: 'Det afhænger af, hvilket problem I vil løse.', note: 'En budget-app viser, hvor pengene er gået. Et overblik over de faste udgifter viser, hvad der skal trækkes.' }}
+      factors={{ label: 'Det afgør valget', items: ['Hvad I vil styre', 'Adgang til banken', 'Eksport af data', 'Pris', 'Privatliv'] }}
       faq={FAQ}
       cta={{
         eyebrow: 'Budget og faste udgifter i samme app',
-        heading: 'Hent Altid Hjem, og se, hvad I har tilbage til næste løn',
+        heading: 'Hent Altid Hjem, og se jeres faste udgifter samlet',
         subtitle: 'Appen er gratis og viser jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket.',
       }}
+      page={{ path: '/bedste-budget-app', description: metadata.description as string, published: '2026-07-27', updated: '2026-11-16' }}
+      sources={{
+        checked: '2026-11-16',
+        items: [
+          { publisher: 'Finanstilsynet', title: 'Orientering om tredjepartsudbydere', href: FT_TPP, note: 'Kontooplysningstjenester, tilladelse, samtykke og betalingskonti' },
+          { publisher: 'Finanstilsynet', title: 'Virksomhedsregister: Søg virksomheder', href: FT_REGISTER },
+          { publisher: 'Spiir', title: 'Spiir lukker d. 8. juni 2026', href: SPIIR, note: 'Spiirs besked om lukningen og eksport af data' },
+          { publisher: 'Forbrugerrådet Tænk', title: 'Sådan lægger du et budget', href: TAENK_BUDGET, note: '6. juni 2025' },
+          { publisher: 'Forbrugerrådet Tænk', title: 'Budget: Oversigt over budgetposter', href: TAENK_POSTER, note: '6. juni 2025' },
+        ],
+      }}
+      related={['/spiir-alternativ', '/opsig-abonnementer', '/hvad-koster-bredbaand']}
     >
       <section>
         <h2>Hvad gør en budget-app egentlig?</h2>
         <p>
-          En klassisk budget-app henter oplysninger fra jeres konti og placerer betalingerne i kategorier som bolig, transport, dagligvarer og fornøjelser. Det gør det
-          lettere at se, hvor pengene gik sidste måned.
+          En budget-app henter posteringerne fra jeres konti og sorterer dem i kategorier som bolig, transport, dagligvarer og fornøjelser. Det gør det lettere at se, hvor
+          pengene gik hen sidste måned. <A href={FT_TPP}>Finanstilsynet</A> kalder det en kontooplysningstjeneste og nævner netop et forbrugsoverblik eller et budget som
+          eksempler. Appen kan for eksempel sende jer en besked, hvis månedens budget er overskredet.
         </p>
+        <p>Overblikket er især nyttigt, hvis I vil finde vaner i det variable forbrug, for eksempel takeaway, små netkøb eller dagligvarer.</p>
         <p>
-          Overblikket er især nyttigt, hvis I vil finde vaner i det variable forbrug. Måske fylder takeaway, små netkøb eller dagligvarer mere, end I havde regnet med.
-        </p>
-        <p>
-          Kategoriseringen er dog ikke altid fejlfri. En overførsel eller betaling kan lande i den forkerte kategori, så I bør gennemgå tallene, før I træffer større
-          beslutninger ud fra dem.
-        </p>
-      </section>
-      <section>
-        <h2>Hvad løser budget-apps sjældent?</h2>
-        <p>
-          Budget-apps ser normalt på betalinger bagud i tid. De viser, at en forsikring eller et mobilabonnement er blevet betalt, men giver ikke nødvendigvis et samlet
-          overblik over priser, vilkår, dækning og forskellige logins.
-        </p>
-        <p>Det gør det sværere at styre de faste aftaler fremadrettet. I kan godt se beløbet på kontoen uden at vide, om aftalen stadig passer til jeres behov.</p>
-        <p>
-          Her kan et særskilt aftaleoverblik være mere relevant. Det gælder især, hvis målet er at samle el, mobil, forsikringer og andre faste udgifter, ikke blot at
-          kategorisere dem.
+          Kategoriseringen er dog ikke altid fejlfri. En overførsel eller betaling kan lande i den forkerte kategori, så gennemgå tallene, før I træffer større beslutninger
+          ud fra dem.
         </p>
       </section>
       <section>
-        <h2>Spiir lukkede, hvad lærte det brugerne?</h2>
+        <h2>Hvad løser en budget-app sjældent?</h2>
         <p>
-          Spiir lukkede i juni 2026. Mange brugere mistede dermed det kontooverblik og de kategorier, som de havde gjort til en fast del af deres økonomiske rutine.
+          Budget-apps ser normalt bagud. De viser, at en forsikring eller et mobilabonnement er blevet betalt, men giver ikke nødvendigvis et samlet overblik over priser,
+          vilkår, fornyelser og forskellige logins.
         </p>
         <p>
-          Lukningen viste, at et digitalt økonomioverblik også afhænger af, at tjenesten fortsætter. Det er derfor fornuftigt at kunne hente sine oplysninger og have en
-          enkel, selvstændig oversigt over de vigtigste aftaler.
+          Det gør det sværere at styre de faste aftaler fremad. I kan godt se beløbet på kontoen uden at vide, om aftalen stadig passer til jeres behov. En prisstigning
+          eller en fornyelse kan let gå ubemærket hen, når I kun ser bagud, og en regning, der kun kommer én gang om året, dukker først op, når den er betalt.
         </p>
         <p>
-          Hvis I brugte Spiir, kan I læse vores guide til at finde et <A href="/spiir-alternativ">alternativ til Spiir</A>. Her gennemgår vi forskellen mellem
-          kontooverblik og styring af faste aftaler.
+          Her kan et særskilt overblik over de faste udgifter være mere relevant. Det gælder især, hvis målet er at samle el, mobil, forsikringer og abonnementer, ikke blot
+          at sortere dem i kategorier.
+        </p>
+      </section>
+      <section>
+        <h2>Er budget-apps sikre?</h2>
+        <p>
+          Adgangen til banken er reguleret. Kun virksomheder med tilladelse fra Finanstilsynet må udbyde kontooplysningstjenester, og de må kun hente jeres oplysninger med
+          jeres udtrykkelige samtykke, skriver <A href={FT_TPP}>Finanstilsynet</A>. Oplysningerne må kun bruges til at give jer selv det overblik, I har bedt om.
+          Pengeinstitutter må som udgangspunkt tilbyde det samme uden en særskilt tilladelse, og en udbyder med tilladelse fra et andet EU- eller EØS-land må også tilbyde
+          tjenesten i Danmark.
+        </p>
+        <p>
+          Adgangen gælder betalingskonti som lønkontoen eller husholdningskontoen, ikke en opsparingskonto eller en konto til et boliglån. Før I giver adgang, kan I slå
+          udbyderen op i <A href={FT_REGISTER}>Finanstilsynets virksomhedsregister</A>. Læs også privatlivspolitikken, og se, hvordan I trækker samtykket tilbage igen.
+        </p>
+      </section>
+      <section>
+        <h2>Hvad lærte Spiirs lukning brugerne?</h2>
+        <p>
+          Spiir lukkede 8. juni 2026. Fra den dato kan brugerne ikke længere logge ind, skriver <A href={SPIIR}>Spiir</A>. Brugerne kunne eksportere deres data indtil
+          lukningen. Spiir stopper med at hente data fra brugernes konti og sletter eller anonymiserer deres personoplysninger. Mange mistede dermed det overblik og de
+          kategorier, de havde gjort til en fast del af hverdagen.
+        </p>
+        <p>
+          Lukningen viste, at et digitalt overblik afhænger af, at tjenesten fortsætter. Det er derfor fornuftigt at vælge en app, hvor I kan eksportere jeres data, og at
+          have en enkel liste over de vigtigste aftaler.
+        </p>
+        <p>
+          Brugte I Spiir, kan I læse vores guide til et <A href="/spiir-alternativ">alternativ til Spiir</A>.
         </p>
         <GuideFigure
           tone="honey"
-          caption="En budget-app ser bagud på forbruget. Et samlet overblik styrer de faste aftaler fremad. Illustration, ikke et skærmbillede fra appen."
+          caption="Eksempel: en budget-app ser bagud på forbruget, et samlet overblik styrer de faste aftaler fremad. Illustration, ikke et skærmbillede fra appen."
         >
           <BudgetAppSammenligning />
         </GuideFigure>
       </section>
       <section>
-        <h2>Sådan vælger I det rigtige værktøj</h2>
+        <h2>Hvordan vælger I den rigtige app?</h2>
         <p>
-          Start med at spørge, om jeres største udfordring er det variable forbrug eller de faste aftaler. Hvis I vil forstå, hvor pengene gik, er en klassisk budget-app
-          ofte det mest oplagte valg.
+          Start med at spørge jer selv, om jeres største udfordring er det variable forbrug eller de faste aftaler. Vil I forstå, hvor pengene gik hen, er en budget-app det oplagte
+          valg. Er problemet abonnementer, policer og leverandører fordelt på forskellige logins, har I snarere brug for et samlet overblik.
         </p>
+        <p>Stil disse spørgsmål, før I vælger:</p>
+        <ul>
+          <li>Kan appen forbinde alle jeres banker?</li>
+          <li>Kan I rette kategorierne, når en postering lander forkert?</li>
+          <li>Kan I eksportere jeres data, hvis I vil skifte?</li>
+          <li>Hvad koster appen, og hvordan tjener udbyderen penge?</li>
+          <li>Hvem står bag, og har udbyderen tilladelse fra Finanstilsynet?</li>
+        </ul>
         <p>
-          Hvis problemet er abonnementer, policer og leverandører fordelt på forskellige logins, har I snarere brug for et samlet aftaleoverblik. Mange vil få mest værdi
-          af begge dele, fordi værktøjerne besvarer forskellige spørgsmål.
-        </p>
-        <p>
-          Undersøg også, hvordan appen beskytter jeres data, hvilke konti den understøtter, om kategorier kan rettes, og om oplysninger kan eksporteres. Læs altid vilkår
-          og privatlivspolitik, før I giver adgang til økonomiske oplysninger.
-        </p>
-      </section>
-      <section>
-        <h2>De faste udgifter er den stille post</h2>
-        <p>
-          Faste udgifter bliver let overset, fordi betalingerne kører automatisk. Mange husstande opdager glemte abonnementer, når de gennemgår kontoudtoget grundigt.
-        </p>
-        <p>
-          Se hver aftale efter mindst én gang om året. Tjek pris, brug, binding, opsigelsesvilkår og eventuelle overlap, og begynd gerne med områder som{' '}
-          <A href="/billigste-mobilabonnement">mobilabonnementet</A> og <A href="/hvad-koster-indboforsikring">indboforsikringen</A>.
-        </p>
-        <p>
-          En lav pris er ikke altid det vigtigste. Dækning, datamængde, service og fleksibilitet skal passe til jeres faktiske behov, ellers kan den billigste aftale ende
-          med at være et dårligt valg.
+          Prøv gerne appen et par uger, før I lægger hele budgettet ind. Så ser I, om kategorierne rammer rigtigt, og om alle jeres konti kommer med. Læs vilkår og
+          privatlivspolitik, før I giver adgang til jeres økonomiske oplysninger.
         </p>
       </section>
       <section>
-        <h2>Hvad kan Altid Hjem?</h2>
+        <h2>Hvorfor er de faste udgifter svære at følge?</h2>
         <p>
-          Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så I får ét overblik, ét login. I Økonomi forbinder I banken med MitID og ser, hvad I har
-          tilbage til næste løn. I ser også jeres faste udgifter og abonnementer i en kalender.
+          Fordi de ikke kommer jævnt. Ifølge <A href={TAENK_BUDGET}>Forbrugerrådet Tænk</A> bliver mange faste udgifter betalt én gang i kvartalet, halvårligt eller én gang
+          om året. Tænk anbefaler derfor at lægge budgettet mindst et år frem og at tjekke posterne 12 måneder tilbage i netbanken.
         </p>
-        <p>Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder.</p>
-        <p>I kan hente appen gratis i App Store og Google Play.</p>
-        <GuideStores />
+        <p>
+          Mange faste udgifter, for eksempel mobilabonnementer og streaming, bliver også trukket automatisk via betalingskortet, ofte fra lønkontoen og ikke fra
+          budgetkontoen, skriver Tænk. Har budgetkontoen ikke et betalingskort, skal I derfor vide, hvilke faste udgifter der trækkes hvorfra. Abonnementer på tv, mobil, internet og streaming står i øvrigt på <A href={TAENK_POSTER}>Tænks huskeliste</A> over faste udgifter.
+        </p>
+        <p>
+          Begynd gerne med <A href="/billigste-mobilabonnement">mobilabonnementerne</A>, <A href="/hvad-koster-bredbaand">bredbåndet</A> og{' '}
+          <A href="/opsig-abonnementer">de abonnementer, I ikke bruger</A>.
+        </p>
+      </section>
+      <section>
+        <h2>Regneeksempel: hvor mange gange bliver der trukket penge?</h2>
+        <p>Et eksempel, ikke jeres regning. Det bygger på disse antagelser:</p>
+        <ul>
+          <li>7 faste udgifter bliver trukket hver måned, for eksempel husleje, mobil, bredbånd og streaming.</li>
+          <li>2 bliver trukket hvert kvartal.</li>
+          <li>3 bliver trukket én gang om året, for eksempel forsikringer.</li>
+        </ul>
+        <p>
+          Det giver 84 træk fra de månedlige udgifter, 8 fra de kvartalsvise og 3 fra de årlige, i alt 95 træk om året. De falder ikke jævnt: i en måned, hvor begge
+          kvartalsregninger og de tre årlige regninger kommer, er der 12 træk, mens der i en stille måned kun er 7. Derfor hjælper det at se de faste udgifter i en kalender,
+          ikke kun som et gennemsnit. Tænk anbefaler netop at lave et overblik over årets betalinger måned for måned.
+        </p>
+      </section>
+      <section>
+        <h2>Hvordan kan Altid Hjem hjælpe?</h2>
+        <p>
+          En budget-app fortæller, hvor pengene gik hen. De faste udgifter bliver bare ved med at blive trukket. Altid Hjem samler madplan, strøm, forsikring og økonomi i
+          én app, så I får ét overblik, ét login.
+        </p>
+        <p>
+          Forbinder I banken, ser I jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket. Skriv jeres forsikringer, priser og fornyelser ind i
+          appen, så har I dem samlet ét sted. I kan hente appen gratis i App Store og Google Play.
+        </p>
+        <GuideApp
+          tone="sky"
+          src="/site/app/regninger-top.webp"
+          alt="Regninger i Altid Hjem: faste regninger vist i en kalender for november"
+          caption="I appen: husstandens faste regninger i en kalender, og hvad den næste store regning er."
+        />
       </section>
     </Guide>
   )

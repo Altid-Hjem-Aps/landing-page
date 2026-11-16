@@ -11,6 +11,7 @@ vi.mock('@/components/site/SiteFooter', () => ({ default: () => null }))
 vi.mock('@/components/site/Reveal', () => ({ default: () => null }))
 // The offer pop-up reads the live user count on the server (an async component).
 vi.mock('@/components/site/GuideOfferPopup', () => ({ default: () => null }))
+vi.mock('@/components/site/AppRating', () => ({ default: () => null }))
 
 describe('/spiir-alternativ', () => {
   it('targets the Spiir searches in title and description', () => {
@@ -26,7 +27,7 @@ describe('/spiir-alternativ', () => {
     // '<' er escapet som < i kilden — JSON.parse folder det tilbage.
     const schema = JSON.parse(script!.innerHTML)
     expect(schema['@type']).toBe('FAQPage')
-    expect(schema.mainEntity).toHaveLength(5)
+    expect(schema.mainEntity).toHaveLength(7)
 
     // Google kræver at schema-spørgsmålene matcher det synlige indhold.
     const visibleQuestions = [...container.querySelectorAll('details h3')].map((h) => h.textContent)

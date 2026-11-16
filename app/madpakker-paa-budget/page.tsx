@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import MadpakkeMockup from '@/components/mad/MadpakkeMockup'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
 
 // Moved from altidmad.dk/madpakker-paa-budget (16 Nov 2026): the article text is word for word,
 // only the sign-up sentences from before the launch (no longer true) were rewritten to be true on altidhjem.dk.
@@ -84,7 +84,7 @@ export default function MadpakkerPaaBudget() {
       }
       meta={
         <>
-          Opdateret: september 2026 · Kilde: <a href={MAD_REPORT_HREF}>{MAD_REPORT_LABEL}</a>
+          Kilde: <a href={MAD_REPORT_HREF}>{MAD_REPORT_LABEL}</a>
         </>
       }
       answer={{
@@ -95,6 +95,14 @@ export default function MadpakkerPaaBudget() {
       }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
+      page={{ path: '/madpakker-paa-budget', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      sources={{
+        checked: '2026-11-16',
+        items: [
+          { publisher: 'Altid Mad', title: MAD_REPORT_LABEL, href: `https://www.altidhjem.dk${MAD_REPORT_HREF}`, note: 'Den samme ugekurv med 23 varer til 2 voksne og 2 teenagere hos 13 kæder. Genereret 21. september 2026' },
+        ],
+      }}
+      related={['/madplan-efter-tilbud', '/spar-penge-paa-dagligvarer', '/madbudget-familie-paa-4']}
     >
       <section>
         <h2>Madpakkehverdagen kræver mere, end man tror</h2>
@@ -182,6 +190,7 @@ export default function MadpakkerPaaBudget() {
         <GuideFigure tone="lavender" caption="Altid Mad planlægger ugens madpakker efter tilbudsaviserne og skriver indkøbslisten for jer.">
           <MadpakkeMockup />
         </GuideFigure>
+        <GuideStores />
       </section>
     </Guide>
   )

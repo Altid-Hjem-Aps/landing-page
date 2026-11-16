@@ -31,22 +31,36 @@ describe('parseDanishNumber', () => {
 })
 
 describe('LadeboksCalculator', () => {
-  it('computes the monthly estimate from the defaults (1.200 km, 18 kWh/100, 2,50 kr.)', () => {
+  // The defaults are FDM's example on the page (15.000 km a year = 1.250 a month, 20 kWh/100 km).
+  // There is no sourced household price, so the price field starts empty and no kroner show.
+  const fillPrice = (value = '2,50') => fireEvent.change(screen.getByLabelText('Elpris (kr./kWh)'), { target: { value } })
+
+  it('shows no kroner until the household enters its own price', () => {
     render(<LadeboksCalculator />)
-    // 1200/100*18 = 216 kWh * 2,50 = 540 kr.
-    expect(screen.getByText(/540 kr\./)).toBeInTheDocument()
-    expect(screen.getByText(/216 kWh/)).toBeInTheDocument()
+    expect(screen.getByText(/Udfyld km, forbrug og elpris med jeres egne tal/)).toBeInTheDocument()
+    expect(screen.queryByText('Estimat')).not.toBeInTheDocument()
+  })
+
+  it('computes the monthly estimate from the defaults and an entered price', () => {
+    render(<LadeboksCalculator />)
+    fillPrice()
+    // 1250/100*20 = 250 kWh * 2,50 = 625 kr.
+    expect(screen.getByText(/625 kr\./)).toBeInTheDocument()
+    expect(screen.getByText(/250 kWh/)).toBeInTheDocument()
   })
 
   it('shows the with-refusion figure when a refusion price is given', () => {
     render(<LadeboksCalculator />)
-    fireEvent.change(screen.getByPlaceholderText('F.eks. 0,73'), { target: { value: '0,73' } })
-    // 216 kWh * 0,73 = 157,68 ≈ 158 kr.
-    expect(screen.getByText(/158 kr\./)).toBeInTheDocument()
+    fillPrice()
+    fireEvent.change(screen.getByLabelText(/efter refusion/), { target: { value: '0,80' } })
+    // 250 kWh * 0,80 = 200 kr.
+    expect(screen.getByText(/200 kr\./)).toBeInTheDocument()
   })
 
   it('gates the estimate on implausible or malformed input', () => {
     render(<LadeboksCalculator />)
+    fillPrice()
+    expect(screen.queryByText(/Udfyld km, forbrug og elpris/)).not.toBeInTheDocument()
     const km = screen.getByLabelText('Km pr. måned')
     fireEvent.change(km, { target: { value: '999999' } })
     expect(screen.getByText(/Udfyld km, forbrug og elpris/)).toBeInTheDocument()
@@ -56,7 +70,8 @@ describe('LadeboksCalculator', () => {
 
   it('warns when a filled refusion price cannot be read', () => {
     render(<LadeboksCalculator />)
-    fireEvent.change(screen.getByPlaceholderText('F.eks. 0,73'), { target: { value: 'abc' } })
+    fillPrice()
+    fireEvent.change(screen.getByLabelText(/efter refusion/), { target: { value: 'abc' } })
     expect(screen.getByText(/Elprisen efter refusion kunne ikke læses/)).toBeInTheDocument()
   })
 
@@ -113,14 +128,14 @@ describe('LadeboksCalculator', () => {
 
   it('keeps the empty optional refusion field neutral after blur', () => {
     render(<LadeboksCalculator />)
-    const refusion = screen.getByPlaceholderText('F.eks. 0,73')
+    const refusion = screen.getByLabelText(/efter refusion/)
     fireEvent.blur(refusion)
     expect(refusion).not.toHaveAttribute('aria-invalid')
   })
 
   it('links an unreadable refusion price to its field error after blur', () => {
     render(<LadeboksCalculator />)
-    const refusion = screen.getByPlaceholderText('F.eks. 0,73')
+    const refusion = screen.getByLabelText(/efter refusion/)
     fireEvent.change(refusion, { target: { value: 'abc' } })
     fireEvent.blur(refusion)
     expect(refusion).toHaveAttribute('aria-invalid', 'true')
@@ -131,10 +146,11 @@ describe('LadeboksCalculator', () => {
     const { container } = render(<LadeboksCalculator />)
     const live = container.querySelector('[aria-live]')
     expect(live).not.toBeNull()
+    fillPrice()
     fireEvent.change(screen.getByLabelText('Km pr. måned'), { target: { value: '2.000' } })
     expect(container.querySelector('[aria-live]')).toBe(live)
-    // 2000/100*18 = 360 kWh * 2,50 = 900 kr. — figures stay correct with the motion markup
-    expect(screen.getByText(/900 kr\./)).toBeInTheDocument()
+    // 2000/100*20 = 400 kWh * 2,50 = 1.000 kr.; figures stay correct with the motion markup
+    expect(screen.getByText(/1\.000 kr\./)).toBeInTheDocument()
   })
 })
 

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import SparVanerMockup from '@/components/mad/SparVanerMockup'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Spar penge på dagligvarer, praktisk guide | Altid Hjem',
@@ -81,13 +81,21 @@ export default function SparPengePaaDagligvarer() {
       }
       meta={
         <>
-          Opdateret: september 2026 · Kilde: <a href={MAD_REPORT_HREF}>{MAD_REPORT_LABEL}</a>
+          Kilde: <a href={MAD_REPORT_HREF}>{MAD_REPORT_LABEL}</a>
         </>
       }
       answer={{ label: 'Prisforskel på kurven', value: '531,24', unit: 'kr. om ugen', note: 'Forskellen på den billigste og den dyreste samlede kurv svarer til op til 27.624 kr. om året.' }}
       factors={{ label: 'Besparelsen afhænger af', items: ['Jeres nuværende butik', 'Madspild', 'Indkøbsvaner'] }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
+      page={{ path: '/spar-penge-paa-dagligvarer', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      sources={{
+        checked: '2026-11-16',
+        items: [
+          { publisher: 'Altid Mad', title: MAD_REPORT_LABEL, href: `https://www.altidhjem.dk${MAD_REPORT_HREF}`, note: 'Den samme ugekurv med 23 varer til 2 voksne og 2 teenagere hos 13 kæder. Genereret 21. september 2026. Månedsbeløb er egne beregninger på baggrund af rapportens ugepriser (ugepris gange 52 delt med 12)' },
+        ],
+      }}
+      related={['/billigste-supermarked', '/madplan-efter-tilbud', '/jul-paa-budget']}
     >
       <section>
         <h2>Vælg din hovedbutik med omhu</h2>
@@ -185,6 +193,7 @@ export default function SparPengePaaDagligvarer() {
         <GuideFigure tone="lavender" caption="Fem vaner der flytter madbudgettet, samlet som én ugeplan.">
           <SparVanerMockup />
         </GuideFigure>
+        <GuideStores />
       </section>
     </Guide>
   )

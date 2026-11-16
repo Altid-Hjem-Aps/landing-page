@@ -6,7 +6,7 @@ import type { CSSProperties, RefObject } from 'react'
 /**
  * Shared tokens, primitives and animation plumbing for the SEO-page
  * mockups and calculators on altidhjem.dk. Mirrors the design language of
- * the existing page mockups (ForsikringHusstandMockup, ElprisAppMockup):
+ * the existing page mockups (ForsikringHusstandMockup):
  * white app-card on the cream page, forest ink, sage accents, red only for
  * flagged problems, and slow narrative phase timing.
  */

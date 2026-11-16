@@ -1,70 +1,78 @@
 import type { Metadata } from 'next'
 import MobilOverblikMockup from '@/components/MobilOverblikMockup'
-import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideStores } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A } from '@/components/site/Guide'
 
+// Upgraded to the recipe (docs/guide-recipe.md) on 16 Nov 2026. No mobile operator is named: the
+// lowest prices are a comparison site's (it says it earns a fee from its partners), the
+// price level is Forbrugerrådet Tænk's test, and the rules are Digitaliseringsstyrelsen's.
 export const metadata: Metadata = {
   title: 'Billigste mobilabonnement i 2026 | Altid Hjem',
   description:
-    'Find det billigste mobilabonnement til hele husstanden. Se vejledende priser, typiske faldgruber og få en enkel tjekliste. Hent Altid Hjem, og få overblik over husstanden.',
+    '19 kr. om måneden var den laveste normalpris på billigsteabonnement.dk 16. november 2026, og fri tale startede ved 35 kr. Se, hvad husstanden bør tjekke.',
   alternates: { canonical: 'https://www.altidhjem.dk/billigste-mobilabonnement' },
   openGraph: {
     title: 'Det billigste mobilabonnement til hele husstanden',
     description:
-      'Find det billigste mobilabonnement til hele husstanden. Se vejledende priser, typiske faldgruber og få en enkel tjekliste. Hent Altid Hjem, og få overblik over husstanden.',
+      '19 kr. om måneden var den laveste normalpris på billigsteabonnement.dk 16. november 2026, og fri tale startede ved 35 kr. Se, hvad husstanden bør tjekke.',
     url: 'https://www.altidhjem.dk/billigste-mobilabonnement',
     type: 'article',
   },
 }
 
-// FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).
+const PRISSIDE = 'https://billigsteabonnement.dk/mobilabonnementer'
+const TAENK = 'https://taenk.dk/test/mobilabonnementer/mobilabonnementer-bedst-og-billigst'
+const DIGST = 'https://digst.dk/media/r2chpp0w/slutbrugerbekendtgoerelsen-vejledning_nov_2025.pdf'
+const DST = 'https://www.statistikbanken.dk/PRIS01'
+const EU_ROAMING = 'https://europa.eu/youreurope/citizens/consumers/internet-telecoms/mobile-roaming-costs/index_da.htm'
+
+// FAQ bruges to steder: synligt på siden og som FAQPage-schema.
 const FAQ: GuideFaq[] = [
   {
     q: 'Hvad er det billigste mobilabonnement?',
     a: [
-      'Det billigste mobilabonnement fås vejledende fra ca. 19 kr./md.',
-      'Det er typisk en enkel lavprisløsning, og den bedste pris for dig afhænger af data, tale, roaming og dækning.',
+      'Den laveste normalpris på prissammenligningssiden billigsteabonnement.dk var 19 kroner om måneden 16. november 2026, for et abonnement med 5 GB data og 5 timers tale. Fri tale startede ved 35 kroner.',
+      'Om det er det rigtige for jer, afhænger af, hvor meget data og tale I bruger.',
     ],
   },
   {
-    q: 'Er lavprisselskaberne lige så gode som de store?',
+    q: 'Hvor meget data har vi brug for?',
     a: [
-      'Discountselskaber kan bruge samme mobilnet som større selskaber og derfor have tilsvarende dækning.',
-      'Roaming, kundeservice, ekstratjenester og vilkår kan dog variere, så sammenlign mere end månedsprisen.',
+      'Se jeres eget forbrug hos teleselskabet. I Forbrugerrådet Tænks undersøgelse brugte 610 medlemmer i gennemsnit 18 GB data om måneden.',
+      'Ifølge Tænk er den største årsag til, at mange betaler for meget, at de køber langt mere data, end de bruger.',
     ],
   },
   {
-    q: 'Hvor meget data har jeg brug for?',
+    q: 'Hvor længe må et mobilabonnement binde os?',
     a: [
-      'Du har brug for en datamængde, der matcher dit reelle mobilforbrug uden en stor ubrugt buffer.',
-      'Se forbruget i din nuværende udbyders app eller på fakturaerne, og husk, at behovet kan stige, hvis du ofte streamer uden wi-fi.',
+      'Højst 6 måneder, inklusive opsigelsesvarsel. Derefter kan I opsige med 1 måneds varsel til udgangen af en måned.',
+      'Afbetaling på en telefon må heller ikke binde jer længere end 6 måneder, ifølge Digitaliseringsstyrelsens vejledning.',
     ],
   },
   {
-    q: 'Kan jeg skifte mobilselskab med det samme?',
+    q: 'Kan vi opsige, hvis prisen stiger?',
     a: [
-      'Ofte ja, fordi ingen binding er normen i Danmark.',
-      'Tjek alligevel opsigelsesvarsel og eventuel telefonafbetaling, og lad normalt det nye selskab håndtere nummerflytningen.',
+      'Ja. Teleselskabet skal varsle en prisstigning mindst 1 måned før, og I kan opsige uden omkostninger, uanset en eventuel bindingsperiode.',
+      'Reglen gælder ikke for forudbetalte taletidskort.',
     ],
   },
   {
-    q: 'Hvor meget kan en husstand spare på mobil?',
+    q: 'Kan vi tage nummeret med til et nyt selskab?',
     a: [
-      'Det afhænger af antallet af abonnementer, jeres nuværende priser og det faktiske forbrug.',
-      'Flere hundrede kroner om måneden kan være muligt, når flere aftaler er gamle eller har ubrugte tillæg, men besparelsen kan også være mindre.',
+      'Ja, det hedder nummerportering. I kan bede om, at det nye abonnement først starter, når opsigelsesperioden hos det gamle selskab er slut.',
     ],
   },
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så du får ét overblik, ét login.',
-      'Du kan hente den gratis i App Store og Google Play.',
+      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så I får ét overblik, ét login.',
+      'I kan hente den gratis i App Store og Google Play.',
     ],
   },
   {
     q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
-      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette en profil.',
+      'I betaler kun for det, I selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis I bliver kunder.',
     ],
   },
 ]
@@ -76,105 +84,181 @@ export default function BilligsteMobilabonnement() {
       lead={
         <>
           <p>
-            Det billigste mobilabonnement fås vejledende fra ca. 19 kr./md. Det er typisk et enkelt mobilabonnement med begrænset data eller taletid, mens fri tale ofte
-            starter ved ca. 29-49 kr./md.
+            19 kroner om måneden var den laveste normalpris blandt 109 abonnementer fra 10 selskaber på prissammenligningssiden billigsteabonnement.dk 16. november 2026. Fri
+            tale startede ved 35 kroner.
           </p>
           <p>
-            Den laveste pris er dog ikke nødvendigvis billigst for jer. Se på data, dækning og vilkår, men især på hele husstandens mobiludgift, når I sammenligner.
+            Den laveste pris er ikke nødvendigvis den rigtige for jer. Forbrugerrådet Tænk fandt i september 2026, at de ti bedste abonnementer i sin test alle kostede
+            under 100 kroner om måneden. Se på data, vilkår og hele husstandens udgift, når I sammenligner.
           </p>
         </>
       }
-      meta={<>Opdateret: juli 2026</>}
-      answer={{ label: 'Priser fra ca.', value: '19', unit: 'kr. om måneden', note: 'Fri tale starter ofte ved ca. 29-49 kr. om måneden.' }}
-      factors={{ label: 'Se også på', items: ['Data', 'Dækning', 'Vilkår', 'Husstandens samlede udgift'] }}
+      meta={
+        <>
+          Priserne er fra 16. november 2026 · Se{' '}
+          <a href={TAENK} target="_blank" rel="noopener noreferrer">
+            Forbrugerrådet Tænks test
+          </a>
+        </>
+      }
+      answer={{ label: 'Laveste normalpris, november 2026', value: '19', unit: 'kr. om måneden', note: 'Fri tale fra 35 kr. Kilde: billigsteabonnement.dk, 109 abonnementer fra 10 selskaber.' }}
+      factors={{ label: 'Det afgør prisen', items: ['Data', 'Tale', 'Roaming i EU', 'Binding og afbetaling', 'Husstandens samlede udgift'] }}
       faq={FAQ}
       related={['/hvad-koster-bredbaand', '/opsig-abonnementer', '/bedste-budget-app']}
       cta={{
         eyebrow: 'Ét overblik over hele husstanden',
-        heading: 'Hent Altid Hjem, og få overblik over husstanden',
-        subtitle: 'Appen er gratis og viser husstandens faste udgifter og abonnementer i en kalender, før pengene bliver trukket.',
+        heading: 'Hent Altid Hjem og få overblik over husstanden',
+        subtitle: 'Forbind banken, så ser I jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket.',
+      }}
+      page={{ path: '/billigste-mobilabonnement', description: metadata.description as string, published: '2026-07-27', updated: '2026-11-16' }}
+      sources={{
+        checked: '2026-11-16',
+        items: [
+          {
+            publisher: 'billigsteabonnement.dk',
+            title: 'Billigste mobilabonnement 2026: alle 109 planer på reel pris',
+            href: PRISSIDE,
+            note: 'Opdateret 16. november 2026. Normalpriser, ikke intropriser. Siden oplyser, at den får provision fra sine samarbejdspartnere',
+          },
+          { publisher: 'Forbrugerrådet Tænk', title: 'Betaler du mere end 100 kr. for dit mobilabonnement, betaler du for meget', href: TAENK, note: '17. september 2026' },
+          { publisher: 'Digitaliseringsstyrelsen', title: 'Vejledning til slutbrugerbekendtgørelsen', href: DIGST, note: 'November 2025' },
+          {
+            publisher: 'Danmarks Statistik',
+            title: 'PRIS01: Forbrugerprisindeks, gruppe 08.3.2 Mobilkommunikationstjenester',
+            href: DST,
+            note: 'Oktober 2021 til oktober 2026. Egne beregninger på baggrund af data fra Danmarks Statistik',
+          },
+          { publisher: 'Den Europæiske Union, Dit Europa', title: 'Roaming: brug af mobiltelefon i EU', href: EU_ROAMING, note: 'Senest tjekket af EU 7. januar 2026' },
+        ],
       }}
     >
       <section>
-        <h2>Hvad koster mobilabonnementer i 2026?</h2>
+        <h2>Hvad koster et mobilabonnement i 2026?</h2>
         <p>
-          De billigste mobilabonnementer fås vejledende fra ca. 19 kr./md. Prisen gælder typisk en enkel løsning fra et taletids- eller lavprisselskab, hvor data og øvrige
-          tjenester kan være begrænsede.
+          Fra 19 kroner om måneden. Det var den laveste normalpris på <A href={PRISSIDE}>billigsteabonnement.dk</A> 16. november 2026, for et abonnement med 5 GB data og 5
+          timers tale. Fri tale startede ved 35 kroner og fri data ved 134 kroner, mens det dyreste abonnement i sammenligningen kostede 619 kroner. Siden sammenligner 109 abonnementer fra 10 selskaber og oplyser selv, at den får
+          provision fra sine samarbejdspartnere.
         </p>
         <p>
-          Abonnementer med fri tale koster typisk fra ca. 29-49 kr./md. Den konkrete pris varierer blandt andet med datamængde, roaming, netværk og inkluderede tjenester.
+          <A href={TAENK}>Forbrugerrådet Tænk</A> testede 188 mobilabonnementer fra 23 teleselskaber. De ti bedste i testen kostede alle under 100 kroner om måneden, og
+          ifølge Tænk betaler I højst sandsynligt for meget, hvis jeres abonnement koster mere end det.
+        </p>
+        <p>Priserne ændrer sig hele tiden, så tjek altid prisen hos selskabet selv, og se, hvad den er, når en eventuel introrabat er slut.</p>
+      </section>
+      <section>
+        <h2>Hvor meget data har I brug for?</h2>
+        <p>
+          Ofte mindre, end I betaler for. I en undersøgelse, hvor 610 medlemmer af <A href={TAENK}>Forbrugerrådet Tænk</A> oplyste deres faktiske dataforbrug, var gennemsnittet 18
+          GB om måneden. Digitaliseringsstyrelsens gennemsnit på 34,3 GB omfatter ifølge Tænk også dataforbrug ud over almindelige mobilabonnementer.
         </p>
         <p>
-          Nul måneders binding er normen i Danmark. Tjek dog altid opsigelsesvarsel, eventuel afbetaling på telefonen og vilkårene for nummerflytning, før du skifter.
+          Det er svært at vurdere, hvor meget data I har brug for, skriver Tænk. Det kan være en del af forklaringen på, at mange vælger store og dyre abonnementer, for
+          eksempel med fri data.
         </p>
         <p>
-          Læs også vores guide til at <A href="/opsig-abonnementer">opsige de abonnementer</A>, I ikke længere bruger.
+          Den største årsag til, at mange betaler for meget, er ifølge Tænk, at de køber langt mere data, end de bruger. Se jeres eget forbrug på teleselskabets hjemmeside
+          eller i selskabets app, person for person, før I vælger størrelse.
         </p>
       </section>
       <section>
-        <h2>Hvorfor den laveste pris ikke altid er billigst</h2>
+        <h2>Er mobilabonnementer blevet dyrere?</h2>
         <p>
-          Et abonnement er kun billigt, hvis det passer til dit forbrug. For lidt data kan give ekstraudgifter, mens en stor datapakke er spild af penge, hvis du næsten altid
-          bruger wi-fi.
+          Ja, især det seneste år. Fra oktober 2025 til oktober 2026 steg priserne på mobiltjenester 5,8 procent, mens forbrugerpriserne i alt steg 2,2 procent, viser{' '}
+          <A href={DST}>Danmarks Statistiks forbrugerprisindeks</A>.
         </p>
         <p>
-          Se også på EU-roaming, dækning dér, hvor du bor og arbejder, samt adgang til kundeservice. Discountselskaber bruger ofte samme mobilnet som større selskaber, men
-          vilkår og service kan være forskellige.
-        </p>
-        <p>
-          Det vigtigste overses let, fordi en husstand ofte har tre til fem abonnementer fordelt på flere selskaber. En lille overpris på hver aftale kan derfor betyde mere
-          end en meget lav kampagnepris på ét SIM-kort.
+          Over fem år, fra oktober 2021 til oktober 2026, er priserne på mobiltjenester steget 14,3 procent mod 16,9 procent for forbrugerpriserne i alt. Procenterne for de
+          fem år er vores egne beregninger. Har I ikke set på abonnementerne i et stykke tid, er det et godt tidspunkt nu. En prisstigning skal varsles mindst 1 måned
+          før, så hold øje med beskeder fra selskabet.
         </p>
       </section>
       <section>
-        <h2>Den skjulte udgift ligger i hele husstanden</h2>
+        <h2>Hvor længe kan I være bundet?</h2>
+        <p>
+          Højst 6 måneder. Ifølge <A href={DIGST}>Digitaliseringsstyrelsens vejledning</A> må en bindingsperiode for forbrugere højst være 6 måneder inklusive
+          opsigelsesvarsel. Derefter kan I opsige med 1 måneds varsel til udgangen af en måned.
+        </p>
+        <p>
+          Afbetaling på en telefon må heller ikke binde jer længere. Skal hele restbeløbet betales, hvis I opsiger abonnementet efter 6 måneder, er det en indirekte binding,
+          og den er ikke tilladt, skriver Digitaliseringsstyrelsen.
+        </p>
+        <p>
+          Hæver selskabet prisen, skal I have besked mindst 1 måned før, og I kan opsige uden omkostninger, uanset om I er bundet. Det gælder dog ikke forudbetalte
+          taletidskort. Selskabet skal også mindst én gang om året oplyse jer om den bedste pris, og før en tidsbegrænset aftale forlænges automatisk, skal det fortælle jer,
+          hvordan I opsiger den.
+        </p>
+      </section>
+      <section>
+        <h2>Hvad koster det at bruge mobilen i EU?</h2>
+        <p>
+          Ikke noget ekstra. Når I rejser til et andet EU-land, skal I ikke betale mere for at bruge mobilen, skriver <A href={EU_ROAMING}>EU&apos;s portal Dit Europa</A>.
+        </p>
+        <p>
+          Der er dog en grænse. Er prisen på jeres data meget lav, kan selskabet bruge et dataloft for rimeligt forbrug, når I roamer, og med fri data kan selskabet begrænse,
+          hvor meget data I kan bruge i andre EU-lande. Rejser I meget, så tjek, hvor mange GB abonnementet giver i EU.
+        </p>
+      </section>
+      <section>
+        <h2>Hvorfor betyder hele husstandens udgift mest?</h2>
         <p>
           For et par eller en familie er det sjældent nok at sammenligne ét abonnement. Børn og voksne kan have forskellige aftaler, gamle priser og tillæg, som ingen længere
           bruger.
         </p>
         <p>
-          Problemet er ikke nødvendigvis den enkelte pris, men manglen på overblik. Når aftalerne ligger i forskellige apps, mails og netbankposter, er det svært at se
-          husstandens reelle mobiludgift.
-        </p>
-        <p>
-          Et budgetværktøj kan vise betalingerne, men fortæller ikke altid, om aftalerne passer til jeres behov. Se, hvordan Altid Hjem adskiller sig fra et traditionelt
-          budgetoverblik, i vores guide til et <A href="/spiir-alternativ">alternativ til Spiir</A>.
+          Når aftalerne ligger i forskellige apps, mails og netbankposter, er det svært at se husstandens samlede mobiludgift. En lille overpris på hvert abonnement kan
+          derfor fylde mere end en lav kampagnepris på ét SIM-kort. Tjek også tillæg, som ekstra data eller tjenester, der følger med abonnementet, men som ingen bruger.
         </p>
         <GuideFigure
           tone="lavender"
-          caption="Et samlet overblik viser husstandens mobilaftaler ét sted og gør det tydeligt, hvor I betaler for meget. Illustration, ikke et skærmbillede fra appen."
+          caption="Eksempel: en gennemgang af husstandens fire mobilabonnementer, hvor et gammelt abonnement og en ubrugt datapakke skiller sig ud. Illustration, ikke et skærmbillede fra appen."
         >
           <MobilOverblikMockup />
         </GuideFigure>
       </section>
       <section>
-        <h2>Sådan tjekker I mobilaftalerne i dag</h2>
+        <h2>Hvordan skifter I mobilabonnement?</h2>
         <p>
-          Start med at skrive alle husstandens abonnementer ned. Notér person, selskab, månedspris, data, fri tale, roaming, tillæg og eventuel afbetaling på en telefon.
+          Skriv først alle husstandens abonnementer ned med person, selskab, pris, data, tale, roaming, tillæg og eventuel afbetaling på en telefon. Sammenlign derefter det,
+          I betaler for, med det, I faktisk bruger. Tjek, om en bindingsperiode stadig løber, og om der er afbetaling på en telefon, før I opsiger.
         </p>
         <p>
-          Åbn derefter hver faktura og sammenlign det inkluderede forbrug med det faktiske forbrug. Kig især efter ubrugte datapakker, ekstra tjenester og rabatter, der er
-          udløbet.
+          Når I skifter, kan I tage nummeret med. Ifølge <A href={DIGST}>Digitaliseringsstyrelsens vejledning</A> kan I bede om, at det nye abonnement først starter, når
+          opsigelsesperioden hos det gamle selskab er slut, så I ikke betaler dobbelt. Et selskab kan heller ikke afvise en opsigelse, fordi den er givet på en anden måde
+          end den, der står i aftalen.
         </p>
         <p>
-          Sammenlign nye priser på samme tidspunkt, så I vurderer alle aftaler på ens vilkår. Husk at kontrollere dækning og nummerflytning, før I beslutter jer.
-        </p>
-        <p>
-          Gentag gennemgangen med jævne mellemrum. Når mobilabonnementerne er på plads, kan I bruge samme metode på andre faste udgifter, eksempelvis ved at undersøge det{' '}
-          <A href="/billigste-elselskab">billigste elselskab</A>.
+          Læs også vores guide til at <A href="/opsig-abonnementer">opsige de abonnementer</A>, I ikke længere bruger, og se, hvad <A href="/hvad-koster-bredbaand">bredbånd
+          koster om måneden</A>.
         </p>
       </section>
       <section>
-        <h2>Hvad Altid Hjem kan i dag</h2>
-        <p>Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så I får ét overblik, ét login.</p>
+        <h2>Regneeksempel: hvad koster husstandens mobil om året?</h2>
+        <p>Et eksempel, ikke jeres regning. Det bygger på disse antagelser:</p>
+        <ul>
+          <li>Husstanden har fire mobilabonnementer, ét til hver person.</li>
+          <li>Hvert abonnement koster 100 kroner om måneden, den grænse Forbrugerrådet Tænk nævner.</li>
+          <li>Der er ingen introrabat og ingen afbetaling på telefoner.</li>
+        </ul>
         <p>
-          Forbinder I banken, ser I jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket. Mobilabonnementer er ikke i appen endnu, men er blandt de
-          næste tjenester, vi lancerer.
+          Fire abonnementer til 100 kroner koster 400 kroner om måneden og 4.800 kroner om året. Ligger jeres samlede mobiludgift højere, er det et tegn på, at et eller flere
+          abonnementer er værd at se efter. Tjek især, om hver person bruger den data, der er betalt for. Har I afbetaling på telefoner, kommer den oven i.
+        </p>
+      </section>
+      <section>
+        <h2>Hvordan kan Altid Hjem hjælpe?</h2>
+        <p>
+          Mobilabonnementer er nogle af de faste udgifter, der bare bliver trukket hver måned. Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så I får ét
+          overblik, ét login.
         </p>
         <p>
-          Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder.
+          Forbinder I banken, ser I jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket. I kan hente appen gratis i App Store og Google Play.
         </p>
-        <GuideStores />
+        <GuideApp
+          tone="lavender"
+          src="/site/app/regninger-top.webp"
+          alt="Regninger i Altid Hjem: faste regninger vist i en kalender for november"
+          caption="I appen: husstandens faste regninger i en kalender, og hvad den næste store regning er."
+        />
       </section>
     </Guide>
   )

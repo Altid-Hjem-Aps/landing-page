@@ -1,70 +1,81 @@
 import type { Metadata } from 'next'
 import AbonnementMockup from '@/components/AbonnementMockup'
-import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideStores } from '@/components/site/Guide'
+import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A } from '@/components/site/Guide'
 
+// Upgraded to the recipe (docs/guide-recipe.md) on 16 Nov 2026. The rules are forbrugeraftaleloven
+// (LBK nr. 1184 af 28/09/2025, §§ 1, 28, 28 a and 29) and, for phone and internet,
+// Digitaliseringsstyrelsen's guide. The page is general and says so.
 export const metadata: Metadata = {
   title: 'Opsig abonnementer, I ikke bruger | Altid Hjem',
   description:
-    'Find alle husstandens abonnementer, tjek binding og opsig korrekt. Få en enkel guide til at rydde op, og hent Altid Hjem gratis.',
+    '5 måneder efter, at I har tegnet et løbende abonnement, kan I opsige det med 1 måneds varsel til udgangen af en måned. Sådan finder og opsiger I dem.',
   alternates: { canonical: 'https://www.altidhjem.dk/opsig-abonnementer' },
   openGraph: {
     title: 'Sådan opsiger I husstandens abonnementer',
     description:
-      'Find alle husstandens abonnementer, tjek binding og opsig korrekt. Få en enkel guide til at rydde op, og hent Altid Hjem gratis.',
+      '5 måneder efter, at I har tegnet et løbende abonnement, kan I opsige det med 1 måneds varsel til udgangen af en måned. Sådan finder og opsiger I dem.',
     url: 'https://www.altidhjem.dk/opsig-abonnementer',
     type: 'article',
   },
 }
 
-// FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).
+const LOV = 'https://www.retsinformation.dk/eli/lta/2025/1184'
+const FORBRUG = 'https://forbrug.dk/media/pkmhxxfo/abonnementer.pdf'
+const APPLE = 'https://support.apple.com/da-dk/118428'
+const GOOGLE = 'https://support.google.com/googleplay/answer/7018481?hl=da'
+const TAENK_BUDGET = 'https://taenk.dk/privatoekonomi/gode-raad/saadan-laegger-du-et-budget'
+const TAENK_HJAELP = 'https://taenk.dk/forbrugerliv/elektronik-og-digitale-tjenester/opsigelse-abonnementer-bymetis'
+const DIGST = 'https://digst.dk/media/r2chpp0w/slutbrugerbekendtgoerelsen-vejledning_nov_2025.pdf'
+const DST = 'https://www.statistikbanken.dk/PRIS01'
+
+// FAQ bruges to steder: synligt på siden og som FAQPage-schema.
 const FAQ: GuideFaq[] = [
   {
-    q: 'Hvordan opsiger jeg et abonnement?',
+    q: 'Hvordan opsiger vi husstandens abonnementer?',
     a: [
-      'Find opsigelsesfunktionen på udbyderens hjemmeside eller i appen, og følg den angivne proces.',
-      'Tjek binding og opsigelsesvarsel først, og gem altid bekræftelsen.',
+      'Find først alle aftalerne i kontoudtoget og i telefonens appbutik. Opsig derefter hvert abonnement samme sted, som I tegnede det, og gem kvitteringen.',
+      'Når et løbende abonnement har kørt i 5 måneder, kan I opsige det med 1 måneds varsel til udgangen af en måned.',
     ],
   },
   {
-    q: 'Hvordan finder jeg alle mine abonnementer?',
+    q: 'Hvor hurtigt kan vi komme ud af et abonnement?',
     a: [
-      'Gennemgå kontoudtog, appbutikkernes abonnementslister og aftaler hos de enkelte udbydere.',
-      'Spørg også resten af husstanden, så delte eller parallelle abonnementer kommer med.',
+      'Efter forbrugeraftaleloven kan I opsige et løbende abonnement med 1 måneds varsel til udgangen af en måned, når der er gået 5 måneder. Virksomheden må ikke aftale et længere varsel.',
+      'Der er undtagelser, og for mobil og internet gælder telereglerne.',
     ],
   },
   {
-    q: 'Hvad koster glemte abonnementer?',
+    q: 'Må virksomheden kræve, at vi opsiger på en bestemt måde?',
     a: [
-      'Det afhænger af, hvor mange aftaler der fortsætter, og hvad de koster.',
-      'Selv små månedlige beløb kan fylde mærkbart over et år, når flere ubrugte abonnementer lægges sammen.',
+      'Nej. Virksomheden skal sikre, at I kan opsige på samme medie eller platform, som I tegnede abonnementet på.',
+      'Det er en god idé at opsige skriftligt eller tage et skærmbillede, så I kan bevise opsigelsen.',
     ],
   },
   {
-    q: 'Kan jeg opsige et abonnement med det samme?',
+    q: 'Hvordan opsiger vi et abonnement i App Store eller Google Play?',
     a: [
-      'Det afhænger af abonnementets binding og opsigelsesvarsel.',
-      'Du kan ofte sende opsigelsen straks, men aftalen og betalingen kan fortsætte frem til den slutdato, der følger af vilkårene.',
+      'På en iPhone trykker I på jeres navn i Indstillinger og derefter på Abonnementer. På Android går I til abonnementerne i Google Play og trykker på Opsig abonnement.',
+      'Det opsiger ikke abonnementet at slette appen.',
     ],
   },
   {
-    q: 'Skal jeg opsige eller nedgradere?',
+    q: 'Får vi penge tilbage, hvis vi har betalt forud?',
     a: [
-      'Nedgradering kan være bedst, hvis du stadig bruger tjenesten, men ikke har behov for hele pakken.',
-      'Opsigelse giver mere mening, hvis abonnementet sjældent bliver brugt eller overlapper med en anden aftale.',
+      'Ja. Har I betalt for en periode efter, at aftalen ophører, skal virksomheden straks betale det beløb tilbage, ifølge forbrugeraftaleloven.',
     ],
   },
   {
     q: 'Hvad er Altid Hjem?',
     a: [
-      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted.',
-      'Du får ét overblik, ét login, og du kan hente den gratis i App Store og Google Play.',
+      'Altid Hjem er en dansk app, der samler madplan, strøm, forsikring og økonomi ét sted, så I får ét overblik, ét login.',
+      'I kan hente den gratis i App Store og Google Play.',
     ],
   },
   {
     q: 'Koster Altid Hjem noget?',
     a: [
-      'Nej, appen er gratis at hente, og det er gratis at oprette sig.',
-      'Du betaler kun for det, du selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis du bliver kunde.',
+      'Nej, appen er gratis at hente, og det er gratis at oprette en profil.',
+      'I betaler kun for det, I selv vælger at bruge, for eksempel strøm fra Altid Energi, hvis I bliver kunder.',
     ],
   },
 ]
@@ -76,25 +87,26 @@ export default function OpsigAbonnementer() {
       lead={
         <>
           <p>
-            De fleste abonnementer kan opsiges hurtigt via udbyderens hjemmeside, app eller kundeservice. Tjek først bindingsperiode og opsigelsesvarsel, og gem derefter
-            bekræftelsen.
+            5 måneder efter, at I har tegnet et løbende abonnement, kan I opsige det med 1 måneds varsel til udgangen af en måned. Sådan står det i forbrugeraftaleloven, med
+            enkelte undtagelser.
           </p>
           <p>
-            Det svære er ofte at finde alle aftalerne og huske dem, der ikke længere bliver brugt. Gennemgå kontoudtog, appbutikker og familiens delte abonnementer, før I
-            beslutter, hvad der skal opsiges.
+            I kan opsige samme sted, som I tegnede abonnementet, og det er en god idé at gemme kvitteringen. Det svære er ofte at finde alle aftalerne, så start med
+            kontoudtoget og telefonens appbutik.
           </p>
         </>
       }
       meta={
         <>
-          Opdateret: juli 2026 · Læs om dine abonnementsrettigheder på{' '}
-          <a href="https://www.forbrug.dk" target="_blank" rel="noopener noreferrer">
-            forbrug.dk
-          </a>
+          Reglerne står i{' '}
+          <a href={LOV} target="_blank" rel="noopener noreferrer">
+            forbrugeraftaleloven
+          </a>{' '}
+          · Generel vejledning, ikke juridisk rådgivning
         </>
       }
-      answer={{ label: 'Før I opsiger', value: 'Tjek binding og opsigelsesvarsel, og gem bekræftelsen.', note: 'De fleste kan opsiges via hjemmeside, app eller kundeservice.' }}
-      factors={{ label: 'Gennemgå', items: ['Kontoudtog', 'Appbutikker', 'Delte abonnementer'] }}
+      answer={{ label: 'Længste opsigelsesvarsel', value: '1', unit: 'måneds varsel', note: 'Til udgangen af en måned, når abonnementet har kørt i 5 måneder. Forbrugeraftaleloven § 28.' }}
+      factors={{ label: 'Gennemgå', items: ['Kontoudtog', 'Appbutikker', 'Prøveabonnementer', 'Delte abonnementer', 'Binding og varsel'] }}
       faq={FAQ}
       related={['/hvad-koster-bredbaand', '/billigste-mobilabonnement', '/bedste-budget-app']}
       cta={{
@@ -102,78 +114,155 @@ export default function OpsigAbonnementer() {
         heading: 'Hent Altid Hjem, og find jeres abonnementer',
         subtitle: 'Forbind banken, så ser I jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket.',
       }}
+      page={{ path: '/opsig-abonnementer', description: metadata.description as string, published: '2026-07-27', updated: '2026-11-16' }}
+      sources={{
+        checked: '2026-11-16',
+        items: [
+          { publisher: 'Retsinformation', title: 'Bekendtgørelse af lov om forbrugeraftaler, LBK nr. 1184 af 28. september 2025', href: LOV, note: '§ 1, § 28, § 28 a og § 29' },
+          { publisher: 'Forbrug.dk', title: 'Råd til Forbrug: Abonnementer', href: FORBRUG, note: 'Udskrift af en episode af podcasten Råd til Forbrug' },
+          { publisher: 'Apple Support', title: 'Opsig et abonnement fra Apple', href: APPLE },
+          { publisher: 'Google Play Hjælp', title: 'Opsig et abonnement, sæt et abonnement på pause, eller foretag ændringer i et abonnement i Google Play', href: GOOGLE },
+          { publisher: 'Forbrugerrådet Tænk', title: 'Sådan lægger du et godt budget', href: TAENK_BUDGET, note: '6. juni 2025' },
+          { publisher: 'Forbrugerrådet Tænk', title: 'Hold dig langt væk fra firmaer, der vil opsige abonnementer for dig', href: TAENK_HJAELP, note: '21. november 2024' },
+          { publisher: 'Digitaliseringsstyrelsen', title: 'Vejledning til slutbrugerbekendtgørelsen', href: DIGST, note: 'November 2025' },
+          {
+            publisher: 'Danmarks Statistik',
+            title: 'PRIS01: Forbrugerprisindeks, gruppe 08.3.9.2 Abonnementer på streamingtjenester og leje af film o.l.',
+            href: DST,
+            note: 'Oktober 2021 til oktober 2026. Egne beregninger på baggrund af data fra Danmarks Statistik',
+          },
+        ],
+      }}
     >
       <section>
-        <h2>Sådan finder I alle husstandens abonnementer</h2>
+        <h2>Hvordan finder I alle husstandens abonnementer?</h2>
         <p>
-          Start med kontoudtoget fra de seneste måneder. Se efter gentagne betalinger til streaming, mobil, fitness, aviser, apps, lagerplads i skyen og andre tjenester.
+          Start med kontoudtoget. <A href={TAENK_BUDGET}>Forbrugerrådet Tænk</A> anbefaler at gå 12 måneder tilbage i netbanken, så I også får de betalinger med, der kun
+          kommer hvert kvartal eller én gang om året. Se efter streaming, mobil, fitness, aviser, apps og lagerplads i skyen.
         </p>
         <p>
-          Tjek også abonnementslisterne i telefonens appbutik. Nogle aftaler bliver trukket gennem Apple eller Google og fremgår derfor ikke under tjenestens eget navn på
-          kontoudtoget.
+          Tjek også betalingskortet. Ifølge Tænk bliver mange faste udgifter, for eksempel mobil og streaming, trukket automatisk via kortet, og betalinger, der er tilmeldt
+          via MobilePay, går ofte også via kortet.
         </p>
-        <p>Spørg alle i husstanden, hvilke aftaler de betaler for. Delte tjenester og parallelle abonnementer kan ellers være svære at opdage.</p>
-      </section>
-      <section>
-        <h2>Abonnementerne, mange glemmer</h2>
         <p>
-          Mange husstande opdager glemte abonnementer, når de gennemgår kontoudtoget. Det kan være en gammel app, et fitnessmedlemskab, en nyhedsapp eller
-          streamingtjenester med indhold, der overlapper.
-        </p>
-        <p>Små månedlige betalinger er lette at overse, fordi de hver for sig virker beskedne. Over et år kan flere ubrugte aftaler dog fylde mærkbart i budgettet.</p>
-        <p>
-          Se også på mobilabonnementerne i husstanden. Hvis behovet har ændret sig, kan vores guide til det <A href="/billigste-mobilabonnement">billigste mobilabonnement</A>{' '}
-          hjælpe jer med at sammenligne pris, data og vilkår.
+          Se derefter abonnementerne i telefonens appbutik. Nogle aftaler bliver betalt gennem Apple eller Google. Spørg til sidst alle i husstanden, hvad de betaler for, så
+          delte og dobbelte abonnementer kommer med.
         </p>
       </section>
       <section>
-        <h2>Sådan opsiger du et abonnement korrekt</h2>
+        <h2>Hvilke abonnementer bliver let glemt?</h2>
         <p>
-          Find udbyderens side om opsigelse, og læs vilkårene for binding og opsigelsesvarsel. Nogle aftaler stopper straks, mens andre fortsætter til udgangen af en
-          betalingsperiode eller bindingsperiode.
+          Prøveabonnementer. Et prøveabonnement er ofte et rigtigt abonnement, der fortsætter, når prøveperioden udløber, medmindre I selv opsiger det, lyder det i
+          podcasten <A href={FORBRUG}>Råd til Forbrug</A> på forbrug.dk. Hos <A href={APPLE}>Apple</A> skal et prøveabonnement opsiges mindst 24 timer før, prøveperioden udløber.
         </p>
-        <p>Opsig gennem den kanal, som udbyderen angiver. Gem en mail, kvittering eller et skærmbillede, der viser datoen og bekræfter opsigelsen.</p>
         <p>
-          Reglerne afhænger af aftaletype og vilkår, så denne guide er generel og ikke en juridisk garanti. Kontakt udbyderen, hvis slutdatoen eller en fortsat betaling er
-          uklar.
+          Apps, I har slettet. Ifølge <A href={GOOGLE}>Google Play</A> opsiger I ikke abonnementet ved at afinstallere appen.
+        </p>
+        <p>
+          Abonnementer, der ligner hinanden. To streamingtjenester med overlappende indhold eller to lagerpladser i skyen er lette at overse, fordi beløbene hver for sig er
+          små. Se også på husstandens mobilabonnementer. Vores guide til det <A href="/billigste-mobilabonnement">billigste mobilabonnement</A> viser, hvad I skal tjekke.
+        </p>
+      </section>
+      <section>
+        <h2>Hvor hurtigt kan I komme ud af et abonnement?</h2>
+        <p>
+          Når et løbende abonnement har kørt i 5 måneder, kan I opsige det med 1 måneds varsel til udgangen af en måned. Det står i § 28 i{' '}
+          <A href={LOV}>forbrugeraftaleloven</A>, og virksomheden må ikke aftale et længere varsel. Det bliver til et halvt år i alt, lyder det i podcasten <A href={FORBRUG}>Råd til Forbrug</A>.
+        </p>
+        <p>
+          Der er undtagelser. Koster aftalen mere end 20.000 kroner om året, og har virksomheden store udgifter til at starte den, kan grænsen være 11 måneder. Reglen gælder
+          heller ikke aftaler til højst 2.000 kroner, der skal betales inden 14 dage og leveres inden for et år, for eksempel et årskort. Loven gælder ikke forsikringer.
+        </p>
+        <p>
+          For mobil og internet gælder telereglerne: Bindingen må højst være 6 måneder inklusive opsigelsesvarsel, ifølge <A href={DIGST}>Digitaliseringsstyrelsens
+          vejledning</A>.
+        </p>
+      </section>
+      <section>
+        <h2>Hvordan opsiger I et abonnement korrekt?</h2>
+        <p>
+          Opsig samme sted, som I tegnede abonnementet. Ifølge § 28 a i <A href={LOV}>forbrugeraftaleloven</A> skal virksomheden sikre, at I kan opsige på samme medie eller
+          tekniske platform, som aftalen blev indgået på.
+        </p>
+        <p>
+          Virksomheden må ikke stille formkrav, men det er altid en god idé at opsige skriftligt eller tage et skærmbillede, så I kan bevise opsigelsen, lyder rådet i{' '}
+          <A href={FORBRUG}>Råd til Forbrug</A>.
+        </p>
+        <p>
+          Er abonnementet købt gennem telefonen, opsiger I det i appbutikken. På en iPhone trykker I på jeres navn i Indstillinger og derefter på Abonnementer, skriver{' '}
+          <A href={APPLE}>Apple</A>. På Android går I til abonnementerne i <A href={GOOGLE}>Google Play</A> og trykker på Opsig abonnement.
         </p>
         <GuideFigure
           tone="honey"
-          caption="Et samlet overblik over husstandens faste aftaler gør det sværere for glemte abonnementer at gemme sig. Illustration, ikke et skærmbillede fra appen."
+          caption="Eksempel: en gennemgang af husstandens abonnementer, hvor to ubrugte aftaler skiller sig ud. Illustration, ikke et skærmbillede fra appen."
         >
           <AbonnementMockup />
         </GuideFigure>
       </section>
       <section>
-        <h2>Behold det, I faktisk bruger</h2>
-        <p>Målet er ikke at have nul abonnementer. Målet er at vælge dem bevidst og betale for tjenester, der giver reel værdi i hverdagen.</p>
+        <h2>Skal I betale nogen for at opsige for jer?</h2>
         <p>
-          Overvej en billigere pakke, hvis I bruger tjenesten, men ikke alle funktionerne. Ved overlappende streamingtjenester kan I også beholde én ad gangen og skifte
-          efter behov.
+          Nej. <A href={TAENK_HJAELP}>Forbrugerrådet Tænk</A> fraråder firmaer, der vil opsige abonnementer for jer: Det er dyrt, aftalerne kan være tvivlsomme, og I er ikke
+          sikre på at få det, I betaler for. I Tænks eksempel opkrævede et firma 300 kroner plus et rykkergebyr for at opsige ét abonnement.
         </p>
         <p>
-          Vurdér hver aftale ud fra brug, pris og hvor besværlig den er at undvære. En aktiv beslutning om at beholde et abonnement er lige så relevant som en opsigelse.
+          Det er ikke nødvendigt at købe hjælp, for I kan sagtens selv opsige, lyder rådet i podcasten <A href={FORBRUG}>Råd til Forbrug</A>. Her bliver et af de firmaer,
+          der tilbyder hjælpen, beskrevet som påfaldende lig netop den slags abonnementsfælde, det siger, det hjælper folk ud af.
         </p>
       </section>
       <section>
-        <h2>Gør gennemgangen til en årlig vane</h2>
+        <h2>Hvad gør I, hvis abonnementet ikke bliver stoppet?</h2>
         <p>
-          Vælg en fast måned, eksempelvis januar eller juni, hvor hele husstanden gennemgår sine løbende aftaler. En tilbagevendende påmindelse i kalenderen gør det mindre
-          sandsynligt, at ubrugte abonnementer fortsætter ubemærket.
+          Kontakt først virksomheden skriftligt, og vedlæg kvitteringen eller skærmbilledet af opsigelsen. Hjælper det ikke, er der flere steder at klage, lyder det i
+          podcasten <A href={FORBRUG}>Råd til Forbrug</A>. Ligger firmaet i et andet EU-land, giver Forbruger Europa gratis råd.
         </p>
-        <p>Saml en enkel liste med udbyder, pris, betalingsfrekvens, binding og næste vurderingsdato. Opdatér den, når I opretter, ændrer eller opsiger en aftale.</p>
+        <p>
+          Var det ikke tydeligt, at I tegnede et abonnement, kan I klage til Forbrugerombudsmanden over vildledende markedsføring. Er pengene trukket, uden at I vidste, at I
+          havde et abonnement, kan banken i nogle tilfælde skulle dække tabet, men det kan være en besværlig proces.
+        </p>
+        <p>Tjek derfor kontoudtoget jævnligt for betalinger, der går igen, og som I ikke kan genkende.</p>
       </section>
       <section>
-        <h2>Hvad Altid Hjem kan i dag</h2>
+        <h2>Er streamingtjenester blevet dyrere?</h2>
         <p>
-          Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så I får ét overblik, ét login. Forbinder I banken, ser I jeres faste udgifter og abonnementer i
-          en kalender, før pengene bliver trukket.
+          Ja. Fra oktober 2025 til oktober 2026 steg priserne på streamingtjenester og leje af film 6,0 procent, mens forbrugerpriserne i alt steg 2,2 procent, viser{' '}
+          <A href={DST}>Danmarks Statistiks forbrugerprisindeks</A>. Over fem år, fra oktober 2021 til oktober 2026, er de steget 29,0 procent mod 16,9 procent for
+          forbrugerpriserne i alt. Procenterne for de fem år er vores egne beregninger.
         </p>
-        <p>Altid Hjem er bygget af holdet bag Altid Energi, Danmarks første gebyrfrie energiselskab, hvor mere end 15.000 danskere allerede er kunder.</p>
         <p>
-          Læs også om forskellen på Altid Hjem og traditionelle <A href="/spiir-alternativ">budget- og kontooverblik-apps</A>.
+          Målet er ikke nul abonnementer, men at vælge dem bevidst. Bruger I en tjeneste, men ikke det hele, så se på en billigere pakke. Ved overlappende streaming kan I
+          beholde én ad gangen og skifte efter behov. Gør gennemgangen til en fast vane, for eksempel hver januar.
         </p>
-        <GuideStores />
+      </section>
+      <section>
+        <h2>Regneeksempel: hvornår stopper betalingen?</h2>
+        <p>Et eksempel, ikke jeres aftale. Det bygger på disse antagelser:</p>
+        <ul>
+          <li>I tegnede et fitnessabonnement 1. januar og betaler hver måned.</li>
+          <li>I opsiger det 10. august.</li>
+          <li>Aftalen har ingen særlige vilkår, så forbrugeraftalelovens regel gælder.</li>
+        </ul>
+        <p>
+          Der er gået mere end 5 måneder, så I kan opsige med 1 måneds varsel til udgangen af en måned. Varslet løber fra 10. august til 10. september, og aftalen ophører
+          derfor 30. september. Havde I opsagt 31. juli, var aftalen ophørt 31. august. Har I betalt forud for tiden efter ophøret, skal virksomheden straks betale det beløb tilbage,
+          ifølge § 29 i <A href={LOV}>forbrugeraftaleloven</A>.
+        </p>
+      </section>
+      <section>
+        <h2>Hvordan kan Altid Hjem hjælpe?</h2>
+        <p>
+          Glemte abonnementer bliver bare trukket hver måned, til nogen opdager dem. Altid Hjem samler madplan, strøm, forsikring og økonomi i én app, så I får ét overblik,
+          ét login.
+        </p>
+        <p>
+          Forbinder I banken, ser I jeres faste udgifter og abonnementer i en kalender, før pengene bliver trukket. I kan hente appen gratis i App Store og Google Play.
+        </p>
+        <GuideApp
+          tone="honey"
+          src="/site/app/regninger-top.webp"
+          alt="Regninger i Altid Hjem: faste regninger og abonnementer vist i en kalender for november"
+          caption="I appen: husstandens faste regninger i en kalender, og hvad den næste store regning er."
+        />
       </section>
     </Guide>
   )

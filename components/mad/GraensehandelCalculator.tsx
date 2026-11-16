@@ -29,7 +29,7 @@ export default function GraensehandelCalculator() {
   const { ref, reduced, entered } = useMockupStart()
   const [km, setKm] = useState('100')
   const [kmPerL, setKmPerL] = useState('15')
-  const [fuelPrice, setFuelPrice] = useState('17,69')
+  const [fuelPrice, setFuelPrice] = useState('17,39')
   const [saving, setSaving] = useState('')
   const [touched, setTouched] = useState<Record<FieldKey, boolean>>({ km: false, kmPerL: false, fuelPrice: false, saving: false })
 
@@ -138,7 +138,7 @@ export default function GraensehandelCalculator() {
       </div>
 
       <p className="text-[11px] mt-3 leading-relaxed" style={{ color: 'var(--text-light)' }}>
-        Benzinprisen er forudfyldt med Drivkraft Danmarks listepris for benzin (juli 2026). Justér den
+        Benzinprisen er forudfyldt med Drivkraft Danmarks listepris for benzin (6. november 2026). Justér den
         til jeres egen pris. Besparelsen er jeres eget skøn; beregneren tager ikke stilling til, hvad I
         kan spare ved grænsen. Intet gemmes, når I beregner.
       </p>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import JulekurvMockup from '@/components/mad/JulekurvMockup'
 import { MAD_GUIDE_CTA, MAD_IN_APP, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
 
 // Moved from altidmad.dk/jul-paa-budget (16 Nov 2026): the article text is word for word, only
 // the sign-up sentences from before the launch (no longer true) were rewritten to be true on altidhjem.dk, and the description lost its
@@ -81,7 +81,7 @@ export default function JulPaaBudget() {
       }
       meta={
         <>
-          Opdateret: 2026 · Kilde: <a href={MAD_REPORT_HREF}>{MAD_REPORT_LABEL}</a>
+          Kilde: <a href={MAD_REPORT_HREF}>{MAD_REPORT_LABEL}</a>
         </>
       }
       answer={{
@@ -92,6 +92,15 @@ export default function JulPaaBudget() {
       }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
+      page={{ path: '/jul-paa-budget', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      sources={{
+        checked: '2026-11-16',
+        items: [
+          { publisher: 'Danmarks Statistik', title: 'Forbrugsundersøgelsen, tabel FU13: Forbrug efter husstand', href: 'https://www.statistikbanken.dk/FU13', note: 'Fødevarer og ikke-alkoholiske drikkevarer, løbende priser, 2024. Månedsbeløb er egne beregninger på baggrund af data fra Danmarks Statistik (årsbeløb delt med 12)' },
+          { publisher: 'Altid Mad', title: MAD_REPORT_LABEL, href: `https://www.altidhjem.dk${MAD_REPORT_HREF}`, note: 'Den samme ugekurv med 23 varer til 2 voksne og 2 teenagere hos 13 kæder. Genereret 21. september 2026' },
+        ],
+      }}
+      related={['/madplan-efter-tilbud', '/madbudget', '/graensehandel-beregner']}
     >
       <section>
         <h2>Læg julemadbudgettet i god tid</h2>
@@ -176,6 +185,7 @@ export default function JulPaaBudget() {
         <GuideFigure tone="lavender" caption="Juleindkøbene spredt over ugerne op til jul, planlagt efter tilbud.">
           <JulekurvMockup />
         </GuideFigure>
+        <GuideStores />
       </section>
     </Guide>
   )

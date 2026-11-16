@@ -128,7 +128,7 @@ export const POSTS: Post[] = [
     category: 'Forsikring',
     title: 'Hvad koster forsikring i 2026?',
     excerpt:
-      'Se vejledende priser på de mest almindelige forsikringer, og find ud af, om du betaler for meget, eller om du er dækket dobbelt uden at vide det.',
+      'Hvad en husstand bruger på forsikring om året ifølge Danmarks Statistik, hvad prisen afhænger af, og hvordan I ser, om I er dækket dobbelt.',
     meta: '5 min læsning · 17. jun 2026',
   },
   {
@@ -193,7 +193,7 @@ export const POSTS: Post[] = [
     category: 'Forsikring',
     title: 'Er du forsikret dobbelt uden at vide det?',
     excerpt:
-      'Mange danskere betaler for den samme dækning to gange, fx en rejseforsikring, der allerede er inkluderet i indboforsikringen. Se, hvordan du tjekker det.',
+      'Flytter et par sammen med hver sin indboforsikring, kan de betale for den samme dækning to gange. Se, hvordan du tjekker det.',
     meta: '4 min læsning · 17. jun 2026',
   },
   {

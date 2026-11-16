@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import MadbudgetBenchmark from '@/components/mad/MadbudgetBenchmark'
 import MadbudgetSammenligningMockup from '@/components/mad/MadbudgetSammenligningMockup'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
 
 // Moved from altidmad.dk/madbudget (16 Nov 2026) with the text word for word. The old
 // /beregn-dit-madbudget is merged in: its two own sections follow "Sådan sætter I et realistisk
@@ -71,7 +71,7 @@ export default function Madbudget() {
       }
       meta={
         <>
-          Opdateret: september 2026 · Kilde: Danmarks Statistik, Forbrugsundersøgelsen 2024 · Kilde:{' '}
+          Kilde: Danmarks Statistik, Forbrugsundersøgelsen 2024 · Kilde:{' '}
           <a href={MAD_REPORT_HREF}>
             {MAD_REPORT_LABEL}
           </a>
@@ -86,6 +86,16 @@ export default function Madbudget() {
       factors={{ label: 'Det påvirker budgettet', items: ['Husstandens størrelse', 'Børnenes alder', 'Madvaner', 'Hvor I handler'] }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
+      page={{ path: '/madbudget', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      sources={{
+        checked: '2026-11-16',
+        items: [
+          { publisher: 'Danmarks Statistik', title: 'Forbrugsundersøgelsen, tabel FU13: Forbrug efter husstand', href: 'https://www.statistikbanken.dk/FU13', note: 'Fødevarer og ikke-alkoholiske drikkevarer, løbende priser, 2024. Månedsbeløb er egne beregninger på baggrund af data fra Danmarks Statistik (årsbeløb delt med 12)' },
+          { publisher: 'Danmarks Statistik', title: 'Forbrugsundersøgelsen, tabel FU11: Baggrundsoplysninger', href: 'https://www.statistikbanken.dk/FU11', note: 'Personer i husstanden, gennemsnitshusstand: 2,0 i 2024' },
+          { publisher: 'Altid Mad', title: MAD_REPORT_LABEL, href: `https://www.altidhjem.dk${MAD_REPORT_HREF}`, note: 'Den samme ugekurv med 23 varer til 2 voksne og 2 teenagere hos 13 kæder. Genereret 21. september 2026. Månedsbeløb er egne beregninger på baggrund af rapportens ugepriser (ugepris gange 52 delt med 12)' },
+        ],
+      }}
+      related={['/madbudget-familie-paa-4', '/mad-for-3000-om-maaneden', '/spar-penge-paa-dagligvarer']}
     >
       <section>
         <h2>Hvad bruger danske husstande faktisk?</h2>
@@ -98,7 +108,7 @@ export default function Madbudget() {
           drikkevarer gennem hele året.
         </p>
         <p>
-          En gennemsnitshusstand består af ca. 2,1 personer. Derfor kan gennemsnittet ikke sammenlignes direkte med en familie eller med en enkelt ugentlig indkøbskurv.
+          En gennemsnitshusstand bestod af 2,0 personer i 2024. Derfor kan gennemsnittet ikke sammenlignes direkte med en familie eller med en enkelt ugentlig indkøbskurv.
         </p>
         <GuideFigure tone="lavender" caption="Så meget bruger danske husstande på mad om måneden ifølge Forbrugsundersøgelsen 2024.">
           <MadbudgetBenchmark />
@@ -206,6 +216,7 @@ export default function Madbudget() {
         <p>
           Altid Mad er en del af Altid Hjem-appen, som samler hjemmets faste udgifter med ét overblik og ét login. Appen er gratis i App Store og Google Play. Teamet står også bag Altid Energi, Danmarks første gebyrfrie energiselskab.
         </p>
+        <GuideStores />
       </section>
     </Guide>
   )
