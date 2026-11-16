@@ -4,9 +4,8 @@
 // that's used identically across multiple sections. Import it instead of
 // retyping the size/weight/line-height/tracking combo at each call site, so
 // sections sharing a role can't quietly drift apart again — that's exactly
-// how WaitlistForm's light and dark variants ended up with two different
-// treatments for the same "form step heading" and "primary button" roles
-// before this file existed.
+// how the old signup form's light and dark variants ended up with two different
+// treatments for the same heading and button roles before this file existed.
 //
 // Colour, margin, text-align, and layout width are intentionally NOT
 // included — those vary legitimately per section/background and stay on
@@ -36,7 +35,7 @@ export const BODY = 'font-normal leading-[1.8] text-[16px]'
  *  with a slightly larger lead paragraph (e.g. WhatIs.tsx). */
 
 /** Primary CTA button type + geometry (background/colour set per call site).
- *  Used by the Hero/HowItWorks/WaitlistForm signup buttons. */
+ *  Used by the DelShare buttons. */
 export const BUTTON_PRIMARY = 'py-[23px] rounded-[20px] text-[16px] font-medium leading-tight text-center'
 
 /** Legal links, disclaimers, fine print. */

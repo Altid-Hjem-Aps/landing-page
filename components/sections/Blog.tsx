@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { useAutoCarousel, useCarouselReveal, CarouselPagination } from '@/components/useAutoCarousel'
-import { H2, EYEBROW } from '@/lib/typography'
 
 // Blog strip — the "read more" section linking to the SEO pages.
 // A centred snap carousel of large post cards (like the Figma frame, where the
@@ -25,7 +24,8 @@ const POSTS: Post[] = [
     icon: '/services/icon-mobil.svg',
     category: 'Mobil',
     title: 'Billigste mobilabonnement i 2026',
-    excerpt: 'Abonnementer fås fra ca. 19 kr. om måneden, men husstandens samlede mobilregning er den, der batter. Se hvad priserne dækker, og hvor de gemmer sig.',
+    excerpt:
+      'Abonnementer fås fra ca. 19 kr. om måneden, men husstandens samlede mobilregning er den, der batter. Se hvad priserne dækker, og hvor de gemmer sig.',
     meta: '5 min læsning · 27. jul 2026',
   },
   {
@@ -81,7 +81,8 @@ const POSTS: Post[] = [
     icon: '/app-badge.png',
     category: 'Overblik',
     title: 'Budget-app eller samlet overblik?',
-    excerpt: 'En budget-app viser forbruget bagud. Et samlet overblik styrer de faste aftaler fremad. Se ærligt, hvad de to værktøjer kan, og hvad de ikke kan.',
+    excerpt:
+      'En budget-app viser forbruget bagud. Et samlet overblik styrer de faste aftaler fremad. Se ærligt, hvad de to værktøjer kan, og hvad de ikke kan.',
     meta: '4 min læsning · 27. jul 2026',
   },
   {
@@ -97,7 +98,8 @@ const POSTS: Post[] = [
     icon: '/services/icon-forsikring.svg',
     category: 'Forsikring',
     title: 'Hvad koster forsikring i 2026?',
-    excerpt: 'Se vejledende priser på de mest almindelige forsikringer, og find ud af, om du betaler for meget – eller er dækket dobbelt uden at vide det.',
+    excerpt:
+      'Se vejledende priser på de mest almindelige forsikringer, og find ud af, om du betaler for meget, eller om du er dækket dobbelt uden at vide det.',
     meta: '5 min læsning · 17. jun 2026',
   },
   {
@@ -105,15 +107,15 @@ const POSTS: Post[] = [
     icon: '/services/icon-strom.svg',
     category: 'Energi',
     title: 'Lad Altid Hjem holde øje med elprisen for dig',
-    excerpt: 'Det kræver tid at holde øje med elprisen hver dag. Det er netop én af de ting, vi bygger Altid Hjem-appen til. Appen følger elprisen for dig og giver konkrete råd.',
+    excerpt: 'Det kræver tid at holde øje med elprisen hver dag. I Altid Hjem-appen ser du elprisen time for time og kan få besked, når strømmen er billig.',
     meta: '5 min læsning · 25. jun 2026',
   },
   {
     href: '/spiir-alternativ',
     icon: '/app-badge.png',
     category: 'Overblik',
-    title: 'Spiir lukker – hvad bruger du nu?',
-    excerpt: 'Spiir lukkede 8. juni 2026. Altid Hjem giver dig overblik over hjemmets faste udgifter – el, mobil og forsikring samlet ét sted, i én app.',
+    title: 'Spiir lukker: hvad bruger du nu?',
+    excerpt: 'Spiir lukkede 8. juni 2026. Altid Hjem giver dig overblik over hjemmets faste udgifter: strøm, forsikring og madplan samlet ét sted, i én app.',
     meta: '4 min læsning · 10. jun 2026',
   },
   {
@@ -121,7 +123,8 @@ const POSTS: Post[] = [
     icon: '/services/icon-forsikring.svg',
     category: 'Forsikring',
     title: 'Er du forsikret dobbelt uden at vide det?',
-    excerpt: 'Mange danskere betaler for den samme dækning to gange – fx en rejseforsikring, der allerede er inkluderet i indboforsikringen. Se, hvordan du tjekker det.',
+    excerpt:
+      'Mange danskere betaler for den samme dækning to gange, fx en rejseforsikring, der allerede er inkluderet i indboforsikringen. Se, hvordan du tjekker det.',
     meta: '4 min læsning · 17. jun 2026',
   },
   {
@@ -129,7 +132,7 @@ const POSTS: Post[] = [
     icon: '/services/icon-strom.svg',
     category: 'Energi',
     title: 'Hvornår er strømmen billigst?',
-    excerpt: 'Følg elpriserne time for time i DK1 og DK2, og se hvornår strømmen er billigst i dag og i morgen – så du kan lægge forbruget, når prisen er lav.',
+    excerpt: 'Følg elpriserne time for time i DK1 og DK2, og se hvornår strømmen er billigst i dag og i morgen, så du kan lægge forbruget, når prisen er lav.',
     meta: '4 min læsning · 14. jun 2026',
   },
   {
@@ -137,7 +140,8 @@ const POSTS: Post[] = [
     icon: '/app-badge.png',
     category: 'Overblik',
     title: 'Få ro på hjemmets faste udgifter',
-    excerpt: 'Regninger, vilkår og aftaler spredt på mail, papir og e-Boks stjæler overblikket. Saml dem ét sted, og se præcis hvad du betaler for – og hvorfor.',
+    excerpt:
+      'Regninger, vilkår og aftaler spredt på mail, papir og e-Boks stjæler overblikket. Saml dem ét sted, og se præcis hvad du betaler for, og hvorfor.',
     meta: '3 min læsning · 10. jun 2026',
   },
 ]
@@ -156,9 +160,10 @@ function PostCard({ post, clone = false }: { post: Post; clone?: boolean }) {
     <Link
       tabIndex={clone ? -1 : undefined}
       href={post.href}
-      className="flex flex-col w-full bg-white transition-shadow hover:shadow-[0_14px_34px_rgba(15,55,30,0.12)]"
+      className="flex flex-col w-full transition-transform hover:-translate-y-0.5"
       style={{
-        borderRadius: 20,
+        borderRadius: 24,
+        background: '#ffffff',
         border: '1px solid rgba(22,50,35,0.12)',
         boxShadow: '0 6px 18px rgba(0,0,0,0.05)',
         padding: 'clamp(24px,1.8vw,34px)',
@@ -167,13 +172,27 @@ function PostCard({ post, clone = false }: { post: Post; clone?: boolean }) {
       {/* Category chip */}
       <div className="flex items-center gap-3 mb-6">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={post.icon} alt="" loading="lazy" decoding="async" className="shrink-0" style={{ width: 'clamp(34px,2.3vw,44px)', height: 'clamp(34px,2.3vw,44px)', borderRadius: 10 }} />
+        <img
+          src={post.icon}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="shrink-0"
+          style={{
+            width: 'clamp(34px,2.3vw,44px)',
+            height: 'clamp(34px,2.3vw,44px)',
+            borderRadius: 10,
+          }}
+        />
         <span className="text-[13px] font-medium uppercase" style={{ color: '#163223', letterSpacing: '1.2px' }}>
           {post.category}
         </span>
       </div>
 
-      <h3 className="font-normal leading-snug text-[clamp(19px,1.5vw,27px)] mb-3.5" style={{ color: '#163223' }}>
+      <h3
+        className="font-bold leading-[1.15] tracking-[-0.02em] text-[clamp(21px,1.6vw,28px)] mb-3.5"
+        style={{ color: '#003c16', fontFamily: 'var(--display)' }}
+      >
         {post.title}
       </h3>
       <p className="font-normal text-[clamp(14px,0.85vw,16px)] leading-[1.7] mb-7" style={{ color: '#6f6a61' }}>
@@ -182,14 +201,20 @@ function PostCard({ post, clone = false }: { post: Post; clone?: boolean }) {
 
       {/* Footer — meta left, "read more" pill right */}
       <div className="mt-auto flex items-center justify-between gap-4">
-        <span className="text-[clamp(13px,0.8vw,15px)]" style={{ color: '#6f6a61' }}>{post.meta}</span>
+        <span className="text-[clamp(13px,0.8vw,15px)]" style={{ color: '#6f6a61' }}>
+          {post.meta}
+        </span>
         <span
           className="shrink-0 inline-flex items-center gap-2 rounded-full text-[clamp(13px,0.85vw,16px)] font-medium"
-          style={{ background: '#90ff7c', color: '#163223', padding: 'clamp(9px,0.7vw,13px) clamp(18px,1.3vw,25px)' }}
+          style={{
+            background: '#90ff7c',
+            color: '#163223',
+            padding: 'clamp(9px,0.7vw,13px) clamp(18px,1.3vw,25px)',
+          }}
         >
           Læs mere
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-            <path d="M2 7h10M8 3l4 4-4 4" stroke="#163223" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
       </div>
@@ -204,14 +229,8 @@ export default function Blog() {
 
   return (
     <section className="py-20 sm:py-28" style={{ background: '#ffffff' }}>
-
       <div className="text-center mb-12 sm:mb-14 px-6">
-        <p className={`${EYEBROW} mb-4`} style={{ color: '#6f6a61' }}>
-          Blog
-        </p>
-        <h2 className={H2} style={{ color: '#163223' }}>
-          Læs mere om, hvordan Altid Hjem skaber ro i hverdagen
-        </h2>
+        <h2 className="t-h2">Læs mere om Altid Hjem</h2>
       </div>
 
       {/* Snap carousel — large cards (≈720px @1920) that overflow the viewport,
@@ -233,7 +252,12 @@ export default function Blog() {
           // keyboard/screen-reader users every post three times.
           const clone = i < N || i >= 2 * N
           return (
-            <div key={`${p.href}-${i}`} aria-hidden={clone || undefined} className="snap-center shrink-0 flex w-[86vw] max-w-[520px] lg:max-w-none lg:w-[clamp(560px,37.5vw,760px)]" style={reveal(i)}>
+            <div
+              key={`${p.href}-${i}`}
+              aria-hidden={clone || undefined}
+              className="snap-center shrink-0 flex w-[86vw] max-w-[520px] lg:max-w-none lg:w-[clamp(560px,37.5vw,760px)]"
+              style={reveal(i)}
+            >
               <PostCard post={p} clone={clone} />
             </div>
           )
@@ -244,7 +268,6 @@ export default function Blog() {
       <div className="mt-1">
         <CarouselPagination count={N} carousel={carousel} itemLabel={(i) => `Gå til indlæg ${i + 1}`} />
       </div>
-
     </section>
   )
 }

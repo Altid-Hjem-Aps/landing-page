@@ -3,9 +3,10 @@ import type { ReactNode } from 'react'
 import LegalPageLayout, { LegalAddress, LEGAL_H2, LEGAL_LABEL, LEGAL_LINK, LEGAL_LIST } from '@/components/LegalPageLayout'
 import CookieSettingsLink from '@/components/CookieSettingsLink'
 import { COOKIE_SETTINGS_URL, parseInline, privacyPolicy, type PolicyBlock } from '@/lib/privacyPolicy'
+import '../site.css'
 
 export const metadata: Metadata = {
-  title: 'Privatlivspolitik – Altid Hjem',
+  title: 'Privatlivspolitik: Altid Hjem',
   description: 'Læs om hvordan Altid Hjem ApS behandler dine personoplysninger.',
 }
 
@@ -32,13 +33,13 @@ function Inline({ text }: { text: string }) {
   )
 }
 
-function Block({ block, afterLabel }: { block: Exclude<PolicyBlock, { type: 'label' }>; afterLabel: boolean }) {
+function Block({ block }: { block: Exclude<PolicyBlock, { type: 'label' }> }) {
   switch (block.type) {
     case 'paragraph':
       return <p><Inline text={block.text} /></p>
     case 'list':
       return (
-        <ul className={afterLabel ? `${LEGAL_LIST} mt-2` : LEGAL_LIST}>
+        <ul className={LEGAL_LIST}>
           {block.items.map((item, i) => (
             <li key={i}>
               {item.label && <><span className={LEGAL_LABEL}>{item.label}:</span>{' '}</>}
@@ -64,7 +65,7 @@ function renderBlocks(blocks: PolicyBlock[]): ReactNode[] {
   for (let i = 0; i < blocks.length; i++) {
     const block = blocks[i]
     if (block.type !== 'label') {
-      out.push(<Block key={i} block={block} afterLabel={false} />)
+      out.push(<Block key={i} block={block} />)
       continue
     }
     const next = blocks[i + 1]
@@ -72,7 +73,7 @@ function renderBlocks(blocks: PolicyBlock[]): ReactNode[] {
     out.push(
       <div key={i}>
         <p className={LEGAL_LABEL}>{block.text}</p>
-        <Block block={next} afterLabel />
+        <Block block={next} />
       </div>,
     )
     i++
@@ -86,7 +87,7 @@ export default function Privatlivspolitik() {
       {privacyPolicy.sections.map((section) => {
         const anchor = SECTION_ANCHORS[section.title]
         return (
-          <section key={section.title} id={anchor} className={anchor ? 'space-y-4 scroll-mt-24' : 'space-y-4'}>
+          <section key={section.title} id={anchor}>
             <h2 className={LEGAL_H2}>{section.title}</h2>
             {renderBlocks(section.blocks)}
           </section>

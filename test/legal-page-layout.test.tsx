@@ -7,6 +7,12 @@ import { privacyPolicy } from '@/lib/privacyPolicy'
 
 // Nav is a client component with scroll listeners and Amplitude — irrelevant here.
 vi.mock('@/components/Nav', () => ({ default: () => null }))
+// /kontakt and the legal pages are in the new site's look (like /presse): the nav and footer are
+// stand-ins that only say they are there, and the scroll reveal is left out, so only the page
+// itself is tested.
+vi.mock('@/components/site/SiteNav', () => ({ default: () => <nav aria-label="Site nav" /> }))
+vi.mock('@/components/site/SiteFooter', () => ({ default: () => <footer aria-label="Site footer" /> }))
+vi.mock('@/components/site/Reveal', () => ({ default: () => null }))
 
 describe('LegalPageLayout', () => {
   it('renders title, entity line and the "Senest opdateret" line when given', () => {
@@ -30,23 +36,20 @@ describe('LegalPageLayout', () => {
     expect(screen.queryByText(/Senest opdateret/)).not.toBeInTheDocument()
   })
 
-  it('has a back link to the front page and the site footer', () => {
-    render(
+  // The new site's shell (Thor 15/11), like /presse and /kontakt: its nav (whose logo leads
+  // home, so no "Tilbage" link) and footer around the page, inside the .site wrapper that gives
+  // the cream surface.
+  it('sits in the new site with its nav and footer', () => {
+    const { container } = render(
       <LegalPageLayout title="Testside" meta="Altid Hjem ApS">
         <p>Indhold</p>
       </LegalPageLayout>,
     )
-    expect(screen.getByRole('link', { name: /Tilbage/ })).toHaveAttribute('href', '/')
-    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
-  })
-
-  it('renders the cream surface, not the dark one', () => {
-    render(
-      <LegalPageLayout title="Testside" meta="Altid Hjem ApS">
-        <p>Indhold</p>
-      </LegalPageLayout>,
-    )
-    expect(screen.getByRole('main')).toHaveStyle({ background: 'var(--cream)' })
+    expect(container.firstElementChild).toHaveClass('site')
+    expect(screen.getByRole('navigation', { name: 'Site nav' })).toBeInTheDocument()
+    expect(screen.getByRole('contentinfo', { name: 'Site footer' })).toBeInTheDocument()
+    expect(within(screen.getByRole('main')).getByText('Indhold')).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /Tilbage/ })).not.toBeInTheDocument()
   })
 })
 
@@ -98,14 +101,16 @@ describe('/privatlivspolitik', () => {
     render(<Privatlivspolitik />)
     const h2s = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
     expect(h2s).toEqual(privacyPolicy.sections.map((s) => s.title))
-    expect(screen.getByText('Senest opdateret: 11. november 2026')).toBeInTheDocument()
+    expect(screen.getByText('Senest opdateret: 16. november 2026')).toBeInTheDocument()
   })
 
   it('lists every cookie and storage key the site sets, and lets the visitor change the choice', () => {
     render(<Privatlivspolitik />)
     const section = document.getElementById('cookies')
     expect(section).not.toBeNull()
-    for (const name of ['ah-cookie-consent:', 'am_confirm:', 'ah-waitlist-joined:', 'ah-exit-intent-shown:', 'norlys_auth:', 'AMP_* (Amplitude):']) {
+    // Review 16/11: the list names what the new site really stores (the pop-ups' keys), and no
+    // longer the old waitlist's keys, which nothing sets any more.
+    for (const name of ['ah-cookie-consent:', 'am_confirm:', 'ah-leave-popup-shown:', 'ah-offer-popup-shown:', 'ah-offer-popup-closed:', 'norlys_auth:', 'tryg_demo_auth:', 'AMP_* (Amplitude):']) {
       expect(section).toHaveTextContent(name)
     }
     expect(within(section as HTMLElement).getByRole('button', { name: 'Cookieindstillinger' })).toBeInTheDocument()
@@ -128,5 +133,21 @@ describe('/privatlivspolitik', () => {
     render(<Privatlivspolitik />)
     expect(screen.getByText(/Altid Forsikring er en tjeneste under Altid Hjem ApS og ikke et selvstændigt selskab/)).toBeInTheDocument()
     expect(screen.queryByText(/Altid Mad og Altid Forsikring er selvstændige selskaber/)).not.toBeInTheDocument()
+  })
+
+  it('no longer lists storage keys that nothing sets', () => {
+    render(<Privatlivspolitik />)
+    const section = document.getElementById('cookies') as HTMLElement
+    expect(section).not.toHaveTextContent('ah-waitlist-joined')
+    expect(section).not.toHaveTextContent('ah-exit-intent-shown')
+  })
+
+  // Review 16/11: the newsletter and the anonymous counts on the site are described.
+  it('describes the newsletter and the anonymous counts on the site', () => {
+    render(<Privatlivspolitik />)
+    expect(screen.getByText('Nyhedsbrev')).toBeInTheDocument()
+    expect(screen.getByText(/tilmelde dig vores nyhedsbrev med din e-mailadresse/)).toBeInTheDocument()
+    expect(screen.getByText('Optælling af klik og besøg på vores websteder')).toBeInTheDocument()
+    expect(screen.getByText(/også hvis du har sagt nej til statistikcookies/)).toBeInTheDocument()
   })
 })

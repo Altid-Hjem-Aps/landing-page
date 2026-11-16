@@ -51,7 +51,7 @@ export function parseInline(text: string): InlineSegment[] {
 }
 
 export const privacyPolicy: PrivacyPolicy = {
-  updated: '2026-11-11',
+  updated: '2026-11-16',
   sections: [
     {
       title: '1. Vi er den dataansvarlige',
@@ -63,7 +63,7 @@ export const privacyPolicy: PrivacyPolicy = {
       ],
     },
     {
-      title: '2. Venteliste (før lancering)',
+      title: '2. Venteliste og nyhedsbrev',
       blocks: [
         { type: 'paragraph', text: 'Indtil Altid Hjem-appen er lanceret, kan du tilmelde dig ventelisterne via altidhjem.dk, altidmad.dk eller altidforsikring.dk. Ventelisterne for Altid Hjem og Altid Mad er en fælles venteliste, mens Altid Forsikring har sin egen separate venteliste. Altid Hjem ApS er dataansvarlig for alle tre ventelister. Følgende særlige regler gælder for behandlingen af oplysninger fra ventelisterne. Afsnit 9 (Dine rettigheder) og afsnit 10 (Klage) gælder også for ventelisteoplysninger.' },
         { type: 'label', text: 'Hvilke oplysninger indsamler vi?' },
@@ -85,6 +85,11 @@ export const privacyPolicy: PrivacyPolicy = {
         { type: 'paragraph', text: 'Vores e-mails kan indeholde en lille sporingspixel og sporbare links, der fortæller os, om en e-mail bliver åbnet, og hvilke links der klikkes på. Vi bruger oplysningerne til at måle og forbedre vores kommunikation. Behandlingen sker på grundlag af dit samtykke og ophører fremadrettet, hvis du afmelder dig via afmeldingslinket i vores e-mails. Allerede indsamlede oplysninger slettes efter opbevaringsreglerne nedenfor. I de fleste e-mailprogrammer kan du desuden undgå åbningsregistrering ved at slå automatisk billedvisning fra. Vores e-mails udsendes via vores databehandler Resend; eventuelle overførsler til lande uden for EU/EØS sker som beskrevet i afsnit 6.' },
         { type: 'label', text: 'Opbevaring' },
         { type: 'paragraph', text: 'Dine ventelisteoplysninger opbevares sikkert hos vores databehandlere i EU/EØS og slettes senest 12 måneder efter lanceringen af den tjeneste, du har skrevet dig op til, eller tidligere hvis du anmoder om det.' },
+        { type: 'label', text: 'Nyhedsbrev' },
+        { type: 'paragraph', text: 'På altidhjem.dk kan du tilmelde dig vores nyhedsbrev med din e-mailadresse. Vi gemmer din e-mailadresse, hvornår du tilmeldte dig, og hvilken samtykketekst du satte kryds ved. Vi gemmer også en registrering af selve samtykket, så vi kan dokumentere det.' },
+        { type: 'paragraph', text: 'Vi bruger oplysningerne til at sende dig nyheder og gode tilbud på mail om forsikring, el, mobil og mad fra Altid Hjem, Altid Forsikring, Altid Energi, Altid Mobil og Altid Mad, som beskrevet i den tekst, du satte kryds ved. Retsgrundlaget er dit samtykke (GDPR artikel 6, stk. 1, litra a, og markedsføringslovens § 10). Du kan til enhver tid afmelde dig via linket i vores e-mails eller ved at skrive til [hej@altidhjem.dk](mailto:hej@altidhjem.dk).' },
+        { type: 'paragraph', text: 'Er din e-mailadresse allerede registreret hos os, uden at du har sagt ja til nyheder, sender vi dig en mail, hvor du selv bekræfter tilmeldingen.' },
+        { type: 'paragraph', text: 'Vi gemmer din tilmelding, indtil du afmelder dig. Afmelder du dig, stopper udsendelsen med det samme. Registreringen af, at du gav samtykke og senere afmeldte dig, gemmer vi, så længe vi kan have brug for at dokumentere, at vi har overholdt reglerne.' },
       ],
     },
     {
@@ -150,6 +155,10 @@ export const privacyPolicy: PrivacyPolicy = {
         { type: 'label', text: 'Optælling af, hvor mange der bruger appen og tjenesterne' },
         { type: 'paragraph', text: 'Vi tæller, hvor mange der bruger appen og vores tjenester, så vi ved, om Altid Hjem bliver brugt. Vi gemmer kun, at appen blev åbnet, og hvilke tjenester der blev brugt den dag. Optællingen viser ikke, hvad du kigger på eller trykker på, og vi bruger kun tallene samlet. Det gælder alle, uanset om du har sagt ja eller nej til analysen ovenfor.' },
         { type: 'paragraph', text: 'Retsgrundlag: Legitim interesse (GDPR artikel 6, stk. 1, litra f). Vores interesse er at vide, om tjenesterne bliver brugt, og at kunne afregne korrekt. Vi vurderer, at den går forud for din interesse, fordi oplysningerne er få, ikke siger noget om, hvad du gør i appen, og ikke bruges til noget om dig som person. Du kan altid gøre indsigelse, se afsnit 9.' },
+        { type: 'label', text: 'Optælling af klik og besøg på vores websteder' },
+        { type: 'paragraph', text: 'På altidhjem.dk tæller vi nogle få handlinger for alle besøgende, også hvis du har sagt nej til statistikcookies: når du åbner en side, når du trykker på en knap til App Store eller Google Play, når du åbner eller scanner en af vores QR-koder, når vi viser dig en af vores pop-up-beskeder, når du lukker den, og når nogen tilmelder sig nyhedsbrevet. Vi gemmer kun, hvad der skete, og hvor, fx hvilken slags side du åbnede, hvilken knap det var, og om det var på en computer eller en telefon. Hver optælling får sit eget tilfældige id, så to optællinger aldrig kan kobles sammen eller til dig. Vi bruger ingen cookies til optællingen, og din IP-adresse sendes ikke til Amplitude.' },
+        { type: 'paragraph', text: 'For at forhindre, at nogen kunstigt øger tallene, begrænser vi, hvor mange optællinger der kan komme fra samme internetforbindelse i timen. Til det bruger vi en hashværdi af IP-adressen, lavet med en hemmelig nøgle, men aldrig selve IP-adressen.' },
+        { type: 'paragraph', text: 'Retsgrundlag: Legitim interesse (GDPR artikel 6, stk. 1, litra f). Vores interesse er at vide, om siden og vores pop-up-beskeder virker, og hvilke knapper der får folk til at hente appen. Vi vurderer, at den går forud for din interesse, fordi optællingen ikke siger noget om, hvem du er, ikke kan kobles til dig og ikke bruger cookies. Du kan altid gøre indsigelse, se afsnit 9.' },
         { type: 'label', text: 'Måling af, hvilke annoncer og kampagner der giver nye kunder' },
         { type: 'paragraph', text: 'Vi bruger oplysningen om, hvor din konto kom fra (se afsnit 3), til at se, hvilke annoncer og kampagner der giver nye kunder, og hvad en ny kunde koster os. Vi bruger kun tallene samlet per kampagne og ikke til noget om dig som person. Retsgrundlag: Legitim interesse (GDPR artikel 6, stk. 1, litra f). Vores interesse er at bruge vores markedsføringskroner fornuftigt. Vi vurderer, at den går forud for din interesse, fordi oplysningen kun siger, hvilket link appen blev hentet fra, og ikke hvem du er eller hvad du gør i appen. Du kan altid gøre indsigelse, se afsnit 9.' },
         { type: 'label', text: 'Markedsføring og personaliserede tilbud fra Altid Hjem og datterselskaber' },
@@ -192,6 +201,7 @@ export const privacyPolicy: PrivacyPolicy = {
         { type: 'label', text: 'Amplitude (analyse af brugen af appen og vores websteder)' },
         { type: 'paragraph', text: 'Har du givet samtykke til det, bruger vi Amplitude, Inc. som databehandler til at se, hvordan appen bliver brugt. Amplitude modtager oplysninger om, hvilke skærme du åbner, og hvor længe du er på dem, hvad du trykker på, hvor langt du ruller ned på lange skærme, om du får vist fejl, hvilke tjenester din husstand bruger, og hvor du kom fra. Amplitude modtager også din telefonmodel, dit styresystem og din appversion samt et id for din telefon og et id for din husstand. Vi optager ikke din skærm. Amplitude modtager ikke dit navn, din e-mail, din adresse, dit kundenummer eller hvor du befinder dig. Oplysningerne opbevares på Amplitudes servere i EU (Frankfurt, Tyskland).' },
         { type: 'paragraph', text: 'På vores websteder bruger vi kun Amplitude i din browser, hvis du har accepteret statistikcookies, se afsnit 11. Når du skriver dig op på ventelisten, registrerer vi tilmeldingen i Amplitude under et tilfældigt id sammen med, hvilken side du tilmeldte dig fra. Amplitude får ikke dit navn eller din e-mail.' },
+        { type: 'paragraph', text: 'Derudover sender vores server de anonyme optællinger fra altidhjem.dk til Amplitude, se afsnit 4. De har intet id, der går igen fra gang til gang, og Amplitude får ikke din IP-adresse.' },
         { type: 'label', text: 'Offentlige myndigheder' },
         { type: 'paragraph', text: 'Hvis vi er retligt forpligtet hertil.' },
         { type: 'paragraph', text: 'Vi sælger ikke dine personoplysninger til tredjeparter.' },
@@ -261,16 +271,18 @@ export const privacyPolicy: PrivacyPolicy = {
     {
       title: '11. Cookies',
       blocks: [
-        { type: 'paragraph', text: `Vi bruger cookies og lignende lagring i din browser (localStorage) til to ting: det, siden skal bruge for at virke, og statistik, hvis du siger ja. Første gang du besøger siden, spørger vi dig. Dit valg gemmes i 12 måneder, og derefter spørger vi igen. Du kan til enhver tid ændre dit valg: [Cookieindstillinger](${COOKIE_SETTINGS_URL})` },
+        { type: 'paragraph', text: `Vi bruger cookies og lignende lagring i din browser (localStorage og sessionStorage) til to ting: det, siden skal bruge for at virke, og statistik, hvis du siger ja. Første gang du besøger siden, spørger vi dig. Dit valg gemmes i 12 måneder, og derefter spørger vi igen. Du kan til enhver tid ændre dit valg: [Cookieindstillinger](${COOKIE_SETTINGS_URL})` },
         { type: 'label', text: 'Nødvendige (kræver ikke samtykke)' },
         {
           type: 'list',
           items: [
             { label: 'ah-cookie-consent', text: 'Husker dit cookievalg. Gemmes i 12 måneder.' },
-            { label: 'am_confirm', text: 'Bruges et kort øjeblik, når du bekræfter din tilmelding til ventelisten via linket i vores e-mail. Slettes efter 30 minutter.' },
-            { label: 'ah-waitlist-joined', text: 'Husker, at du er skrevet op på ventelisten, så vi ikke spørger dig igen. Gemmes, indtil du rydder din browser.' },
-            { label: 'ah-exit-intent-shown', text: 'Husker, at vi har vist dig invitationen til ventelisten, så den kun vises en gang. Gemmes, indtil du rydder din browser.' },
+            { label: 'am_confirm', text: 'Bruges et kort øjeblik, når du bekræfter din tilmelding via linket i vores e-mail. Slettes efter 30 minutter.' },
+            { label: 'ah-leave-popup-shown', text: 'Husker, at vi har vist dig beskeden, der kommer, når du er på vej væk fra siden, så du højst ser én pop-up-besked pr. besøg. Slettes, når du lukker fanen.' },
+            { label: 'ah-offer-popup-shown', text: 'Husker, at vi har vist dig tilbuddet fra Altid Energi, så du højst ser én pop-up-besked pr. besøg. Slettes, når du lukker fanen.' },
+            { label: 'ah-offer-popup-closed', text: 'Husker, hvornår du lukkede tilbuddet fra Altid Energi, så vi ikke viser det igen de næste 7 dage. Gemmes, indtil du rydder din browser.' },
             { label: 'norlys_auth', text: 'Giver adgang til en lukket side for en samarbejdspartner. Sættes kun, når man logger ind på siden. Gemmes i 30 dage.' },
+            { label: 'tryg_demo_auth', text: 'Giver adgang til en lukket demoside for en samarbejdspartner. Sættes kun, når man logger ind på siden. Gemmes i 30 dage.' },
           ],
         },
         { type: 'label', text: 'Statistik (kun hvis du siger ja)' },

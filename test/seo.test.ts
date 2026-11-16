@@ -35,6 +35,7 @@ describe('sitemap.xml', () => {
       'https://altidhjem.dk/gennemsnitligt-elforbrug',
       'https://altidhjem.dk/bedste-budget-app',
       'https://altidhjem.dk/skift-forsikringsselskab',
+      'https://altidhjem.dk/presse',
       'https://altidhjem.dk/kontakt',
       'https://altidhjem.dk/privatlivspolitik',
       'https://altidhjem.dk/slet-konto',

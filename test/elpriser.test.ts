@@ -35,19 +35,19 @@ describe('priceWith', () => {
 })
 
 describe('hourSpan', () => {
-  it('nulpolstrer og bruger en-dash', () => {
-    expect(hourSpan(0)).toBe('00–01')
-    expect(hourSpan(9)).toBe('09–10')
+  it('nulpolstrer og bruger bindestreg', () => {
+    expect(hourSpan(0)).toBe('00-01')
+    expect(hourSpan(9)).toBe('09-10')
   })
 
   it('ombryder ved midnat (23 → 00, ikke 24)', () => {
-    expect(hourSpan(23)).toBe('23–00')
+    expect(hourSpan(23)).toBe('23-00')
   })
 })
 
 describe('formatKr', () => {
-  it('viser en-dash for null', () => {
-    expect(formatKr(null)).toBe('–')
+  it('viser bindestreg for null', () => {
+    expect(formatKr(null)).toBe('-')
   })
 
   it('formaterer med dansk komma og to decimaler', () => {

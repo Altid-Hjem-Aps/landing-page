@@ -21,6 +21,19 @@ describe('cookie banner', () => {
     expect(analytics.startAnalytics).not.toHaveBeenCalled()
   })
 
+  it('stops statistics when another tab withdraws, and only then', () => {
+    saveCookieChoice('all')
+    render(<CookieBanner />)
+    analytics.stopAnalytics.mockClear()
+    const stored = (key: string) => act(() => void window.dispatchEvent(new StorageEvent('storage', { key })))
+    stored('something-else')
+    stored('ah-cookie-consent')
+    expect(analytics.stopAnalytics).not.toHaveBeenCalled()
+    window.localStorage.setItem('ah-cookie-consent', JSON.stringify({ choice: 'necessary', at: Date.now() }))
+    stored('ah-cookie-consent')
+    expect(analytics.stopAnalytics).toHaveBeenCalledTimes(1)
+  })
+
   it('offers both answers with identical styling', () => {
     render(<CookieBanner />)
     const no = screen.getByRole('button', { name: 'Kun nødvendige' })

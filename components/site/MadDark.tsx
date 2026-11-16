@@ -1,0 +1,52 @@
+import Image from 'next/image'
+import { OKONOMI } from './copy'
+import EnergiOffer from './EnergiOffer'
+
+// On the page's light ground: the heading, then the seven feature blocks of the launch mail, word for word and
+// in its type styles, with the phone and lifted pieces exported from the mail's Figma frames. The phone
+// stays fixed while the cards pass: each card is clipped with clip-path and holds its own
+// position: fixed phone, so the screen changes as a card passes. No transform or
+// backdrop-filter on any ancestor here.
+export default function MadDark() {
+  return (
+    <>
+      <section id="tjenesterne" data-b="features" className="sec d">
+        <header className="d-head">
+          <h2 className="t-h2 d-title" data-reveal>
+            {OKONOMI.title}
+          </h2>
+        </header>
+        <div className="d-cards">
+          {OKONOMI.cards.map((card) => (
+            <article key={card.src} id={'id' in card ? card.id : undefined} className="d-card" data-tone={card.tone} data-surface="light">
+              <div className="d-card-text">
+                <h3 className="d-card-title">
+                  {card.title.split('\n').map((line) => (
+                    <span key={line} className="d-line" data-hang={/^[“"]/.test(line) ? 'true' : undefined}>
+                      {line}
+                    </span>
+                  ))}
+                </h3>
+                <p className="d-card-body" data-lines={'phoneLines' in card ? 'phone' : undefined}>
+                  {card.body}
+                </p>
+                {'source' in card ? (
+                  <p className="d-card-source">
+                    <a href={card.source.href}>{card.source.text}</a>
+                  </p>
+                ) : null}
+              </div>
+              <div className="d-fixed">
+                <div className="d-content">
+                  <Image src={card.src} alt={card.alt} width={866} height={1477} sizes="(max-width: 767px) 300px, 500px" className="d-shot" />
+                  {/* Altid Energi's first month free, over the screenshot's own "Bliv kunde" element. */}
+                  {'id' in card && card.id === 'energi' ? <EnergiOffer /> : null}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </>
+  )
+}

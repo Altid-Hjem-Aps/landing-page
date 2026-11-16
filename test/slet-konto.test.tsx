@@ -4,11 +4,17 @@ import SletKonto, { metadata } from '@/app/slet-konto/page'
 
 // Nav is a client component with scroll listeners and Amplitude — irrelevant here.
 vi.mock('@/components/Nav', () => ({ default: () => null }))
+// The page is in the new site's look (LegalPageLayout): its nav, footer and scroll reveal are
+// left out, as on the other page tests, so only the page itself is tested.
+vi.mock('@/components/site/SiteNav', () => ({ default: () => null }))
+vi.mock('@/components/site/SiteFooter', () => ({ default: () => null }))
+vi.mock('@/components/site/Reveal', () => ({ default: () => null }))
 
 describe('/slet-konto', () => {
   it('renders the H1 and deletion instructions Google Play requires', () => {
     render(<SletKonto />)
-    expect(screen.getByRole('heading', { level: 1, name: 'Slet din Altid Hjem-konto' })).toBeInTheDocument()
+    // The title keeps "Altid Hjem" on one line with a no-break space (titleText).
+    expect(screen.getByRole('heading', { level: 1, name: /^Slet din Altid\sHjem-konto$/ })).toBeInTheDocument()
     // Email path with pre-filled subject
     const mailto = screen.getAllByRole('link').find((a) => a.getAttribute('href')?.startsWith('mailto:hej@altidhjem.dk?subject='))
     expect(mailto).toBeTruthy()

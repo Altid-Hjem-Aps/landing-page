@@ -1,6 +1,6 @@
-import WaitlistForm from '@/components/WaitlistForm'
-import ComingSoonStores from '@/components/ComingSoonStores'
+import StoreBadges from '@/components/StoreBadges'
 import IPhoneMockup from '@/components/IPhoneMockup'
+import { STORE_ANCHOR } from '@/lib/store-links'
 import { H1, BODY } from '@/lib/typography'
 // DISABLED 8 Sep 2026: same live "total saved" number as SavingsCounter, hidden
 // for the same reason (Consumer Ombudsman notice to Altid Energi). See the note
@@ -33,34 +33,32 @@ export default function Hero() {
       <div className="max-w-[1920px] mx-auto w-full px-6 sm:px-10 lg:px-[clamp(48px,3.7vw,72px)]">
         <div className="grid grid-cols-1 lg:grid-cols-[47fr_53fr] gap-12 lg:gap-[clamp(48px,4.8vw,92px)] items-center py-12 lg:py-10 lg:min-h-[680px]">
 
-          {/* Left: copy + form + stats */}
+          {/* Left: copy + store pills + stats */}
           <div className="flex flex-col text-center lg:text-left">
             <h1
               className={`${H1} lg:-ml-[0.05em]`}
               style={{ color: '#163223' }}
             >
-              <span className="block">Snart får danskerne</span>
-              <span className="block">bedre råd til hjemmet</span>
+              {/* Balanced so it stays two lines: "Hele hjemmets økonomi" alone does
+                  not fit the column at most widths and left "økonomi" on its own. */}
+              <span className="block [text-wrap:balance]">Hele hjemmets økonomi i én app</span>
             </h1>
 
             <p
               className={`mt-7 ${BODY} lg:text-[18px] mx-auto lg:mx-0`}
               style={{ color: '#6f6a61', maxWidth: 620 }}
             >
-              {/* Desktop: two lines with the dash line forced onto its own
-                  line. Phones: one naturally flowing paragraph (the glued
-                  "i én løsning" tail keeps the wrap from orphaning a word). */}
-              <span className="lg:block">Altid Hjem samler hjemmets faste udgifter i én løsning</span>
+              {/* Desktop: two lines with the second forced onto its own line.
+                  Phones: one naturally flowing paragraph. */}
+              <span className="lg:block">Altid Hjem samler hjemmets faste udgifter i én løsning:</span>
               {' '}
-              <span className="lg:block">– ét overblik, ét login, én regning. <span style={{ color: '#163223' }}>Altid.</span></span>
+              <span className="lg:block">ét overblik, ét login. <span style={{ color: '#163223' }}>Altid.</span></span>
             </p>
 
-            <div id="venteliste" className="mt-8 w-full max-w-[600px] mx-auto lg:mx-0">
-              <WaitlistForm variant="light" />
-            </div>
-
-            <div className="mt-6">
-              <ComingSoonStores />
+            {/* The target of every "Hent appen" control on the page. The scroll
+                margin keeps the pills clear of the fixed nav. */}
+            <div id={STORE_ANCHOR} className="mt-8 scroll-mt-[140px]">
+              <StoreBadges position="hero" className="justify-center lg:justify-start" />
             </div>
 
             {/* Stats row. Centered flex (not a 2-col grid) so it stays centered
