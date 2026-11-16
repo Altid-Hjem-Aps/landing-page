@@ -65,7 +65,7 @@ describe('the sections from the flip', () => {
     expect(prevented).toBe(false)
     const [url, blob] = sendBeacon.mock.calls[0]
     expect(url).toBe('/api/forside/store-click')
-    expect(JSON.parse(await blob.text())).toEqual({ store: 'play', position: 'how-it-works' })
+    expect(JSON.parse(await blob.text())).toEqual({ store: 'play', position: 'how-it-works', slug: 'front' })
   })
 
   it('has the newsletter under the bottom pills', () => {

@@ -4,7 +4,7 @@
 One-off tool, run by hand, not part of the build. Needs Pillow, numpy, scipy;
 the qr step also needs qrcode (a throwaway venv is enough, no package.json change).
 
-Usage: site-assets.py <screens|cutouts|crops|pieces|icons|plates|brand|qr|all>
+Usage: site-assets.py <screens|cutouts|crops|pieces|icons|plates|brand|qr|guide-qr|all>
 
 Inputs live outside this repo: the captures in ~/altid-worktrees/site-captures,
 the app worktree ~/altid-hjem-app-worktrees/site-captures (read only), and the
@@ -12,12 +12,14 @@ brand folder in the work folder. Plates are read with an anonymous GET from the
 public catalog-images bucket; the ids below are the dishes' card pictures.
 """
 import json
+import re
 import os
 import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from urllib.parse import quote
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
@@ -68,6 +70,30 @@ DEEP_FOREST = "#003C16"
 # The one QR code per place on the site, each with its own ?src= so app/qr/route.ts counts
 # scans per place (QR_SOURCES and qrImage in lib/store-links.ts). Written as app-<place>.svg.
 APP_QR_SOURCES = ["sticky", "side-offer", "leave", "offer", "energi", "footer"]
+# ALT-1713: on a guide every QR code carries the guide, so App Store Connect and Play Console
+# show each guide's downloads: the store pills' codes link straight to the store with the
+# guide's campaign (storeLink(store, slug) in lib/store-links.ts), the footer's and the offer
+# pop-up's go through /qr with ?g=<slug>. Written to qr/guide/<slug>-<appstore|play|footer|offer>.svg.
+GUIDE_QR_SOURCES = ["footer", "offer"]
+
+
+def guide_slugs() -> list:
+    # The one list of guides is GUIDE_PATHS in lib/site-counts.ts.
+    text = (ROOT / "lib" / "site-counts.ts").read_text(encoding="utf-8")
+    block = text[text.index("export const GUIDE_PATHS = ["):]
+    block = block[: block.index("] as const")]
+    slugs = re.findall(r"'/([a-z0-9-]+)'", block)
+    if not slugs:
+        raise SystemExit("no guides found in lib/site-counts.ts GUIDE_PATHS")
+    return slugs
+
+
+def guide_store_link(store: str, slug: str) -> str:
+    # Must match storeLink(store, slug) in lib/store-links.ts; test/guide-qr.test.ts checks it.
+    campaign = "ah_1_guide_" + slug.replace("-", "_")
+    if store == "appstore":
+        return f"https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct={campaign}&mt=8"
+    return "https://play.google.com/store/apps/details?id=dk.altidhjem.app&referrer=" + quote(f"utm_source=altidhjem_dk&utm_campaign={campaign}", safe="")
 
 
 def web_name(frame: str) -> str:
@@ -408,6 +434,23 @@ def build_qr() -> None:
     for source in APP_QR_SOURCES:
         url = f"https://www.altidhjem.dk/qr?src={source}"
         (target / f"app-{source}.svg").write_text(qr_svg(url, version=None), encoding="utf-8")
+    build_guide_qr()
+
+
+def build_guide_qr() -> None:
+    guides = OUT / "qr" / "guide"
+    guides.mkdir(parents=True, exist_ok=True)
+    links = {}
+    for slug in guide_slugs():
+        for store in ["appstore", "play"]:
+            links[f"{slug}-{store}"] = guide_store_link(store, slug)
+        for source in GUIDE_QR_SOURCES:
+            links[f"{slug}-{source}"] = f"https://www.altidhjem.dk/qr?src={source}&g={slug}"
+    for name, url in links.items():
+        (guides / f"{name}.svg").write_text(qr_svg(url, version=None), encoding="utf-8")
+    # What each code says, for test/guide-qr.test.ts (it checks the links, a decode checks the codes).
+    (ROOT / "test" / "fixtures").mkdir(exist_ok=True)
+    (ROOT / "test" / "fixtures" / "guide-qr-links.json").write_text(json.dumps(links, indent=2) + "\n", encoding="utf-8")
 
 
 # Real crops for the floating cards. name -> (frame, box, corner radius in source px, output width).
@@ -512,7 +555,7 @@ def build_icons() -> None:
         shutil.copyfile(source, target / source.name.replace("_filled", ""))
 
 
-STEPS = {"pieces": build_pieces, "icons": build_icons, "screens": build_screens, "cutouts": build_cutouts, "crops": build_crops, "plates": build_plates, "brand": build_brand, "qr": build_qr}
+STEPS = {"pieces": build_pieces, "icons": build_icons, "screens": build_screens, "cutouts": build_cutouts, "crops": build_crops, "plates": build_plates, "brand": build_brand, "qr": build_qr, "guide-qr": build_guide_qr}
 
 if __name__ == "__main__":
     step = sys.argv[1]

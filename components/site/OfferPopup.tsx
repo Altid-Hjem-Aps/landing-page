@@ -6,9 +6,10 @@ import { STORE_MARK } from '@/components/StoreBadges'
 import { trackEvent } from '@/lib/analytics'
 import { hasCookieChoice } from '@/lib/cookie-consent'
 import { countEvent } from '@/lib/count'
-import { qrImage, type Store } from '@/lib/store-links'
+import type { Store } from '@/lib/store-links'
 import { keepBrands } from './brand'
 import { HERO, LEAVE, OFFER_POPUP, QR } from './copy'
+import QrImage from './QrImage'
 import StoreLink from './StoreLink'
 
 // The Altid Energi offer as a pop-up (Thor 15/11): download Altid Hjem, become an Altid Energi
@@ -169,7 +170,7 @@ function OfferDialog({ proof, onClose }: { proof: string; onClose: () => void })
           <p className="op-body">{OFFER_POPUP.body}</p>
           <div className="op-get">
             <span className="op-tile">
-              <Image src={qrImage('offer')} alt={QR.alt} width={148} height={148} />
+              <QrImage source="offer" size={148} />
             </span>
             <p className="op-scan">{QR.line}</p>
           </div>

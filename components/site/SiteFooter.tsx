@@ -1,9 +1,8 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import CookieSettingsLink from '@/components/CookieSettingsLink'
 import NewsletterForm from '@/components/NewsletterForm'
-import { qrImage } from '@/lib/store-links'
 import { FOOTER, QR } from './copy'
+import QrImage from './QrImage'
 import FooterLogo from './FooterLogo'
 import GetAppButton from './GetAppButton'
 import { SOCIAL } from './social'
@@ -103,7 +102,7 @@ export default function SiteFooter({ base = '' }: { base?: '' | '/' }) {
           <h2>{FOOTER.heads.getApp}</h2>
           <div className="ft-qr">
             <span className="ft-qr-tile">
-              <Image src={qrImage('footer')} alt={QR.alt} width={104} height={104} />
+              <QrImage source="footer" size={104} />
             </span>
             <p>{QR.line}</p>
           </div>

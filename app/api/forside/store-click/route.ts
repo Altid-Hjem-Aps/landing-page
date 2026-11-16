@@ -3,10 +3,13 @@ import { trackAnonymousServer } from '@/lib/amplitude.server'
 import { overHourlyLimit, readCappedBody } from '@/lib/anonymous-count.server'
 import { ipRateKey } from '@/lib/mail-links'
 import { clientIp } from '@/lib/referral'
+import { SITE_PAGES, type SitePage } from '@/lib/site-counts'
 import { STORES, STORE_POSITIONS, type Store, type StorePosition } from '@/lib/store-links'
 
 // A store badge click on the front page, counted from our server:
-// POST {store, position}, sent by components/StoreBadges.tsx with sendBeacon.
+// POST {store, position, slug}, sent by components/StoreBadges.tsx with sendBeacon. `slug` is the
+// page the tap came from (ALT-1713, lib/site-counts.ts SITE_PAGES). A page loaded before it
+// existed sends no slug: that tap is still counted, without one.
 //
 // The browser SDK only starts after the visitor accepts cookies, and the click
 // leaves the page, so a click from anyone who did not accept was never seen.
@@ -26,7 +29,7 @@ const CLICKS_PER_IP_PER_HOUR = 60
  * the count or Amplitude's volume without a ceiling. */
 const CLICKS_PER_HOUR_GLOBAL = 1000
 
-/** {"store":"appstore","position":"bottom"} is about 40 bytes. */
+/** {"store":"appstore","position":"bottom","slug":"hvornar-er-strommen-billigst"} is about 80 bytes. */
 const MAX_BODY_BYTES = 512
 
 function answer(status: number, extra: Record<string, string> = {}): NextResponse {
@@ -40,7 +43,9 @@ function refuse(status: number, reason: string): NextResponse {
   return answer(status)
 }
 
-function parseClick(text: string): { store: Store; position: StorePosition } | null {
+type Click = { store: Store; position: StorePosition; slug?: SitePage }
+
+function parseClick(text: string): Click | null {
   let body: unknown
   try {
     body = JSON.parse(text)
@@ -48,10 +53,14 @@ function parseClick(text: string): { store: Store; position: StorePosition } | n
     return null
   }
   if (typeof body !== 'object' || body === null || Array.isArray(body)) return null
-  const { store, position } = body as Record<string, unknown>
+  // Anything else in the body is ignored, never passed on.
+  const { store, position, slug } = body as Record<string, unknown>
   if (!STORES.includes(store as Store)) return null
   if (!STORE_POSITIONS.includes(position as StorePosition)) return null
-  return { store: store as Store, position: position as StorePosition }
+  const click: Click = { store: store as Store, position: position as StorePosition }
+  if (slug === undefined) return click
+  if (!(SITE_PAGES as readonly string[]).includes(slug as string)) return null
+  return { ...click, slug: slug as SitePage }
 }
 
 export async function POST(req: NextRequest) {
@@ -66,7 +75,7 @@ export async function POST(req: NextRequest) {
   if (text === null) return refuse(413, 'body too large')
 
   const click = parseClick(text)
-  if (!click) return refuse(400, 'not {store: appstore|play, position: one of STORE_POSITIONS}')
+  if (!click) return refuse(400, 'not {store: appstore|play, position: one of STORE_POSITIONS, slug?: one of SITE_PAGES}')
 
   // Throws without REFERRAL_IP_SALT: a 500, not a click counted unlimited.
   const rateKey = ipRateKey('forside-store-click', clientIp(req.headers), process.env.REFERRAL_IP_SALT)

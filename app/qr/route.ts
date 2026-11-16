@@ -4,6 +4,7 @@ import { isPrefetch, overHourlyLimit } from '@/lib/anonymous-count.server'
 import { ipRateKey } from '@/lib/mail-links'
 import { detectPlatform, type Platform } from '@/lib/platform'
 import { clientIp, looksLikeBot } from '@/lib/referral'
+import { GUIDE_SLUGS, type GuideSlug } from '@/lib/site-counts'
 import { QR_SOURCES, STORE_ANCHOR, storeLink, type QrSource } from '@/lib/store-links'
 
 // www.altidhjem.dk/qr: the site's one QR code (public/site/qr/app*.svg). An iPhone or iPad goes
@@ -17,6 +18,11 @@ import { QR_SOURCES, STORE_ANCHOR, storeLink, type QrSource } from '@/lib/store-
 // never reaches Amplitude. The redirect is the product and the count a side effect: the 302 is
 // built first and the event sent in after(), so a slow or failing Amplitude never keeps anyone
 // from the store. A code without a known src (the first app.svg) counts as "none".
+//
+// On a guide the footer's and the offer pop-up's codes add ?g=<guide> (ALT-1713): the phone then
+// reaches the store with the guide's campaign, a computer the guide's own store buttons, and the
+// scan is counted with slug <guide>. A g that is not a guide is ignored, so nothing typed reaches
+// Amplitude and the scan still works.
 //
 // The QR code is printed on the page, so this URL must keep working: do not rename it.
 // Always 302 and never cached, because the answer depends on the phone.
@@ -40,11 +46,21 @@ function sourceOf(req: NextRequest): QrSource | 'none' {
   return QR_SOURCES.includes(src as QrSource) ? (src as QrSource) : 'none'
 }
 
+function guideOf(req: NextRequest): GuideSlug | null {
+  const g = req.nextUrl.searchParams.get('g')
+  return (GUIDE_SLUGS as readonly string[]).includes(g as string) ? (g as GuideSlug) : null
+}
+
 function respond(req: NextRequest): { res: NextResponse; platform: Platform } {
   // The server has no touch count, so an iPad that reports a Mac user agent counts as a computer.
   const platform = detectPlatform(req.headers.get('user-agent') ?? '', 0)
+  const guide = guideOf(req)
   const location =
-    platform === 'ios' ? storeLink('appstore') : platform === 'android' ? storeLink('play') : new URL(DESKTOP_TARGET, req.nextUrl.origin)
+    platform === 'ios'
+      ? storeLink('appstore', guide)
+      : platform === 'android'
+        ? storeLink('play', guide)
+        : new URL(guide ? `/${guide}#${STORE_ANCHOR}` : DESKTOP_TARGET, req.nextUrl.origin)
   const res = NextResponse.redirect(location, 302)
   res.headers.set('Cache-Control', 'no-store')
   res.headers.set('Vary', 'User-Agent')
@@ -58,6 +74,7 @@ export function GET(req: NextRequest) {
   // Crawlers, link unfurlers, scripts (curl included) and prefetches are not people scanning.
   if (!looksLikeBot(req.headers.get('user-agent')) && !isPrefetch(req.headers)) {
     const src = sourceOf(req)
+    const guide = guideOf(req)
     const ip = clientIp(req.headers)
     after(async () => {
       try {
@@ -70,7 +87,7 @@ export function GET(req: NextRequest) {
           console.warn('QR scan not counted: over the global limit')
           return
         }
-        await trackAnonymousServer(QR_SCAN_EVENT, { src, platform })
+        await trackAnonymousServer(QR_SCAN_EVENT, guide ? { src, platform, slug: guide } : { src, platform })
       } catch (e) {
         console.error('QR scan not recorded', e instanceof Error ? e.message : e)
       }

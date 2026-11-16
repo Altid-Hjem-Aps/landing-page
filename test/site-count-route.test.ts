@@ -57,8 +57,10 @@ describe('POST /api/forside/count', () => {
     const counts = [
       { event: 'Popup Shown', props: { popup: 'leave', mode: 'computer' } },
       { event: 'Popup Dismissed', props: { popup: 'offer', mode: 'phone' } },
-      { event: 'QR Card Opened', props: { code: 'appstore', position: 'hero' } },
-      { event: 'QR Card Opened', props: { code: 'app', position: 'energi' } },
+      { event: 'QR Card Opened', props: { code: 'appstore', position: 'hero', slug: 'front' } },
+      { event: 'QR Card Opened', props: { code: 'app', position: 'energi', slug: 'hvad-koster-forsikring' } },
+      // From a tab opened before the page name came (16 Nov): still counted, without one.
+      { event: 'QR Card Opened', props: { code: 'play', position: 'bottom' } },
     ]
     for (const count of counts) {
       expect((await post(count)).status).toBe(204)
@@ -122,9 +124,9 @@ describe('POST /api/forside/count, page views', () => {
   const visitKey = `forside-visit:${createHmac('sha256', SALT).update(IP).digest('hex').slice(0, 32)}`
 
   it('counts a page view on its own per-IP and site-wide limits', async () => {
-    const res = await post({ event: 'Page Visited', props: { page: 'front' } })
+    const res = await post({ event: 'Page Visited', props: { page: 'front', slug: 'front' } })
     expect(res.status).toBe(204)
-    expect(trackMock).toHaveBeenCalledWith('Page Visited', { page: 'front' })
+    expect(trackMock).toHaveBeenCalledWith('Page Visited', { page: 'front', slug: 'front' })
     expect(rateLimit).toHaveBeenCalledWith(visitKey, 120, 3600)
     expect(rateLimit).toHaveBeenCalledWith('forside-visit:global', 5000, 3600)
     expect(rateLimit).not.toHaveBeenCalledWith(ipKey, expect.anything(), expect.anything())
@@ -132,7 +134,7 @@ describe('POST /api/forside/count, page views', () => {
 
   it('is not stopped by the other counts’ limits, and does not stop them', async () => {
     limitedKey = (key) => key.startsWith('forside-count')
-    expect((await post({ event: 'Page Visited', props: { page: 'guide' } })).status).toBe(204)
+    expect((await post({ event: 'Page Visited', props: { page: 'guide', slug: 'madbudget' } })).status).toBe(204)
     limitedKey = (key) => key.startsWith('forside-visit')
     expect((await post({ event: 'Popup Shown', props: { popup: 'leave', mode: 'computer' } })).status).toBe(204)
   })

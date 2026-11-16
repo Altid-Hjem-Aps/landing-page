@@ -1,12 +1,14 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import { useRef } from 'react'
 import { trackEvent } from '@/lib/analytics'
 import { PILL_QR } from '@/components/site/copy'
 import PillQr from '@/components/site/PillQr'
 import { useComputer } from '@/components/site/useComputer'
 import { usePillEntrance } from '@/components/site/usePillEntrance'
-import { storeLink, type Store, type StorePosition } from '@/lib/store-links'
+import { guideSlug, sitePage } from '@/lib/site-counts'
+import { guideQrImage, storeLink, type Store, type StorePosition } from '@/lib/store-links'
 
 // The site's own store pills as tracked links (lib/store-links.ts): the look of
 // the pre-launch ComingSoonStores pill, now with "Hent i" and a link. Thor chose
@@ -33,11 +35,24 @@ export function trackStoreTap(store: Store, position: StorePosition) {
 /** The browser event for the site's main step: a store tap or a QR card opened. */
 export const APP_INTENT = 'App Intent'
 
+/** Counts a store tap with the page it came from (ALT-1713): a guide by its own name. */
 export function countClick(store: Store, position: StorePosition) {
+  const slug = sitePage(window.location.pathname)
   navigator.sendBeacon?.(
     '/api/forside/store-click',
-    new Blob([JSON.stringify({ store, position })], { type: 'application/json' }),
+    new Blob([JSON.stringify({ store, position, slug })], { type: 'application/json' }),
   )
+}
+
+/** The guide this page is, or null (ALT-1713). */
+export function useGuide() {
+  return guideSlug(usePathname())
+}
+
+/** The store link for this page: a guide's links carry the guide's own campaign. */
+export function useStoreLink(): (store: Store) => string {
+  const guide = useGuide()
+  return (store) => storeLink(store, guide)
 }
 
 const PILL = 'inline-flex shrink-0 items-center gap-2 border py-3 leading-none whitespace-nowrap transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-[3px]'
@@ -114,6 +129,8 @@ export default function StoreBadges({
   const row = useRef<HTMLDivElement>(null)
   usePillEntrance(row, motion)
   const computer = useComputer()
+  const hrefFor = useStoreLink()
+  const guide = useGuide()
   return (
     <div ref={row} className={`flex flex-row flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-3 ${motion ? 'sp-row' : ''} ${className}`}>
       {STORES.map((s, i) => {
@@ -149,7 +166,7 @@ export default function StoreBadges({
           </>
         )
         const link = (key?: string) => (
-          <a key={key} href={storeLink(s.store)} onClick={() => {
+          <a key={key} href={hrefFor(s.store)} onClick={() => {
             countClick(s.store, position)
             trackStoreTap(s.store, position)
           }} {...pill}>
@@ -164,7 +181,7 @@ export default function StoreBadges({
           <span key={s.store} className="sp-slot">
             {qr && computer ? (
               <PillQr
-                code={{ src: `/site/qr/${s.store}.svg`, alt: PILL_QR.alt(s.name), title: s.name, label: PILL_QR.label(s.name), link: storeLink(s.store), store: { store: s.store, position } }}
+                code={{ src: guide ? guideQrImage(guide, s.store) : `/site/qr/${s.store}.svg`, alt: PILL_QR.alt(s.name), title: s.name, label: PILL_QR.label(s.name), link: hrefFor(s.store), store: { store: s.store, position } }}
                 variant={variant}
                 className={pill.className}
                 style={pill.style}
