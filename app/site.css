@@ -3044,11 +3044,14 @@
       padding-inline: 24px;
       text-wrap: balance;
     }
-    /* On a phone the paragraph reads left aligned (Thor 16/11, to try). */
+    /* On a phone the paragraph reads left aligned (Thor 16/11), with a touch of letter spacing so
+       the lines reach further right (0.01em: about 6 px less empty space at the line ends on most
+       phone widths, measured 16/11). */
     .x-body {
       width: calc(100% - 48px);
       text-align: left;
       text-wrap: pretty;
+      letter-spacing: 0.01em;
     }
     .x-banks .w-title {
       padding-inline: 24px;
