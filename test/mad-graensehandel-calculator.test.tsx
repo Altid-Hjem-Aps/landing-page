@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import GraensehandelCalculator from '@/components/mad/GraensehandelCalculator'
 
 // The border-trade calculator moved from altidmad.dk (/graensehandel-beregner). Same maths and
-// defaults as there: 100 km at 15 km/l and 17,69 kr./l is about 118 kr.
+// defaults as there: 100 km at 15 km/l and 17,39 kr./l is about 116 kr.
 const field = (label: string) => screen.getByLabelText(label) as HTMLInputElement
 const type = (label: string, value: string) => fireEvent.change(field(label), { target: { value } })
 
@@ -11,7 +11,7 @@ describe('GraensehandelCalculator', () => {
   it('shows the fuel cost for the default trip', () => {
     render(<GraensehandelCalculator />)
     expect(field('Kørsel tur-retur (km)').value).toBe('100')
-    expect(screen.getByText('Ca. 118 kr.')).toBeInTheDocument()
+    expect(screen.getByText('Ca. 116 kr.')).toBeInTheDocument()
   })
 
   it('says the trip pays off when the expected saving beats the fuel', () => {

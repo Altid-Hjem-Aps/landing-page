@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import PristjekMockup from '@/components/mad/PristjekMockup'
-import { MAD_GUIDE_CTA, MAD_REPORT_HREF } from '@/components/mad/madGuide'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
+import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Billigste supermarked 2026, se pristjek | Altid Hjem',
@@ -78,13 +78,21 @@ export default function BilligsteSupermarked() {
       }
       meta={
         <>
-          Opdateret: september 2026 · Baseret på <a href={MAD_REPORT_HREF}>Altid Mads Q3-analyse</a> · Opdateres kvartalsvist
+          Baseret på <a href={MAD_REPORT_HREF}>Altid Mads Q3-analyse</a> · Opdateres kvartalsvist
         </>
       }
       answer={{ label: 'Billigste kurv i pristjekket', value: '782,70', unit: 'kr. hos Lidl', note: 'Den samme kurv med 23 varer kostede 1.313,94 kr. hos Min Købmand.' }}
       factors={{ label: 'Det bedste valg afhænger af', items: ['Jeres faste indkøb', 'Ugens tilbud', 'Hvor mange butikker I vil besøge'] }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
+      page={{ path: '/billigste-supermarked', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      sources={{
+        checked: '2026-11-16',
+        items: [
+          { publisher: 'Altid Mad', title: MAD_REPORT_LABEL, href: `https://www.altidhjem.dk${MAD_REPORT_HREF}`, note: 'Den samme ugekurv med 23 varer til 2 voksne og 2 teenagere hos 13 kæder. Genereret 21. september 2026' },
+        ],
+      }}
+      related={['/spar-penge-paa-dagligvarer', '/graensehandel-beregner', '/mad-for-3000-om-maaneden']}
     >
       <section>
         <h2>Lidl var billigst i vores pristjek</h2>
@@ -151,6 +159,7 @@ export default function BilligsteSupermarked() {
         <GuideFigure tone="lavender" caption="Altid Mad sammenligner ugens kurv på tværs af kæderne og viser, hvor familien sparer mest.">
           <PristjekMockup />
         </GuideFigure>
+        <GuideStores />
       </section>
     </Guide>
   )

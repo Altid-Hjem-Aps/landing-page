@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import TreTusindMockup from '@/components/mad/TreTusindMockup'
 import { MAD_GUIDE_CTA, MAD_IN_APP, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
 
 // Moved from altidmad.dk/mad-for-3000-om-maaneden (16 Nov 2026) with the text word for word.
 export const metadata: Metadata = {
@@ -87,7 +87,7 @@ export default function MadFor3000OmMaaneden() {
       }
       meta={
         <>
-          Opdateret: september 2026 · Kilde:{' '}
+          Kilde:{' '}
           <a href={MAD_REPORT_HREF}>
             {MAD_REPORT_LABEL}
           </a>
@@ -105,6 +105,16 @@ export default function MadFor3000OmMaaneden() {
       }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
+      page={{ path: '/mad-for-3000-om-maaneden', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      sources={{
+        checked: '2026-11-16',
+        items: [
+          { publisher: 'Danmarks Statistik', title: 'Forbrugsundersøgelsen, tabel FU13: Forbrug efter husstand', href: 'https://www.statistikbanken.dk/FU13', note: 'Fødevarer og ikke-alkoholiske drikkevarer, løbende priser, 2024. Månedsbeløb er egne beregninger på baggrund af data fra Danmarks Statistik (årsbeløb delt med 12)' },
+          { publisher: 'Danmarks Statistik', title: 'Forbrugsundersøgelsen, tabel FU11: Baggrundsoplysninger', href: 'https://www.statistikbanken.dk/FU11', note: 'Personer i husstanden, gennemsnitshusstand: 2,0 i 2024' },
+          { publisher: 'Altid Mad', title: MAD_REPORT_LABEL, href: `https://www.altidhjem.dk${MAD_REPORT_HREF}`, note: 'Den samme ugekurv med 23 varer til 2 voksne og 2 teenagere hos 13 kæder. Genereret 21. september 2026. Månedsbeløb er egne beregninger på baggrund af rapportens ugepriser (ugepris gange 52 delt med 12)' },
+        ],
+      }}
+      related={['/madbudget-familie-paa-4', '/billigste-supermarked', '/madplan-efter-tilbud']}
     >
       <section>
         <h2>Hvad betyder 3.000 kr. til mad om måneden?</h2>
@@ -135,7 +145,7 @@ export default function MadFor3000OmMaaneden() {
           cirka 3.214 kr. om måneden, mens 2 voksne under 60 uden børn ligger på 41.730 kr. om året, cirka 3.478 kr. om måneden.
         </p>
         <p>
-          Forbrugsundersøgelsen 2024 dækker al mad og alle ikke-alkoholiske drikkevarer gennem året. En gennemsnitshusstand er cirka 2,1 personer, så tallene kan ikke
+          Forbrugsundersøgelsen 2024 dækker al mad og alle ikke-alkoholiske drikkevarer gennem året. En gennemsnitshusstand er 2,0 personer i 2024, så tallene kan ikke
           sidestilles direkte med vores ugentlige kurv til 2 voksne og 2 teenagere.
         </p>
       </section>
@@ -192,6 +202,7 @@ export default function MadFor3000OmMaaneden() {
         <p>
           Altid Mad er en del af Altid Hjem-appen, som samler hjemmets faste udgifter med ét overblik og ét login. Appen er gratis i App Store og Google Play. Teamet står også bag Altid Energi, Danmarks første gebyrfrie energiselskab.
         </p>
+        <GuideStores />
       </section>
     </Guide>
   )

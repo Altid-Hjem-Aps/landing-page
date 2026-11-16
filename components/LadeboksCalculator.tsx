@@ -39,9 +39,11 @@ const ERROR_COPY: Record<FieldKey, string> = {
 
 export default function LadeboksCalculator() {
   const { ref, reduced, entered } = useMockupStart()
-  const [km, setKm] = useState('1.200')
-  const [kwh100, setKwh100] = useState('18')
-  const [price, setPrice] = useState('2,50')
+  const [km, setKm] = useState('1.250')
+  const [kwh100, setKwh100] = useState('20')
+  // FDM's example on the page: 15.000 km a year at 20 kWh pr. 100 km. No price is filled in: there
+  // is no sourced household price, so the estimate waits for the household's own.
+  const [price, setPrice] = useState('')
   const [refusion, setRefusion] = useState('')
   const [touched, setTouched] = useState<Record<FieldKey, boolean>>({ km: false, kwh100: false, price: false, refusion: false })
 
@@ -101,7 +103,7 @@ export default function LadeboksCalculator() {
       className="w-full max-w-[440px] rounded-[24px] px-5 pt-5 pb-5 hjem-motion-scope"
       style={{ backgroundColor: '#ffffff', border: `1px solid ${CARD_BORDER}`, boxShadow: CARD_SHADOW, fontFamily: 'var(--font-onest)', ...mockupEntranceStyle(entered, reduced) }}
     >
-      <CardHeader eyebrow="Månedligt estimat" title="Beregn din ladeudgift" icon="/services/icon-opladning.svg" />
+      <CardHeader eyebrow="Månedligt estimat" title="Beregn jeres ladeudgift" icon="/services/icon-opladning.svg" />
 
       {/* Error text sits OUTSIDE Field: Field wraps its children in <label>,
           and error copy inside the label would pollute the input's accessible
@@ -127,7 +129,7 @@ export default function LadeboksCalculator() {
         </div>
         <div>
           <Field label="Evt. elpris efter refusion (kr./kWh)">
-            <input type="text" inputMode="decimal" placeholder="F.eks. 0,73" className={inputCls} style={inputStyle('refusion')} value={refusion} onChange={(e) => setRefusion(e.target.value)} onBlur={blur('refusion')} {...inputA11y('refusion')} />
+            <input type="text" inputMode="decimal" className={inputCls} style={inputStyle('refusion')} value={refusion} onChange={(e) => setRefusion(e.target.value)} onBlur={blur('refusion')} {...inputA11y('refusion')} />
           </Field>
           {errorText('refusion')}
         </div>
@@ -176,24 +178,15 @@ export default function LadeboksCalculator() {
         ) : (
           <div className="rounded-2xl px-4 py-3 mb-3" style={{ backgroundColor: SAGE_WASH, border: `1px solid ${CARD_BORDER}` }}>
             <p className="font-bold text-[14px] leading-tight" style={{ color: FOREST }}>
-              Udfyld km, forbrug og elpris med dine egne tal
+              Udfyld km, forbrug og elpris med jeres egne tal
             </p>
           </div>
         )}
       </div>
 
-      <a
-        href="#hent-appen"
-        className="w-full inline-flex items-center justify-center rounded-full px-6 py-3.5 text-[15px] font-medium transition-opacity hover:opacity-85"
-        style={{ backgroundColor: SAGE, color: 'var(--forest)' }}
-      >
-        Hent Altid Hjem, og få overblik over husstanden
-      </a>
-
       <p className="text-[11px] mt-3 leading-relaxed" style={{ color: 'rgba(26,61,34,0.55)' }}>
-        Estimatet bygger alene på dine egne tal og er ikke et pristilbud. Hjemmeladning koster typisk
-        2,00-3,50 kr. pr. kWh før refusion; en refusionsaftale kan ændre regnestykket. Intet gemmes,
-        når du beregner.
+        Estimatet bygger alene på jeres egne tal og er ikke et pristilbud. Intet gemmes,
+        når I beregner.
       </p>
     </div>
   )

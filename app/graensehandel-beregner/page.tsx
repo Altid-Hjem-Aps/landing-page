@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import GraensehandelCalculator from '@/components/mad/GraensehandelCalculator'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
 
 // Moved from altidmad.dk/graensehandel-beregner (16 Nov 2026): the article text is word for
 // word, only the sign-up sentence from before the launch (no longer true) was rewritten to be true on altidhjem.dk.
@@ -32,7 +32,7 @@ const FAQ: GuideFaq[] = [
     q: 'Hvor langt kan man køre, før besparelsen er væk?',
     a: [
       'Det afhænger af bilens forbrug, brændstofprisen og besparelsen på varerne.',
-      'Kører I 100 km tur-retur i en bil, der kører 15 km pr. liter, koster turen ca. 118 kr. i brændstof ved en pris på 17,69 kr. pr. liter.',
+      'Kører I 100 km tur-retur i en bil, der kører 15 km pr. liter, koster turen ca. 116 kr. i brændstof ved en pris på 17,39 kr. pr. liter.',
     ],
   },
   {
@@ -50,7 +50,7 @@ const FAQ: GuideFaq[] = [
     q: 'Er der regler for, hvor meget man må tage med hjem?',
     a: [
       'Ja, der gælder regler og vejledende mængder for blandt andet alkohol og tobak, når varer medbringes til eget brug inden for EU.',
-      'Tjek altid de aktuelle oplysninger på Skat.dk før turen.',
+      'Tjek altid de aktuelle mængdegrænser hos Toldstyrelsen på toldst.dk før turen.',
     ],
   },
   {
@@ -76,25 +76,35 @@ export default function GraensehandelBeregner() {
             jeres break-even, altså hvor meget I mindst skal spare, før turen betaler sig.
           </p>
           <p>
-            Brændstofprisen er forudfyldt med Drivkraft Danmarks listepris for benzin i juli 2026 på 17,69 kr. pr. liter. Prisen kan redigeres, så beregningen passer til den
+            Brændstofprisen er forudfyldt med Drivkraft Danmarks listepris for benzin den 6. november 2026 på 17,39 kr. pr. liter. Prisen kan redigeres, så beregningen passer til den
             pris, I faktisk betaler.
           </p>
         </>
       }
       meta={
         <>
-          Opdateret: september 2026 · Kilde: <a href={MAD_REPORT_HREF}>{MAD_REPORT_LABEL}</a>
+          Kilde: <a href={MAD_REPORT_HREF}>{MAD_REPORT_LABEL}</a>
         </>
       }
       answer={{
         label: 'Brændstof til 100 km',
-        value: 'ca. 118',
+        value: 'ca. 116',
         unit: 'kr. for turen',
-        note: 'I en bil, der kører 15 km pr. liter, med en literpris på 17,69 kr.',
+        note: 'I en bil, der kører 15 km pr. liter, med en literpris på 17,39 kr.',
       }}
       factors={{ label: 'Det afhænger af', items: ['Afstanden til grænsen', 'Bilens forbrug', 'Brændstofprisen', 'Den besparelse, I forventer'] }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
+      page={{ path: '/graensehandel-beregner', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      sources={{
+        checked: '2026-11-16',
+        items: [
+          { publisher: 'Drivkraft Danmark', title: 'Benzin (kr./liter)', href: 'https://www.drivkraftdanmark.dk/priser/benzin-95-oktan/', note: 'Listepris for benzin 95 oktan, 17,39 kr. pr. liter den 6. november 2026' },
+          { publisher: 'Toldstyrelsen', title: 'Rejser inden for EU', href: 'https://toldst.dk/borger/rejser/rejser-inden-for-eu', note: 'Mængdegrænser for alkohol og tobak til eget brug fra et andet EU-land' },
+          { publisher: 'Altid Mad', title: MAD_REPORT_LABEL, href: `https://www.altidhjem.dk${MAD_REPORT_HREF}`, note: 'Den samme ugekurv med 23 varer til 2 voksne og 2 teenagere hos 13 kæder. Genereret 21. september 2026' },
+        ],
+      }}
+      related={['/billigste-supermarked', '/spar-penge-paa-dagligvarer', '/madbudget']}
     >
       {/* The calculator sat right under the intro on altidmad.dk, before the first heading. */}
       <GuideFigure tone="lavender" caption="Regn brændstof og break-even ud, før I kører mod grænsen. Intet gemmes.">
@@ -159,6 +169,7 @@ export default function GraensehandelBeregner() {
         <p>
           Altid Mad er en del af Altid Hjem-appen, som samler hjemmets faste udgifter med ét overblik og ét login. Appen er gratis i App Store og Google Play. Holdet står også bag Altid Energi, Danmarks første gebyrfrie energiselskab.
         </p>
+        <GuideStores />
       </section>
     </Guide>
   )

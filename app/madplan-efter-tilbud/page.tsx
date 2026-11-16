@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import MadplanMockup from '@/components/mad/MadplanMockup'
 import { MAD_GUIDE_CTA, MAD_IN_APP, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
 
 export const metadata: Metadata = {
   title: 'Madplan efter tilbud, spar på ugens mad | Altid Hjem',
@@ -76,13 +76,21 @@ export default function MadplanEfterTilbud() {
       }
       meta={
         <>
-          Opdateret: september 2026 · Kilde: <a href={MAD_REPORT_HREF}>{MAD_REPORT_LABEL}</a>
+          Kilde: <a href={MAD_REPORT_HREF}>{MAD_REPORT_LABEL}</a>
         </>
       }
       answer={{ label: 'Hver vare købt billigst', value: '599,81', unit: 'kr. om ugen', note: 'Det svarer til op til 37.135 kr. om året sammenlignet med den dyreste samlede kurv.' }}
       factors={{ label: 'Besparelsen afhænger af', items: ['Jeres nuværende vaner', 'Butikker', 'Valg af varer'] }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
+      page={{ path: '/madplan-efter-tilbud', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      sources={{
+        checked: '2026-11-16',
+        items: [
+          { publisher: 'Altid Mad', title: MAD_REPORT_LABEL, href: `https://www.altidhjem.dk${MAD_REPORT_HREF}`, note: 'Den samme ugekurv med 23 varer til 2 voksne og 2 teenagere hos 13 kæder. Genereret 21. september 2026' },
+        ],
+      }}
+      related={['/billigste-supermarked', '/madpakker-paa-budget', '/jul-paa-budget']}
     >
       <section>
         <h2>Begynd med tilbuddene, ikke med retterne</h2>
@@ -168,6 +176,7 @@ export default function MadplanEfterTilbud() {
         <GuideFigure tone="lavender" caption="Altid Mad læser tilbudsaviserne og bygger ugens madplan, før du handler.">
           <MadplanMockup />
         </GuideFigure>
+        <GuideStores />
       </section>
     </Guide>
   )

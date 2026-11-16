@@ -107,7 +107,7 @@ export default function FastprisEllerVariabelEl() {
       cta={{
         eyebrow: 'Elprisen time for time',
         heading: 'Hent Altid Hjem, og hold øje med elprisen',
-        subtitle: 'I appen ser I elprisen time for time, så I slipper for selv at tjekke den hver dag.',
+        subtitle: 'I appen ser I elprisen time for time.',
       }}
       page={{ path: '/fastpris-eller-variabel-el', description: metadata.description as string, published: '2026-11-16', updated: '2026-11-16' }}
       sources={{

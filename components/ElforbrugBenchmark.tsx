@@ -3,19 +3,15 @@
 import { CARD_BORDER, CARD_SHADOW, CardHeader, FOREST, HAIRLINE, ON_FOREST_MUTED, SAGE, useMockupStart } from '@/components/seo/hjemKit'
 
 /**
- * Animated benchmark card for /gennemsnitligt-elforbrug: typical yearly
- * electricity consumption per household type, bars growing into view.
- * Figures are the verified 2026 guidance levels (Energistyrelsen and the
- * el companies' own statistics), excluding EVs and electric heating —
- * exactly the numbers used in the page copy, nothing else.
+ * Animated benchmark card for /gennemsnitligt-elforbrug: typical yearly electricity consumption per
+ * household type, bars growing into view. The figures are the ones the page cites: FDM's
+ * Energistyrelsen-based levels (flat 80 m2 with 2 people, house 150 m2 with 2 people) and
+ * Bolius's 4.500 kWh for 2 adults and 2 children in 150 m2. Excluding EVs and electric heating.
  */
 
 const ROWS: { label: string; range: string; mid: number }[] = [
-  { label: 'Lejlighed, 1 person', range: '1.500-2.000 kWh', mid: 1750 },
-  { label: 'Lejlighed, 2 personer', range: 'ca. 2.100 kWh', mid: 2100 },
-  { label: 'Familielejlighed', range: 'ca. 2.600 kWh', mid: 2600 },
-  { label: 'Hus, 2 personer', range: 'ca. 3.700 kWh', mid: 3700 },
-  { label: 'Familie på 4 i hus', range: '4.500-5.000 kWh', mid: 4750 },
+  { label: 'Lejlighed 80 m², 2 personer', range: 'ca. 2.080 kWh', mid: 2080 },
+  { label: 'Hus 150 m², 2 personer', range: 'ca. 3.679 kWh', mid: 3679 },
 ]
 const MAX = Math.max(...ROWS.map(r => r.mid))
 
@@ -70,7 +66,7 @@ export default function ElforbrugBenchmark() {
             Familie i hus, vejledende niveau
           </p>
           <p className="font-bold text-[17px] leading-tight text-white">
-            <span style={{ color: SAGE }}>4.500-5.000 kWh</span> om året
+            <span style={{ color: SAGE }}>ca. 4.500 kWh</span> om året
           </p>
         </div>
         <span className="shrink-0 font-semibold text-[11px] px-2 py-1" style={{ borderRadius: 8, background: SAGE, color: FOREST }}>
@@ -79,7 +75,7 @@ export default function ElforbrugBenchmark() {
       </div>
 
       <p className="text-[11px] mt-3 leading-relaxed" style={{ color: 'rgba(26,61,34,0.55)' }}>
-        Vejledende 2026-niveauer fra Energistyrelsen og elselskaber, uden elbil og elvarme.
+        Niveauer fra FDM og Bolius, begge på baggrund af Energistyrelsens tal. Uden elbil og elvarme.
       </p>
     </div>
   )

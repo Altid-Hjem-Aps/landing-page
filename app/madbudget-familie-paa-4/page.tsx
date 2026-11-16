@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import MadbudgetBenchmark from '@/components/mad/MadbudgetBenchmark'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
-import Guide, { GuideFigure, GuideLink as A, type GuideFaq } from '@/components/site/Guide'
+import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
 
 // Moved from altidmad.dk/madbudget-familie-paa-4 (16 Nov 2026) with the text word for word.
 export const metadata: Metadata = {
@@ -83,7 +83,7 @@ export default function MadbudgetFamiliePaa4() {
       }
       meta={
         <>
-          Opdateret: september 2026 · Kilde: Danmarks Statistik, Forbrugsundersøgelsen 2024 · Kilde:{' '}
+          Kilde: Danmarks Statistik, Forbrugsundersøgelsen 2024 · Kilde:{' '}
           <a href={MAD_REPORT_HREF}>
             {MAD_REPORT_LABEL}
           </a>
@@ -98,6 +98,15 @@ export default function MadbudgetFamiliePaa4() {
       factors={{ label: 'Det påvirker budgettet', items: ['Børnenes alder', 'Familiens appetit', 'Madpakker', 'Valg af supermarked'] }}
       faq={FAQ}
       cta={MAD_GUIDE_CTA}
+      page={{ path: '/madbudget-familie-paa-4', description: metadata.description as string, published: '2026-07-26', updated: '2026-11-16' }}
+      sources={{
+        checked: '2026-11-16',
+        items: [
+          { publisher: 'Danmarks Statistik', title: 'Forbrugsundersøgelsen, tabel FU13: Forbrug efter husstand', href: 'https://www.statistikbanken.dk/FU13', note: 'Fødevarer og ikke-alkoholiske drikkevarer, løbende priser, 2024. Månedsbeløb er egne beregninger på baggrund af data fra Danmarks Statistik (årsbeløb delt med 12)' },
+          { publisher: 'Altid Mad', title: MAD_REPORT_LABEL, href: `https://www.altidhjem.dk${MAD_REPORT_HREF}`, note: 'Den samme ugekurv med 23 varer til 2 voksne og 2 teenagere hos 13 kæder. Genereret 21. september 2026. Månedsbeløb og de 67,9 pct. er egne beregninger på baggrund af rapportens ugepriser' },
+        ],
+      }}
+      related={['/madbudget', '/mad-for-3000-om-maaneden', '/madpakker-paa-budget']}
     >
       <section>
         <h2>Hvad er et normalt madbudget for 4 personer?</h2>
@@ -184,6 +193,7 @@ export default function MadbudgetFamiliePaa4() {
         <p>
           Målet er at gøre prisbevidste valg lettere uden at sende familien rundt efter hvert enkelt tilbud. Altid Mad er en del af Altid Hjem-appen, som samler hjemmets faste udgifter med ét overblik og ét login. Appen er gratis i App Store og Google Play. Teamet står også bag Altid Energi, Danmarks første gebyrfrie energiselskab.
         </p>
+        <GuideStores />
       </section>
     </Guide>
   )

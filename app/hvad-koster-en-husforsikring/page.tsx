@@ -95,14 +95,7 @@ export default function HvadKosterEnHusforsikring() {
           <p>Prisen afhænger især af husets beliggenhed, type, størrelse og byggeår, af jeres selvrisiko og af den dækning, I vælger.</p>
         </>
       }
-      meta={
-        <>
-          Få jeres egen pris på{' '}
-          <a href={FORSIKRINGSGUIDEN} target="_blank" rel="noopener noreferrer">
-            Forsikringsguiden.dk
-          </a>
-        </>
-      }
+      meta={<>Kilde: Forbrugerrådet Tænk</>}
       answer={{
         label: 'Forskel mellem selskaberne',
         value: 'Op til 9.200',
