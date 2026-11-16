@@ -30,6 +30,7 @@ import GennemsnitligtElforbrug, { metadata as elforbrugMeta } from '@/app/gennem
 import BedsteBudgetApp, { metadata as budgetappMeta } from '@/app/bedste-budget-app/page'
 import SkiftForsikringsselskab, { metadata as skiftMeta } from '@/app/skift-forsikringsselskab/page'
 import HvadKosterForsikring, { metadata as forsikringMeta } from '@/app/hvad-koster-forsikring/page'
+import HvorforErElregningenHoej, { metadata as elregningMeta } from '@/app/hvorfor-er-elregningen-hoej/page'
 
 const PAGES: [string, React.ComponentType, Metadata][] = [
   ['/billigste-mobilabonnement', BilligsteMobilabonnement, mobilMeta],
@@ -46,6 +47,7 @@ const PAGES: [string, React.ComponentType, Metadata][] = [
   ['/bedste-budget-app', BedsteBudgetApp, budgetappMeta],
   ['/skift-forsikringsselskab', SkiftForsikringsselskab, skiftMeta],
   ['/hvad-koster-forsikring', HvadKosterForsikring, forsikringMeta],
+  ['/hvorfor-er-elregningen-hoej', HvorforErElregningenHoej, elregningMeta],
 ]
 
 describe.each(PAGES)('%s', (route, Page, metadata) => {

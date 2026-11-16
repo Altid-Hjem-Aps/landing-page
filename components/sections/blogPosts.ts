@@ -245,4 +245,12 @@ export const POSTS: Post[] = [
     excerpt: 'Fiber med 300 Mbit kostede i gennemsnit 305 kr. om måneden og coax 284 kr. Se, hvad der afgør prisen, og hvor længe I må være bundet.',
     meta: '5 min læsning · 16. nov 2026',
   },
+  {
+    href: '/hvorfor-er-elregningen-hoej',
+    icon: '/services/icon-strom.svg',
+    category: 'Energi',
+    title: 'Hvorfor er min elregning så høj?',
+    excerpt: 'Elafgiften er næsten væk i 2026, så svaret ligger et andet sted: vinterens forbrug, de dyre timer om aftenen og elaftalen. Sådan finder I årsagen.',
+    meta: '6 min læsning · 17. nov 2026',
+  },
 ]

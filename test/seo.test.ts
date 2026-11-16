@@ -37,6 +37,7 @@ describe('sitemap.xml', () => {
       'https://www.altidhjem.dk/billigste-elselskab',
       'https://www.altidhjem.dk/opsig-abonnementer',
       'https://www.altidhjem.dk/gennemsnitligt-elforbrug',
+      'https://www.altidhjem.dk/hvorfor-er-elregningen-hoej',
       'https://www.altidhjem.dk/bedste-budget-app',
       'https://www.altidhjem.dk/skift-forsikringsselskab',
       'https://www.altidhjem.dk/madbudget',

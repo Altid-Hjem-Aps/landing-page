@@ -38,6 +38,7 @@ export const GUIDE_PATHS = [
   '/hvad-koster-en-tyverialarm',
   '/hvad-koster-forsikring',
   '/hvad-koster-indboforsikring',
+  '/hvorfor-er-elregningen-hoej',
   '/hvornar-er-strommen-billigst',
   '/jul-paa-budget',
   '/mad-for-3000-om-maaneden',

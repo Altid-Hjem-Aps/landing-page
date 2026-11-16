@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/billigste-elselskab`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/opsig-abonnementer`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/gennemsnitligt-elforbrug`, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${base}/hvorfor-er-elregningen-hoej`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/bedste-budget-app`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/skift-forsikringsselskab`, changeFrequency: 'monthly', priority: 0.6 },
     // Altid Mad's guides, moved from altidmad.dk on 16 Nov 2026 with the same paths and priorities.
