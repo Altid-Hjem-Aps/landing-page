@@ -262,7 +262,7 @@ describe('the page', () => {
   it('shows the stars and the user count under the pills, the rating only in the stars\' name', async () => {
     const { container } = render(await Home())
     const rating = container.querySelector('#top .h-rating') as HTMLElement
-    expect(rating).toHaveTextContent(/^\+4\.700 danskere har allerede appen$/)
+    expect(rating).toHaveTextContent(/^4\.700\+ danskere har allerede appen$/)
     const stars = within(rating).getByRole('img', { name: '4,3 ud af 5 stjerner i App Store' })
     expect(stars).toHaveClass('h-stars')
     expect(stars.style.getPropertyValue('--fill')).toBe('90%')
