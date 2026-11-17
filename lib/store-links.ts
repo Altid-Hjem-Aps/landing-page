@@ -79,3 +79,12 @@ export function storeLink(store: Store, guide?: string | null): string {
   const referrer = `utm_source=${SITE}&utm_campaign=${campaign}`
   return `${PLAY_STORE_URL}&referrer=${encodeURIComponent(referrer)}`
 }
+
+/** The Play listing carrying a partner invite in the install referrer (`invite_token=<token>`),
+ * which the app reads on its first launch and opens the invite with. No campaign: the referrer
+ * holds only the invite. The token comes from lib/invite-token.ts, which keeps only a link
+ * token's shape; without one, the plain listing. */
+export function invitePlayLink(inviteToken: string | null): string {
+  if (inviteToken === null) return PLAY_STORE_URL
+  return `${PLAY_STORE_URL}&referrer=${encodeURIComponent(`invite_token=${inviteToken}`)}`
+}
