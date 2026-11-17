@@ -352,6 +352,23 @@ request (Thor, 16 Nov 2026). Every candidate must pass section 2 (a pain point p
 close to a service, planning intent, not batterioglader.dk's ground, not already a page; a closer
 variant of a live page is a fix, not a new page).
 
+The run finds its own candidates before it ranks them (Thor, 17 Nov 2026: section 9 is one source,
+never the only one):
+
+1. **Search Console:** every query in the run issue's figures (guide queries and the other pages'
+   queries).
+2. **Competitors' questions:** for each service with guides (Energi, Forsikring and Økonomi; never
+   Mad, whose copy Thor and Alex own), up to 4 seed searches: the title questions of its live
+   guides and of its section 9 topics, chosen by season (section 2), then by closeness to the
+   service. Research the top 5 results of each seed (below) and
+   list every question they answer as a heading or a FAQ question. A question at least 3 of those
+   5 results answer, which no live guide answers by the word rule below (applied against every
+   live guide's title, H2s and FAQ questions), is a candidate of kind 2.
+3. **Section 9 topics**, approved or waiting.
+
+The plan report lists every candidate found, its source and its evidence kind, and why it ranked
+where it did, so a person can see the run looked beyond section 9.
+
 A new guide needs evidence of search demand. In an SEO-kørsel that is one of these, and it is the
 evidence section 2 asks for:
 
@@ -407,6 +424,10 @@ A fix follows its to-do kind:
 | `page2` (a query on positions 11 to 20) | Add a section with the query's question as its H2, or a question to the FAQ, that answers the query |
 | `notInGoogle` | Not a writing fix; not picked |
 
+Linking a new guide from 2 or 3 live guides (section 4, step 5: the new page in their `related`)
+is part of the new guide, not a fix: it does not use the fix budget, and it changes nothing else on
+those pages.
+
 A fix keeps every rule of sections 3 to 6 and the page's address. It sets the guide's `updated`
 date in `lib/guides.ts` to the run's date. It changes "Senest tjekket" (`sources.checked`) only
 when the run read the sources again. A guide that is one of the 25 from before 17 Nov 2026 stays
@@ -415,7 +436,7 @@ write it by part 8 anyway.
 
 ### Researching the top results (plan stage)
 
-For each candidate question (the new guide's and each `page2` fix's query):
+For each seed search and each candidate question (the new guide's and each `page2` fix's query):
 
 1. Search the question in Danish with WebSearch. Take the top 5 results that are articles (not
    ads, videos, shops' product lists or Google's own pages).
