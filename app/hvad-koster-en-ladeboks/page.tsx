@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import LadeboksCalculator from '@/components/LadeboksCalculator'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A, GuideSteps } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
@@ -17,7 +18,9 @@ export const metadata: Metadata = {
       '7.500 til 13.000 kroner koster en privat ladeboks typisk med installation, ifølge Konkurrence- og Forbrugerstyrelsen. Gravearbejde kan koste ekstra.',
     url: 'https://www.altidhjem.dk/hvad-koster-en-ladeboks',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const KFST = 'https://kfst.dk/media/qpeh34wc/20231214-konkurrencen-paa-markedet-for-opladning-af-elbiler-a.pdf'

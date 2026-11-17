@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import MobilOverblikMockup from '@/components/MobilOverblikMockup'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
@@ -17,7 +18,9 @@ export const metadata: Metadata = {
       '19 kr. om måneden var den laveste normalpris på billigsteabonnement.dk 16. november 2026, og fri tale startede ved 35 kr. Se, hvad husstanden bør tjekke.',
     url: 'https://www.altidhjem.dk/billigste-mobilabonnement',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const PRISSIDE = 'https://billigsteabonnement.dk/mobilabonnementer'

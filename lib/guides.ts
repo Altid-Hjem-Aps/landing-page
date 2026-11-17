@@ -24,6 +24,7 @@ export const GUIDES: Record<`/${GuideSlug}`, GuideFacts> = {
   '/hvad-koster-en-tyverialarm': { title: 'Hvad koster en tyverialarm?', published: '2026-07-27', updated: '2026-11-16' },
   '/hvad-koster-forsikring': { title: 'Hvad koster forsikring i Danmark?', published: '2026-06-17', updated: '2026-11-16' },
   '/hvad-koster-indboforsikring': { title: 'Hvad koster en indboforsikring?', published: '2026-07-27', updated: '2026-11-16' },
+  '/hvorfor-er-elregningen-hoej': { title: 'Hvorfor er min elregning så høj?', published: '2026-11-17', updated: '2026-11-17' },
   '/hvornar-er-strommen-billigst': { title: 'Hvornår er strømmen billigst?', published: '2026-06-25', updated: '2026-11-16' },
   '/jul-paa-budget': { title: 'Jul på budget uden at spare på hyggen', published: '2026-07-26', updated: '2026-11-16' },
   '/mad-for-3000-om-maaneden': { title: 'Kan en familie få mad for 3.000 kr. om måneden?', published: '2026-07-26', updated: '2026-11-16' },

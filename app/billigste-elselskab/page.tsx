@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import Guide, { type GuideFaq, GuideApp, GuideLink as A, GuideSteps } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
 
@@ -16,7 +17,9 @@ export const metadata: Metadata = {
       'Det afhænger af jeres forbrug. Sammenlign det, elselskabet selv bestemmer: tillægget til spotprisen, abonnement og gebyrer, som Forbrugerrådet Tænk gør.',
     url: 'https://www.altidhjem.dk/billigste-elselskab',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const TAENK = 'https://taenk.dk/test/elselskaber'

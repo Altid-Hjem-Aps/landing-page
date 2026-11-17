@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import BudgetAppSammenligning from '@/components/BudgetAppSammenligning'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
@@ -17,7 +18,9 @@ export const metadata: Metadata = {
       'En budget-app viser, hvor pengene er gået. Et overblik over de faste udgifter viser, hvad der skal trækkes. Valget afhænger af, hvad I vil løse.',
     url: 'https://www.altidhjem.dk/bedste-budget-app',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const FT_TPP = 'https://www.finanstilsynet.dk/finansielle-temaer/betalingstjenester-og-e-penge/orientering-om-tredjepartsudbydere'

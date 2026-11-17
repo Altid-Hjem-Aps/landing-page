@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
 import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideStores } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
@@ -18,7 +19,9 @@ export const metadata: Metadata = {
       '21.227 kroner brugte en gennemsnitlig dansk husstand på forsikringer i 2024, ifølge tal fra Danmarks Statistik. Se, hvad de enkelte forsikringer koster.',
     url: 'https://www.altidhjem.dk/hvad-koster-forsikring',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const DST_FU = 'https://www.statistikbanken.dk/FU12'

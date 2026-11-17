@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import AbonnementMockup from '@/components/AbonnementMockup'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
@@ -17,7 +18,9 @@ export const metadata: Metadata = {
       '5 måneder efter, at I har tegnet et løbende abonnement, kan I opsige det med 1 måneds varsel til udgangen af en måned. Sådan finder og opsiger I dem.',
     url: 'https://www.altidhjem.dk/opsig-abonnementer',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const LOV = 'https://www.retsinformation.dk/eli/lta/2025/1184'

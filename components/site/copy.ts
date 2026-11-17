@@ -25,7 +25,7 @@ export const NAV = {
 } as const
 
 // How many have the app is read live (lib/user-count.ts): {hundreds} is the count rounded down
-// to the hundred (+4.700), {thousands} the whole thousand below it (over 4.000, over 5.000 from
+// to the hundred (4.700+), {thousands} the whole thousand below it (over 4.000, over 5.000 from
 // 5.001). The hero, the reviews heading, the leave popup and the offer popup fill them in.
 
 export const HERO = {
@@ -34,7 +34,7 @@ export const HERO = {
   line: 'Hent Altid Hjem gratis i dag, og få\noverblik over jeres mad, strøm,\nforsikring og økonomi.',
   // The line beside the stars. The stars' own name for screen readers carries the rating;
   // {average} comes from the App Store (AppRating.tsx).
-  rating: '+{hundreds} danskere har allerede appen',
+  rating: '{hundreds}+ danskere har allerede appen',
   ratingStars: '{average} ud af 5 stjerner i App Store',
   // The single button phones see instead of the two store pills (GetAppButton).
   getApp: 'Hent appen gratis',
@@ -420,7 +420,7 @@ export const OFFER_POPUP = {
   title: 'Altid Energi: Første måned gratis med appen',
   body: 'Hent Altid Hjem, og bliv Altid Energi-kunde direkte i appen med gebyrfri strøm til indkøbspris.',
   // Under the store button (Thor 15/11), {hundreds} as in the hero's rating line.
-  proof: '+{hundreds} danskere har allerede appen',
+  proof: '{hundreds}+ danskere har allerede appen',
 } as const
 
 export const LEAVE = {
