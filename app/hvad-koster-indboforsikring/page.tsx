@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
 import IndboTjekMockup from '@/components/IndboTjekMockup'
 import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideSteps, GuideStores } from '@/components/site/Guide'
@@ -19,7 +20,9 @@ export const metadata: Metadata = {
       '1.700 til 3.000 kroner om året koster en indboforsikring typisk for en gennemsnitsfamilie, ifølge Forbrugerrådet Tænk. Se, hvad der afgør prisen.',
     url: 'https://www.altidhjem.dk/hvad-koster-indboforsikring',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const TAENK_GUIDE = 'https://taenk.dk/test-og-forbrugerliv/privatoekonomi-og-aftaler/forsikring/indboforsikring-bedst-billigst'

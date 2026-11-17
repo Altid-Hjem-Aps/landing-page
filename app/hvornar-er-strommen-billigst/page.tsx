@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import { getElpriser, getNetselskaber, currentCopenhagenHour } from '@/lib/elpriser'
 import ElprisChart from '@/components/ElprisChart'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A, GuideSteps } from '@/components/site/Guide'
@@ -20,7 +21,9 @@ export const metadata: Metadata = {
     type: 'article',
     locale: 'da_DK',
     siteName: 'Altid Hjem',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 // Day-ahead-priserne ændrer sig én gang i døgnet (~kl. 13): 30 min cache er

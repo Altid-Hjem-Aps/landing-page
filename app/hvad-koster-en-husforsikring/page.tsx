@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import ForsikringHusstandMockup from '@/components/ForsikringHusstandMockup'
 import Guide, { type GuideFaq, GuideFigure, GuideLink as A, GuideSteps, GuideStores } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
@@ -17,7 +18,9 @@ export const metadata: Metadata = {
       'Forskellen mellem den billigste og den dyreste husforsikring kan være op til 9.200 kr. om året. Se, hvad der afgør prisen, og hvordan I sammenligner.',
     url: 'https://www.altidhjem.dk/hvad-koster-en-husforsikring',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const TAENK_HUB = 'https://taenk.dk/test/husforsikringer'

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import Guide, { type GuideFaq, GuideApp, GuideLink as A, GuideSteps } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
 
@@ -17,7 +18,9 @@ export const metadata: Metadata = {
       'Elafgiften er kun 0,8 øre pr. kWh i 2026, ifølge Skattestyrelsen. En høj elregning skyldes oftere vinterens forbrug, de dyre timer og elaftalen.',
     url: 'https://www.altidhjem.dk/hvorfor-er-elregningen-hoej',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const SPAR_REGNING = 'https://sparenergi.dk/privat/forstaa-din-elregning'

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import Guide, { type GuideFaq, GuideApp, GuideLink as A, GuideSteps } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
 
@@ -15,7 +16,9 @@ export const metadata: Metadata = {
       'Fiber med 300 Mbit/s kostede i gennemsnit 305 kr. om måneden i januar 2024 og coax 284 kr., ifølge Erhvervsstyrelsen. Se, hvad der afgør prisen.',
     url: 'https://www.altidhjem.dk/hvad-koster-bredbaand',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const EST = 'https://erhvervsstyrelsen.dk/sites/default/files/2025-08/Bilag-1-udkast-produktmarkedsafgraensning-marked-1-juli2025_WA.pdf'

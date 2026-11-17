@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import TreTusindMockup from '@/components/mad/TreTusindMockup'
 import { MAD_GUIDE_CTA, MAD_IN_APP, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
 import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
@@ -16,7 +17,9 @@ export const metadata: Metadata = {
       'Kan en familie få mad for 3.000 kr. om måneden? Se det ærlige regnestykke og konkrete greb, der hjælper jer tættere på. Få overblik hos Altid Mad.',
     url: 'https://www.altidhjem.dk/mad-for-3000-om-maaneden',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 // FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).

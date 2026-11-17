@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import Guide, { type GuideFaq, GuideApp, GuideLink as A, GuideSteps } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
 
@@ -16,7 +17,9 @@ export const metadata: Metadata = {
       '6.239 kroner kostede en kaskoforsikring i gennemsnit i 2024, ifølge tal som FDM har offentliggjort. Se, hvad der afgør prisen på jeres bilforsikring.',
     url: 'https://www.altidhjem.dk/hvad-koster-en-bilforsikring',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const FDM_2023 = 'https://fdm.dk/nyheder/bilist/2023-08-spar-mest-paa-bilforsikring-er-elbil-eller-benzinbil-billigst'

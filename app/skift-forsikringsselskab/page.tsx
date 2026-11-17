@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import SkiftTjeklisteMockup from '@/components/SkiftTjeklisteMockup'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A, GuideSteps } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
@@ -17,7 +18,9 @@ export const metadata: Metadata = {
       '30 dages varsel er det normale, når I opsiger en forsikring, ifølge Forbrugerrådet Tænk. Se rækkefølgen, så I ikke står uden dækning, når I skifter.',
     url: 'https://www.altidhjem.dk/skift-forsikringsselskab',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const TAENK_SKIFT = 'https://taenk.dk/test-og-forbrugerliv/privatoekonomi-og-aftaler/forsikring/saadan-finder-du-den-bedste-og-billigste'

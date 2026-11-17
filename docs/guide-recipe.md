@@ -89,7 +89,9 @@ from `page` (and `sources` for the citations).
 the rest of that page, which predates this recipe: its description is 187 characters and it has 8
 questions): `title` ending
 ` | Altid Hjem`, `description`, `alternates.canonical` and `openGraph.url` as the absolute www
-address, `openGraph.type: 'article'`.
+address, `openGraph.type: 'article'`, `openGraph.images: [SITE_IMAGE]` and
+`twitter: { card: 'summary_large_image', images: [SITE_IMAGE] }` from `lib/site-image.ts` (a page's
+`openGraph` replaces the layout's whole, so without `images` a shared link has no picture; test/site-image.test.ts checks it).
 
 ## 4. Building it, step by step
 
