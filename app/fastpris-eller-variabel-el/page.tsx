@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import Guide, { type GuideFaq, GuideApp, GuideLink as A, GuideSteps } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
 
@@ -16,7 +17,9 @@ export const metadata: Metadata = {
       'For de fleste er en variabel elaftale billigst over tid, vurderer Forbrugerrådet Tænk. Se forskellen, og hvad det koster at komme ud af en fastpris.',
     url: 'https://www.altidhjem.dk/fastpris-eller-variabel-el',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const FST = 'https://forsyningstilsynet.dk/Media/638387451314241652/2022-elprisunders%C3%B8gelse.PDF'

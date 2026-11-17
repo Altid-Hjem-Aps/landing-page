@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import SparVanerMockup from '@/components/mad/SparVanerMockup'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
 import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
@@ -15,7 +16,9 @@ export const metadata: Metadata = {
       'Spar penge på dagligvarer med madplan, indkøbsliste og gode butiksvaner. Se dokumenterede prisforskelle fra vores pristjek, og kom enkelt i gang i denne uge.',
     url: 'https://www.altidhjem.dk/spar-penge-paa-dagligvarer',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 // FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import MadbudgetBenchmark from '@/components/mad/MadbudgetBenchmark'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
 import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
@@ -16,7 +17,9 @@ export const metadata: Metadata = {
       'Se, hvad et normalt madbudget for en familie på 4 er, hvorfor det varierer, og hvordan I får pengene til at række længere. Få konkrete råd.',
     url: 'https://www.altidhjem.dk/madbudget-familie-paa-4',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 // FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).

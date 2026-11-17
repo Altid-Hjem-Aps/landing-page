@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import PristjekMockup from '@/components/mad/PristjekMockup'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
 import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
@@ -15,7 +16,9 @@ export const metadata: Metadata = {
       'Se hvilket supermarked der var billigst i vores pristjek, hvad en familie kan spare, og hvordan du selv handler billigere. Læs analysen hos Altid Mad.',
     url: 'https://www.altidhjem.dk/billigste-supermarked',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 // FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).

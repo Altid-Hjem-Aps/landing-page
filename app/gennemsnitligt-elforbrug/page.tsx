@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import ElforbrugBenchmark from '@/components/ElforbrugBenchmark'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A, GuideSteps } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
@@ -17,7 +18,9 @@ export const metadata: Metadata = {
       '4.500 kWh om året bruger en familie med to voksne og to børn i et hus på 150 m², ifølge Energistyrelsen. Elbil og elvarme løfter forbruget markant.',
     url: 'https://www.altidhjem.dk/gennemsnitligt-elforbrug',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const BOLIUS = 'https://www.bolius.dk/saa-meget-el-vand-og-varme-bruger-en-gennemsnitsfamilie-279'

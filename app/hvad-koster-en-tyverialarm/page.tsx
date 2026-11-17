@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import AlarmStatusMockup from '@/components/AlarmStatusMockup'
 import Guide, { type GuideFaq, GuideApp, GuideFigure, GuideLink as A } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
@@ -18,7 +19,9 @@ export const metadata: Metadata = {
       '3.000 til 7.000 kroner koster en tyverialarm til et hus typisk uden abonnement, ifølge Handyhand. Se, hvad overvågning og installation koster oveni.',
     url: 'https://www.altidhjem.dk/hvad-koster-en-tyverialarm',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const HANDYHAND = 'https://handyhand.dk/alarm/installation-tyverialarm/pris'

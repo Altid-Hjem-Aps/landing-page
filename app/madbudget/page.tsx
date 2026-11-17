@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import MadbudgetBenchmark from '@/components/mad/MadbudgetBenchmark'
 import MadbudgetSammenligningMockup from '@/components/mad/MadbudgetSammenligningMockup'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
@@ -19,7 +20,9 @@ export const metadata: Metadata = {
       'Se, hvad et normalt madbudget er for familier og andre husstande, og få konkrete råd til at lægge et budget, der holder. Kom godt i gang.',
     url: 'https://www.altidhjem.dk/madbudget',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 // FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).

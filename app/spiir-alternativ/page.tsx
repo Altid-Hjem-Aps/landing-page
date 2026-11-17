@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import Guide, { type GuideFaq, GuideApp, GuideLink as A } from '@/components/site/Guide'
 import { GUIDES } from '@/lib/guides'
 
@@ -16,7 +17,9 @@ export const metadata: Metadata = {
       '8. juni 2026 lukkede Spiir. Brugte du Spiir til at holde styr på faste udgifter, er Altid Hjem et alternativ, men ikke en klassisk budgetapp.',
     url: 'https://www.altidhjem.dk/spiir-alternativ',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 const SPIIR = 'https://www.spiir.dk/'

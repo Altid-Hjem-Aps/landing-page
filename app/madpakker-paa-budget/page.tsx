@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_IMAGE } from '@/lib/site-image'
 import MadpakkeMockup from '@/components/mad/MadpakkeMockup'
 import { MAD_GUIDE_CTA, MAD_REPORT_HREF, MAD_REPORT_LABEL } from '@/components/mad/madGuide'
 import Guide, { GuideFigure, GuideLink as A, GuideStores, type GuideFaq } from '@/components/site/Guide'
@@ -17,7 +18,9 @@ export const metadata: Metadata = {
       'Få idéer til madpakker på budget, en enkel ugeplan og råd til billigere indkøb ved skolestart. Læs guiden, og kom godt i gang.',
     url: 'https://www.altidhjem.dk/madpakker-paa-budget',
     type: 'article',
+    images: [SITE_IMAGE],
   },
+  twitter: { card: 'summary_large_image', images: [SITE_IMAGE] },
 }
 
 // FAQ bruges to steder: synligt på siden og som FAQPage-schema (rich results).
