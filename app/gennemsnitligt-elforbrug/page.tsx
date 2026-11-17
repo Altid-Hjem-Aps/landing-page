@@ -27,6 +27,10 @@ const DST = 'https://www.dst.dk/analyser/56579-husstandenes-elforbrug'
 const ELOVERBLIK = 'https://energinet.dk/media/mcejb3i4/eloverblik-adgang-til-egne-data-via-computer.pdf'
 const SPAR_REGNING = 'https://sparenergi.dk/privat/forstaa-din-elregning'
 const SPAR_ELPRISER = 'https://sparenergi.dk/privat/elpriser'
+const SPAR_KOEL = 'https://sparenergi.dk/privat/spar-energi-i-hverdagen/spar-energi-paa-koel-og-frys'
+const SPAR_LYS = 'https://sparenergi.dk/privat/spar-energi-i-hverdagen/spar-energi-paa-belysning'
+const SPAR_ELEKTRONIK = 'https://sparenergi.dk/privat/spar-energi-i-hverdagen/spar-energi-paa-computere-og-anden-elektronik'
+const SPAR_VASK = 'https://sparenergi.dk/privat/spar-energi-i-hverdagen/spar-energi-naar-du-vasker-toej'
 const SKAT = 'https://skat.dk/erhverv/afgifter-paa-varer-og-ydelser-punktafgifter/nyhedsbrev-afgifter/midlertidig-nedsaettelse-af-elafgiften-i-2026-og-2027'
 
 // FAQ bruges to steder: synligt på siden og som FAQPage-schema.
@@ -120,9 +124,13 @@ export default function GennemsnitligtElforbrug() {
           { publisher: 'Sparenergi', title: 'Forstå din elregning, og få hjælp til at skifte elselskab', href: SPAR_REGNING, note: 'Opdateret 8. januar 2026' },
           { publisher: 'Sparenergi', title: 'Elpriser time for time', href: SPAR_ELPRISER, note: 'Opdateret 8. januar 2025' },
           { publisher: 'Skattestyrelsen', title: 'Midlertidig nedsættelse af elafgiften i 2026 og 2027', href: SKAT, note: '1. januar 2026' },
+          { publisher: 'Sparenergi', title: 'Spar energi på køl og frys', href: SPAR_KOEL },
+          { publisher: 'Sparenergi', title: 'Spar energi på belysning', href: SPAR_LYS },
+          { publisher: 'Sparenergi', title: 'Spar energi på computere og anden elektronik', href: SPAR_ELEKTRONIK },
+          { publisher: 'Sparenergi', title: 'Spar energi når du vasker tøj', href: SPAR_VASK },
         ],
       }}
-      related={['/fastpris-eller-variabel-el', '/billigste-elselskab', '/hvad-koster-en-ladeboks']}
+      related={['/fastpris-eller-variabel-el', '/billigste-elselskab', '/hvorfor-er-elregningen-hoej']}
     >
       <section>
         <h2>Hvor meget strøm bruger en familie på fire?</h2>
@@ -180,6 +188,23 @@ export default function GennemsnitligtElforbrug() {
         </p>
         <p>
           Danmarks Statistik skriver også, at en gruppe husstande har et væsentligt højere forbrug end den typiske husstand.
+        </p>
+      </section>
+      <section>
+        <h2>Hvordan bruger I mindre strøm?</h2>
+        <p>
+          Start med de apparater, der kører hele tiden. Køl og frys står for ca. en femtedel af danskernes strøm, skriver <A href={SPAR_KOEL}>Sparenergi</A>. Hold 5 grader i
+          køleskabet og minus 18 grader i fryseren, og afrim fryseren, når der sætter sig rim.
+        </p>
+        <p>
+          Skift gløde- og halogenpærer til LED-pærer med et godt energimærke, og sluk lyset i tomme rum, råder <A href={SPAR_LYS}>Sparenergi</A>. Computere og anden
+          elektronik bruger stadig strøm, når de står på vågeblus, så sluk dem helt, når de ikke skal bruges i længere tid, skriver{' '}
+          <A href={SPAR_ELEKTRONIK}>Sparenergi</A>.
+        </p>
+        <p>
+          Fyld vaskemaskinen og opvaskemaskinen helt op, vask tøjet ved 20 eller 30 grader, og brug eco-programmet. Sparenergi råder også til at lade være med at{' '}
+          <A href={SPAR_VASK}>vaske mellem kl. 17 og 21</A>, hvor strømmen som regel koster mest. Er regningen steget, kan I læse,{' '}
+          <A href="/hvorfor-er-elregningen-hoej">hvorfor elregningen er så høj</A>.
         </p>
       </section>
       <section>
