@@ -62,4 +62,16 @@ describe('partner invitation token privacy', () => {
     expect(window.location.hash).toBe('#questions')
     expect(window.__altiPartnerInviteFallback).toBeUndefined()
   })
+
+  it('keeps a link token in memory only, for the Play link and the QR code', async () => {
+    const token = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQ'
+    window.history.replaceState(null, '', `/invitation#${token}`)
+
+    await import('@/instrumentation-client')
+    const { rememberedInviteToken } = await import('@/lib/invite-token')
+
+    expect(rememberedInviteToken()).toBe(token)
+    expect(window.location.href).not.toContain(token)
+    expect(JSON.stringify({ ...window.localStorage, ...window.sessionStorage })).not.toContain(token)
+  })
 })

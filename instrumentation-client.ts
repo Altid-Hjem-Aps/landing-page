@@ -1,5 +1,6 @@
 import { readCookieChoice } from '@/lib/cookie-consent'
 import { startAnalytics } from '@/lib/analytics'
+import { rememberInviteToken } from '@/lib/invite-token'
 
 declare global {
   interface Window {
@@ -7,11 +8,13 @@ declare global {
   }
 }
 
-// Invitation tokens arrive in the URL fragment. Keep only the fact that this
-// was an invitation, then remove the fragment before analytics can capture it.
+// Invitation tokens arrive in the URL fragment. Keep the fact that this was an
+// invitation, hand the token to the in-memory holder the Play link and the QR
+// code read, then remove the fragment before analytics can capture it.
 const INVITATION_PATHS = ['/inviter', '/invitation']
 if (INVITATION_PATHS.includes(window.location.pathname) && window.location.hash.length > 1) {
   window.__altiPartnerInviteFallback = true
+  rememberInviteToken(window.location.hash)
   window.history.replaceState(
     window.history.state,
     '',
