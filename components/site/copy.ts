@@ -24,9 +24,10 @@ export const NAV = {
   close: 'Luk menu',
 } as const
 
-// How many have the app is read live (lib/user-count.ts): {hundreds} is the count rounded down
-// to the hundred (4.700+), {thousands} the whole thousand below it (over 4.000, over 5.000 from
-// 5.001). The hero, the reviews heading, the leave popup and the offer popup fill them in.
+// How many have the app is read live (lib/user-count.ts) and shown in steps of 5.000: {plus} is
+// the step reached (5.000+, 10.000+ from 10.000), {over} the step below the count (over 5.000,
+// over 10.000 from 10.001). The hero, the reviews heading, the leave popup and the offer popup
+// fill them in.
 
 export const HERO = {
   title: 'Hele hjemmets økonomi i én app',
@@ -34,7 +35,7 @@ export const HERO = {
   line: 'Hent Altid Hjem gratis i dag, og få\noverblik over jeres mad, strøm,\nforsikring og økonomi.',
   // The line beside the stars. The stars' own name for screen readers carries the rating;
   // {average} comes from the App Store (AppRating.tsx).
-  rating: '{hundreds}+ danskere har allerede appen',
+  rating: '{plus}+ danskere har allerede appen',
   ratingStars: '{average} ud af 5 stjerner i App Store',
   // The single button phones see instead of the two store pills (GetAppButton).
   getApp: 'Hent appen gratis',
@@ -86,7 +87,7 @@ export const HERO = {
 export const PROOF = {
   // Apple featured the app as App of the Day in Finance (Thor, 10 Nov 2026). Apple's own English wording.
   award: { lines: ['App of the Day', 'Finance'] },
-  title: 'Hør, hvorfor over {thousands} danskere har appen',
+  title: 'Hør, hvorfor over {over} danskere har appen',
   voicesLabel: 'Udtalelser',
   voiceLabel: (i: number) => `Gå til udtalelse ${i + 1}`,
 } as const
@@ -419,13 +420,13 @@ export const ENERGI_OFFER = {
 export const OFFER_POPUP = {
   title: 'Altid Energi: Første måned gratis med appen',
   body: 'Hent Altid Hjem, og bliv Altid Energi-kunde direkte i appen med gebyrfri strøm til indkøbspris.',
-  // Under the store button (Thor 15/11), {hundreds} as in the hero's rating line.
-  proof: '{hundreds}+ danskere har allerede appen',
+  // Under the store button (Thor 15/11), {plus} as in the hero's rating line.
+  proof: '{plus}+ danskere har allerede appen',
 } as const
 
 export const LEAVE = {
   title: 'Gå ikke glip af overblikket over hjemmets økonomi',
-  proof: 'Gør som over {thousands} andre danskere',
+  proof: 'Gør som over {over} andre danskere',
   body: 'Hent Altid Hjem gratis, og få overblik over jeres mad, strøm, forsikring og økonomi.',
   free: 'Gratis at hente.',
   always: 'Altid.',

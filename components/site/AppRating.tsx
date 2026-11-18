@@ -1,5 +1,5 @@
 import { APP_STORE_ID } from '@/lib/store-links'
-import { readUserCount, usersHundreds } from '@/lib/user-count'
+import { readUserCount, usersPlus } from '@/lib/user-count'
 import { HERO } from './copy'
 
 // The app's rating in the Danish App Store, read at build and again at most once an hour.
@@ -34,7 +34,7 @@ export function RatingLine({ rating, users }: { rating: Rating; users: number })
   return (
     <p className="h-rating">
       <span className="h-stars" role="img" aria-label={ratingText(rating)} style={{ '--fill': `${(Math.max(rating.average, SHOWN_AT_LEAST) / 5) * 100}%` } as React.CSSProperties} />
-      <span className="h-rating-text">{HERO.rating.replace('{hundreds}', usersHundreds(users))}</span>
+      <span className="h-rating-text">{HERO.rating.replace('{plus}', usersPlus(users))}</span>
     </p>
   )
 }

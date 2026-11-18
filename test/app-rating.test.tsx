@@ -5,7 +5,7 @@ import AppRating, { readAppRating, ratingText } from '@/components/site/AppRatin
 // The user count has its own test (test/user-count.test.ts); here it is a fixed count.
 vi.mock('@/lib/user-count', async (original) => ({
   ...(await original<typeof import('@/lib/user-count')>()),
-  readUserCount: async () => 4741,
+  readUserCount: async () => 10000,
 }))
 
 afterEach(() => vi.unstubAllGlobals())
@@ -25,7 +25,7 @@ describe('App Store rating', () => {
   it('renders the user count, stars filled to at least 4,5 with the real rating as their name', async () => {
     answer(200, { results: [{ averageUserRating: 4.33333, userRatingCount: 6 }] })
     const { container } = render(await AppRating())
-    expect(container).toHaveTextContent(/^4\.700\+ danskere har allerede appen$/)
+    expect(container).toHaveTextContent(/^10\.000\+ danskere har allerede appen$/)
     const stars = container.querySelector('.h-stars') as HTMLElement
     expect(stars).toHaveAttribute('role', 'img')
     expect(stars).toHaveAccessibleName('4,3 ud af 5 stjerner i App Store')

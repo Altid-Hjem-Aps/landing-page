@@ -12,7 +12,7 @@ import { useMotionPrefs } from './MotionPrefs'
 // this browser (localStorage) and put back on every load; a small panel counts them, copies them
 // as a plain list (each with its copy.ts key, the old text and the new), undoes them all, shows
 // the originals for comparison, marks the texts with line breaks, and opens the leave popup.
-// Texts with a placeholder ({hundreds}, {thousands}, {average}) show the placeholder. Moving
+// Texts with a placeholder ({plus}, {over}, {average}) show the placeholder. Moving
 // pieces are paused, every FAQ answer and step is open, and links and buttons do not act.
 
 const SAVED = 'altid-copy-edits'

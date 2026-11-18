@@ -7,6 +7,8 @@ import { consentSentences } from 'altid-consent'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Home, { metadata } from '@/app/page'
 import { TESTIMONIALS } from '@/components/sections/Testimonials'
+import LeavePopup from '@/components/site/LeavePopup'
+import OfferPopup from '@/components/site/OfferPopup'
 import { jsonLdScript, serializeForScript } from '@/components/site/jsonLd'
 
 // The new front page, rendered whole. Faked at the boundary only: browser APIs jsdom
@@ -19,14 +21,24 @@ vi.mock('next/navigation', () => ({
 // The rating reads the App Store over the network (test/app-rating.test.tsx covers that).
 vi.mock('@/components/site/AppRating', async (original) => {
   const { RatingLine } = await original<typeof import('@/components/site/AppRating')>()
-  return { default: () => <RatingLine rating={{ average: 4.33333 }} users={4741} /> }
+  return { default: () => <RatingLine rating={{ average: 4.33333 }} users={10000} /> }
 })
 // The user count reads the admin snapshot over the network; lib/user-count's own test covers
-// the rounding, so here it is a fixed count.
+// the rounding, so here it is a fixed count. Exactly on a step, where "10.000+" and "over 5.000"
+// differ, so a text given the wrong form fails.
 vi.mock('@/lib/user-count', async (original) => ({
   ...(await original<typeof import('@/lib/user-count')>()),
-  readUserCount: async () => 4741,
+  readUserCount: async () => 10000,
 }))
+// The real popups, watched: they show their line only once open, so read the line they are given.
+vi.mock('@/components/site/LeavePopup', async (original) => {
+  const real = await original<typeof import('@/components/site/LeavePopup')>()
+  return { ...real, default: vi.fn(real.default) }
+})
+vi.mock('@/components/site/OfferPopup', async (original) => {
+  const real = await original<typeof import('@/components/site/OfferPopup')>()
+  return { ...real, default: vi.fn(real.default) }
+})
 
 // Literal on purpose, not built from lib/store-links.
 const APP_STORE = 'https://apps.apple.com/dk/app/altid-hjem/id6794330094?pt=129212732&ct=ah_1_altidhjem_dk&mt=8'
@@ -141,7 +153,7 @@ describe('the page', () => {
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Hele hjemmets økonomi i én app')
     expect(Array.from(container.querySelectorAll('h2')).map((h) => h.textContent)).toEqual([
-      'Hør, hvorfor over 4.000 danskere har appen',
+      'Hør, hvorfor over 5.000 danskere har appen',
       'Hvad finder du i appen?',
       'Fire trin til ét overblik',
       'På jeres side. Altid',
@@ -259,10 +271,16 @@ describe('the page', () => {
     expect(JSON.parse(await taps[0][1].text())).toEqual({ store: 'appstore', position: 'hero', slug: 'front' })
   })
 
+  it('gives each popup the user count in the form its line needs', async () => {
+    render(await Home())
+    expect(vi.mocked(LeavePopup).mock.lastCall?.[0].proof).toBe('Gør som over 5.000 andre danskere')
+    expect(vi.mocked(OfferPopup).mock.lastCall?.[0].proof).toBe('10.000+ danskere har allerede appen')
+  })
+
   it('shows the stars and the user count under the pills, the rating only in the stars\' name', async () => {
     const { container } = render(await Home())
     const rating = container.querySelector('#top .h-rating') as HTMLElement
-    expect(rating).toHaveTextContent(/^4\.700\+ danskere har allerede appen$/)
+    expect(rating).toHaveTextContent(/^10\.000\+ danskere har allerede appen$/)
     const stars = within(rating).getByRole('img', { name: '4,3 ud af 5 stjerner i App Store' })
     expect(stars).toHaveClass('h-stars')
     expect(stars.style.getPropertyValue('--fill')).toBe('90%')

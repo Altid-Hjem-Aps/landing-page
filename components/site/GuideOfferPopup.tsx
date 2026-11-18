@@ -1,4 +1,4 @@
-import { readUserCount, usersHundreds } from '@/lib/user-count'
+import { readUserCount, usersPlus } from '@/lib/user-count'
 import { OFFER_POPUP } from './copy'
 import OfferPopup from './OfferPopup'
 
@@ -6,5 +6,5 @@ import OfferPopup from './OfferPopup'
 // front page does (lib/user-count.ts).
 export default async function GuideOfferPopup({ after }: { after: number }) {
   const users = await readUserCount()
-  return <OfferPopup after={after} proof={OFFER_POPUP.proof.replace('{hundreds}', usersHundreds(users))} />
+  return <OfferPopup after={after} proof={OFFER_POPUP.proof.replace('{plus}', usersPlus(users))} />
 }

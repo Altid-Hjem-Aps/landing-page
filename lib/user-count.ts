@@ -16,9 +16,22 @@ export async function readUserCount(): Promise<number> {
 
 const danish = (n: number) => n.toLocaleString('da-DK')
 
-/** Rounded down to the hundred: 4.741 reads "4.700". */
-export const usersHundreds = (n: number) => danish(Math.floor(n / 100) * 100)
+// The site's number moves only when the count passes another 5.000: 5.000, 10.000, 15.000.
+const STEP = 5000
 
-/** The whole thousand below the count, so "over" stays true: 4.741 reads "4.000", 5.000
- * still reads "4.000", and 5.001 reads "5.000". */
-export const usersThousands = (n: number) => danish(Math.floor((n - 1) / 1000) * 1000)
+const stepReached = (n: number) => Math.floor(n / STEP) * STEP
+
+// Under the first step there is no number to show, and "0+ danskere" must never reach the page.
+// The same goes for "over" at exactly 5.000. Failing here fails the build and keeps the page
+// already live, as a failed read does.
+function shown(reached: number, count: number) {
+  if (reached === 0) throw new Error(`Users count ${count} has no step of ${STEP} to show`)
+  return danish(reached)
+}
+
+/** For "5.000+": the step reached, so 9.999 reads "5.000" and 10.000 reads "10.000". */
+export const usersPlus = (n: number) => shown(stepReached(n), n)
+
+/** For "over 5.000": the step below the count, so "over" stays true. 10.000 still reads "5.000",
+ * and 10.001 reads "10.000". */
+export const usersOver = (n: number) => shown(stepReached(n - 1), n)
