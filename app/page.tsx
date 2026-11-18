@@ -8,7 +8,7 @@ import { dmSans } from '@/components/site/fonts'
 import Hero from '@/components/site/Hero'
 import LeavePopup from '@/components/site/LeavePopup'
 import OfferPopup from '@/components/site/OfferPopup'
-import { readUserCount, usersHundreds, usersThousands } from '@/lib/user-count'
+import { readUserCount, usersPlus, usersOver } from '@/lib/user-count'
 import { jsonLdScript } from '@/components/site/jsonLd'
 import MadDark from '@/components/site/MadDark'
 import Steps from '@/components/site/Steps'
@@ -84,9 +84,9 @@ export default async function Home() {
         <EnergiSticky />
         <CopyEditGate />
         <EngagementTracker />
-        <LeavePopup proof={LEAVE.proof.replace('{thousands}', usersThousands(users))} />
+        <LeavePopup proof={LEAVE.proof.replace('{over}', usersOver(users))} />
         {/* After about 30 % of the page: the Energi block with its offer card is behind the reader. */}
-        <OfferPopup after={0.3} proof={OFFER_POPUP.proof.replace('{hundreds}', usersHundreds(users))} />
+        <OfferPopup after={0.3} proof={OFFER_POPUP.proof.replace('{plus}', usersPlus(users))} />
       </MotionPrefs>
       <SiteFooter />
       <Reveal />

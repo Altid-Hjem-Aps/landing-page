@@ -19,7 +19,7 @@ describe('matching a text on the page to copy.ts', () => {
   })
 
   it('finds a string with a placeholder from the text it fills in, and gives back the placeholder', () => {
-    const match = matchCopy(INDEX, COPY.LEAVE.proof.replace('{thousands}', '4.000'))
+    const match = matchCopy(INDEX, COPY.LEAVE.proof.replace('{over}', '4.000'))
     expect(match).toEqual({ keys: ['LEAVE.proof'], template: COPY.LEAVE.proof })
   })
 

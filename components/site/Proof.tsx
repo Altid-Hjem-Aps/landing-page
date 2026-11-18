@@ -1,4 +1,4 @@
-import { usersThousands } from '@/lib/user-count'
+import { usersOver } from '@/lib/user-count'
 import { PROOF } from './copy'
 import Voices from './Voices'
 
@@ -40,7 +40,7 @@ export default function Proof({ users }: { users: number }) {
         <Laurel flip />
       </p>
       <h2 id="p-title" className="t-h2 p-title" data-reveal>
-        {PROOF.title.replace('{thousands}', usersThousands(users))}
+        {PROOF.title.replace('{over}', usersOver(users))}
       </h2>
       <Voices />
     </section>

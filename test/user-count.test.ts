@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { readUserCount, usersHundreds, usersThousands } from '@/lib/user-count'
+import GuideOfferPopup from '@/components/site/GuideOfferPopup'
+import { readUserCount, usersOver, usersPlus } from '@/lib/user-count'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -30,23 +31,36 @@ describe('user count', () => {
     }
   })
 
-  it('rounds down to the hundred, and to the thousand that "over" stays true for', () => {
-    expect(usersHundreds(4741)).toBe('4.700')
-    expect(usersHundreds(4700)).toBe('4.700')
-    expect(usersHundreds(4699)).toBe('4.600')
-    expect(usersThousands(4741)).toBe('4.000')
-    expect(usersThousands(5000)).toBe('4.000')
-    expect(usersThousands(5001)).toBe('5.000')
+  it.each([
+    [5000, '5.000'],
+    [5295, '5.000'],
+    [9999, '5.000'],
+    [10000, '10.000'],
+    [14999, '10.000'],
+    [15000, '15.000'],
+  ])('shows %i as %s+', (count, shown) => {
+    expect(usersPlus(count)).toBe(shown)
   })
 
-  // As it behaves today, not a wish: under 1.001 the "over" thousand is 0, so the copy would
-  // read "over 0 danskere". The live count is far above that; this pins the low end so a change
-  // to it is a decision, not an accident.
-  it('reads the low end as it is: "0" up to 1.000, "1.000" from 1.001', () => {
-    expect(usersThousands(1)).toBe('0')
-    expect(usersThousands(999)).toBe('0')
-    expect(usersThousands(1000)).toBe('0')
-    expect(usersThousands(1001)).toBe('1.000')
-    expect(usersHundreds(99)).toBe('0')
+  it.each([
+    [5001, '5.000'],
+    [5295, '5.000'],
+    [10000, '5.000'],
+    [10001, '10.000'],
+    [15000, '10.000'],
+    [15001, '15.000'],
+  ])('shows %i as over %s, which stays true at an exact step', (count, shown) => {
+    expect(usersOver(count)).toBe(shown)
+  })
+
+  it('fails rather than show 0 under the first step', () => {
+    expect(() => usersPlus(4999)).toThrow('Users count 4999 has no step of 5000 to show')
+    expect(() => usersOver(5000)).toThrow('Users count 5000 has no step of 5000 to show')
+  })
+
+  it('gives the guides\' offer popup the step reached', async () => {
+    answer(200, { users: 10000 })
+    const popup = await GuideOfferPopup({ after: 0.5 })
+    expect(popup.props.proof).toBe('10.000+ danskere har allerede appen')
   })
 })
