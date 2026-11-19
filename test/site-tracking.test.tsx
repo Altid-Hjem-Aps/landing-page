@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import * as amplitude from '@amplitude/analytics-browser'
-import { FAQ, STEPS } from '@/components/site/copy'
+import { FAQ, OFFER_POPUP, STEPS } from '@/components/site/copy'
 
 // What the new site measures (ALT-1420). Two channels, faked at their boundaries: the browser
 // SDK (only after "Accepter alle") and the anonymous beacons to our own server (every visitor,
@@ -186,6 +186,17 @@ describe('the Altid Energi offer pop-up', () => {
     }
     showOffer()
     expect(screen.getByRole('img', { name: /QR/i }).getAttribute('src')).toContain('app-offer.svg')
+  })
+
+  it('on a computer describes the receipt photo for screen readers, saving included', () => {
+    decline()
+    HTMLDialogElement.prototype.showModal ??= function (this: HTMLDialogElement) {
+      this.setAttribute('open', '')
+    }
+    showOffer()
+    const photo = screen.getByRole('img', { name: OFFER_POPUP.photo })
+    expect(photo.getAttribute('src')).toContain('galleri-kvittering')
+    expect(OFFER_POPUP.photo).toContain('353 kr.')
   })
 })
 

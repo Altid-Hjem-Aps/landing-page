@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
-import AppRating, { readAppRating, ratingText } from '@/components/site/AppRating'
+import AppRating, { readAppRating, ratingText, starFill } from '@/components/site/AppRating'
 
 // The user count has its own test (test/user-count.test.ts); here it is a fixed count.
 vi.mock('@/lib/user-count', async (original) => ({
@@ -22,14 +22,35 @@ describe('App Store rating', () => {
     expect(init.signal).toBeInstanceOf(AbortSignal)
   })
 
-  it('renders the user count, stars filled to at least 4,5 with the real rating as their name', async () => {
-    answer(200, { results: [{ averageUserRating: 4.33333, userRatingCount: 6 }] })
+  it('renders the stars filled to the real rating, the figure only in their name, then the user count', async () => {
+    answer(200, { results: [{ averageUserRating: 4.5, userRatingCount: 8 }] })
     const { container } = render(await AppRating())
     expect(container).toHaveTextContent(/^10\.000\+ danskere har allerede appen$/)
     const stars = container.querySelector('.h-stars') as HTMLElement
     expect(stars).toHaveAttribute('role', 'img')
-    expect(stars).toHaveAccessibleName('4,3 ud af 5 stjerner i App Store')
-    expect(stars.style.getPropertyValue('--fill')).toBe('90%')
+    expect(stars).toHaveAccessibleName('4,5 ud af 5 stjerner i App Store')
+    expect(stars.style.getPropertyValue('--fill')).toBe(starFill(4.5))
+  })
+
+  it('fills five whole stars at 5,0', async () => {
+    answer(200, { results: [{ averageUserRating: 5, userRatingCount: 9 }] })
+    const { container } = render(await AppRating())
+    expect((container.querySelector('.h-stars') as HTMLElement).style.getPropertyValue('--fill')).toBe('100%')
+  })
+
+  it('below 4,5 keeps the stars at 4,5, the real rating in their name', async () => {
+    answer(200, { results: [{ averageUserRating: 4.2, userRatingCount: 10 }] })
+    const { container } = render(await AppRating())
+    const stars = container.querySelector('.h-stars') as HTMLElement
+    expect(stars).toHaveAccessibleName('4,2 ud af 5 stjerner i App Store')
+    expect(stars.style.getPropertyValue('--fill')).toBe(starFill(4.5))
+  })
+
+  it('fills the stars to the drawn stars, not the row: 4,5 is half of the fifth star', () => {
+    // The mask draws stars 17,4 px wide every 22 px in a 106 px row.
+    expect(starFill(4.5)).toBe('91.51%') // 88 + 0,3 + 8,7 = 97 px
+    expect(starFill(4)).toBe('83.02%') // 88 px, the gap before the fifth star
+    expect(starFill(5)).toBe('100%')
   })
 
   it('fails when the App Store answers with an error or without a rating', async () => {
@@ -41,6 +62,6 @@ describe('App Store rating', () => {
 
   it('names the stars with the average written the Danish way, to one decimal', () => {
     expect(ratingText({ average: 4.75 })).toBe('4,8 ud af 5 stjerner i App Store')
-    expect(ratingText({ average: 5 })).toBe('5 ud af 5 stjerner i App Store')
+    expect(ratingText({ average: 5 })).toBe('5,0 ud af 5 stjerner i App Store')
   })
 })

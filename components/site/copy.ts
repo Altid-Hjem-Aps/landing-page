@@ -201,7 +201,7 @@ export const PRIVACY = {
 export const STEPS = {
   title: 'Fire trin til ét overblik',
   steps: [
-    { n: '01', photo: '/site/people/trin-1-sofa.webp', photoFocus: '90% 50%', screens: [], tone: 'mint', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore.webp', alt: 'Altid Hjem i App Store: gratis, 4,3 ud af 5 og skærmbilleder af appen.' },
+    { n: '01', photo: '/site/people/trin-1-sofa.webp', photoFocus: '90% 50%', screens: [], tone: 'mint', title: 'Hent appen', body: 'Gratis i App Store og Google Play.', src: '/site/app/appstore-4-5.webp', alt: 'Altid Hjem i App Store: gratis, 4,5 ud af 5 fra 8 vurderinger og skærmbilleder af appen.' },
     { n: '02', photo: '/site/people/trin-2-bord.webp', photoFocus: '70% 50%', screens: ['/site/app/okonomi-top.webp'], tone: 'sky', title: 'Forbind banken', body: 'Log ind med MitID, og se, hvor pengene går hen.\nDet er frivilligt.', src: '/site/app/okonomi-top.webp', alt: 'Økonomi i appen: 1.076 kr. brugt siden løn, 877 kr. under det, du plejer.' },
     { n: '03', photo: '/site/people/trin-3-koekken.webp', photoFocus: '40% 50%', screens: ['/site/app/mad-meal_plan.webp'], tone: 'lavender', title: 'Vælg det, I vil bruge', body: 'Mad, energi, forsikring eller økonomi. Tag det, der passer jer.', src: '/site/app/mad-meal_plan.webp', alt: 'Ugens madplan i appen: en ret til hver dag og 130 kr. tilbage.' },
     { n: '04', photo: '/site/people/trin-4-par.webp', photoFocus: '64% 50%', screens: ['/site/app/partner-venter.webp', '/site/app/partner-inviteret.webp'], tone: 'honey', title: 'Inviter din partner', body: 'Så har I et fælles overblik over hjemmets økonomi.', src: '/site/app/partner-venter.webp', alt: 'Et par i sofaen med hver sin telefon: på Sofies er Mads’ halvdel af huset tom, på Mads’ står der Sofie har inviteret dig.' },
@@ -422,6 +422,8 @@ export const OFFER_POPUP = {
   body: 'Hent Altid Hjem, og bliv Altid Energi-kunde direkte i appen med gebyrfri strøm til indkøbspris.',
   // Under the store button (Thor 15/11), {plus} as in the hero's rating line.
   proof: '{plus}+ danskere har allerede appen',
+  // The photo is a real receipt from the app (Thor's own, 19/11), so screen readers get it too.
+  photo: 'En telefon med Altid Hjem, der viser samme strøm til en lavere pris: I sparer ca. 353 kr. om året med Altid Energi.',
 } as const
 
 export const LEAVE = {
