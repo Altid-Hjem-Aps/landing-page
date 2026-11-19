@@ -177,7 +177,7 @@ function OfferDialog({ proof, onClose }: { proof: string; onClose: () => void })
           <p className="op-proof">{proof}</p>
         </div>
         <div className="op-photo">
-          <Image src="/site/gallery/galleri-elbil.webp" alt="" fill sizes="380px" quality={85} style={{ objectFit: 'cover', objectPosition: '40% 50%' }} />
+          <Image src="/site/gallery/galleri-kvittering.webp" alt={OFFER_POPUP.photo} fill sizes="380px" quality={90} style={{ objectFit: 'cover', objectPosition: '50% 50%' }} />
         </div>
       </div>
     </dialog>

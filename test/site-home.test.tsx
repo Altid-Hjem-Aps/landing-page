@@ -21,7 +21,7 @@ vi.mock('next/navigation', () => ({
 // The rating reads the App Store over the network (test/app-rating.test.tsx covers that).
 vi.mock('@/components/site/AppRating', async (original) => {
   const { RatingLine } = await original<typeof import('@/components/site/AppRating')>()
-  return { default: () => <RatingLine rating={{ average: 4.33333 }} users={10000} /> }
+  return { default: () => <RatingLine rating={{ average: 4.5 }} users={10000} /> }
 })
 // The user count reads the admin snapshot over the network; lib/user-count's own test covers
 // the rounding, so here it is a fixed count. Exactly on a step, where "10.000+" and "over 5.000"
@@ -281,9 +281,9 @@ describe('the page', () => {
     const { container } = render(await Home())
     const rating = container.querySelector('#top .h-rating') as HTMLElement
     expect(rating).toHaveTextContent(/^10\.000\+ danskere har allerede appen$/)
-    const stars = within(rating).getByRole('img', { name: '4,3 ud af 5 stjerner i App Store' })
+    const stars = within(rating).getByRole('img', { name: '4,5 ud af 5 stjerner i App Store' })
     expect(stars).toHaveClass('h-stars')
-    expect(stars.style.getPropertyValue('--fill')).toBe('90%')
+    expect(stars.style.getPropertyValue('--fill')).toBe('91.51%')
   })
 
   it('links the four services by their plain names to their cards from the menu', async () => {
