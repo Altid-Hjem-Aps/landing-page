@@ -278,18 +278,25 @@ export const privacyPolicy: PrivacyPolicy = {
     {
       title: '11. Cookies',
       blocks: [
-        { type: 'paragraph', text: `Vi bruger cookies og lignende lagring i din browser (localStorage og sessionStorage) til to ting: det, siden skal bruge for at virke, og statistik, hvis du siger ja. Første gang du besøger siden, spørger vi dig. Dit valg gemmes i 12 måneder, og derefter spørger vi igen. Du kan til enhver tid ændre dit valg: [Cookieindstillinger](${COOKIE_SETTINGS_URL})` },
+        { type: 'paragraph', text: `Vi bruger cookies og lignende lagring i din browser (localStorage og sessionStorage) til det, siden skal bruge for at virke, og, hvis du siger ja, til statistik og til at huske, hvilke pop-up-beskeder du har set. Første gang du besøger siden, spørger vi dig. Dit valg gemmes i 12 måneder, og derefter spørger vi igen. Du kan til enhver tid ændre dit valg: [Cookieindstillinger](${COOKIE_SETTINGS_URL})` },
         { type: 'label', text: 'Nødvendige (kræver ikke samtykke)' },
         {
           type: 'list',
           items: [
             { label: 'ah-cookie-consent', text: 'Husker dit cookievalg. Gemmes i 12 måneder.' },
             { label: 'am_confirm', text: 'Bruges et kort øjeblik, når du bekræfter din tilmelding via linket i vores e-mail. Slettes efter 30 minutter.' },
-            { label: 'ah-leave-popup-shown', text: 'Husker, at vi har vist dig beskeden, der kommer, når du er på vej væk fra siden, så du højst ser én pop-up-besked pr. besøg. Slettes, når du lukker fanen.' },
-            { label: 'ah-offer-popup-shown', text: 'Husker, at vi har vist dig tilbuddet fra Altid Energi, så du højst ser én pop-up-besked pr. besøg. Slettes, når du lukker fanen.' },
-            { label: 'ah-offer-popup-closed', text: 'Husker, hvornår du lukkede tilbuddet fra Altid Energi, så vi ikke viser det igen de næste 7 dage. Gemmes, indtil du rydder din browser.' },
             { label: 'norlys_auth', text: 'Giver adgang til en lukket side for en samarbejdspartner. Sættes kun, når man logger ind på siden. Gemmes i 30 dage.' },
             { label: 'tryg_demo_auth', text: 'Giver adgang til en lukket demoside for en samarbejdspartner. Sættes kun, når man logger ind på siden. Gemmes i 30 dage.' },
+          ],
+        },
+        { type: 'label', text: 'Pop-up-beskeder (kun hvis du siger ja)' },
+        { type: 'paragraph', text: 'Siger du nej, husker siden kun pop-up-beskederne, så længe du har siden åben, og gemmer intet om dem i din browser. Trækker du dit ja tilbage, sletter vi disse nøgler.' },
+        {
+          type: 'list',
+          items: [
+            { label: 'ah-leave-popup-shown', text: 'Husker, at vi har vist dig beskeden, der kommer, når du er på vej væk fra siden, så du højst ser en pop-up-besked pr. besøg. Slettes, når du lukker fanen.' },
+            { label: 'ah-offer-popup-shown', text: 'Husker, at vi har vist dig tilbuddet fra Altid Energi, så du højst ser en pop-up-besked pr. besøg. Slettes, når du lukker fanen.' },
+            { label: 'ah-offer-popup-closed', text: 'Husker, hvornår du lukkede tilbuddet fra Altid Energi, så vi ikke viser det igen de næste 7 dage. Gemmes, indtil du rydder din browser eller trækker dit ja tilbage.' },
           ],
         },
         { type: 'label', text: 'Statistik (kun hvis du siger ja)' },

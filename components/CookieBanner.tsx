@@ -13,6 +13,7 @@ import {
   type CookieChoice,
 } from '@/lib/cookie-consent'
 import { startAnalytics, stopAnalytics } from '@/lib/analytics'
+import { forgetStoredPopups, storeThisPageLoad } from '@/lib/popup-memory'
 
 // Both answers get the same button, size and colour on purpose: Datatilsynet
 // requires saying no to be as easy as saying yes, so neither may be nudged.
@@ -31,15 +32,26 @@ export default function CookieBanner() {
   const open = !hasAnswer || reopened
 
   useEffect(() => {
+    // No valid yes (a no, no answer yet, or a yes older than 12 months): remove the pop-up keys
+    // an earlier yes or the older site stored.
+    if (readCookieChoice() !== 'all') forgetStoredPopups()
     const reopen = () => setReopened(true)
     const apply = (e: Event) => {
       const choice = (e as CustomEvent<CookieChoice>).detail
-      if (choice === 'all') startAnalytics()
-      else stopAnalytics()
+      if (choice === 'all') {
+        startAnalytics()
+        storeThisPageLoad()
+      } else {
+        stopAnalytics()
+        forgetStoredPopups()
+      }
     }
     // A withdrawal in another open tab holds here too.
     const otherTab = (e: StorageEvent) => {
-      if (e.key === COOKIE_CONSENT_KEY && readCookieChoice() !== 'all') stopAnalytics()
+      if (e.key === COOKIE_CONSENT_KEY && readCookieChoice() !== 'all') {
+        stopAnalytics()
+        forgetStoredPopups()
+      }
     }
     window.addEventListener(OPEN_COOKIE_SETTINGS, reopen)
     window.addEventListener(COOKIE_CONSENT_CHANGED, apply)
@@ -70,9 +82,10 @@ export default function CookieBanner() {
         Må vi bruge cookies?
       </h2>
       <p className="mt-2 text-[14px] leading-[1.6]" style={{ color: 'rgba(255,255,255,0.8)' }}>
-        Vi vil gerne bruge cookies til statistik, så vi kan se, hvordan siden bliver brugt, og gøre den bedre. Det sker
-        kun, hvis du siger ja. De cookies, siden skal bruge for at virke, bruger vi altid. Du kan ændre dit valg under
-        Cookieindstillinger nederst på siden. Læs mere i vores{' '}
+        Vi vil gerne bruge cookies til statistik, så vi kan se, hvordan siden bliver brugt, og til at huske, hvilke
+        pop-up-beskeder du har set, så du ikke får dem igen. Det sker kun, hvis du siger ja. De cookies, siden skal
+        bruge for at virke, bruger vi altid. Du kan ændre dit valg under Cookieindstillinger nederst på siden. Læs
+        mere i vores{' '}
         <Link href="/privatlivspolitik#cookies" className="underline underline-offset-2" style={{ color: '#ffffff' }}>
           privatlivspolitik
         </Link>

@@ -6,6 +6,7 @@ import { STORE_MARK } from '@/components/StoreBadges'
 import { trackEvent } from '@/lib/analytics'
 import { hasCookieChoice } from '@/lib/cookie-consent'
 import { countEvent } from '@/lib/count'
+import { offerClosedAt, popupShownThisVisit, rememberOfferClosed, rememberPopupShown } from '@/lib/popup-memory'
 import type { Store } from '@/lib/store-links'
 import { keepBrands } from './brand'
 import { HERO, LEAVE, OFFER_POPUP, QR } from './copy'
@@ -22,7 +23,8 @@ import StoreLink from './StoreLink'
 // - scrolled `after` of the way down (the studies' sweet spot on long pages is 35 to 50 %; the
 //   front page passes its Energi block at about 30 %, a guide's article is read by half way);
 // - once per visit, never in the same visit as the leave pop-up (they share the rule), and not
-//   again for 7 days once it has been closed.
+//   again for 7 days once it has been closed. Only a visitor who accepted cookies is remembered
+//   in the browser (lib/popup-memory.ts); for the others the rule holds for this page load.
 // On a computer it is a dialog with the QR code, in the leave pop-up's spirit. On a phone it is a
 // small card at the bottom that leaves the page readable: Google demotes phone pages that cover
 // their content with a pop-up for visitors from search, which is where the guides' visitors
@@ -30,31 +32,11 @@ import StoreLink from './StoreLink'
 
 const MIN_TIME_MS = 10_000
 const COMPUTER = '(min-width: 1024px) and (hover: hover) and (pointer: fine)'
-const SHOWN_KEY = 'ah-offer-popup-shown'
-const LEAVE_SHOWN_KEY = 'ah-leave-popup-shown'
-const CLOSED_KEY = 'ah-offer-popup-closed'
 const QUIET_DAYS = 7
 
-function read(store: 'session' | 'local', key: string): string | null {
-  try {
-    return (store === 'session' ? window.sessionStorage : window.localStorage).getItem(key)
-  } catch {
-    return null
-  }
-}
-
-function write(store: 'session' | 'local', key: string, value: string) {
-  try {
-    ;(store === 'session' ? window.sessionStorage : window.localStorage).setItem(key, value)
-  } catch {
-    // No storage: the component's own state still holds it to once on this page.
-  }
-}
-
 function mayShow(): boolean {
-  if (read('session', SHOWN_KEY) === '1' || read('session', LEAVE_SHOWN_KEY) === '1') return false
-  const closed = Number(read('local', CLOSED_KEY) ?? 0)
-  return Date.now() - closed > QUIET_DAYS * 24 * 60 * 60 * 1000
+  if (popupShownThisVisit()) return false
+  return Date.now() - offerClosedAt() > QUIET_DAYS * 24 * 60 * 60 * 1000
 }
 
 type Mode = 'computer' | 'phone'
@@ -90,7 +72,7 @@ export default function OfferPopup({ after, proof }: { after: number; proof: str
       if (document.fullscreenElement || document.querySelector('dialog[open]')) return
       if (!mayShow()) return
       done = true
-      write('session', SHOWN_KEY, '1')
+      rememberPopupShown('offer')
       stop()
       const shownAs: Mode = window.matchMedia(COMPUTER).matches ? 'computer' : 'phone'
       setMode(shownAs)
@@ -113,7 +95,7 @@ export default function OfferPopup({ after, proof }: { after: number; proof: str
   }, [after])
 
   const close = () => {
-    write('local', CLOSED_KEY, String(Date.now()))
+    rememberOfferClosed()
     if (mode) track('Energi Offer Dismissed', mode)
     setMode(null)
   }
