@@ -4,9 +4,10 @@ import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import { trackEvent } from '@/lib/analytics'
 import { countEvent } from '@/lib/count'
+import { popupShownThisVisit, rememberPopupShown } from '@/lib/popup-memory'
 
 // Computers only: when the mouse leaves the window through the top, headed for the tab bar,
-// the QR code once more, once per browser session. The trigger is the old site's signup
+// the QR code once more, once per visit (shared with the offer pop-up, lib/popup-memory.ts). The trigger is the old site's signup
 // popup (ExitIntentModal): armed after a few seconds, the top zone or a fast upward flick,
 // never on top of another dialog. The popup itself (LeaveDialog) loads only when it is needed.
 const LeaveDialog = dynamic(() => import('./LeaveDialog'), { ssr: false })
@@ -17,25 +18,6 @@ const EXIT_TOP_ZONE_PX = 50
 const EXIT_UPPER_FRACTION = 0.4
 const EXIT_MIN_UPWARD_PX = 10
 const DESKTOP = '(min-width: 1024px) and (hover: hover) and (pointer: fine)'
-const SHOWN_KEY = 'ah-leave-popup-shown'
-/** The Altid Energi offer pop-up's own key (OfferPopup): one pop-up per visit, never both. */
-const OFFER_SHOWN_KEY = 'ah-offer-popup-shown'
-
-function shownThisSession() {
-  try {
-    return window.sessionStorage.getItem(SHOWN_KEY) === '1' || window.sessionStorage.getItem(OFFER_SHOWN_KEY) === '1'
-  } catch {
-    return false
-  }
-}
-
-function rememberShown() {
-  try {
-    window.sessionStorage.setItem(SHOWN_KEY, '1')
-  } catch {
-    // No storage: the page-load flag in the component still holds it to once.
-  }
-}
 
 // Counted twice. Our server counts every visitor anonymously (lib/site-counts.ts), so "Popup
 // Shown" {popup: leave} and the scans of its code, "QR Code Scanned" {src: leave} (app/qr), give
@@ -56,7 +38,7 @@ export default function LeavePopup({ proof }: { proof: string }) {
     const arm = window.setTimeout(() => {
       armed = true
       // A computer that may see the popup: fetch its script now, so the letter opens at once.
-      if (window.matchMedia(DESKTOP).matches && !shownThisSession()) void import('./LeaveDialog')
+      if (window.matchMedia(DESKTOP).matches && !popupShownThisVisit()) void import('./LeaveDialog')
     }, ARM_DELAY_MS)
 
     const maybeOpen = (e: MouseEvent) => {
@@ -67,9 +49,9 @@ export default function LeavePopup({ proof }: { proof: string }) {
       if (!window.matchMedia(DESKTOP).matches) return
       // Not on top of the menu sheet, the cookie banner or a fullscreen video.
       if (document.fullscreenElement || document.querySelector('dialog[open], [role="dialog"]')) return
-      if (shownThisSession()) return
+      if (popupShownThisVisit()) return
       shown = true
-      rememberShown()
+      rememberPopupShown('leave')
       teardown()
       setOpen(true)
       track('Exit Intent Shown')
