@@ -7,9 +7,10 @@ import { countEvent } from '@/lib/count'
 import { popupShownThisVisit, rememberPopupShown } from '@/lib/popup-memory'
 
 // Computers only: when the mouse leaves the window through the top, headed for the tab bar,
-// the QR code once more, once per visit (shared with the offer pop-up, lib/popup-memory.ts). The trigger is the old site's signup
-// popup (ExitIntentModal): armed after a few seconds, the top zone or a fast upward flick,
-// never on top of another dialog. The popup itself (LeaveDialog) loads only when it is needed.
+// the QR code once more, once per visit (shared with the offer pop-up, lib/popup-memory.ts).
+// The trigger is the old site's signup popup (ExitIntentModal): armed after a few seconds, the
+// top zone or a fast upward flick, never on top of another dialog. The popup itself (LeaveDialog)
+// loads only when it is needed.
 const LeaveDialog = dynamic(() => import('./LeaveDialog'), { ssr: false })
 
 const ARM_DELAY_MS = 5000

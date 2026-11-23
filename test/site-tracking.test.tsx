@@ -421,4 +421,46 @@ describe('what the pop-ups remember in the browser', () => {
     act(() => saveCookieChoice('necessary'))
     expect(stored()).toEqual([])
   })
+
+  // Risk: a visitor closes the offer before answering the banner (or after a no), then says yes:
+  // nothing is stored, so the offer comes back on the next page inside its quiet week.
+  it('stores what the visit already showed when a yes comes after the pop-up', () => {
+    decline()
+    render(<CookieBanner />)
+    showAndCloseTheOffer()
+    expect(stored()).toEqual([])
+
+    act(() => saveCookieChoice('all'))
+    expect(stored()).toEqual(['ah-offer-popup-shown', 'ah-offer-popup-closed'])
+  })
+
+  // Risk: a yes taken back deletes the keys that held the pop-ups back on this page, so the
+  // visitor who just said no to cookies gets a second pop-up in the same visit.
+  it('still shows one pop-up per visit when the yes is taken back on a later page', async () => {
+    accept()
+    showAndCloseTheOffer().unmount()
+    startNewPageLoad()
+
+    computer = true
+    render(<CookieBanner />)
+    render(<LeavePopup proof="Over 4.000 bruger appen" />)
+    act(() => vi.advanceTimersByTime(5000))
+    act(() => saveCookieChoice('necessary'))
+    expect(stored()).toEqual([])
+    act(() => {
+      document.dispatchEvent(new MouseEvent('mouseout', { clientY: 10, relatedTarget: null }))
+    })
+    vi.useRealTimers()
+    await sdkSettled()
+    expect((await beaconBodies('/api/forside/count')).filter((b) => b.props.popup === 'leave')).toEqual([])
+  })
+
+  // Risk: a yes that ran out after 12 months, or keys from the older site, leave the pop-up keys
+  // in the browser of a visitor who has no valid yes.
+  it('removes keys left in the browser of a visitor without a valid yes', () => {
+    window.localStorage.setItem('ah-offer-popup-closed', String(Date.now()))
+    window.sessionStorage.setItem('ah-offer-popup-shown', '1')
+    render(<CookieBanner />)
+    expect(stored()).toEqual([])
+  })
 })
