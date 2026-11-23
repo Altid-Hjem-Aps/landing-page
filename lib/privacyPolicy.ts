@@ -246,7 +246,7 @@ export const privacyPolicy: PrivacyPolicy = {
     {
       title: '8. Datasikkerhed',
       blocks: [
-        { type: 'paragraph', text: 'Forbindelsen mellem appen og vores server er krypteret (HTTPS). Hver forespørgsel om bankoplysninger kræver et gyldigt login, og du kan kun hente dine egne. De senest hentede bank-tal på din telefon er krypteret med AES-GCM, nøglen ligger i telefonens nøglering, og filen er ikke med i telefonens sikkerhedskopi. Vores servere kan kun nås med personlige nøgler, ikke med adgangskode.' },
+        { type: 'paragraph', text: 'Forbindelsen mellem appen og vores server er krypteret (HTTPS). Hver forespørgsel om bankoplysninger kræver et gyldigt login. Du kan kun hente dine egne og det, et medlem af din husstand selv har delt med dig: en fælles konto eller en fælles opsparing. Din partner ser aldrig dine egne konti eller din egen opsparing. De senest hentede bank-tal på din telefon er krypteret med AES-GCM, nøglen ligger i telefonens nøglering, og filen er ikke med i telefonens sikkerhedskopi. Vores servere kan kun nås med personlige nøgler, ikke med adgangskode.' },
       ],
     },
     {

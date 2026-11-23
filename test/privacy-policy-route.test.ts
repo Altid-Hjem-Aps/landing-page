@@ -46,4 +46,14 @@ describe('/privatlivspolitik.json', () => {
       }
     }
   })
+
+  // Risk: one section says a customer can only fetch their own bank data while another says a
+  // shared account reaches the partner, or the shared account is named without the promise.
+  it('says the same about who can fetch bank data wherever it comes up', () => {
+    const all = privacyPolicy.sections.flatMap((s) => s.blocks).flatMap(texts)
+    expect(all.filter((t) => /kun hente dine egne(?! og det)/.test(t))).toEqual([])
+    const fetching = all.filter((t) => t.includes('Du kan kun hente dine egne og det'))
+    expect(fetching).toHaveLength(1)
+    expect(fetching[0]).toContain('Din partner ser aldrig dine egne konti eller din egen opsparing.')
+  })
 })
