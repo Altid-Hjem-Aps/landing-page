@@ -25,7 +25,13 @@ export default function SletKonto() {
       <section>
         <h2 className={LEGAL_H2}>Hvad bliver slettet?</h2>
         <p>Når du sletter din konto, fjerner vi din konto og dine appdata. Har du forbundet din bank, bliver dine bankdata også slettet hos Subaio.</p>
-        <p>Oplysninger, som vi er retligt forpligtede til at opbevare, fx bogføringsmateriale efter bogføringsloven samt aftale- og betalingshistorik, opbevares i op til 5 år efter kundeforholdets ophør og slettes derefter. Du kan læse mere i vores <Link href="/privatlivspolitik" className={LEGAL_LINK}>privatlivspolitik</Link>.</p>
+        <p>Det her gemmer vi efter sletningen:</p>
+        <ul className={LEGAL_LIST}>
+          <li>Regnskabsmateriale, fx fakturaer, i 5 år fra udgangen af det regnskabsår, det vedrører, som bogføringsloven kræver. Andre oplysninger om dig gemmer vi ikke af den grund.</li>
+          <li>En kode (hash) af din e-mail og dit kundenummer i 3 år, så vi kan dokumentere sletningen og ikke tæller dig med to gange.</li>
+          <li>Registreringen af dine samtykker som dokumentation.</li>
+        </ul>
+        <p>Du kan læse mere i vores <Link href="/privatlivspolitik" className={LEGAL_LINK}>privatlivspolitik</Link>.</p>
       </section>
 
       <section>

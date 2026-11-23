@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import SletKonto, { metadata } from '@/app/slet-konto/page'
+import { privacyPolicy } from '@/lib/privacyPolicy'
 
 // Nav is a client component with scroll listeners and Amplitude — irrelevant here.
 vi.mock('@/components/Nav', () => ({ default: () => null }))
@@ -33,6 +34,22 @@ describe('/slet-konto', () => {
     expect(screen.getByRole('link', { name: 'hej@altidenergi.dk' })).toHaveAttribute('href', 'mailto:hej@altidenergi.dk')
     expect(main).not.toMatch(/\bsnart\b|arbejder på|inden for 30 dage|gennemføres først/i)
     expect(main).not.toMatch(/[–—]/)
+  })
+
+  // Risk: the page promises another retention than section 7 of the privacy policy
+  // (it said "op til 5 år efter kundeforholdets ophør" for agreement and payment history).
+  it('names the same three things kept after deletion as the privacy policy', () => {
+    const { container } = render(<SletKonto />)
+    const main = container.querySelector('main')!.textContent
+    const kept = privacyPolicy.sections
+      .flatMap((s) => s.blocks)
+      .flatMap((b) => (b.type === 'list' ? b.items.map((i) => i.text) : []))
+    expect(kept.some((t) => t.includes('i 5 år fra udgangen af det regnskabsår, det vedrører'))).toBe(true)
+    expect(kept.some((t) => t.includes('en kode (hash) af din e-mail og dit kundenummer i 3 år'))).toBe(true)
+    expect(main).toContain('i 5 år fra udgangen af det regnskabsår, det vedrører')
+    expect(main).toContain('En kode (hash) af din e-mail og dit kundenummer i 3 år')
+    expect(main).toContain('Registreringen af dine samtykker som dokumentation')
+    expect(main).not.toContain('kundeforholdets ophør')
   })
 
   it('links to the privacy policy for retention details', () => {
