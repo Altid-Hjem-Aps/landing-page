@@ -101,7 +101,24 @@ describe('/privatlivspolitik', () => {
     render(<Privatlivspolitik />)
     const h2s = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
     expect(h2s).toEqual(privacyPolicy.sections.map((s) => s.title))
-    expect(screen.getByText('Senest opdateret: 23. november 2026')).toBeInTheDocument()
+    expect(screen.getByText('Senest opdateret: 27. november 2026')).toBeInTheDocument()
+  })
+
+  // ALT-2171: Alexander approved these two sentences word for word (27/11) for small questions
+  // and the daily economy check. Risk: the wording drifts, or lands outside the section that
+  // lists what is stored.
+  it('states the two approved sentences verbatim, once each, in section 3', () => {
+    render(<Privatlivspolitik />)
+    const approved = [
+      'Når du svarer på et lille spørgsmål i appen, gemmer vi svaret for at gøre tallene rigtige og appen bedre. Siger du, hvorfor du stopper, gemmer vi grunden uden dit navn. Vi kigger kun på samlede tal, aldrig på dig.',
+      'En gang om dagen tjekker appen sine egne tal og sender kun ja eller nej til os, uden beløb eller butiksnavne, så vi kan finde og rette fejl.',
+    ]
+    const section3 = screen.getByRole('heading', { level: 2, name: '3. Hvilke oplysninger behandler vi?' }).closest('section') as HTMLElement
+    const main = screen.getByRole('main')
+    for (const sentence of approved) {
+      expect(within(section3).getByText(sentence)).toBeInTheDocument()
+      expect(within(main).getAllByText(sentence)).toHaveLength(1)
+    }
   })
 
   it('lists every cookie and storage key the site sets, and lets the visitor change the choice', () => {
