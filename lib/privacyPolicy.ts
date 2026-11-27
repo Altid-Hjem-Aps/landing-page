@@ -51,7 +51,7 @@ export function parseInline(text: string): InlineSegment[] {
 }
 
 export const privacyPolicy: PrivacyPolicy = {
-  updated: '2026-11-23',
+  updated: '2026-11-27',
   sections: [
     {
       title: '1. Vi er den dataansvarlige',
@@ -111,6 +111,7 @@ export const privacyPolicy: PrivacyPolicy = {
         { type: 'paragraph', text: 'Betalingskortoplysninger og øvrige betalingsdata i forbindelse med køb og tilmelding til produkter via appen. Betalingsoplysninger behandles via godkendte betalingsudbydere og opbevares ikke direkte af Altid Hjem.' },
         { type: 'label', text: 'Tekniske oplysninger' },
         { type: 'paragraph', text: 'Oplysninger om din enhed, dit styresystem og din appversion samt optælling af brugen af appen og tjenesterne (se afsnit 4). Med dit samtykke indsamler vi også oplysninger til analyse af, hvordan appen bliver brugt (se afsnit 5).' },
+        { type: 'paragraph', text: 'En gang om dagen tjekker appen sine egne tal og sender kun ja eller nej til os, uden beløb eller butiksnavne, så vi kan finde og rette fejl.' },
         { type: 'label', text: 'Notifikationer' },
         { type: 'paragraph', text: 'Siger du ja til notifikationer på din telefon, gemmer vi en kode, så vi kan sende beskeder til netop din telefon. Koden får vi fra Google (Firebase), som bringer beskederne ud for os. Vi gemmer også et tilfældigt nummer for appen på din telefon, om det er en iPhone eller en Android, hvilken version af appen du har, og om notifikationer er slået til. Om hver besked gemmer vi, hvad slags besked det var, hvornår vi sendte den, og om du åbnede den. Selve teksten i beskeden sletter vi, når den er sendt. Slår du notifikationer fra, gemmer vi, hvornår du gjorde det.' },
         { type: 'label', text: 'Henvisningsoplysninger' },
@@ -121,6 +122,7 @@ export const privacyPolicy: PrivacyPolicy = {
         { type: 'paragraph', text: 'Hvis du selv lægger et billede af dig ind i appen, gemmer vi det, så de andre voksne i din husstand kan se det. Kun medlemmer af din husstand, der er logget ind, kan se billedet. Før vi gemmer det, fjerner vi oplysninger om, hvor og med hvilket kamera det er taget. Det er frivilligt at lægge et billede ind.' },
         { type: 'label', text: 'Kommunikationsoplysninger' },
         { type: 'paragraph', text: 'Korrespondance du har haft med os via e-mail, chat eller support.' },
+        { type: 'paragraph', text: 'Når du svarer på et lille spørgsmål i appen, gemmer vi svaret for at gøre tallene rigtige og appen bedre. Siger du, hvorfor du stopper, gemmer vi grunden uden dit navn. Vi kigger kun på samlede tal, aldrig på dig.' },
       ],
     },
     {
